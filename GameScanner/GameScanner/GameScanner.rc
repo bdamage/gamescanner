@@ -1,0 +1,546 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#ifndef APSTUDIO_INVOKED
+#include "targetver.h"
+#endif
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "windows.h"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_GAMESCANNER         ICON                    "GameScanner.ico"
+IDI_ICON_ET             ICON                    "res\\ET.ico"
+IDI_ICON_PB             ICON                    "res\\pb.ico"
+IDI_ICON_FAVORITES      ICON                    "res\\favorites.ico"
+IDI_ICON_BUDDY          ICON                    "res\\user.ico"
+IDI_ICON_ERROR          ICON                    "res\\eventlogError.ico"
+IDI_ICON_LOCKED         ICON                    "res\\eventlogFailureAudit.ico"
+IDI_ICON_ET1            ICON                    "res\\icon_et1.ico"
+IDI_ICON_WARNING        ICON                    "res\\warning.ico"
+IDI_ICON_UNKOWN         ICON                    "res\\icon14.ico"
+ICON_INFO               ICON                    "res\\INFO.ICO"
+IDI_ICON_SLIDER         ICON                    "res\\slider.ico"
+IDI_ICON_QUAKE          ICON                    "res\\quake16x16.ico"
+IDI_ICON_ETQW           ICON                    "res\\etqw.ico"
+IDI_ICON_LAN            ICON                    "res\\group.ico"
+IDI_ICON_GLOBE          ICON                    "res\\globe.ico"
+IDI_ICON_APP_LOGO       ICON                    "res\\znarc.ico"
+IDI_ICON_FILTER         ICON                    "res\\pixel-install.ico"
+IDI_ICON_CHECKBOX       ICON                    "res\\checkbox.ico"
+IDI_ICON_CHECKEDBOX     ICON                    "res\\checkedbox.ico"
+IDI_ICON_RTCW           ICON                    "res\\19.ico"
+IDI_ICON_HISTORY        ICON                    "res\\history.ico"
+IDI_ICON_TRICHECKEDBOX  ICON                    "res\\icon_che.ico"
+IDI_ICON_Q3             ICON                    "res\\icon6.ico"
+IDI_ICON_FOLDER         ICON                    "res\\folder.ico"
+IDI_ICON_RANKED         ICON                    "res\\ranked.ico"
+IDI_ICON_BLANK          ICON                    "res\\blank.ico"
+IDI_ICON_WARSOW         ICON                    "res\\Warsow.ico"
+IDI_ICON_COD            ICON                    "res\\ico00009.ico"
+IDI_ICON_COD2           ICON                    "res\\ico00010.ico"
+IDI_ICON_COD4           ICON                    "res\\icon_cod.ico"
+IDI_ICON_FILTER2        ICON                    "res\\icon_glo.ico"
+IDI_ICON_CS             ICON                    "res\\cstrike.ico"
+IDI_ICON_VAC            ICON                    "res\\vac.ico"
+IDI_ICON_CSS            ICON                    "res\\css.ico"
+IDI_ICON_RCON           ICON                    "res\\icon_loc.ico"
+IDI_ICON_APP_LOGO1      ICON                    "res\\icon_app.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDC_GAMESCANNER MENU 
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "Settings",                    IDM_SETTINGS
+        MENUITEM "Delete ALL  servers",         ID_SERVERLIST_PURGEPUBLICSERVLIST
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       IDM_EXIT
+    END
+    POPUP "Buddy"
+    BEGIN
+        MENUITEM "Add From Selected Player List", ID_BUDDY_ADDFROMPLAYERLIST
+        MENUITEM "Add New Buddy",               ID_BUDDY_ADD
+        MENUITEM "Remove Selected Buddy",       ID_BUDDY_REMOVE
+    END
+    POPUP "View"
+    BEGIN
+        MENUITEM "Buddylist",                   ID_VIEW_BUDDYLIST, CHECKED
+        MENUITEM "Map preview",                 ID_VIEW_MAPPREVIEW, CHECKED
+        MENUITEM "Tabs",                        ID_VIEW_PLAYERLIST, CHECKED
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "Documentation && FAQ",        ID_HELP_DOCUMENTATIONFAQ
+        MENUITEM "Check for updates",           IDM_UPDATE
+        MENUITEM "&About ...",                  IDM_ABOUT
+    END
+END
+
+IDR_MENU1 MENU 
+BEGIN
+    POPUP "foo"
+    BEGIN
+        MENUITEM "Add New Server",              IDM_ADD
+        MENUITEM "Add IP",                      IDM_ADDIP
+        MENUITEM "Copy IP to clipboard",        IDM_COPYIP
+        MENUITEM "Delete",                      IDM_DELETE
+        MENUITEM "Connect",                     IDM_CONNECT
+        MENUITEM "Refresh",                     IDM_REFRESH
+        MENUITEM "Set Private Pass",            32784
+        MENUITEM "Force Connect def ET.EXE",    IDM_FORCE_CONNECT
+        MENUITEM "Minimum players",             ID_FOO_MINIMUMPLAYERS
+        MENUITEM "Maximum players",             ID_FOO_MAXIMUMPLAYERS
+    END
+    POPUP "TT"
+    BEGIN
+        MENUITEM "Server 1",                    IDM_DELETE
+        MENUITEM "Server 2",                    IDM_CONNECT
+        MENUITEM "Server 3",                    ID_TT_SERVER3
+        MENUITEM "Server 4",                    ID_TT_SERVER4
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Accelerator
+//
+
+IDC_GAMESCANNER ACCELERATORS 
+BEGIN
+    "?",            IDM_ABOUT,              ASCII,  ALT
+    "/",            IDM_ABOUT,              ASCII,  ALT
+END
+
+IDC_ETSERVERVIEWER ACCELERATORS 
+BEGIN
+    "V",            ID_CTRL_V,              VIRTKEY, CONTROL, NOINVERT
+    "A",            ID_FAVORITES_ADDIP,     VIRTKEY, CONTROL, NOINVERT
+    "/",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
+    "?",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
+    VK_F5,          IDM_SCAN,               VIRTKEY, NOINVERT
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_CONFIG DIALOGEX 0, 0, 384, 233
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Configuration"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,147,212,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,271,212,50,14
+    PUSHBUTTON      "Set default",IDC_BUTTON_DEFAULT,208,212,50,14
+    CONTROL         "",IDC_TREE_CONF,"SysTreeView32",TVS_HASBUTTONS | TVS_LINESATROOT | TVS_FULLROWSELECT | WS_BORDER | WS_TABSTOP,2,4,82,223
+END
+
+IDD_CFG1 DIALOGEX 0, 0, 295, 205
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Auto Start on boot up.",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,21,191,10
+    CONTROL         "Use short country name.",IDC_CHECK_SHORTNAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,32,191,10
+    CONTROL         "Notify mIRC when joining servers (experimental)",IDC_CHECK_MIRC,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,62,250,9
+    GROUPBOX        "mIRC",IDC_STATIC,7,51,281,40
+END
+
+IDD_CFG2 DIALOGEX 0, 0, 273, 186
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Enable minimize",IDC_CHECK2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,25,63,10
+    GROUPBOX        "Minimizer settings",IDC_STATIC,7,7,259,84
+    COMBOBOX        IDC_COMBO_MOD,13,52,73,42,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP
+    EDITTEXT        IDC_EDIT_KEY,115,52,12,13,ES_AUTOHSCROLL
+    LTEXT           "+",IDC_STATIC,99,54,8,8
+    EDITTEXT        IDC_EDIT_WINDOWNAME,65,69,192,12,ES_AUTOHSCROLL
+    LTEXT           "Window name:",IDC_STATIC,13,70,49,13
+    CONTROL         "Enable display resolution restore on game minimized.",IDC_CHECK_SCR_RESTORE,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,39,187,10
+END
+
+IDD_CFG3_ET DIALOGEX 0, 0, 296, 196
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Game path for Enemy Territory",IDC_STATIC_GAME_NAME,7,28,282,60
+    EDITTEXT        IDC_EDIT_PATH,51,43,212,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_ET_PATH,266,43,19,14
+    EDITTEXT        IDC_EDIT_CMD,51,60,212,14,ES_AUTOHSCROLL
+    LTEXT           "Executable",IDC_STATIC,12,46,35,8
+    LTEXT           "Command",IDC_STATIC,12,62,35,8
+    GROUPBOX        "Settings for Master Server IP, Port && Protocol",IDC_STATIC,7,98,282,49
+    EDITTEXT        IDC_EDIT_MASTER_SERVER,60,110,203,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MASTER_PORT,60,127,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PROTOCOL,199,128,40,14,ES_AUTOHSCROLL
+    LTEXT           "Master server",IDC_STATIC,12,114,48,8
+    LTEXT           "Port",IDC_STATIC,12,130,39,8
+    LTEXT           "Protocol",IDC_STATIC,167,130,29,8
+    CONTROL         "Active game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
+END
+
+IDD_CFG4 DIALOGEX 0, 0, 296, 196
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Custom exec to launch when joining a server (e.g. Vent or TeamSpeak).",IDC_STATIC,7,9,269,86
+    EDITTEXT        IDC_EDIT_EXT_EXE,58,34,188,14,ES_AUTOHSCROLL
+    LTEXT           "Exe file",IDC_STATIC,12,38,46,8
+    LTEXT           "Command",IDC_STATIC,12,53,46,12
+    EDITTEXT        IDC_EDIT_EXT_CMD,58,50,188,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_EXT_EXE,253,34,20,14
+    CONTROL         "Minimize during start up",IDC_CHECK_EXT_MIN,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,58,81,91,11
+    CONTROL         "Auto close",IDC_CHECK_EXT_CLOSE,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,155,82,48,11
+    EDITTEXT        IDC_EDIT_EXT_WINDOWNAME,58,66,188,14,ES_AUTOHSCROLL
+    LTEXT           "Window Name",IDC_STATIC,12,68,46,10
+    CONTROL         "Active",IDC_CHECK_EXT_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,20,106,10
+END
+
+IDD_CFG5 DIALOGEX 0, 0, 296, 196
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_SLIDER_TRANS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | TBS_NOTICKS | WS_TABSTOP,16,26,19,95
+    GROUPBOX        "Transparancy",IDC_STATIC,12,14,55,113
+    LTEXT           "No trans",IDC_STATIC,35,111,28,8
+    LTEXT           "Max",IDC_STATIC,46,30,14,8
+END
+
+IDD_CFG_NET DIALOGEX 0, 0, 296, 196
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "",IDC_SLIDER_THREADS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | WS_TABSTOP,16,26,22,95
+    GROUPBOX        "Threads",IDC_STATIC,12,14,55,113
+    LTEXT           "??",IDC_STATIC_THREAD,47,68,14,8
+    GROUPBOX        "Socket timeout settings",IDC_STATIC,7,140,90,30
+    EDITTEXT        IDC_EDIT_SOCK_TIMEOUT_S,24,150,36,13,ES_AUTOHSCROLL
+    LTEXT           "ms",IDC_STATIC,66,152,10,8
+END
+
+IDD_ABOUTBOX DIALOGEX 22, 17, 160, 223
+STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
+CAPTION "About"
+FONT 10, "Verdana", 400, 0, 0x0
+BEGIN
+    CTEXT           "Game Scanner \nCopyright (C) 2008 Kjell 'bDamage' Lloyd\n\nThanks goes to Cloud & JBRAA\n\n",IDC_STATIC,7,7,152,36,SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,57,198,46,19,WS_GROUP
+    CONTROL         "<a id=""idHomePage"" href=""http://etsv.cludden.se"">Website</a>",IDC_CUSTOM1,
+                    "SysLink",LWS_IGNORERETURN | LWS_USEVISUALSTYLE,55,74,51,12
+    LTEXT           "This software uses the FreeImage open source image library. See http://freeimage.sourceforge.net for details.\nFreeImage is used under the (GNU GPL or FIPL), version (license version). ",IDC_STATIC,7,94,150,40
+    LTEXT           "hashlib++ - a simple hash library for C++\nCopyright (c) 2007 Benjamin Grüdelbach  ",IDC_STATIC,7,148,151,20
+    LTEXT           "TinyXML",IDC_STATIC,7,175,149,13
+END
+
+IDD_FORMVIEW DIALOGEX 0, 0, 169, 200
+STYLE DS_SETFONT | DS_3DLOOK | DS_FIXEDSYS | DS_CENTER | DS_CENTERMOUSE | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+CAPTION "ET Server Viewer"
+MENU IDC_NODISKVIEWER
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    CONTROL         "",IDC_TAB1,"SysTabControl32",0x0,11,25,150,160
+END
+
+IDD_ADD_SERVER DIALOGEX 0, 0, 160, 67
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Add server"
+FONT 8, "MS Shell Dlg", 0, 0, 0x0
+BEGIN
+    LTEXT           "IP:Port",IDC_STATIC,7,16,27,8
+    DEFPUSHBUTTON   "OK",IDC_BUTTON_OK,27,42,50,16
+    PUSHBUTTON      "CANCEL",IDC_BUTTON_CANCEL,83,42,50,16
+    EDITTEXT        IDC_EDIT_IP,35,15,116,12,ES_AUTOHSCROLL
+END
+
+IDD_DLG_BUTTONS_SETTING DIALOGEX 0, 0, 186, 161
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Properties"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,31,140,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,89,140,50,14
+    EDITTEXT        IDC_EDIT1,48,36,84,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT2,48,52,84,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT3,48,68,84,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT4,48,84,84,14,ES_AUTOHSCROLL
+    LTEXT           "Task tray server ip address configuration.",IDC_STATIC,7,10,173,8
+    EDITTEXT        IDC_EDIT_PORT1,136,36,44,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PORT2,136,52,44,12,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PORT3,136,68,44,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PORT4,136,84,44,14,ES_AUTOHSCROLL
+    LTEXT           "IP",IDC_STATIC,79,25,8,8
+    LTEXT           "Port",IDC_STATIC,148,26,14,8
+    LTEXT           "Server 1",IDC_STATIC,4,36,40,8
+    LTEXT           "Server 2",IDC_STATIC,4,56,40,8
+    LTEXT           "Server 3",IDC_STATIC,4,72,40,8
+    LTEXT           "Server 4",IDC_STATIC,4,88,40,8
+END
+
+IDD_DLG_ADD_BUDDY DIALOGEX 0, 0, 157, 86
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add buddy"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,20,62,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,90,61,50,14
+    LTEXT           "Nickname",IDC_STATIC,20,15,31,8
+    EDITTEXT        IDC_EDIT_NICKNAME_FILTER,52,12,76,14,ES_AUTOHSCROLL
+    CONTROL         "Exact Match",IDC_CHECK_EXACT_MATCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,32,55,10
+    CONTROL         "Exact match with color codes",IDC_CHECK_NO_COLOR_MATCH,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,20,43,106,10
+END
+
+IDD_DLG_RCON DIALOGEX 0, 0, 366, 366
+STYLE DS_SETFONT | WS_CHILD | WS_SYSMENU
+FONT 8, "Terminal", 400, 0, 0xFF
+BEGIN
+    DEFPUSHBUTTON   "Send",IDOK,309,316,50,22
+    PUSHBUTTON      "Connect",ID_RCON_CONNECT,309,340,50,21
+    EDITTEXT        IDC_EDIT_CMD,7,319,299,15,ES_AUTOHSCROLL
+    LISTBOX         IDC_LIST_RCON,7,7,352,308,LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_TABSTOP
+    LTEXT           "cls - Clear Screen        config - Shows server configs\rkick <player name>        status - Shows players\rref - Show referee commands",IDC_STATIC_RCON_INFO,9,339,224,26
+    CONTROL         "Color filter",IDC_CHECK_COLFILTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,243,343,59,12
+END
+
+IDD_DLG_RCON_PASS DIALOGEX 0, 0, 187, 90
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "RCON password"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,31,62,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,98,62,50,14
+    LTEXT           "RCON Password:",IDC_STATIC,25,19,128,8
+    EDITTEXT        IDC_EDIT_PASSWORD,25,32,127,14,ES_PASSWORD | ES_AUTOHSCROLL
+END
+
+IDD_DLG_SETPRIVPASS DIALOGEX 0, 0, 186, 90
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Server Private Password"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,25,69,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,99,69,50,14
+    EDITTEXT        IDC_EDIT_PASS,35,41,112,14,ES_AUTOHSCROLL
+    LTEXT           "Set server private password:",IDC_STATIC,37,22,109,8
+END
+
+IDD_DLG_PROGRESS DIALOGEX 0, 0, 188, 58
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_POPUP | WS_BORDER
+EXSTYLE WS_EX_TOPMOST
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    LTEXT           "Connecting...",IDC_STATIC_TEXT,7,4,174,25
+    CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,39,174,12
+END
+
+IDD_DLG_MAXMIN_PLY DIALOGEX 0, 0, 186, 63
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Minimum & Maximum Players"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,25,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,99,42,50,14
+    EDITTEXT        IDC_EDIT_MINMAX,35,22,112,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Please enter a number (0 = ignore):",IDC_STATIC,7,7,172,8
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP_LOCK         BITMAP                  "res\\bitmap2.bmp"
+IDB_BITMAP_CONNECT      BITMAP                  "res\\bitmap_c.bmp"
+IDB_BITMAP_REFRESH_SMALL BITMAP                  "res\\bmp00002.bmp"
+IDB_BITMAP_STOP_SMALL   BITMAP                  "res\\bitmap_r.bmp"
+IDB_TOOLBAR_N           BITMAP                  "res\\bitmap1.bmp"
+IDB_TOOLBAR_D           BITMAP                  "res\\bitmap_disabled.bmp"
+IDB_TOOLBAR_H           BITMAP                  "res\\bitmap1_highlite.bmp"
+IDB_DOWNARROW           BITMAP                  "res\\downarrow.bmp"
+IDB_UPARROW             BITMAP                  "res\\uparrow.bmp"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        VERTGUIDE, 156
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 217
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE 
+BEGIN
+    "#ifndef APSTUDIO_INVOKED\r\n"
+    "#include ""targetver.h""\r\n"
+    "#endif\r\n"
+    "#define APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "#include ""windows.h""\r\n"
+    "#undef APSTUDIO_HIDDEN_SYMBOLS\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE 
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE 
+BEGIN
+    IDS_APP_TITLE           "GameScanner"
+    IDS_ADD_TO_FAVORITES    "Add server ip from the search to favorites."
+    IDS_FAST_CONNECT        "Quick connect to a server to ip address entered in the search field."
+    IDS_DOWNLOAD            "A new version is available for download!"
+    IDS_REFRESH_FILTER      "Update only filtered servers."
+    IDC_GAMESCANNER         "GAMESCANNER"
+END
+
+STRINGTABLE 
+BEGIN
+    IDS_OPTIONS             "Options"
+    IDS_REFRESH             "Download new servers and update all servers."
+    IDS_SEARCH              "Find server from the active serverlist"
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// Swedish resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_SVE)
+#ifdef _WIN32
+LANGUAGE LANG_SWEDISH, SUBLANG_DEFAULT
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDI_ICON_USERS          ICON                    "res\\icon7.ico"
+IDI_ICON_STATS          ICON                    "res\\ico00001.ico"
+IDI_ICON_PAINT          ICON                    "res\\icon_sta.ico"
+IDI_ICON_LOGGER         ICON                    "res\\ico00002.ico"
+IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
+IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
+IDI_ICON_QUAKE1         ICON                    "res\\icon4.ico"
+IDI_ICON_QUAKE2         ICON                    "res\\icon8.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_STATS DIALOGEX 0, 0, 316, 184
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO 
+BEGIN
+    IDD_DIALOG_STATS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 309
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 177
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+#endif    // Swedish resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

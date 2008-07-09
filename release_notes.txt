@@ -1,0 +1,325 @@
+First Beta version of Game Scanner.
+
+An proper installer will be made later on.
+
+! No backward compatible with ETSV!
+
+
+version 1.0 beta
+----------------
+Renamed ETSV to GameScanner and new version.
+Source code available as Open Source from Sourceforge.
+
+New Features:
+You can now set which columns to be visible in the main server list.
+Integrated RCON window into the new Tabview
+Added a easy access logger from the TabView.
+Added ICMP Ping statistics into the new Tabview.
+
+changes:
+New flexible/portable serverlist save files.
+Buddylist saves now as a xml file.
+
+Other:
+Code clean up and minor changes/improvments.
+
+
+
+
+version 5.55
+------------
+New features:
+* Added some initial support for half life 1 & 2 games, current support for Counter Strike (including Condition Zero and Source) series.
+
+Changes:
+* Minor changes to defualt settings.
+
+
+version 5.54
+------------
+New features:
+* Added into menu when right clicking on a game in the treeview a new option appears to launch the game only.
+* Added new country flags, including filter options.
+* Added new option to show short country names instead of the full name.
+* Added new configuration to speed up scanning, new settings is Socket timeout and maximum threads, see FAQ for more details.
+
+Changes:
+* Improved searching, when typingin the search field it will filter the main serverlist insted of using combobox list.
+  This includes pasting into the search field. Note it will not remember the filter when initiaing a scan, this might be changed in the future.
+* Improvements of RCON code has been done, faster response from servers after a command has been send and changes of command back log done.
+* More countries added to filter and country filter code modified for better future modification.
+* When selecting child nodes of countries in the filter treeview gives better visibility up to the root level (displays a grayed checkbox).
+* Optimized ip to country lookup table.
+ 
+
+
+Bugs:
+* Treeview list will be updated properly now on Vista machines. NOTE: this will drop states (checked) in the filterlist.
+  This bug/vista feature didn't save the treeview states.
+* Fixed so ETSV looks ok when using non-themed Windows (applies to both XP & Vista).
+* Bug fix of potential memory leak when parsing Q3 engine server rules.
+* Fixed that CoD4 master server response packets is readed (from a maximum of 4500 servers to a new 13000+ servers)
+
+
+
+
+
+version 5.52
+------------
+* Fixed access violation bug when selecting a buddy.
+* Done some renaming of the gametypes for CoD4.
+* Added Paste support in the combobox field.
+* Added support for updating treeview structure - old filters settings will be discared.
+
+
+version 5.51
+------------
+* Fixed ETQW serverlist download bug.
+* Added support for autoupdate.
+* Fixed that filters saves and loads correctly.
+* Bug fixed and added new MOD filters for ETQW (baseETQW, ETQWPro & Wheels of War).
+* Added Team names for ET (Axis, Allies, Connecting and Spectator) using the P var.
+* Added sorting icons in the server list and saving the different states.
+* Fixed a gametype (WAR) bug in CoD4 
+* Added new gametypes for CoD4 - Zom & Domination.
+
++minor bug fixes
+
+version 5.42 beta
+-----------------
+* Support for multiple accounts in Windows (each user will have they own settings and serverlist's).
+* Tooltip added for seond toolbar button (Refresh Filtered list)
+* Added more filters to CoD 2 & 4, Q3 and Q4, RTCW.
+* Fixed RCON bug, didn't connect properly.
+* Right click on the server to only launch the game without connecting to it.
+* Minor cosmetical improvements of the Player bar in the serverlist.
+* Decreased number of simultaneous theads from 64 to 32, hopefully next release will have this option as a configuration.
+* Fixed a bug when parsing players from Quake 4, still not 100% but I'm to lazy to fix it for now.
+* Added a few new Countries into filter settings.
+* Changed recieve packets function - now it should work fine again in Linux Wine. 
+
+version 5.41 beta
+-----------------
+* Fixed number of current players bug when scanning first time a new ETQW server.
+* Fixed buddy online ipaddress now includes server port.
+* Fixed that Q3 (including ET) servertypes now shows correctly full servers.
+* Fixed after rescanning filtered so the serverlist display's correct.
+* Improvments done with the filtered scan when servers is known as empty, full or 9999 ping they are now inlcuded in scan.
+* After a server search and selected from the combolist, playerlist, var list and map preview is updated.
+* Cosmetical fixes with toolbar so it looks good in Vista.
+* Fixed when a Favorite is has reached above purge counter doesn't show in the list.
+* Added a new filter setting to allow min/max number of players to show a server.
+* No need for Vista administration privilege to run ETSV. (Note the save path has been changed)
+* Fixed maximize bug on ETSV when a game is minimized.  
+* FIxed some country filter bugs that didn't filter properly.
+  Czech, Slovenia, Lithuania, Bulgaria
+
+* Rewritten the treeview panel for better flexibility in filtering process etc. NOTE: Previously saved filtering options will be lost.
+* Added support for ETQW version 1.4 and 1.5
+* Updated Warsow default protocol number to 10 to support ver 0.40.
+* Updated country database.
+
+2007-11-23 version 5.35
+-----------------------
+* Increased purge server counter to 5 (after 5 timeouts the server will be deleted except for Favorites).
+* New Gametype added for ET (ETPub Map vote).
+* Splitted Favs into sections one for Public servers and one for Privates.
+* Added new server scan options, now it is possible to scan filtered only.
+* Added shortcut to ping & trace route network tools (right click on a server and get access from it from there).
+* Added info tip at the columns.
+* Added Buddies servername with a game icon when a buddy is online - now you can see which game they are playing.
+* Added autodetection of CoD 4 game path.
+
+
+2007-11-14 version 5.30
+-----------------------
+* Added support for Call of Duty 4.
+* Fixed a potential crash bug when a Q4/ETQW server response with a Disconnect message.
+* Added ability to stop scanning.
+* Fixed another potential crash when minimizing and restoring to quickly.
+* Minor cosmetical changes.
+* Added new filter options for CoD series.
+* Updated IP to Country database.
+
+
+2007-10-31 version 5.24
+-----------------------
+* Auto update changed to only redirect to the website for manual download.
+* Auto detecting ETQW final game path fixed.
+* Initial mIRC support.
+* Added support for ETQW version 1.2
+* Changed ETQW Area 22 map filename so it appears on map preview.
+
+
+2007-10-04 version 5.23
+-----------------------
+
+
+Added/changed features:
+* Updated default serverlist for ETQW so it reflects to the final game serverlist.
+  if have updated the ETSV from ETSV itself then you will have to change this value manually due to this setting
+  is saved into the config.xml file.
+* Added Warsow windowname for minimizing (default minimze keys is ALT+Z).
+* Full map preview added into ETQW map folder (preview maps will only be available from a new full install).
+  See FAQ for adding custom maps into ETSV.
+
+Bug fixes:
+* Gametype Duel now shows correct for Warsow
+* Added Gametype for CoD and CoD2.
+* Default settings in config now works as expected.
+
+
+
+Known issue:
+* For ETQW server the Gametype name will lost the first char, do a rescan it will show correct gametype (sorry for this). 
+* Changing filter setting during list update may not always reflect to filter option, 
+resolutions for now is to check or uncheck the filter again so it updates list again.
+This is common for large number of servers.
+
+
+2007-09-15 version 5.20
+-----------------------
+
+Bug fixes:
+* Resizes the toolbar.
+* By pressing Search button then ETSV could crash.
+* Initial Vista support, no seperate exe file is needed.
+* Fixed when adding a buddy during scanning servers could cause a crash.
+* Fixed a bug when selecting a online buddy not updating playerlist & ruleslist.
+* Gametype filter now correctly filters including countries.
+
+Other improvments:
+* Search icon shows/hides dynamicly depending if any text is available in the combobox.
+* Updates buddylist in realtime during scanning.
+* Color filtering the Buddyname when online ballontip shows.
+* Servers that is not updated is now grayed in the serverlist.
+* Updated ip country database.
+* New supported games added CoD, CoD2 and Warsow (including maps).
+* New gametypes added (CA, Duel & Team Deathmatch).
+
+
+
+Known issues:
+* Changing filter setting during list update may not always reflect to filter option, 
+resolutions for now is to check or uncheck the filter again so it updates list again.
+This is common for large number of servers.
+
+
+
+
+2007-09-10 version 5.1
+---------------------
+New features
+* Support for using keyboard movment in the serverlist, it will now update player and rules list when moving the selection row.
+* New filter added "No Bots" applies only for ETQW servers.
+* Fixed so Ranked server filter only applies to ETQW serverlist.
+* Added ranked icon into the serverlist.
+* 3 new columns added into the serverlist: Punkbuster, Private server, Ranked. Which now can be sorted.
+* Improvements when adding already exsisted server IP from combobox it will be set aas favorite.
+* Fixed gametype filtering... this will be on-going improvments to support all games better.
+* Automatic updater, hopefully this means that you don't have uninstall and then install the new version. 
+* Player column also now shows number of bots (applies to ETQW only), this may change in a future release.
+
+  Example for the Player column:
+  10/24+(4)+Bots[3] 
+
+  Description:
+  10 = total number of players including bots
+  24 = max players (usually excluding private slots)
+  (4) = number of private slots
+  [3] = number of bots 
+  So basicly in example this means there are 7 human players and 3 bots on the server.
+
+
+
+Other Improvements
+* Now Favorite (star) button also works to set a selected server to Favorite. To remove a favorite right click on the server then choose "Remove server from favorites".
+* Changed registry run keys from HKLM to HKCU for future compatibility.
+* Added more logging during start up, this is to help Vista debugging.
+* When adding a favorite IP address from treeview it now redraws the list.
+* Exe path autodetection for ETQW has been changed to work for demo version.
+
+Known issues
+* Doens't run under Vista. (I will install vista and then do some debugging to see what's needs to be fixed).
+
+Notes
+* Ranked servers seems to be disabled on ETQW demo.
+
+
+2007 version 5.0 public
+-----------------------
+
+Released version.
+
+
+
+2007-08-31 version 5.0 beta 5
+-----------------------------
+* Clean up the menu items
+* Remove gripper bar
+* Improved resize
+* Only checks which country the ip belogs to when it is unknown. Which in result reduce CPU usage 
+when scanning again.
+* Removed password field... up on connection ETSV will ask for password if the server requires it.
+* Removed Configuration Apply button, now saves when you click on OK.
+* Fixed some potential crashes.
+
+
+2007-08-29 Version 5.0 beta 4
+-----------------------------
+* Fixed so it saves servers when minimizing.
+* Fixed Buddy list, adds name playerlist with the color encoding.
+* Clicking on a Online buddies now shows server player list and rules.
+* Some modification and improvement of resizing... still some work to do.
+
+
+Known issues
+------------
+* Filtering from favorites & History takes you back to internet server list.
+
+
+2007-08-28 Version 5.0 beta 3
+-----------------------------
+* Better response on country filter changes...
+* Unknown filter now implemented.
+* Autostart default set to false.
+* Will now open as windowed mode as default without the command line /tasktray.
+* Some cosmetical changes.
+* Modification to how the filter function.
+* Added new filter Only Private servers.
+* Configuration screens is now fixed.
+* etc...
+
+Known issues
+------------
+* Views is broken.
+
+
+
+Version 5.0 beta 2
+--------------
+* Quake 3 icon added
+* 1024/800 screen width optimization
+  - Reduced size of the map preview.
+  - Rearrangment of windows buddylist, server vars.
+* fixed a bug with launching etqw:// et:// URL's from splatterladder.com or qwtracker.com now it works!
+* mapname trimming (ie. ETQW maps such as "maps/valley.entity" = will only show as "valley").
+* Adjusted max threads to 125 and added sleep to minimize CPU usage during scanning.
+* Tooltip added
+* Removed quick RCON & PASSWORD input fields.
+* Initial RCON support for Q4 engines not 100% tested thou.
+* Fixed a bug with sorting players/XP/ping.
+* Some changes with filter settings.
+* Fixed a bug when clicking twice on the same server a hour glass popup and never dissapeared until you clicked on next server.
+* Removed automatic rescan when clicking on Internet Server, instead use Refresh button or right click and then Find Internet Servers.
+
+
+Version 5.0 beta 1
+------------------
+Initial version....
+
+* Support for RTCW & Quake 3
+* Support Quake 4 and ETQW
+
+Totally rewritten code.
+

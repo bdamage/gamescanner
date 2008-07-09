@@ -1,0 +1,76 @@
+Compiling
+---------
+
+Visual Studio 2008 has been used but should compile fine on VS2005 also.
+
+
+After a compilation you need the files inside the redist folder.
+You can copy them to Release or/and Debug folder.
+
+
+Directories global vars
+-----------------------
+
+EXE_PATH - 
+
+Contains executable path. NO data should be written into this path, as this fucks up Vista instead 
+use SAVE_PATH.
+
+Currently EXE, DLL and screenshot preview is read from this dir.
+
+
+
+
+SAVE_PATH - 
+
+Following command is used to retrieve the path: SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,SAVE_PATH);
+
+Files that should be stored into this path is:
+log.htm (logging inforamtion)
+config.xml
+treeview.xml
+*.servers     - saved server informaiton
+ipcountry.dat - Country database (created with the gamescanner.exe file itself, it is a "simplifed" structure based file instead of an CSV file)
+
+
+
+net.jpg??
+
+
+
+
+Typical path under Vista:
+
+C:\Users\UserName\AppData\Roaming\ETSV
+
+
+
+TreeView XML layout:
+
+
+game="2"     - Game index (points to ET, ETQW, Q3...COD etc)
+value="0"    - Can be any kind of value for ie. Filter servers with lower Ping than 100
+icon="74"    - Icon index 
+expanded="0" - The node/item has childs member, this will remember if the user has expanded the node on the next start of ETSV.
+type="2"     - If type is 28 then it is Global Ping item
+state="0"    - State of the item if it is Checked or Unchecked.
+
+action="1"  - If action is 1 then redraw list based on current game="?" index.  
+	      If action is 8 then a GLobal filter Edit (ie Ping).
+	      If action is 10 then it is a country item.
+
+
+<Item name="Quake 3: Arena" value="0" icon="74" expanded="0" type="2" state="0" game="2" action="1">
+
+
+XML tree logic is following when a user interaction has occured:
+1. user clicks on an item function TreeView_GetSelectionV3 () is called
+2. item is looked up and checks which ACTION value it has 
+Typical ACTION could be:
+ (a) redraw a serverlist and exit function (TreeView_GetSelectionV3 ).
+ (b) filter modification for a game, see step 3
+ (c) global filter setting changes, see step 4
+
+3. depending on ACTION value then next function is called
+4. and here is TYPE looked up depending of type value a filter change is being processed.
+
