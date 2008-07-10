@@ -21,6 +21,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_167E44C59FFF982976942A483F43A0B4"
+        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_1D11B4393D614693B50E6333F6ABC49B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -45,13 +51,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_55C724D3B77F81260FF70241F84A2087"
+        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5D2E6BB9B22ADE100E6545A405D88A30"
         "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_80AB4D7D7491D1CC22B6A804395C91F2"
+        "MsmKey" = "8:_716AFBB6916D414E85E074D8CDEB8394"
         "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -69,20 +81,14 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_B5E8B16BDFCD4627406E06911B87499B"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_C00149A8189DBD5FB550237E8B79EBA7"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_D9E331F142835F002B74AAD403E3BD57"
         "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DD7A58B8F4EB4CBEB963841D9E2A0DFA"
+        "OwnerKey" = "8:_716AFBB6916D414E85E074D8CDEB8394"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -103,6 +109,27 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5"
+                    {
+                    "Name" = "8:.NET Framework 3.5"
+                    "ProductCode" = "8:Microsoft.Net.Framework.3.5"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
+            }
         }
         "Release"
         {
@@ -119,6 +146,14 @@
         "PrivateKeyFile" = "8:"
         "TimeStampServer" = "8:"
         "InstallerBootstrapper" = "3:2"
+            "BootstrapperCfg:{63ACBE69-63AA-4F98-B2B6-99F9E24495F2}"
+            {
+            "Enabled" = "11:TRUE"
+            "PromptEnabled" = "11:TRUE"
+            "PrerequisitesLocation" = "2:1"
+            "Url" = "8:"
+            "ComponentsUrl" = "8:"
+            }
         }
     }
     "Deployable"
@@ -158,6 +193,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_167E44C59FFF982976942A483F43A0B4"
+            {
+            "SourcePath" = "8:IPtoCountry.dll"
+            "TargetName" = "8:IPtoCountry.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1D11B4393D614693B50E6333F6ABC49B"
@@ -240,6 +295,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_55C724D3B77F81260FF70241F84A2087"
+            {
+            "SourcePath" = "8:HttpFileDownload.dll"
+            "TargetName" = "8:HttpFileDownload.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5D2E6BB9B22ADE100E6545A405D88A30"
             {
             "SourcePath" = "8:UxTheme.dll"
@@ -257,26 +332,6 @@
             "PackageAs" = "3:1"
             "Register" = "3:4"
             "Exclude" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_80AB4D7D7491D1CC22B6A804395C91F2"
-            {
-            "SourcePath" = "8:IPtoCountry.dll"
-            "TargetName" = "8:IPtoCountry.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
@@ -298,46 +353,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B5E8B16BDFCD4627406E06911B87499B"
-            {
-            "SourcePath" = "8:FreeImage.dll"
-            "TargetName" = "8:FreeImage.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C00149A8189DBD5FB550237E8B79EBA7"
-            {
-            "SourcePath" = "8:HttpFileDownload.dll"
-            "TargetName" = "8:HttpFileDownload.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9E331F142835F002B74AAD403E3BD57"
@@ -428,7 +443,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
         "ProductCode" = "8:{C9C6D743-D7CF-46FD-9366-255F9DFD8442}"
-        "PackageCode" = "8:{AFCD4A41-5F06-492F-B0B0-AC9DA16CF347}"
+        "PackageCode" = "8:{B93D8A00-D9B6-4F82-926B-008786E44919}"
         "UpgradeCode" = "8:{1E1FC67E-A466-4A1F-A278-286B6905C57B}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -437,13 +452,13 @@
         "ProductVersion" = "8:1.0.0"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:www.bdamage.se"
+        "ARPHELPLINK" = "8:"
         "Title" = "8:Game Scanner Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:bDamage"
         "Keywords" = "8:"
         "ARPCOMMENTS" = "8:"
-        "ARPURLINFOABOUT" = "8:www.bdamage.se"
+        "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
         "SearchPath" = "8:"
@@ -957,6 +972,34 @@
         }
         "MergeModule"
         {
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_716AFBB6916D414E85E074D8CDEB8394"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:policy_9_0_Microsoft_VC90_DebugCRT_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_DD7A58B8F4EB4CBEB963841D9E2A0DFA"
+            {
+            "UseDynamicProperties" = "11:TRUE"
+            "IsDependency" = "11:TRUE"
+            "SourcePath" = "8:microsoft_vc90_debugcrt_x86.msm"
+                "Properties"
+                {
+                }
+            "LanguageId" = "3:0"
+            "Exclude" = "11:FALSE"
+            "Folder" = "8:"
+            "Feature" = "8:"
+            "IsolateTo" = "8:"
+            }
         }
         "ProjectOutput"
         {

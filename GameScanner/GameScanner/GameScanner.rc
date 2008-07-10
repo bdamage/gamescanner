@@ -49,7 +49,6 @@ IDI_ICON_QUAKE          ICON                    "res\\quake16x16.ico"
 IDI_ICON_ETQW           ICON                    "res\\etqw.ico"
 IDI_ICON_LAN            ICON                    "res\\group.ico"
 IDI_ICON_GLOBE          ICON                    "res\\globe.ico"
-IDI_ICON_APP_LOGO       ICON                    "res\\znarc.ico"
 IDI_ICON_FILTER         ICON                    "res\\pixel-install.ico"
 IDI_ICON_CHECKBOX       ICON                    "res\\checkbox.ico"
 IDI_ICON_CHECKEDBOX     ICON                    "res\\checkedbox.ico"
@@ -69,7 +68,7 @@ IDI_ICON_CS             ICON                    "res\\cstrike.ico"
 IDI_ICON_VAC            ICON                    "res\\vac.ico"
 IDI_ICON_CSS            ICON                    "res\\css.ico"
 IDI_ICON_RCON           ICON                    "res\\icon_loc.ico"
-IDI_ICON_APP_LOGO1      ICON                    "res\\icon_app.ico"
+IDI_ICON_APP_LOGO       ICON                    "res\\icon_app.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -498,6 +497,9 @@ IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
 IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
 IDI_ICON_QUAKE1         ICON                    "res\\icon4.ico"
 IDI_ICON_QUAKE2         ICON                    "res\\icon8.ico"
+IDI_ICON8               ICON                    "C:\\Users\\Kjell\\Pictures\\GSOrg32.ico"
+IDI_ICON4               ICON                    "C:\\Users\\Kjell\\Pictures\\GSPlusOrg16.ico"
+IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

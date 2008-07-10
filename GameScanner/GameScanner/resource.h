@@ -68,7 +68,6 @@
 #define IDI_ICON_ETQW                   217
 #define IDI_ICON_LAN                    229
 #define IDI_ICON_GLOBE                  231
-#define IDI_ICON_APP_LOGO               232
 #define IDI_ICON_FILTER                 233
 #define IDI_ICON_CHECKBOX               235
 #define IDI_ICON_CHECKEDBOX             236
@@ -236,9 +235,13 @@
 #define IDI_ICON7                       1090
 #define IDI_ICON_RULES                  1090
 #define IDI_ICON_APP_LOGO1              1091
+#define IDI_ICON_APP_LOGO               1091
 #define IDI_ICONQUAKE2                  1093
 #define IDI_ICON_QUAKE2                 1093
 #define IDI_ICON_QUAKE1                 1094
+#define IDI_ICON8                       1096
+#define IDI_ICON4                       1097
+#define IDI_ICON_TASKTRAY               1098
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -321,7 +324,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1095
+#define _APS_NEXT_RESOURCE_VALUE        1099
 #define _APS_NEXT_COMMAND_VALUE         32777
 #define _APS_NEXT_CONTROL_VALUE         1003
 #define _APS_NEXT_SYMED_VALUE           110

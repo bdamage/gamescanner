@@ -8036,8 +8036,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	LoadString(hInstance, IDC_GAMESCANNER, szWindowClass, MAX_LOADSTRING);
 
 
-	hOfflineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_APP_LOGO)); 
-	hOnlineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_APP_LOGO1)); 
+	hOfflineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_GAMESCANNER)); //ICON_APP_LOGO)); 
+	hOnlineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_TASKTRAY)); 
 
 
 	//GetCurrentDirectory(512,EXE_PATH);

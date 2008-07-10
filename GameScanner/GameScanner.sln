@@ -62,7 +62,6 @@ Global
 		{5FCB0F58-ED06-4579-BF5A-344DD9C3A9E4}.Debug|Win32.ActiveCfg = Debug
 		{5FCB0F58-ED06-4579-BF5A-344DD9C3A9E4}.Debug|x64.ActiveCfg = Debug
 		{5FCB0F58-ED06-4579-BF5A-344DD9C3A9E4}.Release|Win32.ActiveCfg = Release
-		{5FCB0F58-ED06-4579-BF5A-344DD9C3A9E4}.Release|Win32.Build.0 = Release
 		{5FCB0F58-ED06-4579-BF5A-344DD9C3A9E4}.Release|x64.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
