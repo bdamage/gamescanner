@@ -898,6 +898,25 @@ _GAMETYPENAME GTCOD4[16] = {
    14,"Unknown",GAMETYPE_UNKNOWN,
 };
 
+_GAMETYPENAME GTCOD4_FULLNAME[16] = {
+	0,"Unknown",GAMETYPE_FFA,
+	1,"Head Quarters",GAMETYPE_HQ,
+	2,"Domination",GAMETYPE_DOM,//Domination
+	3,"Team Deathmatch",GAMETYPE_TDM,
+	4,"Deathmatch",GAMETYPE_DM,
+	5,"Search & Destroy",GAMETYPE_SD,//Search & Destroy
+	6,"Sabotage",GAMETYPE_SAB, //Sabotage
+	7,"Zombie",GAMETYPE_ZOM, //Zombie mod
+	8,"Unknown",GAMETYPE_UNKNOWN,  
+	9,"Unknown",GAMETYPE_UNKNOWN,
+   10,"Unknown",GAMETYPE_UNKNOWN,
+   11,"Unknown",GAMETYPE_UNKNOWN,
+   12,"Unknown",GAMETYPE_UNKNOWN, 
+   13,"Unknown",GAMETYPE_UNKNOWN,
+   14,"Unknown",GAMETYPE_UNKNOWN,
+};
+
+
 _GAMETYPENAME ModCOD4[16] = {
 	0,"Call of Duty 4",MOD_COD4_MAIN,
 	1,"mods/zombie",MOD_COD4_ZOMBIE,
@@ -916,8 +935,30 @@ _GAMETYPENAME ModCOD4[16] = {
    14,"Unknown",GAMETYPE_UNKNOWN,
 };
 
+
+_GAMETYPENAME VersionET[16] = {
+	0,"???",VER_ET_UNKNOWN,
+	1,"2.55",VER_ET_255,
+	2,"2.60 ",VER_ET_260,
+	3,"2.60b",VER_ET_260B,
+	4,"ETTV",8,
+	5,NULL,VERSION_UNKNOWN,
+};
+_GAMETYPENAME VersionCoD4[16] = {
+	0,"???",VERSION_UNKNOWN,
+	1,"1.0",1,
+	2,"1.1",2,
+	3,"1.2",4,
+	4,"1.3",8,
+	5,"1.4",16,
+	6,"1.5",32,
+	7,"1.6",64,
+	8,"1.7",128,
+	9,NULL,VERSION_UNKNOWN, 
+};
+
 //This returns a known ETSV GameType (needs to be done for filter purpose).
-WORD Get_ETSV_GameTypeByGameType(int gametype, WORD szGameOldType)
+WORD Get_GameTypeByGameType(int gametype, WORD szGameOldType)
 {
 	switch(gametype)
 	{
@@ -934,7 +975,7 @@ WORD Get_ETSV_GameTypeByGameType(int gametype, WORD szGameOldType)
 	return GAMETYPE_UNKNOWN;
 }
 
-WORD Get_ETSV_GameTypeByName(int gametype, char *szGameType)
+WORD Get_GameTypeByName(int gametype, char *szGameType)
 {
 	_GAMETYPENAME *pGTN;
 
@@ -956,6 +997,8 @@ WORD Get_ETSV_GameTypeByName(int gametype, char *szGameType)
 			default:
 				return GAMETYPE_UNKNOWN;
 		}
+		if(pGTN==NULL)
+			break;
 		if(strcmp(szGameType,pGTN->szName)==0)
 			return pGTN->cETSVGAMETYPE;
 		
@@ -964,7 +1007,7 @@ WORD Get_ETSV_GameTypeByName(int gametype, char *szGameType)
 	return GAMETYPE_UNKNOWN;
 }
 
-WORD Get_ETSV_ModByName(int gametype, char *szModName)
+WORD Get_ModByName(int gametype, char *szModName)
 {
 	_GAMETYPENAME *pGTN;
 
@@ -976,16 +1019,13 @@ WORD Get_ETSV_ModByName(int gametype, char *szModName)
 		switch(gametype)
 		{
 			case COD4_SERVERLIST: 	 pGTN = &ModCOD4[i]; break;
-		//	case COD_SERVERLIST: 
-		//	case COD2_SERVERLIST: pGTN = &GTCOD2[i]; break;
-		//	case WARSOW_SERVERLIST: pGTN = &GTWARSOW[i]; break;
-		//	case Q3_SERVERLIST: pGTN = &GTQ3[i]; break;
-		//	case Q4_SERVERLIST: pGTN = &GTQ4[i]; break;
 			case ET_SERVERLIST: pGTN = &ModET[i]; break;
 			case ETQW_SERVERLIST: pGTN = &ModETQW[i]; break;
 			default:
 				return GAMETYPE_UNKNOWN;
 		}
+		if(pGTN==NULL)
+			break;
 		if(strstr(szModName,pGTN->szName)!=NULL)
 			return pGTN->cETSVGAMETYPE;
 		
@@ -994,7 +1034,34 @@ WORD Get_ETSV_ModByName(int gametype, char *szModName)
 	return GAMETYPE_UNKNOWN;
 }
 
-char * Get_ETSV_GameTypeNameByGameType(int gametype, WORD cGameType)
+DWORD Get_FilterVersionByVersionString(int gametype, char *szVersion)
+{
+	_GAMETYPENAME *pGTN;
+
+	if(szVersion==NULL)
+		return VERSION_UNKNOWN;
+
+	for(int i=0;i<14;i++)
+	{
+		switch(gametype)
+		{
+			case COD4_SERVERLIST: 	 pGTN = &VersionCoD4[i]; break;
+			case ET_SERVERLIST: pGTN = &VersionET[i]; break;
+			//case ETQW_SERVERLIST: pGTN = &ModETQW[i]; break;
+			default:
+				return VERSION_UNKNOWN;
+		}
+		if(pGTN==NULL)
+			break;
+		if(strstr(szVersion,pGTN->szName)!=NULL)
+			return pGTN->cETSVGAMETYPE;
+		
+	}
+
+	return VERSION_UNKNOWN;
+}
+
+char * Get_GameTypeNameByGameType(int gametype, WORD cGameType)
 {
 	_GAMETYPENAME *pGTN;
 
@@ -1002,7 +1069,7 @@ char * Get_ETSV_GameTypeNameByGameType(int gametype, WORD cGameType)
 	{
 		switch(gametype)
 		{
-			case COD4_SERVERLIST: pGTN = &GTCOD4[i]; break;
+			case COD4_SERVERLIST: pGTN = &GTCOD4_FULLNAME[i]; break;
 			case COD_SERVERLIST: 
 			case COD2_SERVERLIST: pGTN = &GTCOD2[i]; break;
 			case WARSOW_SERVERLIST: pGTN = &GTWARSOW[i]; break;
@@ -1013,6 +1080,8 @@ char * Get_ETSV_GameTypeNameByGameType(int gametype, WORD cGameType)
 			default:
 				return szGAMETYPEUNKOWN;
 		}
+		if(pGTN==NULL)
+			break;
 		if(cGameType == pGTN->cETSVGAMETYPE)
 			return pGTN->szName;		
 	}

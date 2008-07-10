@@ -170,9 +170,9 @@ _WINDOW_CONTAINER WNDCONT[10];
 #pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ ) 
 
 #ifndef _DEBUG
-TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " beta ";
+TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " beta 2 ";
 #else
-TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " Compiled on " __DATE__ " at "__TIME__;
+TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " beta 2 Compiled on " __DATE__ " at "__TIME__;
 #endif
 
 
@@ -1195,7 +1195,7 @@ BOOL OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				case COL_GAMETYPE:
 					{
 						if(strlen(pSrvInf->szGameTypeName)==0)	
-							strncpy(pLVItem->pszText,Get_ETSV_GameTypeNameByGameType(pSrvInf->cGAMETYPE,pSrvInf->cGameTypeCVAR),pLVItem->cchTextMax);
+							strncpy(pLVItem->pszText,Get_GameTypeNameByGameType(pSrvInf->cGAMETYPE,pSrvInf->cGameTypeCVAR),pLVItem->cchTextMax);
 						else
 							strncpy(pLVItem->pszText,pSrvInf->szGameTypeName,pLVItem->cchTextMax);
 						return TRUE;
@@ -2185,6 +2185,10 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 			return   	vTI.at(idx).dwState = TreeView_SwapDWCheckStateOR(tvi,ti, &GI[ti.cGAMETYPE].filter.dwMod); break;
 		case FILTER_GAMETYPE:
 				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMETYPE].filter.dwGameTypeFilter); break;
+		case FILTER_VERSION:
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMETYPE].filter.dwVersion); break;
+		case FILTER_MAP:
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMETYPE].filter.dwMap); break;
 		case 0: break;
 		default: return 0;
 	}	
@@ -4107,7 +4111,7 @@ void SaveServerList(GAME_INFO *pGI)
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d",sep,pSI.wMod,sep,pSI.dwIP);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
-					sprintf_s(szBuffer,sizeof(szBuffer),"%c\"%s\"%c%d\n",sep,pSI.szCountry,sep,pSI.cVersion);
+					sprintf_s(szBuffer,sizeof(szBuffer),"%c\"%s\"%c%d\n",sep,pSI.szCountry,sep,pSI.dwVersion);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 				}
 			}
@@ -4260,7 +4264,7 @@ void LoadServerListV2(GAME_INFO *pGI)
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
 						if(szByte!=NULL)
-							srv.cVersion = (char)atol(szByte); 
+							srv.dwVersion = (char)atol(szByte); 
 
 						srv.dwIndex = idx++;
 
@@ -5187,7 +5191,7 @@ void Initialize_WindowSizes()
 	SetRect(&WNDCONT[WIN_MAPPREVIEW].rSize,offSetX,offSetY,rc.right*0.2,rc.bottom*0.4);
 	SplitterGripArea[2].tvYPos = offSetY ;
 
-	SetRect(&WNDCONT[WIN_STATUS].rSize,25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
+	SetRect(&WNDCONT[WIN_STATUS].rSize,25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE+2,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
 	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,WNDCONT[WIN_STATUS].rSize.right+25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE,rc.right*0.4,STATUSBAR_Y_OFFSET);
 }
 
@@ -5243,7 +5247,7 @@ void Update_WindowSizes()
 
 	SetRect(&WNDCONT[WIN_MAPPREVIEW].rSize,MapPreviewoffSetX,offSetY,offSetMapX,(rc.bottom-offSetY2)-TABSIZE_Y);
 	
-	SetRect(&WNDCONT[WIN_STATUS].rSize,25,WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
+	SetRect(&WNDCONT[WIN_STATUS].rSize,25,WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom+2,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
 	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,WNDCONT[WIN_STATUS].rSize.right+25,WNDCONT[WIN_STATUS].rSize.top,rc.right*0.4,STATUSBAR_Y_OFFSET);
 
 	
@@ -5994,7 +5998,29 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 		if(returnVal==false)
 			return false;
 	}
+	if(pGI->filter.dwVersion>0)
+	{
+		returnVal=false;
+		DWORD val = 1;
+		for(int i=0;i<8;i++)
+		{
+			if(pGI->filter.dwVersion & val)
+			{
+				DWORD result = (srv->dwVersion & val);
+		
+				if(result) 
+				{
+					returnVal=true;
+					break;
+				}
+			}
+			
+			val=val*2;
+		}
 
+		if(returnVal==false)
+			return false;
+	}
 		returnVal=false;
 
 	//	if(AppCFG.bUseCountryFilter)

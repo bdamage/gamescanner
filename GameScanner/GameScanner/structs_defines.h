@@ -111,14 +111,16 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FILTER_OFFLINE		16  //Offline
 #define FILTER_FAVORITERS		32  //Favorites
 #define FILTER_BOTS				64  //Bots
-#define FILTER_HIDE_PRIVATE	 128  
-#define FILTER_MOD			24
-#define FILTER_GAMETYPE		25
-#define FILTER_PURE			26
-#define FILTER_RANKED		27
-#define FILTER_PING		28
-#define FILTER_MIN_PLY		100
-#define FILTER_MAX_PLY		101
+#define FILTER_HIDE_PRIVATE		128  
+#define FILTER_MOD				24
+#define FILTER_GAMETYPE			25
+#define FILTER_PURE				26
+#define FILTER_RANKED			27
+#define FILTER_PING				28
+#define FILTER_VERSION			29
+#define FILTER_MAP				30
+#define FILTER_MIN_PLY			100
+#define FILTER_MAX_PLY			101
 
 
 #define FILTER_2	   256	
@@ -152,6 +154,12 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define MOD_COD4_PAM		 4  
 #define MOD_COD4_WARFARE	 8 
 #define MOD_COD4_AWE		 16
+
+#define VERSION_UNKNOWN      0
+#define VER_ET_UNKNOWN		 0
+#define VER_ET_255			 1  
+#define VER_ET_260			 2  
+#define VER_ET_260B			 4  
 
 
 #define GAMETYPE_UNKNOWN	 0
@@ -251,6 +259,8 @@ struct FILTER_SETTINGS
 	DWORD dwMod;
 	DWORD dwShowServerWithMaxPlayers;
 	DWORD dwShowServerWithMinPlayers;
+	DWORD dwVersion;
+	DWORD dwMap;
 	char cActiveMaxPlayer;
 	char cActiveMinPlayer;
 };
@@ -358,11 +368,11 @@ struct SERVER_INFO
 	int nMaxPlayers;	
 	char szCountry[MAX_COUNTRYNAME_LEN];
 	char szMod[MAX_MODNAME_LEN];
-	WORD wMod;
+	WORD wMod;						//Used for faster filtering
 	char szVersion[MAX_VERSION_LEN];
+	DWORD dwVersion;                  //Used for faster filtering
 	DWORD dwPing;
-	DWORD dwAvgPing;
-	char cVersion;  //Game version... 2.55 2.60...
+	DWORD dwAvgPing;	
 	char bPrivate;
 	char bPunkbuster;
 	char cPurge;          //Purge counter

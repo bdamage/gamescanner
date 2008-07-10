@@ -624,7 +624,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 			p++;
 		} else if(*resp->type == A2S_INFORESPONSE_HL2)
 		{
-			pSI->cVersion = p[0];  //network version, steam ver.
+			pSI->dwVersion = (DWORD)p[0];  //network version, steam ver.
 			p++;
 			p++;
 		}
@@ -651,7 +651,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 
 		if(*resp->type == A2S_INFORESPONSE_HL1)  
 		{
-			pSI->cVersion = p[0];  //network version, steam ver.
+			pSI->dwVersion = (DWORD)p[0];  //network version, steam ver.
 				
 		} else
 		{

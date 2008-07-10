@@ -243,7 +243,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 								if(mod!=NULL)
 								{
 									strncpy(pSI->szMod, mod,17);
-									pSI->wMod = Get_ETSV_ModByName(pSI->cGAMETYPE,mod);
+									pSI->wMod = Get_ModByName(pSI->cGAMETYPE,mod);
 								}
 								
 							}
@@ -256,7 +256,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 							if(pVarValue!=NULL)
 							{
 								strncpy(pSI->szMod, pVarValue,17);
-								pSI->wMod = Get_ETSV_ModByName(pSI->cGAMETYPE,pSI->szMod);
+								pSI->wMod = Get_ModByName(pSI->cGAMETYPE,pSI->szMod);
 							}
 						}
 			}
@@ -319,6 +319,8 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 					break;
 			}
+			if(pSI->szVersion!=NULL)
+				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMETYPE,pSI->szVersion);
 
 			szVarValue = Q3_Get_RuleValue("sv_pure",pServRules);
 			if(szVarValue!=NULL)
@@ -333,10 +335,10 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 					case COD_SERVERLIST :
 					case COD2_SERVERLIST :
 					case COD4_SERVERLIST :
-						pSI->cGameTypeCVAR = Get_ETSV_GameTypeByName(pSI->cGAMETYPE, szVarValue);
+						pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMETYPE, szVarValue);
 					break;
 					default:
-						pSI->cGameTypeCVAR = Get_ETSV_GameTypeByGameType(pSI->cGAMETYPE, atoi(szVarValue));
+						pSI->cGameTypeCVAR = Get_GameTypeByGameType(pSI->cGAMETYPE, atoi(szVarValue));
 						break;
 				}
 				

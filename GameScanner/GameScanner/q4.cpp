@@ -365,7 +365,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			if(Q4_Get_RuleValue("gamename",pServRules)!=NULL)
 			{
 				strncpy(pSI->szMod, Q4_Get_RuleValue("gamename",pServRules),19);
-				pSI->wMod = Get_ETSV_ModByName(pSI->cGAMETYPE, pSI->szMod);
+				pSI->wMod = Get_ModByName(pSI->cGAMETYPE, pSI->szMod);
 			}
 
 		
@@ -373,7 +373,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			szVarValue = Q4_Get_RuleValue("si_gametype",pServRules);
 			if(szVarValue!=NULL)
 			{
-				pSI->cGameTypeCVAR = Get_ETSV_GameTypeByName(pSI->cGAMETYPE, szVarValue);
+				pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMETYPE, szVarValue);
 				strncpy(pSI->szGameTypeName, szVarValue,14);		
 			}
 			else
@@ -386,7 +386,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 					else
 						strcpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName),"Unknown");
 
-					pSI->cGameTypeCVAR = Get_ETSV_GameTypeByName(pSI->cGAMETYPE, pSI->szGameTypeName);
+					pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMETYPE, pSI->szGameTypeName);
 				}
 
 			}
