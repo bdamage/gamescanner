@@ -202,7 +202,7 @@ void Buddy_Save(BUDDY_INFO *pBI)
 			char num[5];
 			
 			TiXmlElement *LSGI = new TiXmlElement("LastSeenGameIdx");
-			LSGI->LinkEndChild(new TiXmlText(_itoa(pBI->cGAMETYPE,num,10)));
+			LSGI->LinkEndChild(new TiXmlText(_itoa(pBI->cGAMEINDEX,num,10)));
 			buddy->LinkEndChild(LSGI);	
 
 
@@ -313,7 +313,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	strcpy_s(pBI->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
 	
 	pBI->pSERVER = NULL; //pServerInfo;
-	pBI->cGAMETYPE = pServerInfo->cGAMETYPE;
+	pBI->cGAMEINDEX = pServerInfo->cGAMEINDEX;
 	pBI->sIndex = (short) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
 	
 	HWND hwndLV = g_hwndListBuddy;
@@ -335,7 +335,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		item.pszText = szText;
 		item.cchTextMax = strlen(szText);
 		item.iSubItem = 1;
-		item.iImage = Get_GameIcon(pBI->cGAMETYPE);
+		item.iImage = Get_GameIcon(pBI->cGAMEINDEX);
 		ListView_SetItem(g_hwndListBuddy,&item);
 
 		//ListView_SetItemText(g_hwndListBuddy,index ,1,szText);
@@ -343,7 +343,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		strcpy(pBI->szIPaddress,szText);
 		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
 	}
-	if(pBI->cGAMETYPE != CSS_SERVERLIST)
+	if(pBI->cGAMEINDEX != CSS_SERVERLIST)
 	{
 		colorfilter(pBI->szPlayerName,szText,99);
 		ShowBalloonTip("A buddy is online!",szText);		
@@ -376,7 +376,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 				//Try without color codes
 				char cf[100],cf2[100];
 
-				if(pServerInfo->cGAMETYPE!=CSS_SERVERLIST)
+				if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
 				{
 					colorfilter(pPlayers->szPlayerName,cf,sizeof(cf));
 					colorfilter(pBI->szPlayerName,cf2,sizeof(cf2));
@@ -479,7 +479,7 @@ BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,char *szName,SERVER_INFO *pServer)
 		strcpy(pCurrentBI->szServerName,pServer->szServerName);
 		strcpy(pCurrentBI->szIPaddress,szIP);
 		strcpy(pCurrentBI->szLastSeenIPaddress,szIP);
-		pCurrentBI->cGAMETYPE = pServer->cGAMETYPE;
+		pCurrentBI->cGAMEINDEX = pServer->cGAMEINDEX;
 	}
 	return pBI;
 }
@@ -521,7 +521,7 @@ void Buddy_UpdateList(BUDDY_INFO *pBI)
 				item.iSubItem = 1;
 				item.pszText = cf;
 				item.cchTextMax = (int)strlen(cf);
-				item.iImage = Get_GameIcon(pBI->cGAMETYPE);
+				item.iImage = Get_GameIcon(pBI->cGAMEINDEX);
 				if(pBI->pSERVER!=NULL)
 				{
 //				

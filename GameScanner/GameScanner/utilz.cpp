@@ -10,6 +10,7 @@ extern HWND g_hWnd;
 extern int g_statusIcon;
 extern HWND g_hwndLogger;
 extern HINSTANCE g_hInst;
+extern GAME_INFO GI[MAX_SERVERLIST+1];
 
 string UTILZ_sLogger;
 
@@ -732,118 +733,6 @@ struct _GAMETYPENAME
 	WORD cETSVGAMETYPE;
 };
 
-_GAMETYPENAME GTQ3[15] = {
-	0,"Free For All",GAMETYPE_FFA,
-	1,"Tournament 1 on 1",GAMETYPE_DUEL,
-	2,"Single Player",GAMETYPE_DM,
-	3,"Team Deathmatch",GAMETYPE_TDM,
-	4,"Capture The Flag",GAMETYPE_CTF,
-	5,"One Flag CTF",GAMETYPE_CTF,
-	6,"Overload",GAMETYPE_DM,
-	7,"Harvester",GAMETYPE_DM,
-	8,"Unknown",GAMETYPE_UNKNOWN,
-	9,"Unknown",GAMETYPE_UNKNOWN,
-	10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-
-};
-
-_GAMETYPENAME GTET[15] = {
-	0,"Campaign",GAMETYPE_CAMP,
-	1,"Unknown",GAMETYPE_CAMP,
-	2,"Objective",GAMETYPE_OBJ,
-	3,"Stop Watch",GAMETYPE_SW,
-	4,"Campaign",GAMETYPE_CAMP,
-	5,"Last Man Standing",GAMETYPE_LMS,
-	6,"Map Vote",GAMETYPE_UNKNOWN,
-	7,"Unknown",GAMETYPE_UNKNOWN,
-	8,"Unknown",GAMETYPE_UNKNOWN,
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
-
-_GAMETYPENAME ModET[15] = {
-	0,"etmain",MOD_ET_ETMAIN,
-	1,"etpro",MOD_ET_ETPRO,
-	2,"noquarter",MOD_ET_NOQUARTER,
-	3,"jaymod",MOD_ET_JAYMOD,
-	4,"etpub",MOD_ET_ETPUB,
-	5,"tcetest",MOD_ET_TCETEST,
-	6," ",GAMETYPE_UNKNOWN,
-	7,"Unknown",GAMETYPE_UNKNOWN,
-	8,"Unknown",GAMETYPE_UNKNOWN,
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
-
-_GAMETYPENAME GTQ4[16] = {
-	0,"Duel",GAMETYPE_DUEL,
-	1,"DM",GAMETYPE_DM,
-	2,"Team DM",GAMETYPE_TDM,
-	3,"Clan Arena",GAMETYPE_CA,
-	4,"CTF",GAMETYPE_CTF,
-	5,"Arena CTF",GAMETYPE_CTF,
-	6,"Tourney",GAMETYPE_DM,
-	7,"Run",GAMETYPE_DM,
-	8,"Freezetag",GAMETYPE_DM,
-	9,"Unknown",GAMETYPE_DM,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-
-};
-
-_GAMETYPENAME GTETQW[16] = {
-	0,"Campaign",GAMETYPE_CAMP,
-	1,"StopWatch",GAMETYPE_SW,
-	2,"Objective",GAMETYPE_OBJ,
-	3,"Unknown",GAMETYPE_CAMP,
-	4,"Reserved",GAMETYPE_DM,
-	5,"Reserved",GAMETYPE_DM,
-	6,"Reserved",GAMETYPE_DM,
-	7,"Reserved",GAMETYPE_DM,
-	8,"Reserved",GAMETYPE_DM,
-	9,"Reserved",GAMETYPE_DM,
-	10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-
-};
-
-_GAMETYPENAME ModETQW[15] = {
-	0,"baseETQW-1",MOD_ETQW_MAIN,
-	1,"ETQWPro-1",MOD_ETQW_PRO,
-	2,"wheelsofwar-1",MOD_ETQW_WOW,
-	3," ",GAMETYPE_UNKNOWN,
-	4," ",GAMETYPE_UNKNOWN,
-	5," ",GAMETYPE_UNKNOWN,
-	6," ",GAMETYPE_UNKNOWN,
-	7,"Unknown",GAMETYPE_UNKNOWN,
-	8,"Unknown",GAMETYPE_UNKNOWN,
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
-
-
 _GAMETYPENAME GTWARSOW[16] = {
 	0,"Unknown",GAMETYPE_FFA,
 	1,"ctf",GAMETYPE_CTF,
@@ -880,210 +769,77 @@ _GAMETYPENAME GTCOD2[16] = {
    13,"Unknown",GAMETYPE_UNKNOWN,
    14,"Unknown",GAMETYPE_UNKNOWN,
 };
-_GAMETYPENAME GTCOD4[16] = {
-	0,"Unknown",GAMETYPE_FFA,
-	1,"koth",GAMETYPE_HQ,
-	2,"dom",GAMETYPE_DOM,//Domination
-	3,"war",GAMETYPE_TDM,
-	4,"dm",GAMETYPE_DM,
-	5,"sd",GAMETYPE_SD,//Search & Destroy
-	6,"sab",GAMETYPE_SAB, //Sabotage
-	7,"zom",GAMETYPE_ZOM, //Zombie mod
-	8,"Unknown",GAMETYPE_UNKNOWN,  
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN, 
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
-
-_GAMETYPENAME GTCOD4_FULLNAME[16] = {
-	0,"Unknown",GAMETYPE_FFA,
-	1,"Head Quarters",GAMETYPE_HQ,
-	2,"Domination",GAMETYPE_DOM,//Domination
-	3,"Team Deathmatch",GAMETYPE_TDM,
-	4,"Deathmatch",GAMETYPE_DM,
-	5,"Search & Destroy",GAMETYPE_SD,//Search & Destroy
-	6,"Sabotage",GAMETYPE_SAB, //Sabotage
-	7,"Zombie",GAMETYPE_ZOM, //Zombie mod
-	8,"Unknown",GAMETYPE_UNKNOWN,  
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN, 
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
 
 
-_GAMETYPENAME ModCOD4[16] = {
-	0,"Call of Duty 4",MOD_COD4_MAIN,
-	1,"mods/zombie",MOD_COD4_ZOMBIE,
-	2,"mods/pam",MOD_COD4_PAM,
-	3,"mods/modwarfare",MOD_COD4_WARFARE,
-	4,"mods/awe",MOD_COD4_AWE,
-	5,"Unknown",GAMETYPE_UNKNOWN,
-	6,"Unknown ",GAMETYPE_UNKNOWN, 
-	7,"Unknown",GAMETYPE_UNKNOWN,
-	8,"Unknown",GAMETYPE_UNKNOWN,  
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN, 
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
 
-
-_GAMETYPENAME VersionET[16] = {
-	0,"???",VER_ET_UNKNOWN,
-	1,"2.55",VER_ET_255,
-	2,"2.60 ",VER_ET_260,
-	3,"2.60b",VER_ET_260B,
-	4,"ETTV",8,
-	5,NULL,VERSION_UNKNOWN,
-};
-_GAMETYPENAME VersionCoD4[16] = {
-	0,"???",VERSION_UNKNOWN,
-	1,"1.0",1,
-	2,"1.1",2,
-	3,"1.2",4,
-	4,"1.3",8,
-	5,"1.4",16,
-	6,"1.5",32,
-	7,"1.6",64,
-	8,"1.7",128,
-	9,NULL,VERSION_UNKNOWN, 
-};
-
-//This returns a known ETSV GameType (needs to be done for filter purpose).
-WORD Get_GameTypeByGameType(int gametype, WORD szGameOldType)
+DWORD Get_GameTypeByName(int gameIdx, char *szGameType)
 {
-	switch(gametype)
-	{
-		case COD4_SERVERLIST: return GTCOD4[szGameOldType].cETSVGAMETYPE;
-		case COD_SERVERLIST: 
-		case COD2_SERVERLIST: return GTCOD2[szGameOldType].cETSVGAMETYPE;
-		case WARSOW_SERVERLIST: return GTWARSOW[szGameOldType].cETSVGAMETYPE;
-		case Q3_SERVERLIST: return GTQ3[szGameOldType].cETSVGAMETYPE;
-		case Q4_SERVERLIST: return GTQ4[szGameOldType].cETSVGAMETYPE;
-		case ET_SERVERLIST: return GTET[szGameOldType].cETSVGAMETYPE; 
-		case ETQW_SERVERLIST: return GTETQW[szGameOldType].cETSVGAMETYPE;	
-	}
-
-	return GAMETYPE_UNKNOWN;
-}
-
-WORD Get_GameTypeByName(int gametype, char *szGameType)
-{
-	_GAMETYPENAME *pGTN;
-
 	if(szGameType==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(int i=0;i<14;i++)
+	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterGameType.size();i++)
 	{
-		switch(gametype)
-		{
-			case COD4_SERVERLIST: 	 pGTN = &GTCOD4[i]; break;
-			case COD_SERVERLIST: 
-			case COD2_SERVERLIST: pGTN = &GTCOD2[i]; break;
-			case WARSOW_SERVERLIST: pGTN = &GTWARSOW[i]; break;
-			case Q3_SERVERLIST: pGTN = &GTQ3[i]; break;
-			case Q4_SERVERLIST: pGTN = &GTQ4[i]; break;
-			case ET_SERVERLIST: pGTN = &GTET[i]; break;
-			case ETQW_SERVERLIST: pGTN = &GTETQW[i]; break;
-			default:
-				return GAMETYPE_UNKNOWN;
-		}
-		if(pGTN==NULL)
-			break;
-		if(strcmp(szGameType,pGTN->szName)==0)
-			return pGTN->cETSVGAMETYPE;
-		
+		GAMEFILTER gf = GI[gameIdx].pSC->vFilterGameType.at(i);
+		if(strstr(szGameType,gf.sStrValue.c_str())!=NULL)
+			return gf.dwValue;		
 	}
-
 	return GAMETYPE_UNKNOWN;
+
 }
 
-WORD Get_ModByName(int gametype, char *szModName)
+DWORD Get_ModByName(int gameIdx, char *szModName)
 {
-	_GAMETYPENAME *pGTN;
-
 	if(szModName==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(int i=0;i<14;i++)
+	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterMod.size();i++)
 	{
-		switch(gametype)
-		{
-			case COD4_SERVERLIST: 	 pGTN = &ModCOD4[i]; break;
-			case ET_SERVERLIST: pGTN = &ModET[i]; break;
-			case ETQW_SERVERLIST: pGTN = &ModETQW[i]; break;
-			default:
-				return GAMETYPE_UNKNOWN;
-		}
-		if(pGTN==NULL)
-			break;
-		if(strstr(szModName,pGTN->szName)!=NULL)
-			return pGTN->cETSVGAMETYPE;
-		
+		GAMEFILTER gf = GI[gameIdx].pSC->vFilterMod.at(i);
+		if(strstr(szModName,gf.sStrValue.c_str())!=NULL)
+			return gf.dwValue;		
 	}
+	return GAMETYPE_UNKNOWN;
+}
+DWORD Get_MapByName(int gameIdx, char *szMapName)
+{
+	if(szMapName==NULL)
+		return GAMETYPE_UNKNOWN;
 
+	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterMap.size();i++)
+	{
+		GAMEFILTER gf = GI[gameIdx].pSC->vFilterMap.at(i);
+		if(strstr(szMapName,gf.sStrValue.c_str())!=NULL)
+			return gf.dwValue;		
+	}
 	return GAMETYPE_UNKNOWN;
 }
 
-DWORD Get_FilterVersionByVersionString(int gametype, char *szVersion)
+DWORD Get_FilterVersionByVersionString(int gameIdx, char *szVersion)
 {
-	_GAMETYPENAME *pGTN;
-
 	if(szVersion==NULL)
 		return VERSION_UNKNOWN;
 
-	for(int i=0;i<14;i++)
+	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterVersion.size();i++)
 	{
-		switch(gametype)
-		{
-			case COD4_SERVERLIST: 	 pGTN = &VersionCoD4[i]; break;
-			case ET_SERVERLIST: pGTN = &VersionET[i]; break;
-			//case ETQW_SERVERLIST: pGTN = &ModETQW[i]; break;
-			default:
-				return VERSION_UNKNOWN;
-		}
-		if(pGTN==NULL)
-			break;
-		if(strstr(szVersion,pGTN->szName)!=NULL)
-			return pGTN->cETSVGAMETYPE;
-		
+		GAMEFILTER gf = GI[gameIdx].pSC->vFilterVersion.at(i);
+
+		if(strstr(szVersion,gf.sStrValue.c_str())!=NULL)
+			return gf.dwValue;
 	}
 
 	return VERSION_UNKNOWN;
 }
 
-char * Get_GameTypeNameByGameType(int gametype, WORD cGameType)
+//This funciton is for visual, when the listview updates
+//A better readable name is returned
+const char * Get_GameTypeNameByGameType(int gameIdx, WORD cGameType)
 {
-	_GAMETYPENAME *pGTN;
-
-	for(int i=0;i<14;i++)
+	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterGameType.size();i++)
 	{
-		switch(gametype)
-		{
-			case COD4_SERVERLIST: pGTN = &GTCOD4_FULLNAME[i]; break;
-			case COD_SERVERLIST: 
-			case COD2_SERVERLIST: pGTN = &GTCOD2[i]; break;
-			case WARSOW_SERVERLIST: pGTN = &GTWARSOW[i]; break;
-			case Q3_SERVERLIST: pGTN = &GTQ3[i]; break;
-			case Q4_SERVERLIST: pGTN = &GTQ4[i]; break;
-			case ET_SERVERLIST: pGTN = &GTET[i]; break;
-			case ETQW_SERVERLIST: pGTN = &GTETQW[i]; break;
-			default:
-				return szGAMETYPEUNKOWN;
-		}
-		if(pGTN==NULL)
-			break;
-		if(cGameType == pGTN->cETSVGAMETYPE)
-			return pGTN->szName;		
+		GAMEFILTER gf = GI[gameIdx].pSC->vFilterGameType.at(i);
+		
+		if(cGameType == gf.dwValue)
+			return GI[gameIdx].pSC->vFilterGameType.at(i).sFriendlyName.c_str(); //gf.sFriendlyName.c_str();		
 	}
 	return szGAMETYPEUNKOWN;
 }

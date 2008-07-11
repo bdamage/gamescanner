@@ -30,10 +30,11 @@ void AddGetLastErrorIntoLog(LPTSTR lpszFunction);
 #define getsocktcp(host,port) getsock(host, port, AF_INET, SOCK_STREAM, IPPROTO_TCP)
 DLGTEMPLATE * WINAPI DoLockDlgRes(LPCSTR lpszResName) ;
 void SetDlgTrans(HWND hwnd,int trans);
-WORD Get_GameTypeByName(int gametype, char *szGameType);
-WORD Get_GameTypeByGameType(int gametype, WORD szGameOldType);
-char * Get_GameTypeNameByGameType(int gametype, WORD cGameType);
-WORD Get_ModByName(int gametype, char *szModName);
+DWORD Get_GameTypeByName(int gametype, char *szGameType);
+DWORD Get_GameTypeByGameType(int gametype, WORD szGameOldType);
+const char * Get_GameTypeNameByGameType(int gametype, WORD cGameType);
+DWORD Get_ModByName(int gametype, char *szModName);
+DWORD Get_MapByName(int gameIdx, char *szMapName);
 DWORD Get_FilterVersionByVersionString(int gametype, char *szVersion);
 bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI);
 char *colorfilter(const char* name,char *namefilter, int len);

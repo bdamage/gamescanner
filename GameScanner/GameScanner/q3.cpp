@@ -87,7 +87,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	  return -1;
 	}
 	char sendbuf[20];
-	switch(pSI->cGAMETYPE)
+	switch(pSI->cGAMEINDEX)
 	{
 		case QW_SERVERLIST:
 			strcpy(sendbuf,"\xFF\xFF\xFF\xFFstatus\n");
@@ -157,7 +157,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		{		
 		
 			char szP_ET[150];
-			if(pSI->cGAMETYPE == ET_SERVERLIST)
+			if(pSI->cGAMEINDEX == ET_SERVERLIST)
 			{			
 				ZeroMemory(&szP_ET,sizeof(szP_ET));			
 				char *szPVarValue=NULL;
@@ -172,7 +172,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			//---------------------------------
 			//Retrieve players if any exsist...
 			//---------------------------------
-			switch(pSI->cGAMETYPE)
+			switch(pSI->cGAMEINDEX)
 			{
 				case QW_SERVERLIST:
 				case Q2_SERVERLIST:
@@ -225,9 +225,11 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 					strncpy(pSI->szMap,pVarValue ,39);
 
 			}
+			
+			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pVarValue);
 
 
-			switch(pSI->cGAMETYPE)	 //MODS
+			switch(pSI->cGAMEINDEX)	 //MODS
 			{
 
 				case COD4_SERVERLIST :
@@ -243,28 +245,26 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 								if(mod!=NULL)
 								{
 									strncpy(pSI->szMod, mod,17);
-									pSI->wMod = Get_ModByName(pSI->cGAMETYPE,mod);
-								}
-								
+									pSI->wMod = Get_ModByName(pSI->cGAMEINDEX,mod);
+								}								
 							}
 						}
 						break;
 					}
 					default:
+					{
+						pVarValue = Q3_Get_RuleValue("gamename",pServRules);			
+						if(pVarValue!=NULL)
 						{
-							pVarValue = Q3_Get_RuleValue("gamename",pServRules);			
-							if(pVarValue!=NULL)
-							{
-								strncpy(pSI->szMod, pVarValue,17);
-								pSI->wMod = Get_ModByName(pSI->cGAMETYPE,pSI->szMod);
-							}
+							strncpy(pSI->szMod, pVarValue,17);
+							pSI->wMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
 						}
+					}
 			}
 			
 			
-			switch(pSI->cGAMETYPE)
-			{
-			
+			switch(pSI->cGAMEINDEX)
+			{			
 				case COD_SERVERLIST :
 				case COD2_SERVERLIST :
 				case COD4_SERVERLIST :
@@ -279,8 +279,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
 							strncpy(pSI->szVersion,szVarValue,49);
 						}
-					}
-		
+					}		
 				break;
 				case ET_SERVERLIST:
 					{
@@ -289,8 +288,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 							pSI->cBots = atoi(szVarValue);
 					} //Fall through and continue on default...
 				default:
-					{
-						
+					{						
 						szVarValue = Q3_Get_RuleValue("g_needpass",pServRules);
 						if(szVarValue!=NULL)
 							pSI->bPrivate = (char)atoi(szVarValue);
@@ -299,7 +297,6 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 							szVarValue = Q3_Get_RuleValue("needpass",pServRules);
 							if(szVarValue!=NULL)
 								pSI->bPrivate = (char)atoi(szVarValue);
-
 						}
 						szVarValue = Q3_Get_RuleValue("version",pServRules);
 						if(szVarValue!=NULL)
@@ -307,7 +304,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
 							strncpy(pSI->szVersion,szVarValue,49);
 						} else
-						{ //For QW
+						{ //For QuakeWorld
 							szVarValue = Q3_Get_RuleValue("*version",pServRules);
 							if(szVarValue!=NULL)
 							{
@@ -316,34 +313,35 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 							}
 						}
 					}
-
 					break;
 			}
 			if(pSI->szVersion!=NULL)
-				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMETYPE,pSI->szVersion);
+				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
 
 			szVarValue = Q3_Get_RuleValue("sv_pure",pServRules);
 			if(szVarValue!=NULL)
 				pSI->cPure = atoi(szVarValue);
 			
 			szVarValue = Q3_Get_RuleValue("g_gametype",pServRules);
+			 pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
+			/*
 			if(szVarValue!=NULL)
 			{				
-				switch(pSI->cGAMETYPE)
+				switch(pSI->cGAMEINDEX)
 				{
 					case WARSOW_SERVERLIST:
 					case COD_SERVERLIST :
 					case COD2_SERVERLIST :
 					case COD4_SERVERLIST :
-						pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMETYPE, szVarValue);
+						pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
 					break;
 					default:
-						pSI->cGameTypeCVAR = Get_GameTypeByGameType(pSI->cGAMETYPE, atoi(szVarValue));
+						pSI->cGameTypeCVAR = Get_GameTypeByGameType(pSI->cGAMEINDEX, atoi(szVarValue));
 						break;
 				}
 				
 			}
-			
+			*/
 			szVarValue = Q3_Get_RuleValue("sv_punkbuster",pServRules);
 			if(szVarValue==NULL)
 				szVarValue = Q3_Get_RuleValue("sv_battleye",pServRules); //Warsow
@@ -467,7 +465,7 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 
 
 			ptempSI.dwPing = 9999;
-			ptempSI.cGAMETYPE = (char) pGI->cGAMETYPE;
+			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
 			ptempSI.cCountryFlag = 0;
 			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;
@@ -698,7 +696,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				player->szPlayerName= _strdup(pointer);
 				pointer+=strlen(pointer)+2;
 				
-				if(pSI->cGAMETYPE==ET_SERVERLIST) //ETpro for retrieving player status (connecting, spectating, allies & axis)
+				if(pSI->cGAMEINDEX==ET_SERVERLIST) //ETpro for retrieving player status (connecting, spectating, allies & axis)
 				{
 					if(szP!=NULL)
 					{
@@ -717,7 +715,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 						}
 					}
 				}
-				else if(pSI->cGAMETYPE==WARSOW_SERVERLIST)
+				else if(pSI->cGAMEINDEX==WARSOW_SERVERLIST)
 				{
 					if(strcmp(pointer,"0")==0)
 						player->szClanTag = _strdup("Spectator");
@@ -914,7 +912,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString, pGI->dwProtocol);
 
 
-	if(pGI->cGAMETYPE==Q2_SERVERLIST)
+	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
 	{
 		sprintf(sendbuf, "query\n\0");
 	}

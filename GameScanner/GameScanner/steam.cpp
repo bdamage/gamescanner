@@ -515,7 +515,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
 		//	AddLogInfo(0,"New   >%d %s:%d",i,ptempSI.szIPaddress,ptempSI.dwPort);
 			ptempSI.dwPing = 9999;
-			ptempSI.cGAMETYPE = (char) pGI->cGAMETYPE;
+			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
 			ptempSI.cCountryFlag = 0;
 			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;

@@ -16,7 +16,7 @@ int dwRCONLOGStepper=0;  //index
 LONG_PTR wpOrigEditProc=NULL;
 
 HWND g_hwndRCONCmd=NULL,g_hwndRCONOut=NULL,g_hRCONDlg=NULL;
-char cGAMETYPE=0;
+char cGAMEINDEX=0;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_CurrentSelServer;
 
@@ -348,7 +348,7 @@ DWORD RCON_Parse(unsigned char *Buff, size_t dwPacketLen)
 
 		pBuf2 = (char*)&Buff[i];
 
-		switch(g_RCONServer->cGAMETYPE)
+		switch(g_RCONServer->cGAMEINDEX)
 		{
 			
 			case Q4_SERVERLIST :
@@ -417,7 +417,7 @@ DWORD RCON_SendCmd(char *szPassword,char *szCmd)
 	if(g_RCONServer==NULL)
 		return 2;
 
-	if(g_RCONServer->cGAMETYPE==0)
+	if(g_RCONServer->cGAMEINDEX==0)
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //%s", protocol, filterextra);
 	else
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFFrcon\xFF%s\xFF%s\xFF",szPassword,szCmd); //%s", protocol, filterextra);

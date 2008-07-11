@@ -12,7 +12,7 @@ Customization of columns, now you can have you own arrangement of columns in you
 Added Quake World.
 Added Quake 2.
 New fullname of the Game Types for Call of Duty 4.
-
+Changed so that no filter occurs in the Favorite folders.
 
 
 version 1.0 beta

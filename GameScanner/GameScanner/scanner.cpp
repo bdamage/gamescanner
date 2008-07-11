@@ -44,7 +44,7 @@ void PollForNewServers()
 		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
 		REF_SERVER_INFO refSI;
 		refSI.dwIndex = pSI.dwIndex;
-		refSI.cGAMETYPE = pSI.cGAMETYPE;
+		refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 
 		//pSrvInf = &pSI;
 		if(SCAN_FilterServerItem!=NULL)
@@ -84,7 +84,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
 		REF_SERVER_INFO refSI;
 		refSI.dwIndex = pSI.dwIndex;
-		refSI.cGAMETYPE = pSI.cGAMETYPE;
+		refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 
 
 		if(filterServerItem!=NULL)
@@ -250,7 +250,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 			idx = pGI->dwScanIdx;
 			REF_SERVER_INFO refSI;
 			refSI = pGI->pSC->vRefScanSI.at(idx);
-			refSI.cGAMETYPE = pSI.cGAMETYPE;
+			refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 			
 			pSI = pGI->pSC->vSI.at(refSI.dwIndex);
 			

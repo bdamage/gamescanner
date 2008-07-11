@@ -1148,7 +1148,7 @@ BOOL OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 					{
 						if(pSrvInf->bPunkbuster) //PB or VAC
 						{
-							if(pSrvInf->cGAMETYPE<CS_SERVERLIST)
+							if(pSrvInf->cGAMEINDEX<CS_SERVERLIST)
 								pLVItem->iImage = 1; //Punkbuster icon
 							else
 								pLVItem->iImage = 30;  //VAC/Steam icon
@@ -1177,7 +1177,7 @@ BOOL OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 							pLVItem->iImage = 2;
 
 						else
-							pLVItem->iImage = Get_GameIcon(currCV->cGAMETYPE);
+							pLVItem->iImage = Get_GameIcon(currCV->cGAMEINDEX);
 
 						char colFiltered[100];
 						colorfilterQ4(pSrvInf->szServerName,colFiltered,sizeof(colFiltered));
@@ -1195,7 +1195,7 @@ BOOL OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				case COL_GAMETYPE:
 					{
 						if(strlen(pSrvInf->szGameTypeName)==0)	
-							strncpy(pLVItem->pszText,Get_GameTypeNameByGameType(pSrvInf->cGAMETYPE,pSrvInf->cGameTypeCVAR),pLVItem->cchTextMax);
+							strncpy(pLVItem->pszText,Get_GameTypeNameByGameType(pSrvInf->cGAMEINDEX,pSrvInf->cGameTypeCVAR),pLVItem->cchTextMax);
 						else
 							strncpy(pLVItem->pszText,pSrvInf->szGameTypeName,pLVItem->cchTextMax);
 						return TRUE;
@@ -1422,8 +1422,8 @@ void OnBuddySelected()
 					try
 					{
 
-						SERVER_INFO pSI = GI[pBI->cGAMETYPE].pSC->vSI.at((int)pBI->sIndex);
-						GetServerInfo(pBI->cGAMETYPE,&pSI);
+						SERVER_INFO pSI = GI[pBI->cGAMEINDEX].pSC->vSI.at((int)pBI->sIndex);
+						GetServerInfo(pBI->cGAMEINDEX,&pSI);
 		
 					}
 					catch(const exception& e)
@@ -1498,12 +1498,12 @@ void Default_GameSettings()
 	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
 		ZeroMemory(&GI[i],sizeof(GAME_INFO));
-		GI[i].cGAMETYPE = i;
+		GI[i].cGAMEINDEX = i;
 		GI[i].pSC = &SC[i];
 		GI[i].iIconIndex =  Get_GameIcon(i);
 
 	}
-	GI[ET_SERVERLIST].cGAMETYPE = ET_SERVERLIST;
+	GI[ET_SERVERLIST].cGAMEINDEX = ET_SERVERLIST;
 	GI[ET_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[ET_SERVERLIST].dwProtocol = 84;
 	GI[ET_SERVERLIST].dwViewFlags = 0;
@@ -1529,7 +1529,7 @@ void Default_GameSettings()
 	GI[ET_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[ET_SERVERLIST].szQueryString,"");
 
-	GI[Q3_SERVERLIST].cGAMETYPE = Q3_SERVERLIST;
+	GI[Q3_SERVERLIST].cGAMEINDEX = Q3_SERVERLIST;
 
 	GI[Q3_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[Q3_SERVERLIST].dwProtocol = 68;
@@ -1548,7 +1548,7 @@ void Default_GameSettings()
 //	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[Q3_SERVERLIST].szGAME_PATH,&dwBuffSize);
 
 
-	GI[RTCW_SERVERLIST].cGAMETYPE = RTCW_SERVERLIST;
+	GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
 	GI[RTCW_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[RTCW_SERVERLIST].dwProtocol = 60;
 	GI[RTCW_SERVERLIST].iIconIndex = Get_GameIcon(RTCW_SERVERLIST);
@@ -1564,7 +1564,7 @@ void Default_GameSettings()
 	strcpy(GI[RTCW_SERVERLIST].szQueryString,"");
 	GI[RTCW_SERVERLIST].pSC = &SC[RTCW_SERVERLIST];
 
-	GI[Q4_SERVERLIST].cGAMETYPE = Q4_SERVERLIST;
+	GI[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
 	GI[Q4_SERVERLIST].dwMasterServerPORT = 27650;
 	GI[Q4_SERVERLIST].dwProtocol = 0;
 	GI[Q4_SERVERLIST].iIconIndex = Get_GameIcon(Q4_SERVERLIST);
@@ -1580,7 +1580,7 @@ void Default_GameSettings()
 	GI[Q4_SERVERLIST].dwDefaultPort = 28004;
 	GI[Q4_SERVERLIST].pSC = &SC[Q4_SERVERLIST];
 
-	GI[ETQW_SERVERLIST].cGAMETYPE = ETQW_SERVERLIST;
+	GI[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
 	GI[ETQW_SERVERLIST].iIconIndex = Get_GameIcon(ETQW_SERVERLIST);
 	GI[ETQW_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[ETQW_SERVERLIST].szGAME_NAME,"Enemy Territory - Quake Wars",MAX_PATH);
@@ -1600,7 +1600,7 @@ void Default_GameSettings()
 	strcpy(GI[ETQW_SERVERLIST].szProtocolName,"etqw");
 	GI[ETQW_SERVERLIST].dwDefaultPort = 27733;
 
-	GI[COD2_SERVERLIST].cGAMETYPE = COD2_SERVERLIST;
+	GI[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
 	GI[COD2_SERVERLIST].iIconIndex = Get_GameIcon(COD2_SERVERLIST);
 	GI[COD2_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[COD2_SERVERLIST].szGAME_NAME,"Call of Duty 2",MAX_PATH);
@@ -1620,7 +1620,7 @@ void Default_GameSettings()
 	strcpy(GI[COD2_SERVERLIST].szQueryString,"");
 	GI[COD2_SERVERLIST].pSC = &SC[COD2_SERVERLIST];
 
-	GI[COD_SERVERLIST].cGAMETYPE = COD_SERVERLIST;
+	GI[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
 	GI[COD_SERVERLIST].iIconIndex = Get_GameIcon(COD_SERVERLIST);
 	GI[COD_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[COD_SERVERLIST].szGAME_NAME,"Call of Duty",MAX_PATH);
@@ -1641,7 +1641,7 @@ void Default_GameSettings()
 	GI[COD_SERVERLIST].pSC = &SC[COD_SERVERLIST];
 
 
-	GI[WARSOW_SERVERLIST].cGAMETYPE = WARSOW_SERVERLIST;
+	GI[WARSOW_SERVERLIST].cGAMEINDEX = WARSOW_SERVERLIST;
 
 	GI[WARSOW_SERVERLIST].iIconIndex = Get_GameIcon(WARSOW_SERVERLIST);
 	GI[WARSOW_SERVERLIST].dwViewFlags = 0;
@@ -1671,7 +1671,7 @@ void Default_GameSettings()
 
 
 
-	GI[COD4_SERVERLIST].cGAMETYPE = COD4_SERVERLIST;
+	GI[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
 	GI[COD4_SERVERLIST].iIconIndex = Get_GameIcon(COD4_SERVERLIST);
 	GI[COD4_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[COD4_SERVERLIST].szGAME_NAME,"Call of Duty 4",MAX_PATH);
@@ -1695,7 +1695,7 @@ void Default_GameSettings()
 	GI[COD4_SERVERLIST].pSC = &SC[COD4_SERVERLIST];
 
 
-	GI[CS_SERVERLIST].cGAMETYPE = CS_SERVERLIST;
+	GI[CS_SERVERLIST].cGAMEINDEX = CS_SERVERLIST;
 	GI[CS_SERVERLIST].iIconIndex = Get_GameIcon(CS_SERVERLIST);
 	GI[CS_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[CS_SERVERLIST].szGAME_NAME,"Counter-Strike",MAX_PATH);
@@ -1716,7 +1716,7 @@ void Default_GameSettings()
 	GI[CS_SERVERLIST].pSC = &SC[CS_SERVERLIST];
 
 
-	GI[CSCZ_SERVERLIST].cGAMETYPE = CSCZ_SERVERLIST;
+	GI[CSCZ_SERVERLIST].cGAMEINDEX = CSCZ_SERVERLIST;
 	GI[CSCZ_SERVERLIST].iIconIndex = Get_GameIcon(CSCZ_SERVERLIST);
 	GI[CSCZ_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[CSCZ_SERVERLIST].szGAME_NAME,"Counter-Strike: Condition Zero",MAX_PATH);
@@ -1733,7 +1733,7 @@ void Default_GameSettings()
 	strcpy(GI[CSCZ_SERVERLIST].szQueryString,"\\gamedir\\czero");
 	GI[CSCZ_SERVERLIST].pSC = &SC[CSCZ_SERVERLIST];
 
-	GI[CSS_SERVERLIST].cGAMETYPE = CSS_SERVERLIST;
+	GI[CSS_SERVERLIST].cGAMEINDEX = CSS_SERVERLIST;
 	GI[CSS_SERVERLIST].iIconIndex = Get_GameIcon(CSS_SERVERLIST);
 	GI[CSS_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[CSS_SERVERLIST].szGAME_NAME,"Counter-Strike: Source",MAX_PATH);
@@ -1754,7 +1754,7 @@ void Default_GameSettings()
 	GI[CSS_SERVERLIST].pSC = &SC[CSS_SERVERLIST];
 
 
-	GI[QW_SERVERLIST].cGAMETYPE = QW_SERVERLIST;
+	GI[QW_SERVERLIST].cGAMEINDEX = QW_SERVERLIST;
 	GI[QW_SERVERLIST].dwMasterServerPORT = 27000;
 	GI[QW_SERVERLIST].dwProtocol = 0;
 	GI[QW_SERVERLIST].dwViewFlags = 0;
@@ -1770,7 +1770,7 @@ void Default_GameSettings()
 	GI[QW_SERVERLIST].bUseHTTPServerList = TRUE;
 
 
-	GI[Q2_SERVERLIST].cGAMETYPE = Q2_SERVERLIST;
+	GI[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
 	GI[Q2_SERVERLIST].dwMasterServerPORT = 27900;
 	GI[Q2_SERVERLIST].dwProtocol = 34;
 	GI[Q2_SERVERLIST].dwViewFlags = 0;
@@ -2016,7 +2016,7 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 	if(strlen(szIP)<1)
 		return 0xFFFFFFFF;
 	
-	pSI.cGAMETYPE = pGI->cGAMETYPE;
+	pSI.cGAMEINDEX = pGI->cGAMEINDEX;
 	strcpy(pSI.szIPaddress,szIP);
 	pSI.dwIP = NetworkNameToIP(szIP,_itoa(dwPort,destPort,10));
 	pSI.dwPort = dwPort;
@@ -2182,13 +2182,13 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 		case FILTER_PURE : pGI->filter.bPure = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_RANKED : pGI->filter.bRanked = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_MOD	: 
-			return   	vTI.at(idx).dwState = TreeView_SwapDWCheckStateOR(tvi,ti, &GI[ti.cGAMETYPE].filter.dwMod); break;
+			return   	vTI.at(idx).dwState = TreeView_SwapDWCheckStateOR(tvi,ti, &GI[ti.cGAMEINDEX].filter.dwMod); break;
 		case FILTER_GAMETYPE:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMETYPE].filter.dwGameTypeFilter); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwGameTypeFilter); break;
 		case FILTER_VERSION:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMETYPE].filter.dwVersion); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwVersion); break;
 		case FILTER_MAP:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMETYPE].filter.dwMap); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwMap); break;
 		case 0: break;
 		default: return 0;
 	}	
@@ -2287,12 +2287,25 @@ DWORD TreeView_GetDWValue(DWORD dwType,DWORD dwAction)
 	return 0;
 }
 
+DWORD TreeView_GetDWStateByGameType(int iGameType, DWORD dwType,DWORD dwAction)
+{
+	for(UINT i=0;i<vTI.size();i++)
+	{
+		if((vTI.at(i).cGAMEINDEX == iGameType)&& (vTI.at(i).dwType == dwType) && (vTI.at(i).dwAction==dwAction))
+		{		
+
+			return vTI.at(i).dwState;
+		}
+	}
+	return 0;
+}
+
 HTREEITEM TreeView_GetTIByItemGame(char game)
 {
 	for(UINT i=0;i<vTI.size();i++)
 	{
 		//Will return first occurens of game (= game root)
-		if(vTI.at(i).cGAMETYPE == game)
+		if(vTI.at(i).cGAMEINDEX == game)
 			return vTI.at(i).hTreeItem;
 	}
 	return NULL;
@@ -2351,7 +2364,7 @@ int TreeView_GetSelectionV3()
 	{
 		case DO_NOTHING_: return DO_NOTHING; 
 		case DO_REDRAW_SERVERLIST: 
-			return SetCurrentViewTo(vTI.at(iSel).cGAMETYPE); 
+			return SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); 
 		case DO_CHECKBOX: 
 			{
 				if(vTI.at(iSel).dwState) //Is it checked
@@ -2368,12 +2381,12 @@ int TreeView_GetSelectionV3()
 			//HWND hwndEditCtrl = TreeView_EditLabel(g_hwndMainTreeCtrl,&tvitem);
 			break;
 			}
-		case DO_FAV_NO_FILT	: SetCurrentViewTo(vTI.at(iSel).cGAMETYPE); return DO_NOTHING;
-		case DO_FAV_PUB	: SetCurrentViewTo(vTI.at(iSel).cGAMETYPE); return SHOW_FAVORITES_PUBLIC;
-		case DO_FAV_PRIV : SetCurrentViewTo(vTI.at(iSel).cGAMETYPE); return SHOW_FAVORITES_PRIVATE;
-		case DO_HISTORY : SetCurrentViewTo(vTI.at(iSel).cGAMETYPE); return SHOW_HISTORY;
+		case DO_FAV_NO_FILT	: SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return DO_NOTHING;
+		case DO_FAV_PUB	: SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PUBLIC;
+		case DO_FAV_PRIV : SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PRIVATE;
+		case DO_HISTORY : SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_HISTORY;
 		case DO_GAME_SPECIFIC_FILTER:		
-			vTI.at(iSel).dwState = Filter_game_specific_edit(&GI[vTI.at(iSel).cGAMETYPE],vTI.at(iSel), &tvitem,iSel);
+			vTI.at(iSel).dwState = Filter_game_specific_edit(&GI[vTI.at(iSel).cGAMEINDEX],vTI.at(iSel), &tvitem,iSel);
 			break;
 		case DO_GLOBAL_EDIT_FILTER:
 		case DO_GLOBAL_FILTER:
@@ -2628,7 +2641,7 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				dwPort = GI[g_currentGameIdx].dwDefaultPort;
 
 			if(AddServer(&GI[g_currentGameIdx],ip, dwPort,true)!=0xFFFFFFFF)
-			//if(Q4_AddServer(GI[g_currentGameIdx].pStartServerInfo,ip,dwPort,GI[g_currentGameIdx].cGAMETYPE,InsertServerItemQ4,true)!=-1)
+			//if(Q4_AddServer(GI[g_currentGameIdx].pStartServerInfo,ip,dwPort,GI[g_currentGameIdx].cGAMEINDEX,InsertServerItemQ4,true)!=-1)
 			{
 				SetStatusText(ICO_INFO,"Added IP %s:%d into %s favorite serverlist.",ip,dwPort,GI[g_currentGameIdx].szGAME_NAME);
 				
@@ -2825,28 +2838,29 @@ HTREEITEM MainTreeView_AddItem(_TREEITEM *ti,HTREEITEM hCurrent,bool active)
 DWORD level=1;
 int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 {
+	char szName[50];
 	_TREEITEM ti;
 	if(childItem==NULL)
 		return 0;
-	//child = childItem->FirstChildElement();
+
 	level++;
 	for( childItem; childItem; childItem=childItem->NextSiblingElement() )
 	{	
 		
-		char szName[50];
-		ti.sName = "No name value found in xml file!";
+
+		ti.sName = "No name";
 		XML_GetTreeItemName(childItem,szName,sizeof(szName));		
 		if(szName!=NULL)
 			ti.sName = szName;
-	//	else
-	//		break;
+
 		ti.sElementName = childItem->Value();
 
-		ti.cGAMETYPE = (char)XML_GetTreeItemInt(childItem,"game");
+ 
+		ti.cGAMEINDEX = (char)XML_GetTreeItemInt(childItem,"game");
 		ti.dwType =  XML_GetTreeItemInt(childItem,"type");
 
 		if(ti.dwType==1024)
-			ti.iIconIndex = Get_GameIcon(ti.cGAMETYPE);
+			ti.iIconIndex = Get_GameIcon(ti.cGAMEINDEX);
 		else
 			ti.iIconIndex = XML_GetTreeItemInt(childItem,"icon");
 
@@ -2863,19 +2877,46 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		ti.dwLevel = level;
 		ti.dwIndex = vTI.size()+1;
 		bool active=true;
-		if(ti.cGAMETYPE!=-25)
+		if(ti.cGAMEINDEX!=-25)
 		{
-			if(ti.cGAMETYPE<MAX_SERVERLIST)
-				active = GI[ti.cGAMETYPE].bActive;
-
+			if(ti.cGAMEINDEX<MAX_SERVERLIST)
+				active = GI[ti.cGAMEINDEX].bActive;
 		}
-		
-		
+				
 		ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);
-		//ti.hTreeItem = MainTreeView_AddItem(ti.iIconIndex+ti.dwState ,hTreeItem ,ti.sName.c_str(),ti.bExpanded,active);
-
 		vTI.push_back(ti);
-
+		if(ti.sElementName == "GameTypesItems")
+		{
+			GAMEFILTER gf;
+			gf.sFriendlyName = ti.sName;
+			gf.sStrValue = ti.strValue;
+			gf.dwValue = ti.dwValue;
+			GI[ti.cGAMEINDEX].pSC->vFilterGameType.push_back(gf);
+		}
+		if(ti.sElementName == "ModItems")
+		{
+			GAMEFILTER gf;
+			gf.sFriendlyName = ti.sName;
+			gf.sStrValue = ti.strValue;
+			gf.dwValue = ti.dwValue;
+			GI[ti.cGAMEINDEX].pSC->vFilterMod.push_back(gf);
+		}
+		if(ti.sElementName == "Version")
+		{
+			GAMEFILTER gf;
+			gf.sFriendlyName = ti.sName;
+			gf.sStrValue = ti.strValue;
+			gf.dwValue = ti.dwValue;
+			GI[ti.cGAMEINDEX].pSC->vFilterVersion.push_back(gf);
+		}
+		if(ti.sElementName == "Map")
+		{
+			GAMEFILTER gf;
+			gf.sFriendlyName = ti.sName;
+			gf.sStrValue = ti.strValue;
+			gf.dwValue = ti.dwValue;
+			GI[ti.cGAMEINDEX].pSC->vFilterMap.push_back(gf);
+		}
 		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
 
 	}
@@ -2911,7 +2952,7 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		elem->SetAttribute("expanded",(UINT)vTI.at(iSel).bExpanded);
 		elem->SetAttribute("type",vTI.at(iSel).dwType);
 		elem->SetAttribute("state",vTI.at(iSel).dwState);
-		elem->SetAttribute("game",vTI.at(iSel).cGAMETYPE);
+		elem->SetAttribute("game",vTI.at(iSel).cGAMEINDEX);
 		elem->SetAttribute("action",vTI.at(iSel).dwAction);
 			
 		g_save_counter++;
@@ -3170,8 +3211,18 @@ int TreeView_load()
 		{
 			TreeView_SetItemText(GI[i].hTI,szBuffer);
 			TreeView_SetItemState(g_hwndMainTreeCtrl,GI[i].hTI,TVIS_BOLD ,TVIS_BOLD);
+			GI[i].filter.bHideOfflineServers = TreeView_GetDWStateByGameType(i,1,9);
+			GI[i].filter.bNoBots = TreeView_GetDWStateByGameType(i,64,9);
+			GI[i].filter.bNoEmpty = TreeView_GetDWStateByGameType(i,8,9);
+			GI[i].filter.bNoFull = TreeView_GetDWStateByGameType(i,4,9);
+			GI[i].filter.bNoPrivate = TreeView_GetDWStateByGameType(i,128,9);
+			GI[i].filter.bOnlyPrivate = TreeView_GetDWStateByGameType(i,2,9);
+			GI[i].filter.bPunkbuster = TreeView_GetDWStateByGameType(i,1,9);
+			GI[i].filter.bPure = TreeView_GetDWStateByGameType(i,26,9);
+			GI[i].filter.bRanked = TreeView_GetDWStateByGameType(i,27,9);
 		}
 	}
+
 
 	AppCFG.filter.dwShowServerWithMinPlayers = TreeView_GetDWValue(100,11);
 	AppCFG.filter.dwShowServerWithMaxPlayers = TreeView_GetDWValue(101,11);
@@ -3382,14 +3433,14 @@ void FastConnect()
 	strcpy(srv.szIPaddress,SplitIPandPORT(ip,dwPort));
 	srv.dwPort = dwPort;
 	strcpy(srv.szPRIVATEPASS,password);
-	srv.cGAMETYPE = -1;
+	srv.cGAMEINDEX = -1;
 	srv.dwIndex = 999999;
 	LaunchGame(srv,&GI[g_currentGameIdx]);
 }
 
 GAME_INFO * Get_CurrentViewByServer(SERVER_INFO* pSrv)
 {
-	return &GI[pSrv->cGAMETYPE];	 
+	return &GI[pSrv->cGAMEINDEX];	 
 }
 
 
@@ -4095,7 +4146,7 @@ void SaveServerList(GAME_INFO *pGI)
 					//fwrite((const void*)&pSI, sizeof(SERVER_INFO), 1, fp);	
 					char szBuffer[512];
 					char sep=9;
-					sprintf_s(szBuffer,sizeof(szBuffer),"%d%c\"%s\"",pSI.cGAMETYPE,sep,ReplaceIllegalChars(pSI.szServerName));
+					sprintf_s(szBuffer,sizeof(szBuffer),"%d%c\"%s\"",pSI.cGAMEINDEX,sep,ReplaceIllegalChars(pSI.szServerName));
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 					sprintf_s(szBuffer,sizeof(szBuffer),"%c\"%s\"%c%d%c\"%s\"",sep,pSI.szIPaddress,sep,pSI.dwPort,sep,pSI.szShortCountryName);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
@@ -4107,7 +4158,7 @@ void SaveServerList(GAME_INFO *pGI)
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d%c%d%c%d",sep,pSI.cBots,sep,pSI.cFavorite,sep,pSI.cHistory,sep,pSI.cPure);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
-					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d%c%d%c%d",sep,pSI.cGameTypeCVAR,sep,pSI.cGameTypeCVAR2,sep,pSI.cPurge,sep,pSI.dwPing);
+					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d%c%d%c%d",sep,pSI.cGameTypeCVAR,sep,pSI.dwMap,sep,pSI.cPurge,sep,pSI.dwPing);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d",sep,pSI.wMod,sep,pSI.dwIP);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
@@ -4177,7 +4228,7 @@ void LoadServerListV2(GAME_INFO *pGI)
 						next_token1 = NULL;
 						memset(&srv,0,sizeof(SERVER_INFO));
 						szGameType= strtok_s( buffer, seps, &next_token1);
-						srv.cGAMETYPE =(char)atoi(szGameType); 
+						srv.cGAMEINDEX =(char)atoi(szGameType); 
 						
 						szGameName = strtok_s( NULL, seps, &next_token1);
 						strcpy(srv.szServerName,TrimString(szGameName));
@@ -4243,7 +4294,7 @@ void LoadServerListV2(GAME_INFO *pGI)
 						srv.cGameTypeCVAR = (WORD)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.cGameTypeCVAR2 = (char)atoi(szByte); 
+						srv.dwMap = (char)atoi(szByte); 
 						
 						szByte = strtok_s( NULL, seps, &next_token1);  
 						srv.cPurge = (char)atoi(szByte); 
@@ -4518,7 +4569,7 @@ void CFG_Save()
 		WriteCfgStr(abc, "GameData", "splatterladder",GI[i].szMAP_SPLATTERLADDER_PATH);
 		WriteCfgStr(abc, "GameData", "ProtcolName",GI[i].szProtocolName);
 		WriteCfgInt(abc, "GameData", "Active",GI[i].bActive);
-		WriteCfgInt(abc, "GameData", "gametype",GI[i].cGAMETYPE);
+		WriteCfgInt(abc, "GameData", "gametype",GI[i].cGAMEINDEX);
 		WriteCfgInt(abc, "GameData", "MasterServerPort",GI[i].dwMasterServerPORT);
 		WriteCfgInt(abc, "GameData", "Protocol",GI[i].dwProtocol);
 		WriteCfgInt(abc, "GameData", "IconIndex",GI[i].iIconIndex);
@@ -5157,7 +5208,7 @@ void Initialize_WindowSizes()
 
 	float fBuddyScale=0;
 	if(WNDCONT[WIN_BUDDYLIST].bShow)
-		fBuddyScale = 0.4;
+		fBuddyScale = 0.4f;
 
 	SetRect(&WNDCONT[WIN_MAINTREEVIEW].rSize,0,TOOLBAR_Y_OFFSET,rc.right*0.2,rc.bottom*(1.0f-fBuddyScale));
 
@@ -5579,7 +5630,7 @@ nextGame:
 
 	SetStatusText(ICO_INFO,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
 
-	switch(GI[currGameIdx].cGAMETYPE)
+	switch(GI[currGameIdx].cGAMEINDEX)
 	{
 		case ETQW_SERVERLIST:
 			{
@@ -5783,7 +5834,7 @@ nextGame:
 
 	SetStatusText(ICO_INFO,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
 
-	switch(GI[currGameIdx].cGAMETYPE)
+	switch(GI[currGameIdx].cGAMEINDEX)
 	{
 		case ETQW_SERVERLIST:
 			{
@@ -5878,6 +5929,23 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 		//If scanning filtered (limited number of servers) ignore following filter options:
 		if(bRescanFilter==0)
 		{
+
+			
+			if(bForceFavorites)
+				if(srv->cFavorite==0 || srv->bPrivate==1)
+					return false;
+				else if(srv->cFavorite==1 || srv->bPrivate==0)
+						return true;
+
+			//Show only Favorites that is Private!?
+			if(bForceFavoritesPrivate)
+			{
+				if((srv->bPrivate) && (srv->cFavorite))
+					return true;//returnVal=true;
+				else
+					return false;	
+			}
+
 			if(AppCFG.filter.bHideOfflineServers && (srv->dwPing==9999))
 				return false;
 		
@@ -5907,7 +5975,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			if(srv->cBots>0)
 				return false;
 
-		if(pGI->filter.bRanked && (srv->cGAMETYPE == ETQW_SERVERLIST))
+		if(pGI->filter.bRanked && (srv->cGAMEINDEX == ETQW_SERVERLIST))
 			if(srv->cRanked==0)
 				return false;
 
@@ -5924,18 +5992,6 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 				return false;
 
 
-		if(AppCFG.bUseFilterOnFavorites || bForceFavorites)
-			if(srv->cFavorite==0 || srv->bPrivate==1)
-				return false;
-
-		//Show only Favorites that is Private!?
-		if(bForceFavoritesPrivate)
-		{
-			if((srv->bPrivate) && (srv->cFavorite))
-				returnVal=true;
-			else
-				return false;	
-		}
 
 		if(pGI->filter.bPunkbuster)
 			if(srv->bPunkbuster==0)
@@ -5955,7 +6011,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 	{
 		returnVal=false;
 		DWORD val = 1;
-		for(int i=0;i<16;i++)
+		for(int i=0;i<pGI->pSC->vFilterGameType.size();i++)
 		{
 			if(pGI->filter.dwGameTypeFilter & val)
 			{
@@ -5979,7 +6035,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 	{
 		returnVal=false;
 		DWORD val = 1;
-		for(int i=0;i<8;i++)
+		for(int i=0;i<pGI->pSC->vFilterMod.size();i++)
 		{
 			if(pGI->filter.dwMod & val)
 			{
@@ -5998,11 +6054,34 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 		if(returnVal==false)
 			return false;
 	}
+	if(pGI->filter.dwMap>0)
+	{
+		returnVal=false;
+		DWORD val = 1;
+		for(int i=0;i<pGI->pSC->vFilterMap.size();i++)
+		{
+			if(pGI->filter.dwMap & val)
+			{
+				DWORD result = (srv->dwMap & val);
+		
+				if(result) 
+				{
+					returnVal=true;
+					break;
+				}
+			}
+			
+			val=val*2;
+		}
+
+		if(returnVal==false)
+			return false;
+	}
 	if(pGI->filter.dwVersion>0)
 	{
 		returnVal=false;
 		DWORD val = 1;
-		for(int i=0;i<8;i++)
+		for(int i=0;i<pGI->pSC->vFilterVersion.size();i++)
 		{
 			if(pGI->filter.dwVersion & val)
 			{
@@ -6079,7 +6158,7 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 		
 			REF_SERVER_INFO refSI;
 			refSI.dwIndex = pSI.dwIndex;
-			refSI.cGAMETYPE = pSI.cGAMETYPE;
+			refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 
 			if(FilterServerItemV2((LPARAM*)&pSI,pGI))
 			{
@@ -6204,7 +6283,7 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	lvItem.iItem =  ListView_GetItemCount(g_hwndListViewServer);
 	
 	REF_SERVER_INFO refSI;
-	refSI.cGAMETYPE  = pSI.cGAMETYPE;
+	refSI.cGAMEINDEX  = pSI.cGAMEINDEX;
 	refSI.dwIndex = pSI.dwIndex;
 	pGI->pSC->vRefListSI.push_back(refSI);
 
@@ -6594,7 +6673,7 @@ SERVER_INFO *FindServer(char *str)
 		
 					REF_SERVER_INFO refSI;
 					refSI.dwIndex = pSI.dwIndex;
-					refSI.cGAMETYPE = pSI.cGAMETYPE;
+					refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 					pGI->pSC->vRefListSI.push_back(refSI);
 
 				
@@ -6620,7 +6699,7 @@ SERVER_INFO *FindServer(char *str)
 				
 				REF_SERVER_INFO refSI;
 				refSI.dwIndex = pSI.dwIndex;
-				refSI.cGAMETYPE = pSI.cGAMETYPE;
+				refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 				pGI->pSC->vRefListSI.push_back(refSI);
 
 				counter++;
@@ -6631,7 +6710,7 @@ SERVER_INFO *FindServer(char *str)
 				{
 					REF_SERVER_INFO refSI;
 					refSI.dwIndex = pSI.dwIndex;
-					refSI.cGAMETYPE = pSI.cGAMETYPE;
+					refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 					pGI->pSC->vRefListSI.push_back(refSI);
 
 					counter++;
@@ -6966,8 +7045,8 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 					if(pBI==NULL)
 						return;
 
-					SERVER_INFO pSI = GI[pBI->cGAMETYPE].pSC->vSI.at(pBI->sIndex);
-					LaunchGame(pSI,&GI[pSI.cGAMETYPE]);
+					SERVER_INFO pSI = GI[pBI->cGAMEINDEX].pSC->vSI.at(pBI->sIndex);
+					LaunchGame(pSI,&GI[pSI.cGAMEINDEX]);
 			
 				}
 			}else
@@ -7681,7 +7760,7 @@ BOOL WINAPI EditCopy(char *pText)
 
 void Sync_ServerInfo(SERVER_INFO pSI)
 {
-	GAME_INFO *pGI = &GI[pSI.cGAMETYPE];
+	GAME_INFO *pGI = &GI[pSI.cGAMEINDEX];
 	pGI->pSC->vSI.at(pSI.dwIndex) = pSI;
 }
 
@@ -8177,7 +8256,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 				{
 					if(strcmp(proto,GI[i].szProtocolName)==0)
 					{
-						srv.cGAMETYPE = i;	
+						srv.cGAMEINDEX = i;	
 						srv.dwIndex = 999999;  //work around to skip sync
 						if(srv.dwPort ==0)
 							srv.dwPort = GI[i].dwDefaultPort;
@@ -8374,7 +8453,7 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI)
 		
 		if((GI[i].dwDefaultPort==pSI.dwPort) && GI[i].bActive)
 		{
-			typeRecognized=GI[i].cGAMETYPE;
+			typeRecognized=GI[i].cGAMEINDEX;
 			break;
 		}
 	}

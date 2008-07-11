@@ -209,32 +209,12 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 
 
 
-
-#define MAX_GAMETYPE 12
-
-struct _GAMETYPE{
-	char szName[30];
-	DWORD dwTYPE;
+struct GAMEFILTER{
+	string sFriendlyName;
+	string sStrValue;
+	DWORD dwValue;
 };
 
-struct ETSV_FILTER
-{
-	bool bPunkbuster;
-	bool bEmpty;
-	bool bFull;
-	bool bETPro;
-	bool bPrivate;
-	bool bFavorites;
-	char szCountry[50];
-};
-struct UPDATEFILE
-{
-	DWORD dwFileID;
-	DWORD dwVersion;
-	char szVersion[10];
-	char szExecutable[40];
-	char szDescription[100];
-};
 
 struct RCON_DATA
 {
@@ -364,11 +344,12 @@ struct SERVER_INFO
 	DWORD dwIP;
 	DWORD dwPort;
 	char szMap[MAX_MAPNAME_LEN];
+	DWORD dwMap;
 	int nCurrentPlayers;
 	int nMaxPlayers;	
 	char szCountry[MAX_COUNTRYNAME_LEN];
 	char szMod[MAX_MODNAME_LEN];
-	WORD wMod;						//Used for faster filtering
+	DWORD wMod;						//Used for faster filtering
 	char szVersion[MAX_VERSION_LEN];
 	DWORD dwVersion;                  //Used for faster filtering
 	DWORD dwPing;
@@ -384,11 +365,10 @@ struct SERVER_INFO
 	char cCountryFlag;	
 	char cFavorite;  
 	char cHistory;  //History.... connected to this server.
-	char cGAMETYPE;  //RTCW, ET, Quake 4....
+	char cGAMEINDEX;  //RTCW, ET, Quake 4....
 	char cLAN;
-	WORD cGameTypeCVAR;
+	DWORD cGameTypeCVAR;
 	char szGameTypeName[MAX_GAMETYPENAME_LEN];
-	char cGameTypeCVAR2;
 	BOOL bDedicated;
 	char cPure;
 	char cLocked;
@@ -401,75 +381,20 @@ struct SERVER_INFO
 };
 typedef SERVER_INFO* LPSERVERINFO;
 
-struct SERVER_INFO_VER
-{	
-	char  cIdentifier[4];
-	DWORD dwVersion;
-};
-
-struct SERVER_INFO2
-{	
-	char  cIdentifier[4];
-	DWORD dwVersion;
-	DWORD dwIndex;
-	char szServerName[MAX_NAME_LEN];
-	
-	char szIPaddress[MAX_IP_LEN];
-	DWORD dwIP;
-	DWORD dwPort;
-
-	char szMap[MAX_MAPNAME_LEN];
-	short nCurrentPlayers;
-	short nUsed1;
-	short nMaxPlayers;
-	short nUsed2;
-
-	char szCountry[MAX_COUNTRYNAME_LEN];
-	char szMod[MAX_MODNAME_LEN];
-	WORD wMod;
-	char szVersion[MAX_VERSION_LEN];
-	DWORD dwPing;
-	DWORD dwAvgPing;
-	char cVersion;  //Game version... 2.55 2.60...
-	char bPrivate;
-	char bPunkbuster;
-	char cPurge;
-	char bNeedToUpdateServerInfo;
-	char bUpdated;		
-	char szRCONPASS[MAX_RCON_LEN];
-	char szPRIVATEPASS[MAX_PASSWORD_LEN];
-	char nPrivateClients;
-	char cCountryFlag;	
-	char cFavorite;  //may be used for timestamping
-	char cHistory;  //History.... conencted to this server.
-	char cGAMETYPE;  //RTCW, ET, Quake 4....
-	WORD cGameTypeCVAR;
-	char szGameTypeName[13];
-	char cGameTypeCVAR2;
-	BOOL bDedicated;
-	char cPure;
-	char cLocked;
-	char cRanked;
-	char cBots;
-	char szShortCountryName[4];
-	char bHide;  //Hide from the server list this will be set to tru when it didn't pass the filter test
-	PLAYERDATA *pPlayerData;
-	SERVER_RULES *pServerRules;
-
-};
 
 
 typedef vector<SERVER_INFO> vSRV_INF;
 
-
+typedef vector<GAMEFILTER> vGF;
 
 //For virtual list
 struct REF_SERVER_INFO
 {	
 	DWORD dwIndex;
-	char cGAMETYPE;  //RTCW, ET, Quake 4....
+	char cGAMEINDEX;  //RTCW, ET, Quake 4....
 };
 typedef REF_SERVER_INFO* LPREFSERVER_INF;
+
 
 
 /*
@@ -477,18 +402,23 @@ Reference server info, this will only point to the full server info container
 using Gametype var and index combined.
 */
 typedef vector<REF_SERVER_INFO> vREF_SRV_INF;
+typedef vector<REF_SERVER_INFO> vREF_SRV_INF;
 
 struct SERVER_CONTAINER
 {
 	vSRV_INF vSI;
 	vREF_SRV_INF vRefListSI;
 	vREF_SRV_INF vRefScanSI;
+	vGF	 vFilterMod;
+	vGF	 vFilterGameType;
+	vGF	 vFilterMap;
+	vGF	 vFilterVersion;
 };
 
 
 struct GAME_INFO
 {
-	char cGAMETYPE;
+	char cGAMEINDEX;
 	//SERVER_INFO *pStartServerInfo;
 	char szGAME_NAME[MAX_PATH];
 	char szGAME_PATH[MAX_PATH];
@@ -537,10 +467,8 @@ struct BUDDY_INFO
 	char szIPaddress[MAX_IP_LEN];
 	int cMatchExact;
 	int cMatchOnColorEncoded;
-	char cGAMETYPE;
+	char cGAMEINDEX;
 	char cUnused1;
-	//char cUnused2;
-	//char cUnused3;
 	int sIndex;
 	bool bRemove;
 	char szLastSeenServerName[MAX_NAME_LEN];
@@ -551,11 +479,7 @@ struct BUDDY_INFO
 
 typedef BUDDY_INFO* LPBUDDY_INFO;
 
-struct SERVER_VAR
-{
-	char szVarName[MAX_NAME_LEN];
-	char szVarValue[MAX_VAR_LEN];
-};
+
 
 struct _TREEITEM
 {
@@ -573,7 +497,7 @@ struct _TREEITEM
 	bool bVisible;
 	DWORD dwIndex;
 	GAME_INFO *pGI;
-	char cGAMETYPE;
+	char cGAMEINDEX;
 };
 
 
