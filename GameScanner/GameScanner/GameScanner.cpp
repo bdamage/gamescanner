@@ -3630,7 +3630,6 @@ void ListView_SetDefaultColumns()
 
 void ListView_InitilizeColumns()
 {	
-
 	for(int i = 0;i<MAX_COLUMNS;i++)
 		ListView_DeleteColumn(g_hwndListViewServer, 0 );
 				
