@@ -3650,6 +3650,14 @@ void ListView_InitilizeColumns()
 			}
 		}
 	}	
+	for(int i = 0;i<MAX_COLUMNS;i++)
+	{	
+		if(CUSTCOLUMNS[i].bActive==FALSE)
+		{
+			CUSTCOLUMNS[i].columnIdxToSave = CUSTCOLUMNS[i].columnIdx = idx;
+			idx++;			
+		}
+	}	
 	dbg_print("exit ListView_InitilizeColumns()\n");
 }
 
@@ -3681,7 +3689,7 @@ void ListView_ReInitializeColumns()
 	{	
 		if(CUSTCOLUMNS[i].bActive==FALSE)
 		{
-			CUSTCOLUMNS[i].columnIdx = idx;
+			CUSTCOLUMNS[i].columnIdxToSave = CUSTCOLUMNS[i].columnIdx = idx;
 			idx++;			
 		}
 	}	
