@@ -2110,12 +2110,12 @@ DWORD TreeView_SetDWCheckState (TVITEM  *pTVitem, _TREEITEM ti, BOOL active)
 }
 
 //Used for group selection such as Ping
-int TreeView_UncheckAllTypes(DWORD dwType)
+int TreeView_UncheckAllTypes(char cGameIdx, DWORD dwType)
 {	
 	for(UINT i=0;i<vTI.size();i++)
 	{
 		
-		if(vTI.at(i).dwType == dwType)
+		if((vTI.at(i).dwType == dwType) && (vTI.at(i).cGAMEINDEX == cGameIdx) )
 		{
 			TVITEM  tvitem;
 			ZeroMemory(&tvitem,sizeof(TVITEM));
@@ -2135,17 +2135,18 @@ DWORD Filter_global_edit(_TREEITEM ti, TVITEM *tvi)
 
 	switch(ti.dwType)
 	{
-		case FILTER_PB		: AppCFG.filter.bPunkbuster = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+	/*	case FILTER_PB		: AppCFG.filter.bPunkbuster = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_SHOW_PRIVATE	:   AppCFG.filter.bOnlyPrivate = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_FULL    :  AppCFG.filter.bNoFull = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_EMPTY	:  AppCFG.filter.bNoEmpty = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		*/
 		case FILTER_OFFLINE	 :  AppCFG.filter.bHideOfflineServers = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_FAVORITERS : break;
-		case FILTER_BOTS	: AppCFG.filter.bNoBots = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_HIDE_PRIVATE :  AppCFG.filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+//		case FILTER_FAVORITERS : break;
+//		case FILTER_BOTS	: AppCFG.filter.bNoBots = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+//		case FILTER_HIDE_PRIVATE :  AppCFG.filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_PING : 	
 			 
-			TreeView_UncheckAllTypes(ti.dwType); 
+			TreeView_UncheckAllTypes(-25,ti.dwType); 
 			if(TreeView_SwapDWCheckState(tvi,ti.dwState)==1)
 				AppCFG.filter.dwPing = ti.dwValue;
 			else
@@ -2172,13 +2173,15 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 	switch(ti.dwType)
 	{
 		case FILTER_PB		: pGI->filter.bPunkbuster = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_SHOW_PRIVATE	: pGI->filter.bOnlyPrivate = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_FULL    : pGI->filter.bNoFull = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_EMPTY	: pGI->filter.bNoEmpty = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		case FILTER_SHOW_PRIVATE : TreeView_UncheckAllTypes(ti.cGAMEINDEX,128); pGI->filter.bNoPrivate = FALSE; pGI->filter.bOnlyPrivate = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		case FILTER_HIDE_PRIVATE : TreeView_UncheckAllTypes(ti.cGAMEINDEX,2); pGI->filter.bOnlyPrivate = FALSE; pGI->filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+
+		case FILTER_FULL    : 	pGI->filter.bNoFull = TreeView_SwapDWCheckState(tvi,ti.dwState); break;			
+		case FILTER_EMPTY	: 	 pGI->filter.bNoEmpty = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_OFFLINE	 : pGI->filter.bHideOfflineServers = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_FAVORITERS : break;
 		case FILTER_BOTS	: pGI->filter.bNoBots = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_HIDE_PRIVATE : pGI->filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		
 		case FILTER_PURE : pGI->filter.bPure = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_RANKED : pGI->filter.bRanked = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_MOD	: 
@@ -2266,6 +2269,19 @@ BOOL TreeView_SetDWValueByItemType(DWORD dwType,DWORD dwNewValue)
 	return FALSE;
 }
 
+BOOL TreeView_SetItemStateByNameAndType(string name,DWORD dwType,DWORD dwNewState)
+{
+	for(UINT i=0;i<vTI.size();i++)
+	{
+		if((vTI.at(i).sName == name) && (vTI.at(i).dwType == dwType) )
+		{
+			vTI.at(i).dwState = dwNewState;
+			
+			return TRUE;
+		}
+	}
+	return FALSE;
+}
 /*******************************************************
  
  Gets a new value depending of type.
@@ -2338,6 +2354,22 @@ int TreeView_SetAllChildItemExpand(int startIdx, bool expand)
 	return -1;
 }
 
+BOOL TreeView_SetCheckBoxState(HTREEITEM hTreeItem,int iSel,DWORD dwState)
+{
+	TVITEM  tvitem;
+	ZeroMemory(&tvitem,sizeof(TVITEM));
+	tvitem.hItem = hTreeItem;
+	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
+
+	if(dwState) //Is it checked
+		tvitem.iSelectedImage =	tvitem.iImage = CHECKED_ICON;  //Checked image
+	else
+		tvitem.iSelectedImage =	tvitem.iImage = UNCHECKED_ICON;  //Unchecked image
+	
+	vTI.at(iSel).dwState = tvitem.iSelectedImage - UNCHECKED_ICON ; //set the value
+	return TreeView_SetItem(g_hwndMainTreeCtrl, &tvitem );	
+}
+
 int TreeView_GetSelectionV3()
 {
 	HTREEITEM hTreeItem = TreeView_GetSelection(g_hwndMainTreeCtrl);
@@ -2367,13 +2399,7 @@ int TreeView_GetSelectionV3()
 			return SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); 
 		case DO_CHECKBOX: 
 			{
-				if(vTI.at(iSel).dwState) //Is it checked
-					tvitem.iSelectedImage =	tvitem.iImage = UNCHECKED_ICON;  //Unchecked image
-				else
-					tvitem.iSelectedImage =	tvitem.iImage = CHECKED_ICON;  //Checked image
-
-				vTI.at(iSel).dwState = tvitem.iSelectedImage - UNCHECKED_ICON ; //set the value
-				TreeView_SetItem(g_hwndMainTreeCtrl, &tvitem );
+				TreeView_SetCheckBoxState(hTreeItem,iSel,vTI.at(iSel).dwState);
 			}	
 			break; 
 		case DO_EDIT:
@@ -3222,8 +3248,23 @@ int TreeView_load()
 			GI[i].filter.bRanked = TreeView_GetDWStateByGameType(i,27,9);
 		}
 	}
+	 /* AppCFG.filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		case FILTER_PING : 	
+	
+                <Ping name="Ping 200" strval="" value="200" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+                <Ping name="Ping 150" strval="" value="150" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+                <Ping name="Ping 100" strval="" value="100" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+                <Ping name="Ping 50" strval="" value="50" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+*/
+	for(int i=0; i<vTI.size(); i++)
+	{
+		if((vTI.at(i).sElementName == "Ping") && (vTI.at(i).dwValue==AppCFG.filter.dwPing))
+		{
+			TreeView_SetCheckBoxState(vTI.at(i).hTreeItem,i,vTI.at(i).dwState);
+		}
+	}
 
-
+	AppCFG.filter.bHideOfflineServers = TreeView_GetDWValue(16,8);
 	AppCFG.filter.dwShowServerWithMinPlayers = TreeView_GetDWValue(100,11);
 	AppCFG.filter.dwShowServerWithMaxPlayers = TreeView_GetDWValue(101,11);
 

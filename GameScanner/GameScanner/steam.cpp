@@ -314,6 +314,8 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 				int len = 12;
 				int len2 = (int)strlen(pGI->szQueryString)+1;
 				len +=len2;
+				sendbuf[len-1]=0; //for debug purpose ensure to fill out with zeros
+				sendbuf[len]=0;
 				if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 				{
 
@@ -356,6 +358,8 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 			int len = 12;
 			int len2 = (int)strlen(pGI->szQueryString)+1;
 			len +=len2;
+			sendbuf[len-1]=0;  //for debug purpose ensure to fill out with zeros
+			sendbuf[len]=0;
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
 
@@ -424,7 +428,8 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 			
 			memcpy(&sendbuf[len],pGI->szQueryString,strlen(pGI->szQueryString));
 			len +=len2;
-			
+			sendbuf[len-1]=0;  //for debug purpose ensure to fill out with zeros
+			sendbuf[len]=0;			
 
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
@@ -583,8 +588,6 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 			//dbg_print(country);				
 
 			pSI->cCountryFlag = 1;
-		//	if(pSI->cCountryFlag==7)
-		//		DebugBreak();
 		}
 
 	packetlen = send(pSocket, sendbuf, strlen(A2S_INFO), 0);
@@ -681,6 +684,10 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 			p++;
 			strncpy_s(pSI->szVersion,sizeof(pSI->szVersion),p,_TRUNCATE);
 		}
+		pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+		pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
+		pSI->wMod = Get_MapByName(pSI->cGAMEINDEX, pSI->szMod);
+
 	
 		DWORD dwChallenge;
 		if(STEAM_GetChallenge(pSI,dwChallenge)==0)

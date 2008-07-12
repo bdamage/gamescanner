@@ -323,7 +323,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 				pSI->cPure = atoi(szVarValue);
 			
 			szVarValue = Q3_Get_RuleValue("g_gametype",pServRules);
-			 pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
+			pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
 			/*
 			if(szVarValue!=NULL)
 			{				
@@ -792,7 +792,7 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 	char *pointer=NULL;
 	if(strncmp((char*)&Q3SI->leadData,"statusResponse",14)!=0)
 	{
-		if(strncmp((char*)&Q3SI->leadData,"infoResponse",12)!=0)
+		if(strncmp((char*)&WSI->leadData,"infoResponse",12)!=0)
 		{
 			if (QWSI->leadData[0]=='n') //could it be a Quake world or
 				pointer=QWSI->data;
@@ -809,7 +809,7 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 		}
 		else
 		{
-			pointer=Q2SI->data;
+			pointer=WSI->data;  //it is Warsow
 		}
 
 	} else
