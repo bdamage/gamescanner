@@ -11,7 +11,8 @@ extern int g_statusIcon;
 extern HWND g_hwndLogger;
 extern HINSTANCE g_hInst;
 extern GAME_INFO GI[MAX_SERVERLIST+1];
-
+extern RECT g_INFOIconRect;
+extern _WINDOW_CONTAINER WNDCONT[15];
 string UTILZ_sLogger;
 
 //Debug OFF!!!
@@ -263,11 +264,25 @@ void SetLogPath(const char *szPath)
 	strcpy_s(szLogPath,sizeof(szLogPath),szPath);
 }
 
+CRITICAL_SECTION	CS_Logger;
+	
+
+
+void LOGGER_Init()
+{
+	remove("Log_previous_start.htm");
+	rename("Log.htm","Log_previous_start.htm");
+	InitializeCriticalSection(&CS_Logger);
+}
+void LOGGER_DeInit()
+{
+	DeleteCriticalSection(&CS_Logger);
+}
+
 void AddGetLastErrorIntoLog(char* lpszFunction)
 {
 	
 			LPVOID lpMsgBuf;
-		//	LPVOID lpDisplayBuf;
 			DWORD dw = GetLastError(); 
 
 			FormatMessage(
@@ -280,19 +295,9 @@ void AddGetLastErrorIntoLog(char* lpszFunction)
 				(LPTSTR) &lpMsgBuf,
 				0, NULL );
 
-			// Display the error message and exit the process
-
-		//	lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-		//		(lstrlen((LPCTSTR)lpMsgBuf)+lstrlen((LPCTSTR)lpszFunction)+40)*sizeof(char)); 
-			
-		//	StringCchPrintf((LPTSTR)lpDisplayBuf, LocalSize(lpszFunction),"%s failed with error %d: %s", lpszFunction, dw, lpMsgBuf); 
-			
 			AddLogInfo(1,"GetLastError from func %s Info: %s",lpszFunction,lpMsgBuf);
 
-			LocalFree(lpMsgBuf);
-		//	LocalFree(lpDisplayBuf);
-			
-	
+			LocalFree(lpMsgBuf);	
 }
 
 void AddLogInfo(int color, char *lpszText, ...)
@@ -358,18 +363,17 @@ void AddLogInfo(int color, char *lpszText, ...)
 				vsprintf_s(szBuffer,sizeof(szBuffer),lpszText, argList);
 			
 			//	GetWindowTextLength(g_hwndLogger);
+				EnterCriticalSection(&CS_Logger);
 
 				UTILZ_sLogger.append(szBuffer);
 				UTILZ_sLogger.append("\r\n");
 
 				if(UTILZ_sLogger.length()>1000)
-				{
-					
 					UTILZ_sLogger.erase(UTILZ_sLogger.begin(),UTILZ_sLogger.begin()+UTILZ_sLogger.find_first_of("\n")); //strlen(szBuffer));
-				}
-
-	
+				
 				SetWindowText(g_hwndLogger,UTILZ_sLogger.c_str());
+				LeaveCriticalSection(&CS_Logger);
+
 				SendMessage(g_hwndLogger,WM_VSCROLL,LOWORD(SB_BOTTOM),NULL);
 #ifdef _DEBUG
 				OutputDebugString(szBuffer);
@@ -544,19 +548,25 @@ void SetStatusText( int icon, char *szMsg,...)
 
 	//Initialize variable argument list
 	va_start(argList, szMsg);
-
 	len = _vscprintf( szMsg, argList ) + 1; 
 	szBuffer = (char*)malloc( len * sizeof(char));
 
 	vsprintf_s(szBuffer,len,szMsg, argList);
 	
 	SetDlgItemText(g_hWnd,IDC_EDIT_STATUS,szBuffer);
-
-	//dbg_print(szBuffer);
-
 	va_end(argList);
 	free(szBuffer);	
-	g_statusIcon=icon;
+	if(icon!=g_statusIcon)
+	{
+		g_statusIcon=icon;
+		RECT rc;
+		GetClientRect(g_hWnd,&rc);
+		rc.top = WNDCONT[WIN_STATUS].rSize.top; 
+		rc.right = 25;
+		InvalidateRect(g_hWnd,&rc,TRUE);
+	//	for(int i=0;i<13;i++)
+	//		ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
+	}
 }
 
 //linked list clean up
@@ -586,6 +596,7 @@ void UTILZ_CleanUp_ServerRules(LPSERVER_RULES &pSR)
 		
 	}
 }
+
 void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 {
 //	dbg_print("Enter Q3_CleanUp_PlayerList(...)\n");
@@ -598,9 +609,6 @@ void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 		pPL->pNext = NULL;
 		if(pPL->szPlayerName!=NULL)
 		{
-		//	dbg_print("Removing: ");
-		//	dbg_print(pPL->szPlayerName);
-		//	dbg_print("\n");
 			free(pPL->szPlayerName);
 			pPL->szPlayerName = NULL;
 		}

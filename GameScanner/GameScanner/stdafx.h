@@ -2,7 +2,7 @@
 // or project specific include files that are used frequently, but
 // are changed infrequently
 //
-#define  APP_VERSION "1.0"
+#define  APP_VERSION "1.01"
 
 #pragma once
 #define _SECURE_SCL 0

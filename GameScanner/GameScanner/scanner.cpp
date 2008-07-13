@@ -246,7 +246,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		EnterCriticalSection(&SCANNER_cs);
 		if(pGI->dwScanIdx<size)
 		{
-			SetStatusText(0, "Scanning server %d of %d",pGI->dwScanIdx,size);
+			SetStatusText(pGI->iIconIndex, "Scanning server %d of %d",pGI->dwScanIdx,size);
 			idx = pGI->dwScanIdx;
 			REF_SERVER_INFO refSI;
 			refSI = pGI->pSC->vRefScanSI.at(idx);
@@ -295,7 +295,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		
 	}
 
-	SetStatusText(0, "Waiting for threads to die!");
+	SetStatusText(pGI->iIconIndex, "Waiting for threads to die!");
 	
 	//This ensures that all threads has been created properly and thread count critical sections works correctly
 	//dbg_print("Waiting for all threads to finish the loop!\n");

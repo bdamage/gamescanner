@@ -23,6 +23,9 @@ void dbg_print(char *szMsg, ...);
 #define ETSV_INFO 20
 #define ETSV_DEBUG 30
 #define ETSV_ERROR 40
+
+void LOGGER_DeInit();
+void LOGGER_Init();
 BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort);
 SOCKET getsock(const char *host, unsigned short port, int family, int socktype, int protocol);
 void AddGetLastErrorIntoLog(LPTSTR lpszFunction);
@@ -64,4 +67,5 @@ void SetStatusText(int icon, char *szMsg,...);
 char *	ReadPacket(SOCKET socket, size_t *len);
 char * DWORD_IP_to_szIP(DWORD dwIP);
 DWORD NetworkNameToIP(char *host_name,char *port);
+
 #endif

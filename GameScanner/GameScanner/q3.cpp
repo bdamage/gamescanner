@@ -1177,7 +1177,7 @@ getinfo = \xFF\xFF\xFF\xFFgetinfo\x00
 		{
 		    Q3_parseServers((char*)packet[i],packet_len[i],pGI);
 			free(packet[i]);			
-			SetStatusText(0,"Recieved %d new %s servers from master server.",Q3_dwNewTotalServers,pGI->szGAME_NAME);
+			SetStatusText(pGI->iIconIndex,"Recieved %d new %s servers from master server.",Q3_dwNewTotalServers,pGI->szGAME_NAME);
 			packet[i]=NULL;
 			if(g_bCancel)
 				break;

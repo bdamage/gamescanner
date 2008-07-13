@@ -393,7 +393,7 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 			pGI->dwTotalServers += dwNewSrv;
 			dwNewServers += dwNewSrv;
 			free(packet);
-			SetStatusText(0,"Recieved %d new %s servers from master server (Region %s).",dwNewServers,pGI->szGAME_NAME,REGIONS[cRegionCodeIndex].szName);
+			SetStatusText(pGI->iIconIndex,"Recieved %d new %s servers from master server (Region %s).",dwNewServers,pGI->szGAME_NAME,REGIONS[cRegionCodeIndex].szName);
 			packet=NULL;
 			i++;
 			if(dwLastPort==0) //End of server list

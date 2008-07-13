@@ -49,6 +49,13 @@ using namespace std;
 #define WIN_PROGRESSBAR		10
 #define WIN_PING			11
 
+#define ICO_INFO		8
+#define ICO_WARNING		6
+#define ICO_EMPTY		-1
+
+#define TOOLBAR_Y_OFFSET 35
+#define STATUSBAR_Y_OFFSET 25
+#define TABSIZE_Y 22
 
 //#define MAX_VAR 80
 //#define MAX_ONLINE_USER 60
@@ -384,7 +391,14 @@ struct SERVER_INFO
 };
 typedef SERVER_INFO* LPSERVERINFO;
 
-
+struct _WINDOW_CONTAINER{
+	int idx;
+	BOOL bShow;
+	HWND hWnd;
+	RECT rSize;
+	RECT rMinSize;
+};
+typedef _WINDOW_CONTAINER * LPWNDCONT;
 
 typedef vector<SERVER_INFO> vSRV_INF;
 

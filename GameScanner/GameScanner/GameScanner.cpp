@@ -2,10 +2,11 @@
 // Copyright (C) 2007, 2008 Kjell Lloyd 
 
 /*
-Version 1.0.0
+Version 1.0.1
 
 Product code:
-{C9C6D743-D7CF-46FD-9366-255F9DFD8442}
+1.0            {C9C6D743-D7CF-46FD-9366-255F9DFD8442}
+v 1.0.1 (1.01) {9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}
 
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -93,13 +94,7 @@ char TREEVIEW_VERSION[20];
 #define SERVERSLISTFILE_VER	0x1005   //Configure file version
 
 
-#define ICO_INFO		8
-#define ICO_WARNING		6
-#define ICO_EMPTY		-1
 
-#define TOOLBAR_Y_OFFSET 35
-#define STATUSBAR_Y_OFFSET 25
-#define TABSIZE_Y 22
 
 #define SCAN_ALL		0
 #define SCAN_FILTERED	1
@@ -155,24 +150,17 @@ extern BOOL SCANNER_bCloseApp;
 bool bFirstTimeSizeCalc= true;
 #define BORDER_SIZE 4
 
-struct _WINDOW_CONTAINER{
-	int idx;
-	BOOL bShow;
-	HWND hWnd;
-	RECT rSize;
-	RECT rMinSize;
-};
-typedef _WINDOW_CONTAINER * LPWNDCONT;
-_WINDOW_CONTAINER WNDCONT[10];
+
+_WINDOW_CONTAINER WNDCONT[15];
 
 
 
 #pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ ) 
 
 #ifndef _DEBUG
-TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " beta 2 ";
+TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION ;
 #else
-TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " beta 2 Compiled on " __DATE__ " at "__TIME__;
+TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " Compiled on " __DATE__ " at "__TIME__;
 #endif
 
 
@@ -1266,7 +1254,7 @@ char *Registry_GetGamePath(HKEY hkey,char *pszRegPath,char *pszRegKey,char *pszO
 {
 	HKEY HKey;
 	DWORD dwOpen=0,dwType=REG_SZ;
-	if(RegCreateKeyEx(hkey, pszRegPath, 0, 0, REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, 0, &HKey, &dwOpen) == ERROR_SUCCESS) 
+	if(RegCreateKeyEx(hkey, pszRegPath, 0, 0, REG_OPTION_NON_VOLATILE, KEY_READ, 0, &HKey, &dwOpen) == ERROR_SUCCESS) 
 		{
 			if(RegQueryValueEx(HKey,pszRegKey, 0, &dwType, (LPBYTE)pszOutputString, dwSizeOfBuffer) == ERROR_SUCCESS) 
 			{
@@ -1275,8 +1263,10 @@ char *Registry_GetGamePath(HKEY hkey,char *pszRegPath,char *pszRegKey,char *pszO
 			}
 		RegCloseKey(HKey);
 		}
+	AddGetLastErrorIntoLog("Registry_GetGamePath");
 	pszOutputString = NULL;
 	dwSizeOfBuffer=0;
+
 	return NULL;
 }
 
@@ -1913,7 +1903,7 @@ void Default_Appsettings()
 	WNDCONT[WIN_PROGRESSBAR].bShow = TRUE;
 	WNDCONT[WIN_RCON].bShow = FALSE;
 	WNDCONT[WIN_PING].bShow = FALSE;
-	WNDCONT[WIN_MAPPREVIEW].bShow = TRUE;
+	WNDCONT[WIN_MAPPREVIEW].bShow = FALSE;
 
 }
 
@@ -3271,17 +3261,10 @@ int TreeView_load()
 			GI[i].filter.bOnlyPrivate = TreeView_GetDWStateByGameType(i,2,9);
 			GI[i].filter.bPunkbuster = TreeView_GetDWStateByGameType(i,1,9);
 			GI[i].filter.bPure = TreeView_GetDWStateByGameType(i,26,9);
-			GI[i].filter.bRanked = TreeView_GetDWStateByGameType(i,27,9);
+			GI[i].filter.bRanked = TreeView_GetDWStateByGameType(i,27,9);		
 		}
 	}
-	 /* AppCFG.filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_PING : 	
-	
-                <Ping name="Ping 200" strval="" value="200" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
-                <Ping name="Ping 150" strval="" value="150" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
-                <Ping name="Ping 100" strval="" value="100" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
-                <Ping name="Ping 50" strval="" value="50" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
-*/
+
 	for(int i=0; i<vTI.size(); i++)
 	{
 		if((vTI.at(i).sElementName == "Ping") && (vTI.at(i).dwValue==AppCFG.filter.dwPing))
@@ -3668,6 +3651,7 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_PLAYERS].sName = "Players";
 	CUSTCOLUMNS[COL_PLAYERS].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PLAYERS].bActive = TRUE;
+	CUSTCOLUMNS[COL_PLAYERS].bSortAsc = TRUE;
 
 	CUSTCOLUMNS[COL_COUNTRY].id = COL_COUNTRY;	
 	CUSTCOLUMNS[COL_COUNTRY].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
@@ -3686,13 +3670,15 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_PING].sName = "Ping";
 	CUSTCOLUMNS[COL_PING].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PING].bActive = TRUE;
-	
+	CUSTCOLUMNS[COL_PING].bSortAsc = TRUE;
+
 	CUSTCOLUMNS[COL_IP].id = COL_IP;
 	CUSTCOLUMNS[COL_IP].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_IP].lvColumn.cx = 150;
 	CUSTCOLUMNS[COL_IP].sName = "IP";
 	CUSTCOLUMNS[COL_IP].columnIdx = idx++;
 	CUSTCOLUMNS[COL_IP].bActive = TRUE;
+	CUSTCOLUMNS[COL_IP].bSortAsc = TRUE;
 
 }
 
@@ -5099,16 +5085,14 @@ void OnPaint(HDC hDC)
 	//	Rectangle(hDC,  g_rcDestMapImg.left, g_rcDestMapImg.top,g_rcDestMapImg.left+5, g_rcDestMapImg.top+5);
 	} 
 
-
-
 	pt.y = g_INFOIconRect.top; //rc.bottom;
 	pt.x = g_INFOIconRect.left;//rc.left+2;
 
-//	if(g_statusIcon!=ICO_EMPTY)
 	if(g_hImageListIcons!=NULL)
+	{
 		ImageList_Draw(g_hImageListIcons,g_statusIcon,hDC,pt.x,pt.y,ILD_TRANSPARENT);
-
-	//InvalidateRect(g_hWnd,&g_INFOIconRect,TRUE);
+		//InvalidateRect(g_hWnd,&g_INFOIconRect,FALSE);
+	}
 	SetCurrentDirectory(USER_SAVE_PATH);
 
 }
@@ -5293,7 +5277,8 @@ void Initialize_WindowSizes()
 	SplitterGripArea[2].tvYPos = offSetY ;
 
 	SetRect(&WNDCONT[WIN_STATUS].rSize,25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE+2,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
-	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,WNDCONT[WIN_STATUS].rSize.right+25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE,rc.right*0.4,STATUSBAR_Y_OFFSET);
+	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,WNDCONT[WIN_STATUS].rSize.right+25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+2,rc.right*0.4,STATUSBAR_Y_OFFSET);
+	g_INFOIconRect.top = WNDCONT[WIN_STATUS].rSize.top;
 }
 
 
@@ -5358,7 +5343,7 @@ void Update_WindowSizes()
 	g_rcDestMapImg.right = g_rcDestMapImg.left + ImageSizeX;
 	g_rcDestMapImg.bottom = g_rcDestMapImg.top + ImageSizeX;
 	SetRect(&WNDCONT[WIN_MAPPREVIEW].rSize,g_rcDestMapImg.left,g_rcDestMapImg.top,g_rcDestMapImg.right,g_rcDestMapImg.bottom);
-
+	g_INFOIconRect.top = WNDCONT[WIN_STATUS].rSize.top;
 
 }
 
@@ -5374,9 +5359,9 @@ void OnSize(HWND hwndParent, BOOL bRepaint)
 	rc.top = TOOLBAR_Y_OFFSET;
 	rc.bottom-= (STATUSBAR_Y_OFFSET + TOOLBAR_Y_OFFSET);
 
-	GetClientRect(hwndParent, &g_INFOIconRect);
-	g_INFOIconRect.left+=2;
-	g_INFOIconRect.top = g_INFOIconRect.bottom-STATUSBAR_Y_OFFSET+BORDER_SIZE+1;
+	//GetClientRect(hwndParent, &g_INFOIconRect);
+	g_INFOIconRect.left=2;
+	
 	g_INFOIconRect.bottom = STATUSBAR_Y_OFFSET;
 	g_INFOIconRect.right = g_INFOIconRect.left +20;
 
@@ -5678,7 +5663,7 @@ nextGame:
 	if(iGame==MAX_SERVERLIST)  //reset
 		currGameIdx = iGame = 0;
 
-	SetStatusText(ICO_INFO,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(GI[currGameIdx].iIconIndex,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
 
 	switch(GI[currGameIdx].cGAMEINDEX)
 	{
@@ -5825,8 +5810,6 @@ nextGame:
 
 	g_bCancel = false;
 
-
-
 	//ListView_SortItems(g_hwndListViewServer,MyCompareFunc,COL_NUMPLAYERS);
 	//ListView_SetColumnWidth(g_hwndListViewServer,0,LVSCW_AUTOSIZE);
 	//ListView_SetColumnWidth(g_hwndListViewServer,1,LVSCW_AUTOSIZE);
@@ -5838,7 +5821,7 @@ nextGame:
 	goto NoError;
 
 exitError:
-	SetStatusText(ICO_INFO,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_WARNING,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
 NoError:
    g_bRunningQueryServerList = false;
    if (! SetEvent(hCloseEvent) ) 
@@ -5866,8 +5849,6 @@ DWORD WINAPI GetServerListThread(LPVOID lpParam )
 	if (! ResetEvent(hCloseEvent) ) 
        dbg_print("ResetEvent failed\n");
 
-	
-
 nextGame:
 	
 	currGameIdx = iGame;
@@ -5882,7 +5863,7 @@ nextGame:
 	if(iGame>MAX_SERVERLIST)  //reset
 		currGameIdx = iGame = 0;
 
-	SetStatusText(ICO_INFO,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(GI[currGameIdx].iIconIndex,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
 
 	switch(GI[currGameIdx].cGAMEINDEX)
 	{
@@ -8069,7 +8050,11 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									{
 										OnActivate_ServerList();
 										return TRUE;
-									}		
+									} else
+									{
+										OnActivate_ServerList(SCAN_FILTERED);
+										return TRUE;
+									}
 								}
 								break;
 
@@ -8230,9 +8215,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	SetCurrentDirectory(USER_SAVE_PATH);
 
 	//	bool installed = IsInstalled(ETSV_VERSION);
+	LOGGER_Init();
 
-	remove("Log_previous_start.htm");
-	rename("Log.htm","Log_previous_start.htm");
+
 	AddLogInfo(ETSV_INFO,"Initilizing Game Scanner...");
 	AddLogInfo(ETSV_INFO,"Version %s",APP_VERSION);
 	AddLogInfo(ETSV_INFO,"Executable directory: %s",EXE_PATH);
@@ -8424,6 +8409,7 @@ tryagain:
 
 	DestroyAcceleratorTable(hAccelTable); 
 	AddLogInfo(ETSV_INFO,"Exit app..");
+	LOGGER_DeInit();
 	return (int) msg.wParam;
 }
 
