@@ -93,7 +93,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			strcpy(sendbuf,"\xFF\xFF\xFF\xFFstatus\n");
 			break;
 		case Q2_SERVERLIST:
-			strcpy(sendbuf,"\xFF\xFF\xFF\xFFgetinfo\n");
+			strcpy(sendbuf,"\xFF\xFF\xFF\xFFstatus\n");
 			break;
 		case WARSOW_SERVERLIST:
 			strcpy(sendbuf,"\xFF\xFF\xFF\xFFgetinfo");
@@ -123,8 +123,11 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		//	if(pSI->cCountryFlag==7)
 		//		DebugBreak();
 		}
+//	if(pSI->cGAMEINDEX == Q2_SERVERLIST)
+//		packetlen = send(pSocket, sendbuf, 13, 0);
+//	else
+		packetlen = send(pSocket, sendbuf, 14, 0);
 
-	packetlen = send(pSocket, sendbuf, 14, 0);
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
@@ -429,15 +432,74 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 
 	char *end;
 	end = p+length-10;
-	
+/*
+Quake 2 master server response
+0x011F0BBB  01 00 00 00 00 00 00 00 00 00 00 00 00 40 27 00 00 01 00 00 00 39 e7 00 00 fd fd fd fd ff ff ff ff 73 65 72 76 65 72 73 20  .............@'......9ç..ýýýýÿÿÿÿservers 
+0x011F0BE4  45 09 a8 04 6d 19 d0 2b 0f c7 6d 06 26 67 08 62 6d 0c 26 67 08 62 6d 0b c1 6e 7a d7 6d 06 48 e8 e4 ba 6d 1c d9 aa 42 53 6d  E.¨.m.Ð+.Çm.&g.bm.&g.bm.Ánz×m.Hèäºm.ÙªBSm
+            1  2   3  4  5 6  1  2                                                                                                      23456123456123456
+
+0x01ECB9B8  ff ff ff ff 73 65 72 76 65 72 73 20 45 09 a8 04 6d 19 d0 2b 0f c7 6d 06 26 67 08 62 6d 0c 26 67 08 62 6d 0b c1 6e 7a d7 6d  ÿÿÿÿservers E.¨.m.Ð+.Çm.&g.bm.&g.bm.Ánz×m
+0x01ECB9E1  06 48 e8 e4 ba 6d 1c d9 aa 42 53 6d 06 d9 aa 42 53 6d 10 c3 7a d9 13 6d 24 cb ce 5f 01 6d 01 cb ce 5f 01 6d 0c cb ce 5f 01  .Hèäºm.ÙªBSm.ÙªBSm.ÃzÙ.m$ËÎ_.m.ËÎ_.m.ËÎ_.
+0x01ECBA0A  6d 10 cb ce 5f 01 6d 24 cb ce 5f 01 6d 0d cb ce 5f 01 6d 0b cb ce 5f 01 6d 0e cb ce 5f 01 6d 02 cb ce 5f 01 6d 07 cb ce 5f  m.ËÎ_.m$ËÎ_.m.ËÎ_.m.ËÎ_.m.ËÎ_.m.ËÎ_.m.ËÎ_
+0x01ECBA33  01 6d 0a cb ce 5f 01 6d 08 cb ce 5f 01 6d 09 cb ce 5f 01 6d 1a c3 7a d9 13 6d 2e c1 bd a0 22 6d 06 45 71 70 d0 6d 06 42 80  .m.ËÎ_.m.ËÎ_.m.ËÎ_.m.ÃzÙ.m.Á. "m.EqpÐm.B€
+0x01ECBA5C  32 de 6d 06 26 67 08 62 6d 09 26 67 08 62 6d 10 c3 bd 53 23 6d 06 c3 88 fa dc 6d 07 c3 88 fa dc 6d 0a c8 b1 e5 f8 6d 07 c8  2Þm.&g.bm.&g.bm.Ã.S#m.ÃˆúÜm.ÃˆúÜm.È±åøm.È
+0x01ECBA85  62 fa 0f 6d 06 d4 48 73 f8 6d 10 4c 5d 98 47 6d 06 45 40 24 f2 6d 06 c8 b1 e5 f8 6d 06 62 e3 c1 73 6d 06 18 16 a8 99 6d 06  bú.m.ÔHsøm.L]˜Gm.E@$òm.È±åøm.bãÁsm...¨™m.
+0x01ECBAAE  d9 73 9b 78 6d 08 d9 73 9b 78 6d 06 d9 73 9b 78 6d 07 d9 73 9b 78 6d 09 d9 73 9b 78 6d 0a 47 6d 78 f3 6d 07 4a 36 ba e2 6d  Ùs.xm.Ùs.xm.Ùs.xm.Ùs.xm.Ùs.xm.Gmxóm.J6ºâm
+0x01ECBAD7  0a 4a 36 ba e2 6d 1a 4a 36 ba e2 6c 12 4a 36 ba e2 6d 1b 4a 36 ba e2 6d 1c 4a 36 ba e2 6d 0e 4a 36 ba e2 6d 0c 4a 36 ba e2  .J6ºâm.J6ºâl.J6ºâm.J6ºâm.J6ºâm.J6ºâm.J6ºâ
+0x01ECBB00  6d 06 4a 36 ba e2 6d 0d 4a 36 ba e2 6d 56 46 56 2c 9a 6d 07 4a 36 ba e2 6d 11 4a 36 ba e2 6d 10 46 56 2c 9a 6d 06 c2 f7 c0  m.J6ºâm.J6ºâmVFV,šm.J6ºâm.J6ºâm.FV,šm.Â÷À
+0x01ECBB29  2b 6d 06 c2 f7 c0 2d 6d 06 c8 48 cc 9b 6d 10 c8 48 cc 9b 6d 17 c8 48 cc 9b 6d 11 c8 62 fa 0f 6d 07 d9 99 3b 6a 6d 0b d9 99  +m.Â÷À-m.ÈHÌ.m.ÈHÌ.m.ÈHÌ.m.Èbú.m.Ù™;jm.Ù™
+
+
+0x02021C23    0   0   0   0   0  64  39   0   0   1   0   0   0 250 171   0   0 253 253 253 253 255 255 255 255 115 101 114 118 101 114 115  32  .....@'......ú«..ýýýýÿÿÿÿservers 
+0x02021C44   69   9 168   4 109  25 208  43  15 199 109   6  38 103   8  98 109  12  38 103   8  98 109  11 193 110 122 215 109   6  72 232 228  E.¨.m.Ð+.Çm.&g.bm.&g.bm.Ánz×m.Hèä
+0x02021C65  186 109  28 217 170  66  83 109   6 217 170  66  83 109  16 195 122 217  19 109  36 203 206  95   1 109   1 203 206  95   1 109  12  ºm.ÙªBSm.ÙªBSm.ÃzÙ.m$ËÎ_.m.ËÎ_.m.
+0x02021C86  203 206  95   1 109  16 203 206  95   1 109  36 203 206  95   1 109  13 203 206  95   1 109  11 203 206  95   1 109  14 203 206  95  ËÎ_.m.ËÎ_.m$ËÎ_.m.ËÎ_.m.ËÎ_.m.ËÎ_
+0x02021CA7    1 109   2 203 206  95   1 109   7 203 206  95   1 109  10 203 206  95   1 109   8 203 206  95   1 109   9 203 206  95   1 109  26  .m.ËÎ_.m.ËÎ_.m.ËÎ_.m.ËÎ_.m.ËÎ_.m.
+0x02021CC8  195 122 217  19 109  46 193 189 160  34 109   6  69 113 112 208 109   6  66 128  50 222 109   6  38 103   8  98 109   9  38 103   8  ÃzÙ.m.Á. "m.EqpÐm.B€2Þm.&g.bm.&g.
+0x02021CE9   98 109  16 195 189  83  35 109   6 195 136 250 220 109   7 195 136 250 220 109  10 200 177 229 248 109   7 200  98 250  15 109   6  bm.Ã.S#m.ÃˆúÜm.ÃˆúÜm.È±åøm.Èbú.m.
+0x02021D0A  212  72 115 248 109  16  76  93 152  71 109   6  69  64  36 242 109   6 200 177 229 248 109   6  98 227 193 115 109   6  24  22 168  ÔHsøm.L]˜Gm.E@$òm.È±åøm.bãÁsm...¨
+0x02021D2B  153 109   6 217 115 155 120 109   8 217 115 155 120 109   6 217 115 155 120 109   7 217 115 155 120 109   9 217 115 155 120 109  10  ™m.Ùs.xm.Ùs.xm.Ùs.xm.Ùs.xm.Ùs.xm.
+0x02021D4C   71 109 120 243 109   7  74  54 186 226 109  10  74  54 186 226 109  26  74  54 186 226 108  18  74  54 186 226 109  27  74  54 186  Gmxóm.J6ºâm.J6ºâm.J6ºâl.J6ºâm.J6º
+0x02021D6D  226 109  28  74  54 186 226 109  14  74  54 186 226 109  12  74  54 186 226 109   6  74  54 186 226 109  13  74  54 186 226 109  86  âm.J6ºâm.J6ºâm.J6ºâm.J6ºâm.J6ºâmV
+0x02021D8E   70  86  44 154 109   7  74  54 186 226 109  17  74  54 186 226 109  16  70  86  44 154 109   6 194 247 192  43 109   6 194 247 192  FV,šm.J6ºâm.J6ºâm.FV,šm.Â÷À+m.Â÷À
+0x02021DAF   45 109   6 200  72 204 155 109  16 200  72 204 155 109  23 200  72 204 155 109  17 200  98 250  15 109   7 217 153  59 106 109  11  -m.ÈHÌ.m.ÈHÌ.m.ÈHÌ.m.Èbú.m.Ù™;jm.
+0x02021DD0  217 153  59 106 109  10 217 153  59 106 109   6 217 153  59 106 109  15 217 153  59 106 109   7 217   8 180  91 109   7 195   2 123  Ù™;jm.Ù™;jm.Ù™;jm.Ù™;jm.Ù.´[m.Ã.{
+0x02021DF1  135 109   6 217 170  66  83 109   7 212  59  18  22 109   6  81 161 190  83 109   6 203 206  95   1 109   6  88 198  14 107 109   6  .m.ÙªBSm.Ô;..m.Q¡.Sm.ËÎ_.m.XÆ.km.
+0x02021E12  200  72 204 155 109  15  69  90  34  38 109  56 195 148  48 249 109   6 212  59  18  25 109   6  89  31 129  98 109   6  89  31 129  ÈHÌ.m.EZ"&m8Ã”0ùm.Ô;..m.Y..bm.Y..
+0x02021E33   98 109   8  74  54 186 226 109   7  74  54 186 226 109  15  74  54 186 226 109  95  74  54 186 226 109  29  74  54 186 226 109   8  bm.J6ºâm.J6ºâm.J6ºâm_J6ºâm.J6ºâm.
+0x02021E54   74  54 186 226 109   9  70  85 119 164 109  66  70  84 100 178 109   7  74  54 186 227 109   6  70  84 100 178 109   6  70  84 100  J6ºâm.FUw¤mBFTd.m.J6ºãm.FTd.m.FTd
+0x02021E75  178 109  10  70  84 100 178 109   8  70  86  44 154 109   8  70  84 100 178 109   9  70  84 100 178 109  12  69  93  91 146 109   6  .m.FTd.m.FV,šm.FTd.m.FTd.m.E][’m.
+0x02021E96   84  32  48  65 109   6  84  32  48  65 109  16  91 102 160  49 109   6  81 198 187  69 109   7  81 198 187  69 109   6  91 102 160  T 0Am.T 0Am.[f 1m.QÆ»Em.QÆ»Em.[f 
+0x02021EB7   49 109  16  75 169 121   1 109   7  24  21  15  84 245   4 200 104 255  82  48 142 200  72 204 155 109  18 217 112 240  61 109   6  1m.K©y.m....Tõ.ÈhÿR0ŽÈHÌ.m.Ùpð=m.
+0x02021ED8   83 227 160 147 109   6 200 104  15 171 109   7  84  20  12   2 109   6 217   8 180  90 109   7 217   8 180  90 109   9 217   8 180  Sã “m.Èh.«m.T...m.Ù.´Zm.Ù.´Zm.Ù.´
+0x02021EF9   90 109   6 200 155 160   6 109  14  82 117 194 235 109   6 194 241 250 103 109   6  89 166  33 224 109   6 216   6 227  94 109   8  Zm.È. .m.RuÂëm.Âñúgm.Y¦!àm.Ø.ã^m.
+0x02021F1A  216   6 227  94 109   6 216   6 227  94 109   9 213 215 194 158 109   6 216   6 227  94 109   7 213 215 194 158 109   9 208 104 192  Ø.ã^m.Ø.ã^m.Õ×Âžm.Ø.ã^m.Õ×Âžm.ÐhÀ
+0x02021F3B  243 109   6 213 215 194 158 109   7 213 215 194 158 109   8  84  32  48  65 109  26 195 246 243 169 109   6 201  95 155 251 109   6  óm.Õ×Âžm.Õ×Âžm.T 0Am.Ãöó©m.É_.ûm.
+0x02021F5C  194  65  14 114 109   6 195 122 217  19 109  41 213 168  36 138 109   6   0   0   0   0   0   0   0   0   0   0   0   0   0   0   0  ÂA.rm.ÃzÙ.m)Õ¨$Šm...
+
+Quake 3
+0x01EF1F80  ff ff ff ff 67 65 74 73 65 72 76 65 72 73 52 65 73 70 6f 6e 73 65 5c d8 b4 ed 0a a1 9b 5c d9 4f b6 f7 82 19 5c d8 b4 ed 0e  ÿÿÿÿgetserversResponse\Ø´í.¡.\ÙO¶÷..\Ø´í.
+0x01EF1FA9  d7 90 5c d8 b4 ed 0e 6d 42 5c 4e 3b 70 80 6d 38 5c d8 b4 ed 0d f4 b4 5c d8 b4 ed 0e 6d 38 5c 57 f9 b7 f2 f4 f3 5c 59 95 c2  ×.\Ø´í.mB\N;p€m8\Ø´í.ô´\Ø´í.m8\Wù·òôó\Y.Â
+
+CoD 2                                                                                                     \
+0x01249028  ff ff ff ff 67 65 74 73 65 72 76 65 72 73 52 65 73 70 6f 6e 73 65 0a 00 5c 4e 8f 19 5d d9 03 5c d5 ef d0 16 71 21 5c 48 33  ÿÿÿÿgetserversResponse..\N..]Ù.\ÕïÐ.q!\H3
+0x01249051  3c 15 71 20 5c 43 e4 0b 45 71 20 5c 51 13 db d1 71 34 5c 54 c8 fc e9 69 91 5c 51 00 d9 b1 6a 3e 5c d8 06 e1 69 71 20 5c 51  <.q \Cä.Eq \Q.ÛÑq4\TÈüéi‘\Q.Ù±j>\Ø.áiq \Q
+
+CoD 4                                                                                                    \
+0x01249028  ff ff ff ff 67 65 74 73 65 72 76 65 72 73 52 65 73 70 6f 6e 73 65 0a 00 5c 41 63 f6 4f 71 20 5c 5b 79 88 c3 71 25 5c c1 11  ÿÿÿÿgetserversResponse..\AcöOq \[yˆÃq%\Á.
+0x01249051  db 28 71 20 5c 55 be 0b 13 71 20 5c 52 62 e1 b6 71 20 5c 57 76 44 9a 71 20 5c d1 61 55 71 71 20 5c 43 a7 ad f2 d7 20 5c d8  Û(q \U...q \Rbá¶q \WvDšq \ÑaUqq \C§­ò× \Ø
+
+
+*/
 	//Scan to start
-	while(p[0]!=0x5c)
+	while((p[0]!=0x5c) && (p[0]!=0x20))
 	{
 		p++;
 		if(p>end)
 			break;
 	}
 	p++;
+
 	while(p<end) 
 	{	
 		if((p[0]=='E') && (p[1]=='O') && (p[2]=='T') && (p[3]==0x00))
@@ -450,26 +512,29 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 		//Parse and initialize server info
 		dwIP = (DWORD*)&p[0];
 		ptempSI.dwIP = ntohl((DWORD)*dwIP); 
-		//sprintf_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),"%d.%d.%d.%d",(unsigned char)p[0],(unsigned char)p[1],(unsigned char)p[2],(unsigned char)p[3]);		
-		
+	
 		p+=4;
 		ptempSI.dwPort  = ((p[0])<<8);
 		ptempSI.dwPort |=(unsigned char)(p[1]);
 		ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
 		
+		if(pGI->cGAMEINDEX == Q2_SERVERLIST)
+			p+=2; //q2
+		else
+			p+=3; //q3
+		
+		int hash = ptempSI.dwIP + ptempSI.dwPort;
 
-		if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
-		{		
+		//if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
+		if(UTILZ_checkforduplicates(pGI,  hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
+		{	
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
-
-
-
 			ptempSI.dwPing = 9999;
 			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
 			ptempSI.cCountryFlag = 0;
 			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;
-		
+			pGI->pSC->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 			pGI->pSC->vSI.push_back(ptempSI);
 
 			if(Q3_InsertServerItem!=NULL)
@@ -479,10 +544,6 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 
 			Q3_dwNewTotalServers++;
 		} //end serverexsist
-
-		//Q3_dwTotalServers++;
-		p+=3;
-	
 
 	} //end while
 	//dbg_print("Parsing servers DONE!\n");
@@ -909,16 +970,20 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %hu empty full",pGI->dwProtocol);
 	}
 	else
-		sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString, pGI->dwProtocol);
-
-
-	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
 	{
-		sprintf(sendbuf, "query\n\0");
+		if(pGI->dwProtocol==0)
+			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s empty full",pGI->szQueryString);
+		else
+			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString, pGI->dwProtocol);
 	}
 
 	int len = (int)strlen(sendbuf);
 
+	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
+	{
+		sprintf(sendbuf, "query\x0a\x00");
+		len = (int)strlen(sendbuf)+1;
+	}
 
 
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); // etmaster.idsoftware.com"27950 master server
@@ -1020,8 +1085,7 @@ getinfo = \xFF\xFF\xFF\xFFgetinfo\x00
 		if (events.lNetworkEvents & FD_CONNECT)
 		{
 			AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
-			
-			
+			dbg_print("Sending command %s Len: %d",sendbuf,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
 				Q3_bScanningInProgress = FALSE;
@@ -1038,11 +1102,13 @@ getinfo = \xFF\xFF\xFF\xFFgetinfo\x00
 			//AddLogInfo(0,"\nFD_READ: %d, %d",events.iErrorCode[FD_READ_BIT],i);
 			// Read the data and write it to stdout
 			
-			//packet[i]=(unsigned char*)getpacket(ConnectSocket, &packetlen);
+	//		if(pGI->cGAMEINDEX==Q2_SERVERLIST)
+	//			packet[i]=(unsigned char*)getpacket(ConnectSocket, &packetlen);
+	//		else
 			packet[i]=(unsigned char*)ReadPacket(ConnectSocket, &packetlen);
 			packet_len[i] = packetlen;
 			i++;
-			if(i>MAX_PACKETS)
+			if(i>=MAX_PACKETS)
 				break;
 	
 		

@@ -23,7 +23,7 @@ void dbg_print(char *szMsg, ...);
 #define ETSV_INFO 20
 #define ETSV_DEBUG 30
 #define ETSV_ERROR 40
-
+BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort);
 SOCKET getsock(const char *host, unsigned short port, int family, int socktype, int protocol);
 void AddGetLastErrorIntoLog(LPTSTR lpszFunction);
 #define getsockudp(host,port) getsock(host, port, AF_INET, SOCK_DGRAM, IPPROTO_UDP)

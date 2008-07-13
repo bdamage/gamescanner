@@ -3,10 +3,13 @@
 #define __ETSV__
 #include <vector>
 #include <string>
+#define _DEFINE_DEPRECATED_HASH_CLASSES 0
+#include <hash_map>
 #include <Winsock2.h.>
 #include "resource.h"
 
 
+using namespace stdext;
 using namespace std;
 
 #define MAX_VAR_LEN 100
@@ -66,7 +69,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FAVORITE			998
 #define PRIVATE				999
 
-#define MAX_SERVERLIST		14  //This value should be as the last one
+#define MAX_SERVERLIST		15  //This value should be as the last one
 #define ET_SERVERLIST		0
 #define ETQW_SERVERLIST		1
 #define Q3_SERVERLIST		2
@@ -81,7 +84,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define CSS_SERVERLIST		11
 #define QW_SERVERLIST		12
 #define Q2_SERVERLIST		13
-
+#define OPENARENA_SERVERLIST 14
 
 #define REDRAW_CURRENT_LIST				100
 #define SHOW_FAVORITES_PUBLIC			101
@@ -403,12 +406,17 @@ using Gametype var and index combined.
 */
 typedef vector<REF_SERVER_INFO> vREF_SRV_INF;
 typedef vector<REF_SERVER_INFO> vREF_SRV_INF;
+typedef pair <int, int> Int_Pair;
+typedef hash_multimap <int, int> serverhash;
+// create an empty hash_multimap hmp0 of key type integer
+
 
 struct SERVER_CONTAINER
 {
 	vSRV_INF vSI;
 	vREF_SRV_INF vRefListSI;
 	vREF_SRV_INF vRefScanSI;
+	serverhash shash;
 	vGF	 vFilterMod;
 	vGF	 vFilterGameType;
 	vGF	 vFilterMap;

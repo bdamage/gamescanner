@@ -316,6 +316,7 @@
 #define ID_STATS_PLAYER                 32898
 #define IDC_EDIT_LOGGER                 32899
 #define IDM_RESTORE_COLUMNS             32900
+#define IDM_DELETE_SERVERLIST           32901
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 

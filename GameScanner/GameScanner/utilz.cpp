@@ -496,7 +496,31 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 	return addr;
 }
 
+BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
+{
+	hash_multimap <int, int>::iterator hmp_Iter;
+	hmp_Iter = pGI->pSC->shash.find(hash);
+	if(hmp_Iter!= pGI->pSC->shash.end())
+	{
+		while(hmp_Iter!= pGI->pSC->shash.end())
+		{
+			Int_Pair idx = *hmp_Iter;		
+		//	if( pGI->pSC->vSI.size()>0)  //commented for optimization
+			{
+				SERVER_INFO  pSI = (SERVER_INFO) pGI->pSC->vSI.at(idx.second);
+				if((dwIP == pSI.dwIP) && (dwPort == pSI.dwPort))
+					return TRUE;
+				
+			}
+			//else
+			//	return FALSE;
+			hmp_Iter++;
+		}
 
+		return FALSE;
+	}
+	return FALSE;
+}
 
 //Check if the server exsist
 bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)

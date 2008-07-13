@@ -3,6 +3,8 @@
 
 
 #include "stdafx.h"
+#define _DEFINE_DEPRECATED_HASH_CLASSES 0
+
 
 #include "steam.h"
 #include "utilz.h"
@@ -464,11 +466,6 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 }
 
 
-
-
-
-
-
 DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLastIP,DWORD &dwLastPort)
 {
 	STEAM_MASTER_LEADDATA *leaddata;
@@ -512,18 +509,39 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		ptempSI.dwPort  = ((p[0])<<8);
 		ptempSI.dwPort |=(unsigned char)(p[1]);
 		ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
+		
+
 
 		p+=2;
+
+		int hash = ptempSI.dwIP + ptempSI.dwPort;
+
+
+/*	hash test code	
+	ptempSI.dwIP =  0xFFaabb01;
+		ptempSI.dwPort = 1001;
+		hash = 0xFFaabb01 + 1001;
+		hmp0.insert(Int_Pair(hash,ptempSI.dwIndex) );
+		pGI->pSC->vSI.push_back(ptempSI);
+
+		ptempSI.dwIP =  0xFFaabb02;
+		ptempSI.dwPort = 1000;
+		int hash2 = 0xFFaabb02 + 1000;
+	
+		if(STEAM_checkforduplicates(pGI,hash2,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
+			hmp0.insert(Int_Pair(hash2,ptempSI.dwIndex+1) );
+	*/
 		//AddLogInfo(0,"Got   >%d %s:%d",i,ptempSI.szIPaddress,ptempSI.dwPort);
-		if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
+		if(UTILZ_checkforduplicates(pGI,hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)//if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
 		{					
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
 		//	AddLogInfo(0,"New   >%d %s:%d",i,ptempSI.szIPaddress,ptempSI.dwPort);
 			ptempSI.dwPing = 9999;
 			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
 			ptempSI.cCountryFlag = 0;
-			ptempSI.bNeedToUpdateServerInfo = true;
+			ptempSI.bNeedToUpdateServerInfo = true;			
 			ptempSI.dwIndex = idx++;
+			pGI->pSC->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 		
 			pGI->pSC->vSI.push_back(ptempSI);
 

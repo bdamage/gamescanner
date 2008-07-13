@@ -1663,13 +1663,10 @@ void Default_GameSettings()
 	GI[WARSOW_SERVERLIST].bActive = false;
 #endif
 
-
 	strcpy(GI[WARSOW_SERVERLIST].szQueryString,"Warsow");
 	strcpy(GI[WARSOW_SERVERLIST].szProtocolName,"warsow");
 	GI[WARSOW_SERVERLIST].dwDefaultPort = 28960;
 	GI[WARSOW_SERVERLIST].pSC = &SC[WARSOW_SERVERLIST];
-
-
 
 	GI[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
 	GI[COD4_SERVERLIST].iIconIndex = Get_GameIcon(COD4_SERVERLIST);
@@ -1800,6 +1797,35 @@ void Default_GameSettings()
 	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
 	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
 
+
+	GI[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
+
+	GI[OPENARENA_SERVERLIST].iIconIndex = Get_GameIcon(OPENARENA_SERVERLIST);
+	GI[OPENARENA_SERVERLIST].dwViewFlags = 0;
+	strncpy(GI[OPENARENA_SERVERLIST].szGAME_NAME,"Open Arena",MAX_PATH);
+	strncpy(GI[OPENARENA_SERVERLIST].szMasterServerIP,"dpmaster.deathmask.net",MAX_PATH);
+	GI[OPENARENA_SERVERLIST].dwMasterServerPORT = 27950;
+	GI[OPENARENA_SERVERLIST].dwProtocol = 0;
+	strncpy(GI[OPENARENA_SERVERLIST].szMAP_MAPPREVIEW_PATH,"openarenamaps",MAX_PATH);
+	strncpy(GI[OPENARENA_SERVERLIST].szGAME_CMD,"",MAX_PATH);
+	dwBuffSize = sizeof(GI[OPENARENA_SERVERLIST].szGAME_PATH);
+
+	//"C:\Program Files\Warsow\warsow_x86.exe" +set fs_usehomedir 1 +set fs_basepath "C:/Program Files/Warsow"
+	strcpy(GI[OPENARENA_SERVERLIST].szGAME_PATH,"C:\\Program Files\\Warsow\\warsow_x86.exe");
+	strcpy(GI[OPENARENA_SERVERLIST].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"C:/Program Files/Warsow\"");
+
+#ifdef _DEBUG
+	GI[OPENARENA_SERVERLIST].bActive = true;
+#else
+	GI[OPENARENA_SERVERLIST].bActive = false;
+#endif
+
+	strcpy(GI[OPENARENA_SERVERLIST].szQueryString,"Open Arena");
+	strcpy(GI[OPENARENA_SERVERLIST].szProtocolName,"openarena");
+	GI[OPENARENA_SERVERLIST].dwDefaultPort = 28960;
+
+
+	
 	RegisterProtocol(EXE_PATH);
 }
 
@@ -3445,6 +3471,7 @@ void ClearAllServerLinkedList()
 		GI[i].pSC->vSI.clear();
 		GI[i].pSC->vRefListSI.clear();
 		GI[i].pSC->vRefScanSI.clear();
+		GI[i].pSC->shash.clear();
 	}
 }
 
@@ -4371,7 +4398,8 @@ void LoadServerListV2(GAME_INFO *pGI)
 						srv.pServerRules = NULL;
 						srv.cLocked = 0;
 						srv.bUpdated = 0;
-
+						int hash = srv.dwIP + srv.dwPort;
+						pGI->pSC->shash.insert(Int_Pair(hash,srv.dwIndex));
 						pGI->pSC->vSI.push_back(srv);
 			
 						pGI->dwTotalServers++;
@@ -4384,69 +4412,6 @@ void LoadServerListV2(GAME_INFO *pGI)
 	}
 
 }
-
-//TODO rewrite file structure for easier future changes/additional info
-SERVER_INFO *LoadServerList(GAME_INFO *pGI)
-{
-	SERVER_INFO	 srv;
-	SERVER_INFO	 *firstsrv=NULL;
-
-	dbg_print("Loading serverlist %s",pGI->szFilename); 
-	
-	SetCurrentDirectory(USER_SAVE_PATH);
-	FILE *fp=NULL;
-	fopen_s(&fp,pGI->szFilename, "rb");
-
-	if(fp==NULL)
-	{
-		//For backward compatability, so try to find the server list at the same path as the EXE file.
-		SetCurrentDirectory(EXE_PATH);
-		fp=fopen(pGI->szFilename, "rb");
-	}
-
-
-	pGI->dwTotalServers	 = 0;
-	DWORD idx=0;
-	if(fp!=NULL)
-	{
-		pGI->pSC->vSI.clear();
-		while( !feof( fp ) )
-		{
-		
-			memset(&srv,0,sizeof(SERVER_INFO));
-			if(fread(&srv, sizeof(SERVER_INFO), 1, fp)!=0)	
-			{
-			/*	if(srv.cIdentifier[0]!='S' || srv.cIdentifier[1]!='E' || (srv.dwVersion != SERVERSLISTFILE_VER))
-				{
-					MessageBox(NULL,"Fatal error while loading serverlist!\nReason could be wrong version of file or corrupt file.","Error!",MB_OK|MB_ICONERROR);
-					fclose(fp);
-					char szFilename[50];
-					sprintf(szFilename,"%s_backup",pGI->szFilename);
-					remove(szFilename);
-					rename(pGI->szFilename,szFilename);
-					return NULL;
-
-				}*/
-			
-				srv.dwIndex = idx++;
-
-				srv.pPlayerData = NULL;
-				srv.pServerRules = NULL;
-				srv.cLocked = 0;
-				srv.bUpdated = 0;
-
-				pGI->pSC->vSI.push_back(srv);
-	
-				pGI->dwTotalServers++;
-			}
-
-		}
-		fclose(fp);
-	}
-
-	return firstsrv;
-}
-
 
 
 void SaveAllServerList()
@@ -4478,6 +4443,7 @@ void DeleteAllServerLists()
 			ListView_DeleteAllItems(g_hwndListViewVars);
 			ListView_DeleteAllItems(g_hwndListViewPlayers);
 			ListView_DeleteAllItems(g_hwndListViewServer);
+
 			ClearAllServerLinkedList();
 			ListView_SetItemCount(g_hwndListViewServer,0);
 		
@@ -4497,6 +4463,42 @@ void DeleteAllServerLists()
 	}
 }
 
+void DeleteServerLists(char cGameIdx)
+{
+	int ret = MessageBox(NULL,"Are you sure you want to delete all servers including favorites?","Warning!",MB_OKCANCEL | MB_ICONWARNING);
+	if(ret == IDOK)
+	{
+		if(g_bRunningQueryServerList==false)
+		{
+			ListView_DeleteAllItems(g_hwndListViewVars);
+			ListView_DeleteAllItems(g_hwndListViewPlayers);
+			ListView_DeleteAllItems(g_hwndListViewServer);
+			ListView_SetItemCount(g_hwndListViewServer,0);
+		
+			OutputDebugString(GI[cGameIdx].szGAME_NAME);
+			OutputDebugString(" - CLEAN UP SERVERLIST\n");
+				
+			GI[cGameIdx].dwTotalServers = 0;
+			GI[cGameIdx].pSC->vSI.clear();
+			GI[cGameIdx].pSC->vRefListSI.clear();
+			GI[cGameIdx].pSC->vRefScanSI.clear();
+			GI[cGameIdx].pSC->shash.clear();
+
+			g_CurrentSRV=NULL;
+
+			char szBuffer[100];
+			remove(GI[cGameIdx].szFilename);
+			GI[cGameIdx].dwTotalServers = 0;
+			sprintf(szBuffer,"%s (%d)",GI[cGameIdx].szGAME_NAME,GI[cGameIdx].dwTotalServers);
+			if(GI[cGameIdx].bActive)
+				TreeView_SetItemText(GI[cGameIdx].hTI,szBuffer);
+	
+			MessageBox(NULL,"Master serverlist deleted!","Info",MB_OK);
+		
+		}else
+			MessageBox(NULL,"You can't delete while scanning/updating servers!","Warning!",MB_OKCANCEL | MB_ICONWARNING);
+	}
+}
 
 
 /*
@@ -7284,7 +7286,9 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 				case IDM_LAUNCH_GAME_ONLY:
 					ExecuteGame(currCV,"");
 				break;
-				
+				case IDM_DELETE_SERVERLIST:
+					DeleteServerLists(GI[g_currentGameIdx].cGAMEINDEX);
+					break;
 
 			}
 		}
@@ -7308,6 +7312,9 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_SCAN,szText);
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,"Launch game only.");
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,"&Add IP to Favorites");
+			sprintf_s(szText,sizeof(szText),"Delete serverlist for %s.",GI[g_currentGameIdx].szGAME_NAME);
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE_SERVERLIST,szText);
+			
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MINIMUMPLAYERS,"&Modify minimum players a server must have.");
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MAXIMUMPLAYERS,"&Modify maximum players a server must have.");
 
