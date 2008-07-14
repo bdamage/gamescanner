@@ -21,7 +21,7 @@ Improved speed when recieving new servers from the master server, this is most n
  comes to 4000+ servers.
 Other minor bug fixes.
 
--Removed mapshot images to reduce the size of the installer. '
+-Removed mapshot images to reduce the size of the installer. 
  Game Scanner still supports map preview but it has to be added manually.
 
 

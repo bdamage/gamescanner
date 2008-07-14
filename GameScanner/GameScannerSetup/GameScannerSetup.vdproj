@@ -5030,7 +5030,7 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}"
+        "ProductCode" = "8:{EAB596BD-45FF-49A2-87CD-7EC3DF77E69C}"
         "PackageCode" = "8:{80B7F592-31FB-4C19-B83A-A6839AFE673C}"
         "UpgradeCode" = "8:{1E1FC67E-A466-4A1F-A278-286B6905C57B}"
         "RestartWWWService" = "11:FALSE"

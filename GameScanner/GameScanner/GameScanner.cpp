@@ -3,9 +3,11 @@
 
 /*
 Version 1.0.1
-
 Product code:
+ETSV 5.x?     {122CD6F9-B1C2-4124-B5B4-5C0B255B74D1}
+
 1.0            {C9C6D743-D7CF-46FD-9366-255F9DFD8442}
+v1.0 beta 2    {EAB596BD-45FF-49A2-87CD-7EC3DF77E69C}
 v 1.0.1 (1.01) {9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}
 
 Upgrade code:
@@ -8070,15 +8072,11 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if((lpnmia->hdr.code == NM_SETFOCUS) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
 				{
 					if (!RegisterHotKey(g_hwndListViewServer, HOTKEY_ID_CTRL_C, MOD_CONTROL, 0x43))
-						AddLogInfo(ETSV_WARNING,"Couldn't register CTRL+V hotkey.");
-					else
-						AddLogInfo(ETSV_INFO, "Register CTRL+V hotkey.");
-			
+						AddLogInfo(ETSV_WARNING,"Couldn't register CTRL+V hotkey.");							
 				}
 				else if((lpnmia->hdr.code == NM_KILLFOCUS) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
 				{
 					//Unregister copy short key
-					dbg_print("Unregister CTRL+V hotkey.");
 					UnregisterHotKey(g_hwndListViewServer,HOTKEY_ID_CTRL_C);
 				}
 				else if((lpnmia->hdr.code == NM_DBLCLK) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
@@ -8347,11 +8345,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 			MessageBox(0, "Couldn't register hotkey!\nProbably due to another application is running as a minimzer.\nETSV will disable minimze function & continue.\nYou can enable it from the settings if neccessary.", NULL, NULL);
 			AppCFG.bUse_minimize = false;
 		}
-		else
-		{
-			AddLogInfo(ETSV_INFO,"Registring hotkey success. (%4.4X  %C)",AppCFG.dwMinimizeMODKey ,AppCFG.cMinimizeKey);
-		}
-
 	}
 
 	
