@@ -4,6 +4,13 @@ An proper installer will be made later on.
 
 ! No backward compatible with ETSV!
 
+Version 1.02
+------------------
+
+New Features:
+QuakeWorld now displays Mod types, including Qizmo.
+
+Bug fixes:
 
 
 Version 1.01

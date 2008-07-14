@@ -247,24 +247,32 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 								mod = Q3_Get_RuleValue("fs_game",pServRules);
 								if(mod!=NULL)
 								{
-									strncpy(pSI->szMod, mod,17);
-									pSI->wMod = Get_ModByName(pSI->cGAMEINDEX,mod);
-								}								
+									strncpy(pSI->szMod, mod,MAX_MODNAME_LEN-1);									
+								}
 							}
 						}
 						break;
 					}
 					default:
 					{
+						//Fall through and do some guessing...
 						pVarValue = Q3_Get_RuleValue("gamename",pServRules);			
-						if(pVarValue!=NULL)
-						{
-							strncpy(pSI->szMod, pVarValue,17);
-							pSI->wMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
-						}
+						if(pVarValue==NULL)
+							pVarValue = Q3_Get_RuleValue("*gamedir",pServRules); //Normal QW
+								if(pVarValue==NULL)
+									pVarValue = Q3_Get_RuleValue("*progs",pServRules); //Is it QW with Qizmo proxy
+										if(pVarValue!=NULL)
+											if(strcmp(pVarValue,"666")==0)
+												pVarValue="Qizmo";
+											else
+												pVarValue=NULL;
+						
+						if(pVarValue!=NULL)                   
+							strncpy(pSI->szMod, pVarValue,MAX_MODNAME_LEN-1);
+						
 					}
 			}
-			
+			pSI->wMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
 			
 			switch(pSI->cGAMEINDEX)
 			{			
@@ -299,22 +307,21 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 						{
 							szVarValue = Q3_Get_RuleValue("needpass",pServRules);
 							if(szVarValue!=NULL)
-								pSI->bPrivate = (char)atoi(szVarValue);
-						}
-						szVarValue = Q3_Get_RuleValue("version",pServRules);
-						if(szVarValue!=NULL)
-						{
-							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
-							strncpy(pSI->szVersion,szVarValue,49);
-						} else
-						{ //For QuakeWorld
-							szVarValue = Q3_Get_RuleValue("*version",pServRules);
-							if(szVarValue!=NULL)
 							{
-								ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
-								strncpy(pSI->szVersion,szVarValue,49);
+								pSI->bPrivate = (char)atoi(szVarValue);
+								
+								if(pSI->bPrivate==4) //Quake World fix
+									pSI->bPrivate = 0;
+
 							}
 						}
+						ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
+						szVarValue = Q3_Get_RuleValue("version",pServRules);
+						if(szVarValue==NULL)
+							szVarValue = Q3_Get_RuleValue("*version",pServRules); // QuakeWorld
+						
+						if(szVarValue!=NULL)
+							strncpy(pSI->szVersion,szVarValue,MAX_VERSION_LEN-1);
 					}
 					break;
 			}
@@ -327,24 +334,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			
 			szVarValue = Q3_Get_RuleValue("g_gametype",pServRules);
 			pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
-			/*
-			if(szVarValue!=NULL)
-			{				
-				switch(pSI->cGAMEINDEX)
-				{
-					case WARSOW_SERVERLIST:
-					case COD_SERVERLIST :
-					case COD2_SERVERLIST :
-					case COD4_SERVERLIST :
-						pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
-					break;
-					default:
-						pSI->cGameTypeCVAR = Get_GameTypeByGameType(pSI->cGAMEINDEX, atoi(szVarValue));
-						break;
-				}
-				
-			}
-			*/
+
 			szVarValue = Q3_Get_RuleValue("sv_punkbuster",pServRules);
 			if(szVarValue==NULL)
 				szVarValue = Q3_Get_RuleValue("sv_battleye",pServRules); //Warsow
