@@ -1,0 +1,47 @@
+First Beta version of Game Scanner.
+
+An proper installer will be made later on.
+
+! No backward compatible with ETSV!
+
+
+
+Version 1.01
+------------------
+Customization of columns, now you can have you own arrangement of columns in your order.
+Added support for QuakeWorld.
+Added support for Quake 2.
+New fullname of the Game Types for Call of Duty 4.
+Changed so that no filter occurs in the Favorite folders.
+Additional new filters added such as Version, Modname, Gametype and Map this affects several supported games.
+Improvments with the filtering code, no supporting group selection. 
+Fixes with some filter bug selection that dissapeared after an upgrade of the treeview xml file.
+Added option from right clicking on treeview control to delete only one specific game list.
+Improved speed when recieving new servers from the master server, this is most notice when it 
+ comes to 4000+ servers.
+Other minor bug fixes.
+
+-Removed mapshot images to reduce the size of the installer. 
+ Game Scanner still supports map preview but it has to be added manually.
+
+
+Version 1.0 beta
+----------------
+Renamed ETSV to GameScanner and new version.
+Source code available as Open Source from Sourceforge.
+
+New Features:
+You can now set which columns to be visible in the main server list.
+Integrated RCON window into the new Tabview
+Added a easy access logger from the TabView.
+Added ICMP Ping statistics into the new Tabview.
+
+changes:
+New flexible/portable serverlist save files.
+Buddylist saves now as a xml file.
+
+Other:
+Code clean up and minor changes/improvments.
+
++based on ETSV source code.
+
