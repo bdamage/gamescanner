@@ -1,21 +1,21 @@
-First Beta version of Game Scanner.
-
-An proper installer will be made later on.
-
-! No backward compatible with ETSV!
 
 Version 1.02
 ------------------
 
 New Features:
 QuakeWorld now displays Mod types, including Qizmo.
+Quake 2 now shows mod types.
 
 Bug fixes:
+The installer required .NET 3.5 removed that requirement (as it is not used by Game Scanner).
+QW, Q2 & Q3 based servers was looking up ip to country for each scan, this is now fixed.
+Short country names is now displaying correct.
+Fixed a bug in treeview data so CoD 4 gametypes filter correctly.
 
 
 Version 1.01
 ------------------
-Customization of columns, now you can have you own arrangement of columns in your order.
+Added support for customization of columns, now you can have you own arrangement of columns in your order.
 Added support for QuakeWorld.
 Added support for Quake 2.
 New fullname of the Game Types for Call of Duty 4.

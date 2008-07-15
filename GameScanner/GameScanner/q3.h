@@ -45,17 +45,11 @@ void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index), long (*_Callback
 
 
 void Q3_InitilizeRescan(GAME_INFO *pGI,bool (*filterServerItem)(LPARAM *lp,DWORD dwFilterFlags));
-//SERVER_INFO * Q3_ConnectToMasterServer(DWORD gameID, char *szMasterServerIP,DWORD port,DWORD protocol,long (*UpdateServerListView)(LPARAM *Q3server),long (*InstertServerListView)(SERVER_INFO  *Q3server),HWND hwndProgressBar);
 DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI);
 SERVER_INFO *Q3_parseServers(char * p, DWORD length, GAME_INFO *CV);
-DWORD Q3_GetTotalServers();
-
-
-
 char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetlen);
 DWORD WINAPI  Q3_Get_ServerStatusThread(LPVOID lpParam);
 DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
-//char *Q3_ParseServerRules(Q3DATA_SERVER_RULES* pLinkedListStart,char *p,DWORD packetlen);
 PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI, char *pointer,char *end, DWORD *numPlayers,char *szP=NULL);
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers);
 void Q3_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules ));

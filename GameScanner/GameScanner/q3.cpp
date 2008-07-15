@@ -17,6 +17,7 @@ HWND hwndLVserverlist=NULL;
 char Q3_unkown[]={"????"};
 
 extern bool g_bCancel;
+extern GAME_INFO GI[MAX_SERVERLIST+1];
 
 bool Q3_bCloseApp=false;
 
@@ -86,48 +87,32 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	  dbg_print("Error at getsockudp()\n");
 	  return -1;
 	}
-	char sendbuf[20];
-	switch(pSI->cGAMEINDEX)
-	{
-		case QW_SERVERLIST:
-			strcpy(sendbuf,"\xFF\xFF\xFF\xFFstatus\n");
-			break;
-		case Q2_SERVERLIST:
-			strcpy(sendbuf,"\xFF\xFF\xFF\xFFstatus\n");
-			break;
-		case WARSOW_SERVERLIST:
-			strcpy(sendbuf,"\xFF\xFF\xFF\xFFgetinfo");
-			break;
-		default:
-			strcpy(sendbuf,"\xFF\xFF\xFF\xFFgetstatus\n");
-			break;
-	}
-	
+
 	size_t packetlen = 0;
 
 	//Some default values
 	pSI->dwPing = 9999;
 
-	if((pSI->cCountryFlag==0))
+	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 		{
 			DWORD dwIPSHORT;
 			char country[60],szShortName[4];
-			 
+			ZeroMemory(szShortName,sizeof(szShortName));
 		//	dwStartTick = GetTickCount();
 			strncpy(pSI->szCountry,fnIPtoCountry2(pSI->dwIP,&dwIPSHORT,country,szShortName),49);  //Update country info only when adding a new server		
 			strcpy(pSI->szShortCountryName,szShortName);
 		//	sprintf(country,"IPGeo %d ms %s\n",(GetTickCount() - dwStartTick),pSI->szCountry);
 		//	dbg_print(country);				
+			pSI->cCountryFlag = 1;
 
-			pSI->cCountryFlag = (char) dwIPSHORT;
-		//	if(pSI->cCountryFlag==7)
-		//		DebugBreak();
 		}
-//	if(pSI->cGAMEINDEX == Q2_SERVERLIST)
-//		packetlen = send(pSocket, sendbuf, 13, 0);
-//	else
-		packetlen = send(pSocket, sendbuf, 14, 0);
+	
+	if(GI[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
+		packetlen = send(pSocket, GI[pSI->cGAMEINDEX].szServerRequestInfo, strlen(GI[pSI->cGAMEINDEX].szServerRequestInfo)+1, 0);
+	else
+		packetlen=SOCKET_ERROR;
 
+		
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
@@ -135,16 +120,8 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		pSI->cPurge++;
 		return -1;
 	}
-
-
-	//pSI->cCountryFlag = 7; //Set to Unkown country flag(?) as default 
-
-
 	dwStartTick = GetTickCount();
-
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
-
-
 	if(packet) 
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);
@@ -258,14 +235,20 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 						//Fall through and do some guessing...
 						pVarValue = Q3_Get_RuleValue("gamename",pServRules);			
 						if(pVarValue==NULL)
+						{
 							pVarValue = Q3_Get_RuleValue("*gamedir",pServRules); //Normal QW
+							if(pVarValue==NULL)							
+							{
+								pVarValue = Q3_Get_RuleValue("gamename",pServRules); //Normal Q2
 								if(pVarValue==NULL)
 									pVarValue = Q3_Get_RuleValue("*progs",pServRules); //Is it QW with Qizmo proxy
-										if(pVarValue!=NULL)
-											if(strcmp(pVarValue,"666")==0)
-												pVarValue="Qizmo";
-											else
-												pVarValue=NULL;
+								if(pVarValue!=NULL)
+									if(strcmp(pVarValue,"666")==0)
+										pVarValue="Qizmo";
+									else
+										pVarValue=NULL;
+							}
+						}
 						
 						if(pVarValue!=NULL)                   
 							strncpy(pSI->szMod, pVarValue,MAX_MODNAME_LEN-1);
@@ -382,7 +365,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 	} //end if(packet)
 	else
-		pSI->cPurge++;   //increase purge counter when the server is unreachable
+		pSI->cPurge++;   //increase purge counter when the server is not responding
 
 	closesocket(pSocket);
 	return 0;
@@ -524,6 +507,7 @@ CoD 4                                                                           
 			ptempSI.cCountryFlag = 0;
 			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;
+			strcpy(ptempSI.szShortCountryName,"zz");
 			pGI->pSC->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 			pGI->pSC->vSI.push_back(ptempSI);
 
@@ -540,10 +524,6 @@ CoD 4                                                                           
 	return NULL;
 }
 
-DWORD Q3_GetTotalServers()
-{
-	return Q3_dwTotalServers;
-}
 
 
 /*
@@ -985,16 +965,6 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		return 1;
 	}
 
-/*
-[quake3]
-getstatus = \xFF\xFF\xFF\xFFgetstatus\x00
-getinfo = \xFF\xFF\xFF\xFFgetinfo\x00
-
-*/
-//	
-//	else
-//	sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString, pGI->dwProtocol);
-
 	WSAEVENT hEvent;
 	hEvent = WSACreateEvent();
 	if (hEvent == WSA_INVALID_EVENT)
@@ -1091,10 +1061,6 @@ getinfo = \xFF\xFF\xFF\xFFgetinfo\x00
 		{
 			//AddLogInfo(0,"\nFD_READ: %d, %d",events.iErrorCode[FD_READ_BIT],i);
 			// Read the data and write it to stdout
-			
-	//		if(pGI->cGAMEINDEX==Q2_SERVERLIST)
-	//			packet[i]=(unsigned char*)getpacket(ConnectSocket, &packetlen);
-	//		else
 			packet[i]=(unsigned char*)ReadPacket(ConnectSocket, &packetlen);
 			packet_len[i] = packetlen;
 			i++;

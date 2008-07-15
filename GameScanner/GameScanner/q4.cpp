@@ -222,6 +222,7 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 			tempSI.bNeedToUpdateServerInfo = true;
 			tempSI.dwIndex = idx++;
 			tempSI.pPlayerData = NULL;
+			strcpy(tempSI.szShortCountryName,"zz");
 			tempSI.pServerRules = NULL;
 			pGI->pSC->vSI.push_back(tempSI);
 
@@ -291,6 +292,15 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	//Some default values
 	pSI->dwPing = 9999;
 
+	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
+	{
+		DWORD dwIPSHORT;
+	    char country[60],szShortName[8];
+		ZeroMemory(szShortName,sizeof(szShortName));
+		strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,&dwIPSHORT,country,szShortName),49);  //Update country info only when adding a new server						
+		strcpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName);
+	}
+
 	packetlen = send(pSocket, sendbuf, 14, 0);
 	if(packetlen==SOCKET_ERROR) 
 	{
@@ -299,9 +309,6 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		pSI->cPurge++;
 		return -1;
 	}
-
-
-	//pSI->cCountryFlag = 7; //Set to Unkown country flag(?) as default 
 
 	unsigned char *packet=NULL;
 	DWORD dwStartTick=0;
@@ -430,14 +437,6 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 				pSI->nMaxPlayers = atoi(Q4_Get_RuleValue("si_maxPlayers",pServRules));
 	
 			 
-			DWORD dwIPSHORT;
-			char country[60],szShortName[4];
-			if((pSI->cCountryFlag==0))
-			{
-				strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,&dwIPSHORT,country,szShortName),49);  //Update country info only when adding a new server		
-				pSI->cCountryFlag = (char)dwIPSHORT;
-				strcpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName);
-			}
 			
 			//Debug purpose
 			if(pServRules!=pSI->pServerRules)

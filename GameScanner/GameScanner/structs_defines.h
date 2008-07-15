@@ -466,8 +466,9 @@ struct GAME_INFO
 	DWORD dwGameTypeFilter;
 	SERVER_CONTAINER *pSC;
 	DWORD dwScanIdx;
+	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo
 	FILTER_SETTINGS filter;
-	//_CountryFilter CountryFilter;
+	
 
 };
 

@@ -541,6 +541,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 			ptempSI.cCountryFlag = 0;
 			ptempSI.bNeedToUpdateServerInfo = true;			
 			ptempSI.dwIndex = idx++;
+			strcpy(ptempSI.szShortCountryName,"zz");
 			pGI->pSC->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 		
 			pGI->pSC->vSI.push_back(ptempSI);
@@ -592,7 +593,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 	//Some default values
 	pSI->dwPing = 9999;
 
-	if((pSI->cCountryFlag==0))
+	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 		{
 			DWORD dwSHORTNAME;
 			char country[60],szShortName[4];

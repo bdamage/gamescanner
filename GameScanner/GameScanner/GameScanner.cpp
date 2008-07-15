@@ -9,6 +9,7 @@ ETSV 5.x?     {122CD6F9-B1C2-4124-B5B4-5C0B255B74D1}
 1.0            {C9C6D743-D7CF-46FD-9366-255F9DFD8442}
 v1.0 beta 2    {EAB596BD-45FF-49A2-87CD-7EC3DF77E69C}
 v 1.0.1 (1.01) {9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}
+v 1.0.2 (1.02) {8F2DE466-8EEB-4D64-8F4A-375553A8D31E}
 
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -94,9 +95,6 @@ char TREEVIEW_VERSION[20];
 #define CFG_VER			0x3403   //Configure file version
 #define SERVERLIST_VER	0x2002   //Configure file version
 #define SERVERSLISTFILE_VER	0x1005   //Configure file version
-
-
-
 
 #define SCAN_ALL		0
 #define SCAN_FILTERED	1
@@ -1495,6 +1493,10 @@ void Default_GameSettings()
 		GI[i].iIconIndex =  Get_GameIcon(i);
 
 	}
+
+
+
+	strcpy(GI[ET_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[ET_SERVERLIST].cGAMEINDEX = ET_SERVERLIST;
 	GI[ET_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[ET_SERVERLIST].dwProtocol = 84;
@@ -1521,8 +1523,9 @@ void Default_GameSettings()
 	GI[ET_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[ET_SERVERLIST].szQueryString,"");
 
+	
+	strcpy(GI[Q3_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[Q3_SERVERLIST].cGAMEINDEX = Q3_SERVERLIST;
-
 	GI[Q3_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[Q3_SERVERLIST].dwProtocol = 68;
 	GI[Q3_SERVERLIST].iIconIndex =  Get_GameIcon(Q3_SERVERLIST);
@@ -1539,7 +1542,7 @@ void Default_GameSettings()
 	GI[Q3_SERVERLIST].pSC = &SC[Q3_SERVERLIST];
 //	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[Q3_SERVERLIST].szGAME_PATH,&dwBuffSize);
 
-
+	strcpy(GI[RTCW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
 	GI[RTCW_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[RTCW_SERVERLIST].dwProtocol = 60;
@@ -1592,6 +1595,7 @@ void Default_GameSettings()
 	strcpy(GI[ETQW_SERVERLIST].szProtocolName,"etqw");
 	GI[ETQW_SERVERLIST].dwDefaultPort = 27733;
 
+	strcpy(GI[COD2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
 	GI[COD2_SERVERLIST].iIconIndex = Get_GameIcon(COD2_SERVERLIST);
 	GI[COD2_SERVERLIST].dwViewFlags = 0;
@@ -1612,6 +1616,7 @@ void Default_GameSettings()
 	strcpy(GI[COD2_SERVERLIST].szQueryString,"");
 	GI[COD2_SERVERLIST].pSC = &SC[COD2_SERVERLIST];
 
+	strcpy(GI[COD_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
 	GI[COD_SERVERLIST].iIconIndex = Get_GameIcon(COD_SERVERLIST);
 	GI[COD_SERVERLIST].dwViewFlags = 0;
@@ -1633,8 +1638,8 @@ void Default_GameSettings()
 	GI[COD_SERVERLIST].pSC = &SC[COD_SERVERLIST];
 
 
+	strcpy(GI[WARSOW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetinfo");
 	GI[WARSOW_SERVERLIST].cGAMEINDEX = WARSOW_SERVERLIST;
-
 	GI[WARSOW_SERVERLIST].iIconIndex = Get_GameIcon(WARSOW_SERVERLIST);
 	GI[WARSOW_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[WARSOW_SERVERLIST].szGAME_NAME,"Warsow",MAX_PATH);
@@ -1660,6 +1665,7 @@ void Default_GameSettings()
 	GI[WARSOW_SERVERLIST].dwDefaultPort = 28960;
 	GI[WARSOW_SERVERLIST].pSC = &SC[WARSOW_SERVERLIST];
 
+	strcpy(GI[COD4_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
 	GI[COD4_SERVERLIST].iIconIndex = Get_GameIcon(COD4_SERVERLIST);
 	GI[COD4_SERVERLIST].dwViewFlags = 0;
@@ -1742,7 +1748,7 @@ void Default_GameSettings()
 	strcpy(GI[CSS_SERVERLIST].szQueryString,"\\gamedir\\cstrike");
 	GI[CSS_SERVERLIST].pSC = &SC[CSS_SERVERLIST];
 
-
+	strcpy(GI[QW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
 	GI[QW_SERVERLIST].cGAMEINDEX = QW_SERVERLIST;
 	GI[QW_SERVERLIST].dwMasterServerPORT = 27000;
 	GI[QW_SERVERLIST].dwProtocol = 0;
@@ -1758,7 +1764,7 @@ void Default_GameSettings()
 	strcpy(GI[QW_SERVERLIST].szQueryString,"");
 	GI[QW_SERVERLIST].bUseHTTPServerList = TRUE;
 
-
+	strcpy(GI[Q2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
 	GI[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
 	GI[Q2_SERVERLIST].dwMasterServerPORT = 27900;
 	GI[Q2_SERVERLIST].dwProtocol = 34;
@@ -1774,24 +1780,8 @@ void Default_GameSettings()
 	strcpy(GI[Q2_SERVERLIST].szQueryString,"");
 	GI[Q2_SERVERLIST].bUseHTTPServerList = FALSE;
 
-	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
-	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
-	strcpy(GI[Q4_SERVERLIST].szFilename,"q4.servers");
-	strcpy(GI[Q3_SERVERLIST].szFilename,"q3.servers");
-	strcpy(GI[RTCW_SERVERLIST].szFilename,"rtcw.servers");
-	strcpy(GI[COD_SERVERLIST].szFilename,"cod.servers");
-	strcpy(GI[COD2_SERVERLIST].szFilename,"cod2.servers");
-	strcpy(GI[WARSOW_SERVERLIST].szFilename,"warsow.servers");
-	strcpy(GI[COD4_SERVERLIST].szFilename,"cod4.servers");
-	strcpy(GI[CS_SERVERLIST].szFilename,"cs.servers");
-	strcpy(GI[QW_SERVERLIST].szFilename,"qw.servers");
-	strcpy(GI[Q2_SERVERLIST].szFilename,"q2.servers");
-	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
-	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
-
 
 	GI[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
-
 	GI[OPENARENA_SERVERLIST].iIconIndex = Get_GameIcon(OPENARENA_SERVERLIST);
 	GI[OPENARENA_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[OPENARENA_SERVERLIST].szGAME_NAME,"Open Arena",MAX_PATH);
@@ -1812,9 +1802,28 @@ void Default_GameSettings()
 	GI[OPENARENA_SERVERLIST].bActive = false;
 #endif
 
-	strcpy(GI[OPENARENA_SERVERLIST].szQueryString,"Open Arena");
+	strcpy(GI[OPENARENA_SERVERLIST].szQueryString,"openarena");
 	strcpy(GI[OPENARENA_SERVERLIST].szProtocolName,"openarena");
 	GI[OPENARENA_SERVERLIST].dwDefaultPort = 28960;
+
+	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
+	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
+	strcpy(GI[Q4_SERVERLIST].szFilename,"q4.servers");
+	strcpy(GI[Q3_SERVERLIST].szFilename,"q3.servers");
+	strcpy(GI[RTCW_SERVERLIST].szFilename,"rtcw.servers");
+	strcpy(GI[COD_SERVERLIST].szFilename,"cod.servers");
+	strcpy(GI[COD2_SERVERLIST].szFilename,"cod2.servers");
+	strcpy(GI[WARSOW_SERVERLIST].szFilename,"warsow.servers");
+	strcpy(GI[COD4_SERVERLIST].szFilename,"cod4.servers");
+	strcpy(GI[CS_SERVERLIST].szFilename,"cs.servers");
+	strcpy(GI[QW_SERVERLIST].szFilename,"qw.servers");
+	strcpy(GI[Q2_SERVERLIST].szFilename,"q2.servers");
+	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
+	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
+	strcpy(GI[OPENARENA_SERVERLIST].szFilename,"openarena.servers");
+
+
+
 
 
 	
@@ -2053,6 +2062,7 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 	//Add a new server to current list!
 	
 	pSI.dwPing = 9999;
+	strcpy(pSI.szShortCountryName,"zz");
 	pSI.cCountryFlag = 0;
 	pSI.bNeedToUpdateServerInfo = true;
 	pSI.dwIndex = pGI->pSC->vSI.size();
@@ -6563,9 +6573,9 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 
 								rc.left+=20;
 								rc.top+=2;
-								ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL);
+//								ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL);
 								if(AppCFG.bUseShortCountry)
-									TextOut(hDC, rc.left,rc.top, pSI.szShortCountryName, strlen(pSI.szShortCountryName));
+									ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szShortCountryName, strlen(pSI.szShortCountryName),NULL); //TextOut(hDC, rc.left,rc.top, pSI.szShortCountryName, strlen(pSI.szShortCountryName));								
 								else
 									ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL); //TextOut(hDC, rc.left+20,rc.top+2, pSI.szCountry, strlen(pSI.szCountry));
 									
@@ -9184,7 +9194,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 		AddGetLastErrorIntoLog("Failed: SendMessage(hwndRB, RB_SETBARINFO");
 	  return NULL;
 	}
-	AddGetLastErrorIntoLog("SendMessage(hwndRB, RB_SETBARINFO");
+
 	// Initialize structure members that both bands will share.
 
 	ZeroMemory(&rbBand,sizeof(REBARBANDINFO));
