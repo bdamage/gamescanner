@@ -15,6 +15,9 @@ Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
 
 */
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 #include "stdafx.h"
 
@@ -148,6 +151,7 @@ extern BOOL SCANNER_bCloseApp;
 bool bFirstTimeSizeCalc= true;
 #define BORDER_SIZE 4
 
+string g_sMIRCoutput;
 
 _WINDOW_CONTAINER WNDCONT[15];
 PLAYERDATA *pCurrentPL=NULL; //a temporary current player list in listview, this will be 
@@ -1074,7 +1078,7 @@ LRESULT CALLBACK PRIVPASS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 //Virtual list - had to use vector instead of linked list using LPARAM refering to a memory as 
 //index based is the only way to achieve this :(
-BOOL OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
+BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 {
 	LVITEM *pLVItem;
 	NMLVDISPINFO *pLVDI;
@@ -1253,8 +1257,6 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	
 	pLVItem = &pLVDI->item;
 
-
-
 	PLAYERDATA *pPlayerData = pCurrentPL;
 	if(pPlayerData!=NULL)
 	{
@@ -1273,37 +1275,34 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	switch(pLVItem->iSubItem)
 		{
 			case 0:
-				sprintf_s(szText,sizeof(szText)-1,"%d",pLVDI->item.iItem);
-				strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+				sprintf_s(szText,sizeof(szText)-1,"%d",pLVDI->item.iItem+1);
+				pLVItem->pszText= szText;
 				return TRUE;
 			case 1:
 				if(pPlayerData->szClanTag!=NULL)
 				{
 					char colFiltered[100];
-					strncpy(pLVItem->pszText,colorfilter(pPlayerData->szClanTag,colFiltered,sizeof(colFiltered)-1),pLVItem->cchTextMax);
+					pLVItem->pszText = colorfilter(pPlayerData->szClanTag,colFiltered,sizeof(colFiltered)-1);
 				}
 				return TRUE;
 			case 2:
 				{
-					char colFiltered[100];
-					strncpy(pLVItem->pszText,colorfilter(pPlayerData->szPlayerName,colFiltered,sizeof(colFiltered)-1),pLVItem->cchTextMax);
+				char colFiltered[100];
+				pLVItem->pszText = colorfilter(pPlayerData->szPlayerName,colFiltered,sizeof(colFiltered)-1); 
 				return TRUE;
 				}
 
 			case 3:
 				sprintf_s(szText,sizeof(szText)-1,"%d",pPlayerData->rate);
-				strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+				pLVItem->pszText = szText;
 
 				return TRUE;
 			case 4:
 				sprintf_s(szText,sizeof(szText)-1,"%d",pPlayerData->ping);
-				strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+				pLVItem->pszText = szText;
 				return TRUE;
 
-
 		}
-
-
 	return TRUE;
 }
 
@@ -1899,6 +1898,10 @@ void Default_Appsettings()
 	Default_GameSettings();
 	
 	ZeroMemory(&AppCFG,sizeof(APP_SETTINGS_NEW));
+
+	g_sMIRCoutput = "%SERVERNAME% %GAMENAME% %IP% %PRIVATE%";
+	
+
 
 	AppCFG.dwVersion = 14;
 	AppCFG.bAutostart = FALSE;
@@ -3073,18 +3076,24 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		g_save_counter++;
 		if(g_save_counter>=vTI.size())
 		{
-				pElemRoot->LinkEndChild( elem );  
-
+			pElemRoot->LinkEndChild( elem );  
 			return 0;
 		}
 		pElemRoot->LinkEndChild( elem );  
+		vTI.at(iSel).sName.clear();
+		vTI.at(iSel).strValue.clear();
+		
+
 		DWORD nextlevel = vTI.at(g_save_counter).dwLevel;
 		DWORD lvl=0;
 		if(nextlevel>dwlevel)
 		{	lvl = Save_all_by_level(elem,nextlevel);
 
 			if(lvl!=dwlevel)
+			{
+		
 				return lvl;
+			}
 		}
 
 		
@@ -3105,10 +3114,11 @@ int TreeView_save()
  
 	TiXmlElement * root = new TiXmlElement( "TreeViewCFG" );  //TreeView config
 	root->SetAttribute("Version",TREEVIEW_VERSION);
-
+	
 	TiXmlComment * comment = new TiXmlComment();
 	comment->SetValue("Settings for Game Scanner treeview." );  
 	root->LinkEndChild( comment );  
+	
 
 	TiXmlElement * TreeItems = new TiXmlElement( "TreeItems" );  
 
@@ -3125,6 +3135,7 @@ int TreeView_save()
 	root->LinkEndChild( TreeItems );  
 	doc.LinkEndChild( root );  
 
+
 	char szFilePath[_MAX_PATH+_MAX_FNAME];
 	ZeroMemory(szFilePath,sizeof(szFilePath));
 	strncpy(szFilePath,USER_SAVE_PATH,strlen(USER_SAVE_PATH));
@@ -3135,6 +3146,7 @@ int TreeView_save()
 		AddLogInfo(ETSV_WARNING,"Success saving Treeview XML file!");
 	else
 		AddLogInfo(ETSV_WARNING,"Error saving Treeview XML file!");
+
 
 	AddLogInfo(ETSV_WARNING,"Saving treeview state in progress... DONE!");
 	return 0;
@@ -3421,56 +3433,67 @@ PLAYERDATA * Copy_PlayerToCurrentPL(LPPLAYERDATA &pStartPD, PLAYERDATA *pNewPD)
 	else
 		return 	pTmp->pNext = player;
 }
+long DrawCurrentPlayerList(PLAYERDATA *pPlayer)
+{
+	ListView_DeleteAllItems(g_hwndListViewPlayers);
+	int n=0;
 
+	  if(g_hwndListViewPlayers!=NULL)
+	  {
+		  while (pPlayer!=NULL)
+		  {	
+			pPlayer = pPlayer->pNext;
+			n++;
+		  }
+		  ListView_SetItemCount(g_hwndListViewPlayers, n);
+	  }
+
+	return 0;
+}
 
 long UpdatePlayerListQ3(PLAYERDATA *pQ4ply)
 {
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
 	pCurrentPL = NULL;
-	LVITEM item;
-	ZeroMemory(&item, sizeof(LVITEM));
-	item.mask = LVIF_TEXT |  LVIF_PARAM;
-	item.iSubItem = 0;
 	ListView_DeleteAllItems(g_hwndListViewPlayers);
 	int n=0;
-	char num[10];
+
 	  if(g_hwndListViewPlayers!=NULL)
 	  {
 		  while (pQ4ply!=NULL)
 		  {
-			item.mask = LVIF_TEXT | LVIF_PARAM;
+	//		item.mask = LVIF_TEXT | LVIF_PARAM;
 			//ZeroMemory(&item, sizeof(LVITEM));
 			//item.mask = LVIF_TEXT ;
-			item.iItem=n;
-			sprintf(num,"%d",n+1);
-			item.pszText = num;
+		//	item.iItem=n;
+		//	sprintf(num,"%d",n+1);
+		//	item.pszText = num;
 	
 			//Potential mem leak, may have to rewrite/improve this part of code
 			PLAYERDATA *pPD = Copy_PlayerToCurrentPL(pCurrentPL,pQ4ply);  //This will keep a copy of the playerlist during scanning
 
-			item.lParam = (LPARAM)pPD; //pQ4ply;	
+		//	item.lParam = (LPARAM)pPD; //pQ4ply;	
 
 	//		ListView_InsertItem( g_hwndListViewPlayers,&item);
-			char colFiltered[100];
+	//		char colFiltered[100];
 			
 	//		if(pQ4ply->szClanTag!=NULL)
 	//			ListView_SetItemText(g_hwndListViewPlayers,item.iItem,1,colorfilter(pQ4ply->szClanTag,colFiltered,sizeof(colFiltered)-1));
 			
 	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,2,colorfilter(pQ4ply->szPlayerName,colFiltered,sizeof(colFiltered)-1));
 
-			sprintf(colFiltered,"%d",pQ4ply->rate);
+	//		sprintf(colFiltered,"%d",pQ4ply->rate);
 	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,3,colFiltered);
 				
-			sprintf(colFiltered,"%d",pQ4ply->ping);
+	//		sprintf(colFiltered,"%d",pQ4ply->ping);
 	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,4,colFiltered);
-			
 			pQ4ply = pQ4ply->pNext;
-			
-			
 			n++;
 		  }
+		  ListView_SetItemCount(g_hwndListViewPlayers, n);
 	  }
-	  ListView_SetItemCount(g_hwndListViewPlayers, n);
+	
+
 /*ListView_SetColumnWidth(g_hwndListViewPlayers,0,LVSCW_AUTOSIZE);
 	ListView_SetColumnWidth(g_hwndListViewPlayers,1,LVSCW_AUTOSIZE);
 	ListView_SetColumnWidth(g_hwndListViewPlayers,2,LVSCW_AUTOSIZE);
@@ -3922,7 +3945,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	WNDCONT[WIN_TABCONTROL].hWnd = g_hwndTabControl;
 
-	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
 							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_LIST_PLAYERS, hInst, NULL);
@@ -4647,6 +4670,7 @@ void CFG_Save()
 	TiXmlElement  *MainVersion;
  	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
 	doc.LinkEndChild( decl );  
+	
  
 	TiXmlElement * root = new TiXmlElement( "ETSVcfg" );  
 	doc.LinkEndChild( root );  
@@ -4801,6 +4825,7 @@ void CFG_Save()
 	xmlElm2->SetAttribute("WindowName", AppCFG.szEXT_EXE_WINDOWNAME);
 	xmlElm2->SetAttribute("CloseOnExitServer", AppCFG.bEXTClose);
 	xmlElm2->SetAttribute("MinimizeOnLaunch", AppCFG.bEXTMinimize);
+
 
 	TiXmlElement * xmlElm5 = new TiXmlElement( "SocketTimeout" );  
 	root->LinkEndChild( xmlElm5 );  
@@ -6661,6 +6686,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 	//	case CDDS_POSTPAINT:
 	//		return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW); //CDRF_NOTIFYPOSTPAINT; //lResult;
 		case CDDS_PREPAINT:
+		
 			return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW);
 		case CDDS_ITEMPREPAINT:
 			{
@@ -6694,17 +6720,17 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 			break;
 		case CDDS_ITEMPREPAINT|CDDS_SUBITEM:
 			{
-	
+	 
 				int    nItem = static_cast<int>( pListDraw->nmcd.dwItemSpec );
 				SERVER_INFO pSI;
 				pListDraw->clrText   = RGB(0, 0, 0);	
 
-				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_PLAYERS)
+			/*	if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_PLAYERS)
 				{
-				
+				   AddLogInfo(ETSV_INFO,"before if(AppCFG.bUseColorEncodedFont)");
 					if(AppCFG.bUseColorEncodedFont)
 					{
-						
+						AddLogInfo(ETSV_INFO,"After if(AppCFG.bUseColorEncodedFont)");
 						if(pListDraw->iSubItem==2)
 						{
 							PLAYERDATA *pPlayerData = pCurrentPL;
@@ -6723,9 +6749,9 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 							}
 						}
 					}
-					return  CDRF_NEWFONT; 						
+					return  CDRF_DODEFAULT;//CDRF_NEWFONT; 						
 				} 
-						
+					*/	
 				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
 				{
 						try
@@ -6834,6 +6860,67 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 
 
 
+LRESULT ListView_PL_CustomDraw(LPARAM lParam)
+{
+	
+	LRESULT lResult = CDRF_DODEFAULT;
+	
+	int iRow=0;
+	LPNMLVCUSTOMDRAW pListDraw = (LPNMLVCUSTOMDRAW)lParam;
+	switch(pListDraw->nmcd.dwDrawStage)
+	{
+	//	case CDDS_POSTPAINT:
+	//		return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW); //CDRF_NOTIFYPOSTPAINT; //lResult;
+		case CDDS_PREPAINT:
+			return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW);
+			break;
+		case CDDS_ITEMPREPAINT:
+			{
+			
+				iRow = (int)pListDraw->nmcd.dwItemSpec;
+				if(iRow%2 == 0)
+					pListDraw->clrTextBk = RGB(202, 221,250);	
+			}
+			return (CDRF_NOTIFYSUBITEMDRAW );
+			break;
+		case CDDS_ITEMPREPAINT|CDDS_SUBITEM:
+			{
+				
+				int    nItem = static_cast<int>( pListDraw->nmcd.dwItemSpec );
+				pListDraw->clrText   = RGB(0, 0, 0);	
+				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_PLAYERS)
+				{
+		
+					if(AppCFG.bUseColorEncodedFont)
+					{
+	
+						if(pListDraw->iSubItem==2)
+						{
+							PLAYERDATA *pPlayerData = pCurrentPL;
+							if(pPlayerData!=NULL)
+							{
+								for(int i=0;i<nItem;i++)
+									pPlayerData = pPlayerData->pNext;
+
+								HDC  hDC =  pListDraw->nmcd.hdc;				
+							
+								RECT rc;								
+								ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
+								return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+							}
+						}
+					}
+					return  CDRF_DODEFAULT;					
+				}
+				
+			}
+			break;
+		default:
+		break;
+	}
+	return CDRF_DODEFAULT;
+}
+
 LRESULT TreeView_CustomDraw(LPARAM lParam)
 {
 	LRESULT lResult = CDRF_DODEFAULT;
@@ -6856,6 +6943,7 @@ LRESULT TreeView_CustomDraw(LPARAM lParam)
 
 					}
 				}
+				break;
 			}
 		case CDDS_ITEMPOSTPAINT:
 		{
@@ -6868,7 +6956,6 @@ LRESULT TreeView_CustomDraw(LPARAM lParam)
 					pCustomDraw->clrText   = RGB(0, 0, 0);
 					pCustomDraw->clrTextBk = RGB(202, 221,250);
 	
-
 				}
 			}
 			
@@ -8170,9 +8257,12 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//break;
 			case LVN_GETDISPINFO:
 				if(lpnmia->hdr.hwndFrom == g_hwndListViewServer)
-					return OnGetDispInfoList(wParam,(NMHDR*)lParam);
+					return ListView_SL_OnGetDispInfoList(wParam,(NMHDR*)lParam);
 				else if(lpnmia->hdr.hwndFrom == g_hwndListViewPlayers)
+				{
+
 					return  ListView_PL_OnGetDispInfoList(wParam, (NMHDR*)lParam);
+				}
 				return FALSE;
 			break;
 			case TTN_GETDISPINFO: 
@@ -8336,6 +8426,8 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					OnServerSelected(currCV);					
 					
 				}
+				else  if(lpnmia->hdr.code == NM_CUSTOMDRAW && (lpnmia->hdr.hwndFrom == g_hwndListViewPlayers))
+					return ListView_PL_CustomDraw(lParam);	 
 				else  if(lpnmia->hdr.code == NM_CUSTOMDRAW && (lpnmia->hdr.hwndFrom != g_hwndMainTreeCtrl))
 				{					
 					return ListView_CustomDraw(lParam);					
@@ -8625,6 +8717,8 @@ tryagain:
 		}
 	}
 
+	 Q4_CleanUp_PlayerList(pCurrentPL);
+	
 
 	if(AppCFG.bUse_minimize)
 		UnregisterHotKey(NULL, HOTKEY_ID);
@@ -8638,6 +8732,9 @@ tryagain:
 	DestroyAcceleratorTable(hAccelTable); 
 	AddLogInfo(ETSV_INFO,"Exit app..");
 	LOGGER_DeInit();
+	
+	_CrtDumpMemoryLeaks();
+
 	return (int) msg.wParam;
 }
 
@@ -8773,8 +8870,51 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI)
 				//Notify mIRC which server user will join
 				DDE_Init();
 	  			char szMsg[350];
-				wsprintf(szMsg,"/ame joing server %s (%s IP %s:%d %s)",pSI.szServerName,pGI->szProtocolName,pSI.szIPaddress,pSI.dwPort,pSI.bPrivate?"Private":"");
-				DDE_Send(szMsg);
+				string::size_type offset;
+				string mircoutput;
+				mircoutput = g_sMIRCoutput;
+				mircoutput.insert(0,"/ame is joining server ");
+				offset = mircoutput.find("%SERVERNAME%");
+				if(offset!=-1)
+				{
+					char colfilter[120];
+					colorfilter(pSI.szServerName,colfilter,119);
+					mircoutput.insert(offset,colfilter);
+					offset = mircoutput.find("%SERVERNAME%");
+					mircoutput.erase(offset,strlen("%SERVERNAME%"));
+				}
+				offset = mircoutput.find("%IP%");
+				if(offset!=-1)
+				{
+					wsprintf(szMsg,"%s:%d",pSI.szIPaddress,pSI.dwPort);	
+					mircoutput.insert(offset,szMsg);
+					offset = mircoutput.find("%IP%");
+					mircoutput.erase(offset,strlen("%IP%"));
+				}
+
+				offset = mircoutput.find("%GAMENAME%");
+				if(offset!=-1)
+				{
+					mircoutput.insert(offset,GI[pSI.cGAMEINDEX].szGAME_NAME);
+					offset = mircoutput.find("%GAMENAME%");
+					mircoutput.erase(offset,strlen("%GAMENAME%"));
+				}
+
+				if(pSI.bPrivate)
+					strcpy(szMsg,"Private");
+				else
+					strcpy(szMsg,"Public");
+
+				offset = mircoutput.find("%PRIVATE%");
+				if(offset!=-1)
+				{
+					mircoutput.insert(offset,szMsg);
+					offset = mircoutput.find("%PRIVATE%");
+					mircoutput.erase(offset,strlen("%PRIVATE%"));
+				}
+
+				//wsprintf(szMsg,"/ame joing server %s (%s IP %s:%d %s)",pSI.szServerName,pGI->szProtocolName,pSI.szIPaddress,pSI.dwPort,pSI.bPrivate?"Private":"");
+				DDE_Send((char*)mircoutput.c_str());
 				DDE_DeInit();
 			}
 		}
@@ -10227,6 +10367,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case IDM_FONT_COLOR:
 					AppCFG.bUseColorEncodedFont = !AppCFG.bUseColorEncodedFont;
 					RedrawServerListThread(&GI[g_currentGameIdx]);
+					DrawCurrentPlayerList(pCurrentPL);
 					break;
 				case ID_VIEW_MAPPREVIEW :						
 				case ID_VIEW_SERVERRULES:

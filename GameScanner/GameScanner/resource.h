@@ -120,6 +120,7 @@
 #define IDC_BUTTON_SRV2                 1003
 #define IDC_SLIDER_TRANS                1003
 #define IDC_BUTTON_ADD_SERVER           1003
+#define IDC_EDIT_MIRC                   1003
 #define IDC_BUTTON_JOIN                 1004
 #define IDC_EDIT_PASS                   1004
 #define IDC_BUTTON_SRV3                 1005
@@ -329,7 +330,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1099
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1003
+#define _APS_NEXT_CONTROL_VALUE         1004
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

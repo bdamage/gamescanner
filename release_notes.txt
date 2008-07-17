@@ -3,6 +3,7 @@ Version 1.03
 ------------------
 Added support for color encoded servernames and playername (based on ET color table).
 Updated IP to Country database file.
+Better customization for mIRC messages, see options for more details.
 
 
 Version 1.02

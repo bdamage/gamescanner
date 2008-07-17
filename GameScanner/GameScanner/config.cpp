@@ -9,6 +9,7 @@
 
 extern void Default_Appsettings();
 extern void CFG_Save();
+extern string g_sMIRCoutput;
 
 //Config dialog vars
 #define GAME_CFG_INDEX 5   //This is the helper index in treeview where all games configuration starts from
@@ -519,6 +520,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			sprintf(szText,"%d",(AppCFGtemp.socktimeout.tv_sec*1000)+AppCFGtemp.socktimeout.tv_usec);
 			SetDlgItemText(hDlg,IDC_EDIT_SOCK_TIMEOUT_S,szText);
 			
+			SetDlgItemText(hDlg,IDC_EDIT_MIRC,g_sMIRCoutput.c_str());
 		
 
 			if(AppCFGtemp.bUse_EXT_APP )

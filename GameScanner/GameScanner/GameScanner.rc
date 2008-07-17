@@ -174,7 +174,9 @@ BEGIN
     CONTROL         "Use short country name.",IDC_CHECK_SHORTNAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,32,191,10
     CONTROL         "Notify mIRC when joining servers (experimental)",IDC_CHECK_MIRC,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,62,250,9
-    GROUPBOX        "mIRC",IDC_STATIC,7,51,281,40
+    GROUPBOX        "mIRC",IDC_STATIC,7,51,281,91
+    EDITTEXT        IDC_EDIT_MIRC,18,83,262,15,ES_AUTOHSCROLL
+    LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",IDC_STATIC,17,106,262,31
 END
 
 IDD_CFG2 DIALOGEX 0, 0, 273, 186
