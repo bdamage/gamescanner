@@ -459,6 +459,7 @@ BEGIN
     IDS_FAST_CONNECT        "Quick connect to a server to ip address entered in the search field."
     IDS_DOWNLOAD            "A new version is available for download!"
     IDS_REFRESH_FILTER      "Update only filtered servers."
+    IDS_COLOR_FONT          "Switch between color encoded fonts to non-color encoded fonts."
     IDC_GAMESCANNER         "GAMESCANNER"
 END
 

@@ -17,6 +17,7 @@
 #define IDI_GAMESCANNER                 107
 #define IDI_NODISKVIEWER                107
 #define IDS_REFRESH_FILTER              107
+#define IDS_COLOR_FONT                  108
 #define IDC_GAMESCANNER                 109
 #define IDR_MAINFRAME                   128
 #define IDI_SMALL                       129
@@ -104,7 +105,7 @@
 #define IDI_ICON6                       287
 #define IDI_ICON_CSS                    287
 #define IDI_ICON_RCON                   288
-#define IDC_LIST1                       1000
+#define IDC_LIST_PLAYERS                1000
 #define IDC_CHECK_COLFILTER             1000
 #define IDC_TAB1                        1000
 #define IDC_MAP_PREVIEW                 1001
@@ -317,6 +318,7 @@
 #define IDC_EDIT_LOGGER                 32899
 #define IDM_RESTORE_COLUMNS             32900
 #define IDM_DELETE_SERVERLIST           32901
+#define IDM_FONT_COLOR                  32902
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 

@@ -302,6 +302,7 @@ struct APP_SETTINGS_NEW
    BOOL bPlayNotifySound;
    BOOL bSortBuddyAsc;
    BOOL bSortPlayerAsc;
+   BOOL bUseColorEncodedFont;
    char cPlayerColumnSort;
    char cBuddyColumnSort;
    char cServerColumnSort;

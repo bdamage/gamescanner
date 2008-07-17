@@ -92,9 +92,7 @@ char TREEVIEW_VERSION[20];
 #define TIMER_EVENT		 1001
 #define TIMER_EVENT_RSS	 1002
 
-#define CFG_VER			0x3403   //Configure file version
-#define SERVERLIST_VER	0x2002   //Configure file version
-#define SERVERSLISTFILE_VER	0x1005   //Configure file version
+
 
 #define SCAN_ALL		0
 #define SCAN_FILTERED	1
@@ -152,6 +150,8 @@ bool bFirstTimeSizeCalc= true;
 
 
 _WINDOW_CONTAINER WNDCONT[15];
+PLAYERDATA *pCurrentPL=NULL; //a temporary current player list in listview, this will be 
+                             //keept when doing a rescan and the user want's to add aplayer to the buddylist for instance.
 
 
 
@@ -445,29 +445,21 @@ SERVER_INFO g_pSIPing;
 
 PLAYERDATA *Get_PlayerBySelection()
 {
-	LVITEM lvItem;
-	
 	int i = ListView_GetSelectionMark(g_hwndListViewPlayers);
 	
 	if(i!=-1)
-	{			
-		memset(&lvItem,0,sizeof(LVITEM));
-		PLAYERDATA *pPly=NULL;	
-		lvItem.mask =  LVIF_PARAM ; 
-		lvItem.iItem = i;
-		lvItem.iSubItem = 0;		
-		if(ListView_GetItem( g_hwndListViewPlayers, &lvItem))
+	{					
+		PLAYERDATA *pPlayerData = pCurrentPL;
+		for(int i=0;i<i;i++)
+			pPlayerData = pCurrentPL->pNext;
+
+		if(pPlayerData==NULL)
 		{
-			pPly = (PLAYERDATA*)lvItem.lParam;	
-			
-			if(pPly==NULL)
-			{
-				SetStatusText(1,"Not a valid player!");
-				InvalidateRect(g_hWnd,NULL,TRUE);
-				return NULL;
-			}
-		}
-		return pPly;
+			SetStatusText(ICO_WARNING,"Not a valid player!");
+			InvalidateRect(g_hWnd,NULL,TRUE);
+			return NULL;
+		}	
+		return pPlayerData;
 	}
 
 	return NULL;
@@ -1245,6 +1237,75 @@ BOOL OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	return TRUE;
 }
 
+BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
+{
+	LVITEM *pLVItem;
+	NMLVDISPINFO *pLVDI;
+
+	
+	if (ctrlid!=IDC_LIST_PLAYERS)
+		return FALSE;
+	
+	if(pNMHDR==NULL)
+		return FALSE;
+
+	pLVDI = (NMLVDISPINFO *)pNMHDR;
+	
+	pLVItem = &pLVDI->item;
+
+
+
+	PLAYERDATA *pPlayerData = pCurrentPL;
+	if(pPlayerData!=NULL)
+	{
+		for(int i=0;i<pLVItem->iItem;i++)
+			pPlayerData = pPlayerData->pNext;
+	}
+
+	if(pPlayerData==NULL)
+	{
+		return FALSE;
+	}
+
+
+	char szText[120];
+
+	switch(pLVItem->iSubItem)
+		{
+			case 0:
+				sprintf_s(szText,sizeof(szText)-1,"%d",pLVDI->item.iItem);
+				strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+				return TRUE;
+			case 1:
+				if(pPlayerData->szClanTag!=NULL)
+				{
+					char colFiltered[100];
+					strncpy(pLVItem->pszText,colorfilter(pPlayerData->szClanTag,colFiltered,sizeof(colFiltered)-1),pLVItem->cchTextMax);
+				}
+				return TRUE;
+			case 2:
+				{
+					char colFiltered[100];
+					strncpy(pLVItem->pszText,colorfilter(pPlayerData->szPlayerName,colFiltered,sizeof(colFiltered)-1),pLVItem->cchTextMax);
+				return TRUE;
+				}
+
+			case 3:
+				sprintf_s(szText,sizeof(szText)-1,"%d",pPlayerData->rate);
+				strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+
+				return TRUE;
+			case 4:
+				sprintf_s(szText,sizeof(szText)-1,"%d",pPlayerData->ping);
+				strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+				return TRUE;
+
+
+		}
+
+
+	return TRUE;
+}
 
 
 /************************************************
@@ -1839,7 +1900,6 @@ void Default_Appsettings()
 	
 	ZeroMemory(&AppCFG,sizeof(APP_SETTINGS_NEW));
 
-	AppCFG.dwID = CFG_VER;  
 	AppCFG.dwVersion = 14;
 	AppCFG.bAutostart = FALSE;
 	AppCFG.bUse_ETpro_path = TRUE;
@@ -1850,7 +1910,7 @@ void Default_Appsettings()
 	AppCFG.bLogging = FALSE;
 	AppCFG.bUSE_SCREEN_RESTORE = FALSE;
 	AppCFG.filter.dwGameTypeFilter = 0;
-
+	AppCFG.bUseColorEncodedFont = TRUE;
 	AppCFG.dwThreads = 32;
 	AppCFG.bUseFilterOnPing = FALSE;
 
@@ -3340,7 +3400,6 @@ void OnActivate_ServerList(DWORD options)
 }
 
 
-PLAYERDATA *pCurrentPL=NULL; //Current player list in listview
 
 PLAYERDATA * Copy_PlayerToCurrentPL(LPPLAYERDATA &pStartPD, PLAYERDATA *pNewPD)
 {
@@ -3391,26 +3450,27 @@ long UpdatePlayerListQ3(PLAYERDATA *pQ4ply)
 
 			item.lParam = (LPARAM)pPD; //pQ4ply;	
 
-			ListView_InsertItem( g_hwndListViewPlayers,&item);
+	//		ListView_InsertItem( g_hwndListViewPlayers,&item);
 			char colFiltered[100];
 			
-			if(pQ4ply->szClanTag!=NULL)
-				ListView_SetItemText(g_hwndListViewPlayers,item.iItem,1,colorfilter(pQ4ply->szClanTag,colFiltered,sizeof(colFiltered)-1));
+	//		if(pQ4ply->szClanTag!=NULL)
+	//			ListView_SetItemText(g_hwndListViewPlayers,item.iItem,1,colorfilter(pQ4ply->szClanTag,colFiltered,sizeof(colFiltered)-1));
 			
-			ListView_SetItemText(g_hwndListViewPlayers,item.iItem,2,colorfilter(pQ4ply->szPlayerName,colFiltered,sizeof(colFiltered)-1));
+	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,2,colorfilter(pQ4ply->szPlayerName,colFiltered,sizeof(colFiltered)-1));
 
 			sprintf(colFiltered,"%d",pQ4ply->rate);
-			ListView_SetItemText(g_hwndListViewPlayers,item.iItem,3,colFiltered);
+	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,3,colFiltered);
 				
 			sprintf(colFiltered,"%d",pQ4ply->ping);
-			ListView_SetItemText(g_hwndListViewPlayers,item.iItem,4,colFiltered);
+	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,4,colFiltered);
 			
-	
 			pQ4ply = pQ4ply->pNext;
-			//ListView_SetItemCount(g_hwndListViewPlayers, n);
+			
+			
 			n++;
 		  }
 	  }
+	  ListView_SetItemCount(g_hwndListViewPlayers, n);
 /*ListView_SetColumnWidth(g_hwndListViewPlayers,0,LVSCW_AUTOSIZE);
 	ListView_SetColumnWidth(g_hwndListViewPlayers,1,LVSCW_AUTOSIZE);
 	ListView_SetColumnWidth(g_hwndListViewPlayers,2,LVSCW_AUTOSIZE);
@@ -3461,7 +3521,7 @@ void ClearAllServerLinkedList()
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
 		OutputDebugString(GI[i].szGAME_NAME);
-		OutputDebugString(" - CLEAN UP SERVERLIST\n");
+		OutputDebugString(" - Cleaning up serverlist and hashes etc.\n");
 		
 		GI[i].dwTotalServers = 0;
 		GI[i].pSC->vSI.clear();
@@ -3863,9 +3923,9 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_TABCONTROL].hWnd = g_hwndTabControl;
 
 	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
-							LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
-							hwnd, (HMENU) IDC_LIST1, hInst, NULL);
+							hwnd, (HMENU) IDC_LIST_PLAYERS, hInst, NULL);
 
 	WNDCONT[WIN_PLAYERS].hWnd = g_hwndListViewPlayers;
 	
@@ -3973,7 +4033,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	for(dd = 0; dd <5; dd++)
 	{
 		if(dd==2)
-			lvColumn.cx = 125;
+			lvColumn.cx = 180;
 		else if(dd==0)
 			lvColumn.cx = 30;
 		else
@@ -4694,6 +4754,10 @@ void CFG_Save()
 	TiXmlElement * xmlMapPreview = new TiXmlElement( "MapPreview" );  
 	root->LinkEndChild( xmlMapPreview );  
 	xmlMapPreview->SetAttribute("show", AppCFG.bShowMapPreview);
+
+	TiXmlElement * xmlColorFont = new TiXmlElement( "ColorEncodedFont" );  
+	root->LinkEndChild( xmlColorFont );  
+	xmlColorFont->SetAttribute("Enable", AppCFG.bUseColorEncodedFont);
 
 	TiXmlElement * xmlServerRules = new TiXmlElement( "ServerRules" );  
 	root->LinkEndChild( xmlServerRules );  
@@ -6468,9 +6532,11 @@ ET_COLOR_CODES ET_CC[]=
 
 
 
-
+//Fast look up
 COLORREF GetColor(char inC)
 {
+	if(inC<0)
+		return 0;
 	char c = inC;
 	if(isalpha(inC))
 	 c = _tolower(inC);
@@ -6480,8 +6546,7 @@ COLORREF GetColor(char inC)
 	return 0x0000000;
 }
 
-// Draw_CustomText(HDC pDC, RECT rc, pListDraw->nmcd.uItemState , pSI.s)
-LRESULT Draw_CustomText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
+LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
 	HDC  hDC =  pListDraw->nmcd.hdc;
 	HBRUSH hbrSel= NULL;
@@ -6513,7 +6578,7 @@ LRESULT Draw_CustomText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 		SetTextColor(hDC,col);
 		pText = &pszText[i];
 
-		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); //TextOut(hDC, rc.left+20,rc.top+2, pSI.szCountry, strlen(pSI.szCountry));
+		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
 		rc.left+=nCharWidth;
 
 	}
@@ -6524,8 +6589,70 @@ LRESULT Draw_CustomText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
 }
 
+/********************************************************************************
+   Homebrewn progressbar that will display a green to red shaded rectangle.
+
+   HDC hDC - the HDC to be drawn on.
+   RECT rectFull - size of the rectangle
+   char *pszText - text to be on top of the shaded rect
+   int xCurrentValue - the current status of a value, this will help to calcualte 
+					   percentage (%) of the progress. 
+   int xMaxValue - the max value, see above for details.
+************************************************************************************/
+void Draw_ShadedRect(HDC hDC,RECT rectFull,char *pszText,int xCurrentValue,int xMaxValue)
+{
+	RECT rect;
+	HBRUSH hbrBar=NULL;
+	RECT rectTemp;
+
+	CopyRect(&rect,&rectFull);
+
+	//Shrink the rectangle
+	rect.top+=3;
+	rect.bottom-=3;								
+
+	float percentage =  ((float)xCurrentValue /  (float)xMaxValue) * 100.0f ;
+	if(percentage>100.0f)
+		percentage = 100;
+
+	if(percentage<0)  //can't be less than zero
+		percentage = 0;
+	Rectangle(hDC, rect.left-1, rect.top-1,rect.right-1, rect.bottom+1); 
+
+	int maxPixel = (rect.right-1) - (rect.left-1);
+	int pixelX = (percentage * maxPixel) / 100;
+	rect.right = rect.left +pixelX; // percentage; //rect.left + pSI.nCurrentPlayers+2;
+	
+	CopyRect(&rectTemp,&rect);
+	for(int i=0; i<pixelX;i++)
+	{
+		int r = i*2;
+		int g = 225-i*2;
+		if(g<0)
+			g=0;
+		if(r>255)
+			r = 255;
+		hbrBar = CreateSolidBrush(RGB(r, g,0)); 
+		rect.right = rect.left+1; //percentage; 								
+		FillRect(hDC, &rect, (HBRUSH) hbrBar);
+		DeleteObject(hbrBar);
+		rect.left++;
+	}
+	CopyRect(&rect,&rectTemp);						
+	
+	SetTextColor(hDC,0x00FFFFFF);								
+	TextOut(hDC, rect.left+2,rect.top-1, pszText, strlen(pszText));
+	SetTextColor(hDC,0x0000000);
+	ExcludeClipRect(hDC,rect.left,rect.top,rect.right,rect.bottom);
+	TextOut(hDC, rect.left+2,rect.top-1, pszText, strlen(pszText));
+
+	if(hbrBar!=NULL)
+		DeleteObject(hbrBar);
+}
+
 LRESULT ListView_CustomDraw (LPARAM lParam)
 {
+	
 	LRESULT lResult = CDRF_DODEFAULT;	
 	int iRow=0;
 	LPNMLVCUSTOMDRAW pListDraw = (LPNMLVCUSTOMDRAW)lParam;
@@ -6544,7 +6671,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
 				{		
 					try{
-						SERVER_INFO pSI = Get_ServerInfoByIndex(iRow); //currCV->pSC->vSIFiltered.at((int)iRow);
+						SERVER_INFO pSI = Get_ServerInfoByIndex(iRow); 
 						if(pSI.dwIP != 0) //Quick and dirty fix if server index is out of range
 						{
 							if(pSI.bUpdated==false)
@@ -6570,180 +6697,133 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 	
 				int    nItem = static_cast<int>( pListDraw->nmcd.dwItemSpec );
 				SERVER_INFO pSI;
-				pListDraw->clrText   = RGB(0, 0, 0);
-			
-					if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
+				pListDraw->clrText   = RGB(0, 0, 0);	
+
+				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_PLAYERS)
+				{
+				
+					if(AppCFG.bUseColorEncodedFont)
 					{
+						
+						if(pListDraw->iSubItem==2)
+						{
+							PLAYERDATA *pPlayerData = pCurrentPL;
+							if(pPlayerData!=NULL)
+							{
+								for(int i=0;i<nItem;i++)
+									pPlayerData = pPlayerData->pNext;
+
+								HDC  hDC =  pListDraw->nmcd.hdc;				
+							
+								RECT rc;								
+								ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
+								return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+
+
+							}
+						}
+					}
+					return  CDRF_NEWFONT; 						
+				} 
+						
+				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
+				{
 						try
 						{
 							pSI = Get_ServerInfoByIndex(nItem); //currCV->pSC->vSIFiltered.at((int)nItem);
-
-							HDC  pDC =  pListDraw->nmcd.hdc;
-							RECT rect,rectFull;
-
-							if(pListDraw->iSubItem==CUSTCOLUMNS[COL_PLAYERS].columnIdx)
-							{
-								iRow = (int)pListDraw->nmcd.dwItemSpec;
-						
-								if(iRow%2 == 0)
-								{
-									pListDraw->clrTextBk = RGB(202, 221,250);
-							//		return CDRF_NEWFONT; //CDRF_NEWFONT;
-								}
-
-								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rect);
-								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rectFull);
-						
-								//ListView_GetItemIndexRect( g_hwndListViewServer,&lvi,pListDraw->iSubItem , LVIR_BOUNDS,&rect);
-								rect.top+=3;
-															
-								float percentage =  ((float)pSI.nCurrentPlayers /  (float)pSI.nMaxPlayers) * 100.0f ;
-								if(percentage>100.0f)
-									percentage = 100;
-
-								HBRUSH hbrBkgnd=NULL,hbrBar=NULL;
-			
-								
-								//percentage/=2;
-								if(percentage<0)
-									percentage =0;
-
-								rect.bottom-=3;
-							//	SetROP2(pDC, R2_NOTXORPEN ); 
-							
-								hbrBkgnd = CreateSolidBrush(RGB(202, 221,250)); 
-
-								if(iRow%2 == 0)
-									FillRect(pDC, &rectFull, (HBRUSH) hbrBkgnd);
-
-								Rectangle(pDC, rect.left-1, rect.top-1,rect.right-1, rect.bottom+1); 
-
-								int maxPixel = rect.right-1 - rect.left-1;
-								int pixelX = (percentage * maxPixel) / 100;
-								rect.right = rect.left +pixelX; // percentage; //rect.left + pSI.nCurrentPlayers+2;
-								RECT rect2;
-								CopyRect(&rect2,&rect);	        
-
-								for(int i=0; i<pixelX;i++)
-								{
-									int r = i*2;
-									int g = 225-i*2;
-									if(g<0)
-										g=0;
-									if(r>255)
-										r = 255;
-									hbrBar = CreateSolidBrush(RGB(r, g,0)); 
-									rect.right = rect.left+1; //percentage; 								
-									FillRect(pDC, &rect, (HBRUSH) hbrBar);
-									DeleteObject(hbrBar);
-									rect.left++;
-								}
-								CopyRect(&rect,&rect2);
-								//(COLOR_HIGHLIGHTTEXT));
-				//				SetBkMode(hdc, TRANSPARENT);
-								char szText[50];
-							//	ExcludeClipRect(pDC,rect.left,rect.top,rect.right,rect.bottom);
-								sprintf_s(szText,sizeof(szText),"%d/%d+(%d)",pSI.nCurrentPlayers,pSI.nMaxPlayers,pSI.nPrivateClients);
-							
-								SetTextColor(pDC,0x00FFFFFF);
-								
-								TextOut(pDC, rect.left+2,rect.top-1, szText, strlen(szText));
-								SetTextColor(pDC,0x0000000);
-								ExcludeClipRect(pDC,rect.left,rect.top,rect.right,rect.bottom);
-								TextOut(pDC, rect.left+2,rect.top-1, szText, strlen(szText));
-							
-								SetTextColor(pDC,0x000);
-								if(hbrBkgnd!=NULL)
-									DeleteObject(hbrBkgnd);
-								if(hbrBar!=NULL)
-									DeleteObject(hbrBar);
-
-
-								return CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
-								
-							}
-							else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_COUNTRY].columnIdx)
-							{
-								HDC  hDC =  pListDraw->nmcd.hdc;
-								RECT rc;
-								HBRUSH hbrBkgnd=NULL,hbrSel=NULL;
-								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								int idxCC = Get_CountryFlagByShortName(pSI.szShortCountryName);
-								hbrBkgnd = CreateSolidBrush(RGB(202, 221,250)); 
-
-								iRow = (int)pListDraw->nmcd.dwItemSpec;
-
-								if(iRow%2 == 0)
-									FillRect(pDC, &rc, (HBRUSH) hbrBkgnd);
-								
-								if(pSI.dwPing==9999)
-								{
-									pListDraw->clrText   = RGB(255, 0, 0);
-								}
-								else
-								{
-									if(pSI.bUpdated==false)
-										pListDraw->clrText   = RGB(140, 140, 140);
-									else
-										pListDraw->clrText   = RGB(0, 0, 0);
-								}
-								
-								if(pListDraw->nmcd.uItemState & ( CDIS_SELECTED))
-								{
-									pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
-									hbrSel = CreateSolidBrush( GetSysColor(COLOR_HIGHLIGHT)); //RGB(51,153,250)); 																
-									FillRect(pDC, &rc, (HBRUSH) hbrSel);
-								}
-								ImageList_Draw(g_hILFlags,idxCC,hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
-																
-								SetBkColor(hDC,pListDraw->clrTextBk);
-								SetTextColor(hDC,pListDraw->clrText);								
-								SetBkMode(hDC, TRANSPARENT);
-
-								rc.left+=20;
-								rc.top+=2;
-//								ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL);
-								if(AppCFG.bUseShortCountry)
-									ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szShortCountryName, strlen(pSI.szShortCountryName),NULL); //TextOut(hDC, rc.left,rc.top, pSI.szShortCountryName, strlen(pSI.szShortCountryName));								
-								else
-									ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL); //TextOut(hDC, rc.left+20,rc.top+2, pSI.szCountry, strlen(pSI.szCountry));
-									
-								DeleteObject(hbrBkgnd);
-								if(hbrSel!=NULL)
-									DeleteObject(hbrSel);
-								return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
-							}
-							else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_SERVERNAME].columnIdx)
-							{
-								HDC  hDC =  pListDraw->nmcd.hdc;
-								RECT rc;
-								
-								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								return Draw_CustomText(rc, pListDraw , pSI.szServerName);
-
-							}
+						}
+						catch(const exception& e)
+						{
+							// exception handling code
+							AddLogInfo(0,"Access Violation!!! (ListView_CustomDraw) %s\n",e.what());
+							return CDRF_DODEFAULT;
+						}
+						//do some default stuff
+						if(pSI.dwPing==9999)
+						{
+							pListDraw->clrText   = RGB(255, 0, 0);
+						}else
+						{
 							if(pSI.bUpdated==false)
 								pListDraw->clrText   = RGB(140, 140, 140);
 							else
 								pListDraw->clrText   = RGB(0, 0, 0);
+						}
+						HDC  hDC =  pListDraw->nmcd.hdc;							
+						RECT rc;
+						HBRUSH hbrBkgnd=NULL;
+						iRow = (int)pListDraw->nmcd.dwItemSpec;	
+
+						ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);
+
+						if(pListDraw->iSubItem==CUSTCOLUMNS[COL_PLAYERS].columnIdx)
+						{
+
+							char szText[50];
+							sprintf_s(szText,sizeof(szText),"%d/%d+(%d)",pSI.nCurrentPlayers,pSI.nMaxPlayers,pSI.nPrivateClients);
 							
-							if(pSI.dwPing==9999)
-								pListDraw->clrText   = RGB(255, 0, 0);
-							return  CDRF_NEWFONT; //;
+							hbrBkgnd = CreateSolidBrush(RGB(202, 221,250)); 
+							if(iRow%2 == 0)
+							{
+								pListDraw->clrTextBk = RGB(202, 221,250);
+								FillRect(hDC, &rc, (HBRUSH) hbrBkgnd);
+							}
+
+							Draw_ShadedRect(hDC,rc,szText,pSI.nCurrentPlayers,pSI.nMaxPlayers);
+
+							if(hbrBkgnd!=NULL)
+								DeleteObject(hbrBkgnd);
+
+							return CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
 							
-							
+						}
+						else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_COUNTRY].columnIdx)
+						{
+							HBRUSH hbrSel=NULL;							
+							int idxCC = Get_CountryFlagByShortName(pSI.szShortCountryName);
+							hbrBkgnd = CreateSolidBrush(RGB(202, 221,250)); 
+
+							if(iRow%2 == 0)
+								FillRect(hDC, &rc, (HBRUSH) hbrBkgnd);
+						
+							if(pListDraw->nmcd.uItemState & ( CDIS_SELECTED))
+							{
+								pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
+								hbrSel = CreateSolidBrush( GetSysColor(COLOR_HIGHLIGHT)); //RGB(51,153,250)); 																
+								FillRect(hDC, &rc, (HBRUSH) hbrSel);
+							}
+							ImageList_Draw(g_hILFlags,idxCC,hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
+															
+							//SetBkColor(hDC,pListDraw->clrTextBk);
+							SetTextColor(hDC,pListDraw->clrText);								
+							SetBkMode(hDC, TRANSPARENT);
+
+							rc.left+=20;
+							rc.top+=2;
+							if(AppCFG.bUseShortCountry)
+								ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szShortCountryName, strlen(pSI.szShortCountryName),NULL); 
+							else
+								ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL); 
+								
+							DeleteObject(hbrBkgnd);
+							if(hbrSel!=NULL)
+								DeleteObject(hbrSel);
+							return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+						}
+						else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_SERVERNAME].columnIdx)
+						{
+							if(AppCFG.bUseColorEncodedFont)
+							{
+								HDC  hDC =  pListDraw->nmcd.hdc;
+								RECT rc;								
+								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
+								return Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+							}
 
 						}
-						catch(const exception& e)
-						{
-						// exception handling code
-								AddLogInfo(0,"Access Violation!!! (ListView_CustomDraw) %s\n",e.what());
-						}
-					} 
-						
-					
-				
-				return  CDRF_DODEFAULT; //CDRF_NEWFONT;// CDRF_DODEFAULT;// CDRF_NEWFONT; //( CDRF_NOTIFYPOSTPAINT );
+						return  CDRF_NEWFONT; 	
+
+				} 				
 			}
 			break;
 	default:
@@ -6751,6 +6831,8 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 	}
 	return CDRF_DODEFAULT;
 }
+
+
 
 LRESULT TreeView_CustomDraw(LPARAM lParam)
 {
@@ -8089,6 +8171,8 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			case LVN_GETDISPINFO:
 				if(lpnmia->hdr.hwndFrom == g_hwndListViewServer)
 					return OnGetDispInfoList(wParam,(NMHDR*)lParam);
+				else if(lpnmia->hdr.hwndFrom == g_hwndListViewPlayers)
+					return  ListView_PL_OnGetDispInfoList(wParam, (NMHDR*)lParam);
 				return FALSE;
 			break;
 			case TTN_GETDISPINFO: 
@@ -8123,6 +8207,9 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							break; 
 						case IDC_DOWNLOAD: 
 							lpttt->lpszText = MAKEINTRESOURCE(IDS_DOWNLOAD); 
+							break; 
+						case IDM_FONT_COLOR: 
+							lpttt->lpszText = MAKEINTRESOURCE(IDS_COLOR_FONT); 
 							break; 
 					} 
 					break; 
@@ -9101,7 +9188,7 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 	
 		::SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELONG(24, 24));
 
-		int iNumButtons = 8;
+		int iNumButtons = 9;
 		COLORREF crMask = RGB(255,0,255);
 
 		HBITMAP hbm = ::LoadBitmap(g_hInst, MAKEINTRESOURCE(IDB_TOOLBAR_N));
@@ -9270,6 +9357,12 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 		
 		tbb.iBitmap = 4;
 		tbb.idCommand = IDC_DOWNLOAD;
+		tbb.fsState = TBSTATE_ENABLED;
+		tbb.fsStyle = TBSTYLE_BUTTON;		
+		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
+		
+		tbb.iBitmap = 8;
+		tbb.idCommand = IDM_FONT_COLOR;
 		tbb.fsState = TBSTATE_ENABLED;
 		tbb.fsStyle = TBSTYLE_BUTTON;		
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
@@ -9535,7 +9628,15 @@ int CFG_Load()
 		AppCFG.bShowServerRules  = intVal;
 	} else //set defualt value
 		AppCFG.bShowServerRules = TRUE;
-	
+
+	pElem=hRoot.FirstChild("ColorEncodedFont").Element();
+	if (pElem)
+	{
+		pElem->QueryIntAttribute("Enable",&intVal);
+		AppCFG.bUseColorEncodedFont  = intVal;
+	} else //set defualt value
+		AppCFG.bUseColorEncodedFont = TRUE;
+
 	pElem=hRoot.FirstChild("PlayerList").Element();
 	if (pElem)
 	{
@@ -10123,6 +10224,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					}
 					
 				break;
+				case IDM_FONT_COLOR:
+					AppCFG.bUseColorEncodedFont = !AppCFG.bUseColorEncodedFont;
+					RedrawServerListThread(&GI[g_currentGameIdx]);
+					break;
 				case ID_VIEW_MAPPREVIEW :						
 				case ID_VIEW_SERVERRULES:
 				case ID_VIEW_BUDDYLIST:  
