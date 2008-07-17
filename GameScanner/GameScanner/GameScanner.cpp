@@ -326,6 +326,7 @@ void OnStopScanning();
 void OnScanButton();
 
 HFONT g_hf;
+HFONT g_hf2;
 char g_currServerIP[128];
 
 bool g_bAnimateTaskTray = false;
@@ -4022,7 +4023,9 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	Load_CountryFlags();
 
-	g_hf = SetFont(hwnd,IDC_LIST_SERVER);
+	g_hf = MyCreateFont(hwnd);
+	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Courier New");
+	SetFontToDlgItem(hwnd,g_hf,IDC_LIST_SERVER);
 	SetFontToDlgItem(hwnd,g_hf,IDC_EDIT_STATUS);
 	SetFontToDlgItem(hwnd,g_hf,IDC_CUSTOM2);
 	SetFontToDlgItem(g_hwndSearchToolbar,g_hf,IDC_COMBOBOXEX_CMD);
@@ -4060,6 +4063,7 @@ void OnClose()
 	m_hImageListDis = NULL;
 
 	DeleteObject(g_hf);
+	DeleteObject(g_hf2);
 
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
 	bMainWindowsRunning=false;
@@ -6387,6 +6391,138 @@ SOCKET getsock(const char *host, unsigned short port, int family, int socktype, 
 	return INVALID_SOCKET;
 }
 
+struct ET_COLOR_CODES
+{
+	COLORREF color;
+};
+
+ET_COLOR_CODES ET_CC[]=
+{
+	0x00000000, // space
+	RGB(0xFF,00,00), //! 
+	0x00000000, //"
+	RGB(0x7f,00,0x7f), //#
+	RGB(0x00,0x7f,0xff), //$
+	RGB(0x66,0x10,0xbe), //%
+	RGB(0x33,0x99,0xcc), //&
+	RGB(0xae,0xd9,0xae), //'
+	RGB(0x03,0x63,0x33), //(
+	RGB(0xf2,0x03,0x33), //)
+	RGB(0x9d,0x9d,0x9d), //*
+	RGB(0x99,0x33,0x00),//+
+	0x00,       //,
+	RGB(0x7f,00,00),//-
+	RGB(0x27,0x2b,0x27),//.
+	RGB(0xd6,0xd7,0x6e),// /
+	0x00,// 0
+	RGB(0xFF,0x00,0x00),// 1
+	RGB(0x00,0xFF,0x00),// 2
+	RGB(0xc9,0xca,0x09),// 3
+	RGB(0x00,0x00,0xff),// 4
+	RGB(0x00,0xff,0xff),// 5
+	RGB(0x4a,0x2c,0x4a),// 6
+	RGB(0xff,0xff,0xff),// 7
+	RGB(0x78,0x50,0x28),// 8
+	RGB(0x7f,0x7f,0x7f),// 9
+	RGB(0xac,0xad,0xac),// :
+	0x00,// ;
+	RGB(0x00,0x7f,0x00),// <
+	RGB(0x7f,0x7f,0x00),// =
+	RGB(0x02,0x02,0x79),// >
+	RGB(0x79,0x02,0x02),// ?
+	RGB(0x35,0x36,0x36),// @
+	RGB(0x34,0x31,0x26),// A
+	RGB(0x04,0x74,0x74),// B
+	RGB(0x74,0x05,0x74),// C
+	RGB(0x1f,0x3a,0x4f),// D
+	RGB(0x7f,0x00,0xff),// E
+	RGB(0x33,0x99,0xcc),// F
+	RGB(0xcc,0xff,0xcc),// G
+	RGB(0x00,0x66,0x33),// H
+	RGB(0xff,0x00,0x33),// I
+	RGB(0x27,0x2b,0x27),// J
+	RGB(0x99,0x33,0x00),// K
+	RGB(0x99,0x33,0x00),// L
+	RGB(0x75,0x76,0x2f),// M
+	RGB(0xe4,0xe4,0xac),// N
+	RGB(0xe5,0xe5,0x75),// O
+	RGB(0x06,0x07,0x06),// P  //black?
+	RGB(0xff,0x00,0x00),// Q
+	RGB(0x00,0xff,0x00),// R
+	RGB(0xf1,0xf1,0x02),// S
+	RGB(0x0a,0x0b,0xc4),// T
+	RGB(0x02,0xf1,0xf1),// U
+	RGB(0xf1,0x02,0xf1),// V
+	RGB(0xff,0xff,0xff),// W
+	RGB(0xe4,0x74,0x04),// X
+	RGB(0x79,0x79,0x79),// Y
+	RGB(0xbf,0xbf,0xbf),// Z
+	RGB(0xae,0xae,0xae),// [
+	RGB(0x02,0x79,0x02), // /*\*/
+	RGB(0x6a,0x6b,0x14), // ]
+	0x00, // ^
+	RGB(0x7f,00,00),//_
+	0x00000000,//´
+
+};
+
+
+
+
+COLORREF GetColor(char inC)
+{
+	char c = inC;
+	if(isalpha(inC))
+	 c = _tolower(inC);
+	int len = sizeof(ET_CC)/sizeof(DWORD);
+	if((c-' ')<len)
+		return ET_CC[c-' '].color;
+	return 0x0000000;
+}
+
+// Draw_CustomText(HDC pDC, RECT rc, pListDraw->nmcd.uItemState , pSI.s)
+LRESULT Draw_CustomText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
+{
+	HDC  hDC =  pListDraw->nmcd.hdc;
+	HBRUSH hbrSel= NULL;
+	hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
+	FillRect(hDC, &rc, (HBRUSH) hbrSel);
+
+	if( pListDraw->nmcd.uItemState & ( CDIS_SELECTED))
+	{
+		pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
+		hbrSel = CreateSolidBrush( GetSysColor(COLOR_HIGHLIGHT)); //RGB(51,153,250)); 																
+		FillRect(hDC, &rc, (HBRUSH) hbrSel);
+	}
+	int nCharWidth;
+	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	char *pText;
+	rc.left+=20;
+	rc.top+=2;
+	COLORREF col = RGB(255,255,255) ;
+	SelectObject(hDC,g_hf2);
+	for(int i=0;i<strlen(pszText);i++)
+	{
+		if(pszText[i]=='^')
+		{
+			col = GetColor(pszText[i+1]);
+
+			i++;
+			continue;
+		}
+		SetTextColor(hDC,col);
+		pText = &pszText[i];
+
+		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); //TextOut(hDC, rc.left+20,rc.top+2, pSI.szCountry, strlen(pSI.szCountry));
+		rc.left+=nCharWidth;
+
+	}
+	SelectObject(hDC,g_hf);								
+	if(hbrSel!=NULL)
+		DeleteObject(hbrSel);
+
+	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+}
 
 LRESULT ListView_CustomDraw (LPARAM lParam)
 {
@@ -6429,13 +6565,6 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 			}
 			return (  CDRF_NOTIFYSUBITEMDRAW );
 			break;
-	/*	case CDDS_ITEMPOSTPAINT:
-		{
-	
-			return lResult; //CDRF_NOTIFYSUBITEMDRAW ;//lResult;
-		}
-		break;
-*/
 		case CDDS_ITEMPREPAINT|CDDS_SUBITEM:
 			{
 	
@@ -6537,7 +6666,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 							{
 								HDC  hDC =  pListDraw->nmcd.hdc;
 								RECT rc;
-								HBRUSH hbrBkgnd,hbrSel;
+								HBRUSH hbrBkgnd=NULL,hbrSel=NULL;
 								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
 								int idxCC = Get_CountryFlagByShortName(pSI.szShortCountryName);
 								hbrBkgnd = CreateSolidBrush(RGB(202, 221,250)); 
@@ -6580,10 +6709,19 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 									ExtTextOut(hDC,rc.left,rc.top,0, &rc,pSI.szCountry, strlen(pSI.szCountry),NULL); //TextOut(hDC, rc.left+20,rc.top+2, pSI.szCountry, strlen(pSI.szCountry));
 									
 								DeleteObject(hbrBkgnd);
-
+								if(hbrSel!=NULL)
+									DeleteObject(hbrSel);
 								return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
 							}
+							else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_SERVERNAME].columnIdx)
+							{
+								HDC  hDC =  pListDraw->nmcd.hdc;
+								RECT rc;
+								
+								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
+								return Draw_CustomText(rc, pListDraw , pSI.szServerName);
 
+							}
 							if(pSI.bUpdated==false)
 								pListDraw->clrText   = RGB(140, 140, 140);
 							else
@@ -8322,7 +8460,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	if(FindWindow(szWindowClass,szDialogTitle )!=NULL)
 	{
 
-		MessageBox(NULL,"Please exit current W:ET Server Viewer\nbefore running the new version!","Alert",MB_OK);
+		MessageBox(NULL,"You can only run one instance of Game Scanner!","Alert",MB_OK);
 		return 0;
 	}
 

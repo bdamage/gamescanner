@@ -230,23 +230,28 @@ BOOL SetScreenResolution(DEVMODE DisplaySettings) {
   return 1;
 }
 
-HFONT  SetFont(HWND hDlg, int nIDDlgItem)
+//FW_EXTRABOLD;
+//FW_NORMAL, FW_EXTRABOLD etc. se LOGFONT struct i msdn
+//Courier New, Terminal Tahoma
+HFONT  MyCreateFont(HWND hDlg,LONG height, LONG weight, char *pszFontFace)
 {
 	HFONT hf;
 	LOGFONT lf;
+
 	memset(&lf,0,sizeof(LOGFONT));
-	strcpy_s(lf.lfFaceName,sizeof(lf.lfFaceName),"Arial"); //Courier New, Terminal Tahoma
-	
-	lf.lfHeight = 12;
-
-	lf.lfWeight = FW_NORMAL; //FW_EXTRABOLD; //FW_NORMAL, FW_EXTRABOLD etc. se LOGFONT struct i msdn
-
+	strcpy_s(lf.lfFaceName,sizeof(lf.lfFaceName),pszFontFace); 
+	lf.lfHeight = height;
+	lf.lfWeight = weight; 
 	hf = CreateFontIndirect(&lf);
-	HWND target;
-	target = GetDlgItem(hDlg,nIDDlgItem);
-	if(target!=NULL)
-	     SendMessage(target, WM_SETFONT, (WPARAM)hf,(LPARAM) MAKELONG((WORD) TRUE, 0));
+
 	return hf;
+}
+
+
+void SetFontToWindowHandler(HWND hTargetWnd,HFONT hf)
+{	
+	if(hTargetWnd!=NULL)
+	     SendMessage(hTargetWnd, WM_SETFONT, (WPARAM)hf,(LPARAM) MAKELONG((WORD) TRUE, 0));	
 }
 
 void SetFontToDlgItem(HWND hDlg,HFONT hf,int nIDDlgItem)
@@ -623,7 +628,41 @@ void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 	}
 }
 
+/*
+http://www.truecarnage.com/quake-4-color-code-chart-r24.htm
+http://www.truecarnage.com/coloring-team-chat-and-name-tricks-in-q4-r2.htm
+^iw00: Gauntlet
+^iw01: Machine Gun
+^iw02: Shotgun
+^iw03: Hyperblaster
+^iw04: Grenade Launcher
+^iw05: Nailgun
+^iw06: Rocket Launcher
+^iw07: Railgun
+^iw08: Lightning Gun
+^iw09: Dark Matter Gun
 
+^ifls: Strogg Flag
+^iflm: Marine Flag
+
+^irgn: Regeneration
+^idbl: Doubler
+^igrd: Guard
+^isct: Scout
+
+^ivce: Voice Enabled
+^ivcd: Voice Disabled
+^ifdd: Player Muted
+^ifde: Player Unmuted
+^ipbe: Punkbuster Logo
+^idse: Armor Shard
+^ipse: Padlock
+^ifve: Star
+^idm0: Skull 'n' Crossbones
+^idm1: Green X
+^iarr: Right Arrow
+
+*/
 char *colorfilterQ4(char* name,char *namefilter, size_t len)
 {
 	size_t i=0,ii=0;
