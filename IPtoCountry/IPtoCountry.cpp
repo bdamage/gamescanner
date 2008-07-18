@@ -273,104 +273,6 @@ $dotted_ip_address = long2ip($ip_number);
 
 
 
-struct LOOKUP {
-	char szCountry[50];
-	char a[4];
-	char i;
-} tbl[] = {"Unknown","???",7,
-"Australia","AUS",22,
-"Argentina","ARG",31,
-"Austria","AUT",32,
-"Czech Republic","CZE",23,
-"Canada","CAN",24,
-"Chile","CHL",36,
-"China","CHN",26,
-"Crotia","HRV",42,
-"Bosnia and Herzergowina","BIH",50,
-"Belgium","BEL",18,
-"Brazil","BRA",27,
-"Bulgaria","BGR",40,
-"Denmark","DNK",10,
-"Estonia","EST",21,
-"Europe","EU",54,
-"Finland","FIN",9,
-"France","FRA",13,
-"Greece","GRC",43,
-"Germany","DEU",12,
-"Hungary","HUN",30,
-"Hong Kong","HKG",44,
-"Italy","ITA",25,
-"Israel","ISR",29,
-"Iceland","ISL",35,
-"Ireland","IRL",45,
-"Japan","JPN",28,
-"Lithuania","LTU",46,
-"Malta","MLT",51,
-"Norway","NOR",11,
-"Netherlands","NLD",14,
-"New Zealand","NZL",20,
-"Poland","POL",19,
-"Portugal","PRT",37,
-"Russia","RUS",34,
-"Romania","ROM",47,
-"Spain","ESP",16,
-"Sweden","SWE",8,
-"United Kingdom","GBR",15,
-"United States","USA",17,
-"Switzerland","CHE",33,
-"South Korea","KOR",38,
-"Slovakia","SVK",39,
-"Singapore","SGP",41,
-"Slovenia","SVN",48,
-"South Africa","ZAF",53,
-"Ukrania","UKR",55,
-"","???",49,
-"Quake 4","Q4",52,
-"","?",56,
-"Belarus","BLR",66,
-"Cyprus","CYP",67,
-"Mexico","MEX",68,
-"Taiwan","TWN",69,
-"India","IND",70,
-"Serbia","SCG",72,
-"Latvia","LVA",71,
-"Saudi Arabia","SAU",73,
-"Eastern Europe","???",99, //Dummy values
-"Western Europe","???",99, //Dummy Values
-"Scandinavia","???",99, //dummy Values
-"Asia","???",99, //dummy Values
-"Africa","???",99, //dummy Values
-"South Europe","???",99, //dummy Values
-"Northern Europe","???",99, //dummy Values
-"North America","???",99, //dummy Values
-"South America","???",99, //dummy Values
-"Central America","???",99, //dummy Values
-"Australia ","???",99, //dummy Values
-"Baltics","???",99, //dummy Values
-"Benelux","???",99, //dummy Values
-"Americas","???",99, //dummy Values
-"Middle East","???",99, //dummy Values
-"unknown","?",98
-};
-
-
-char fnConvertShortNameImageListIndex(char *szSN)
-{
-	for(int i=0;i<(sizeof(tbl)/sizeof(LOOKUP));i++)
-		if(strcmp(szSN,tbl[i].a)==0)
-			return tbl[i].i;
-
-	return 7;
-}
-
-char fnConvertLongNameImageListIndex(char *szSN)
-{
-	for(int i=0;i<(sizeof(tbl)/sizeof(LOOKUP));i++)
-		if(strcmp(szSN,tbl[i].szCountry)==0)
-			return tbl[i].i;
-
-	return 7;
-}
 
 //typedef vector<IPCOUNTRY> vecIPC;
 typedef vector<CIPCountry> vecIPC;
@@ -422,14 +324,12 @@ DWORD fnIPtoCountryInit()
 	DWORD dwIdx = dwSize;
 	for(int i=0;i<6; i++)
 	{
-		 
 		dwIdx-=dwHalfQuarter;
-
 		tmpIPC  = vIPC.at(dwIdx);
 
 		LUT[i].dwIndex = dwIdx;
 		LUT[i].ipc.startIP = tmpIPC.dwStartIP;
-
+		tmpIPC.strCountry.clear();
 	}
 	return 0;
 }

@@ -308,6 +308,7 @@ void AddGetLastErrorIntoLog(char* lpszFunction)
 void AddLogInfo(int color, char *lpszText, ...)
 {
 
+
 #ifndef NOLOG
 	//if(appSettings.bLogging)
 	{
@@ -392,6 +393,8 @@ void AddLogInfo(int color, char *lpszText, ...)
 //#endif
 			va_end(argList);
 	}
+
+
 	//ReleaseMutex(g_hMutex);
 #endif
 

@@ -10,10 +10,11 @@
 extern void Default_Appsettings();
 extern void CFG_Save();
 extern string g_sMIRCoutput;
+string CFG_g_sMIRCoutputTemp;
 
 //Config dialog vars
 #define GAME_CFG_INDEX 5   //This is the helper index in treeview where all games configuration starts from
-#define C_PAGES 17
+#define C_PAGES 18
 bool g_bChanged=false;
 APP_SETTINGS_NEW AppCFGtemp;
 HWND g_hwndTree=NULL;
@@ -57,6 +58,12 @@ void CFG_Apply_General(HWND hDlg)
 		AppCFGtemp.bUseMIRC=true;
 	else
 		AppCFGtemp.bUseMIRC=false;
+
+	 char tmp[MAX_PATH];	 
+	 GetDlgItemText(hDlg,IDC_EDIT_MIRC,tmp,MAX_PATH);
+	 CFG_g_sMIRCoutputTemp = tmp;
+	 g_sMIRCoutput = CFG_g_sMIRCoutputTemp;
+
 }
 
 void CFG_Apply_Games(int gameID,HWND hDlg)
@@ -70,6 +77,12 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 			GI_CFG[gameID].bActive=true;
 		else
 			GI_CFG[gameID].bActive=false;
+
+
+		if(IsDlgButtonChecked(hDlg,IDC_CHECK_USE_HTTP)==BST_CHECKED)
+			GI_CFG[gameID].bUseHTTPServerList = TRUE;
+		else
+			GI_CFG[gameID].bUseHTTPServerList = TRUE;
 
 
 		GetDlgItemText(hDlg,IDC_EDIT_PATH,GI_CFG[gameID].szGAME_PATH,MAX_PATH);
@@ -230,11 +243,13 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			hNewItem = TreeView_AddItem(GI[CSS_SERVERLIST].iIconIndex,"CS Source");
 			hNewItem = TreeView_AddItem(GI[QW_SERVERLIST].iIconIndex,"Quake World");
 			hNewItem = TreeView_AddItem(GI[Q2_SERVERLIST].iIconIndex,"Quake 2");
+			hNewItem = TreeView_AddItem(GI[OPENARENA_SERVERLIST].iIconIndex,"Open Arena");
 
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
 					
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 			memcpy(&GI_CFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
+			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
 
 		//	hNewItem = TreeView_AddItem("mIRC");			
 		//	hNewItem = TreeView_AddItem("Look & Feel");
@@ -414,9 +429,6 @@ VOID WINAPI CFG_OnSelChanged(HWND hwndDlg)
 	if(g_currSelCfg==iSel)
 		return;
 
-	//if(iSel!=iSel2)
-	//	MessageBox(NULL,"test","test",NULL);
-
 	if(iSel==-1)
 		iSel = 0;
 	if(iSel==GAME_CFG_INDEX)
@@ -550,6 +562,11 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_CHECKED);
 				else
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_UNCHECKED);
+
+				if(GI_CFG[gameID].bUseHTTPServerList)
+					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
+				else
+					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_UNCHECKED);				
 
 			}
 

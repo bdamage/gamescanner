@@ -15,9 +15,7 @@ Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
 
 */
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
+
 
 #include "stdafx.h"
 
@@ -73,6 +71,8 @@ Upgrade code:
 
 #define MAX_LOADSTRING 100
 
+using namespace std;
+
 // Global Variables:
 HINSTANCE g_hInst;								// current instance
 TCHAR szTitle[MAX_LOADSTRING];					// The title bar text
@@ -83,7 +83,7 @@ TCHAR szWindowClass[MAX_LOADSTRING];			// the main window class name
 
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-//INT_PTR CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
+
 
 #define MAX_LOADSTRING 100
 
@@ -94,8 +94,6 @@ char TREEVIEW_VERSION[20];
 
 #define TIMER_EVENT		 1001
 #define TIMER_EVENT_RSS	 1002
-
-
 
 #define SCAN_ALL		0
 #define SCAN_FILTERED	1
@@ -108,20 +106,6 @@ char TREEVIEW_VERSION[20];
 #define REDRAWLIST_HISTORY				0x00000004
 #define REDRAWLIST_SCAN_FILTERED		0x00000008
 
-int g_currentGameIdx = ET_SERVERLIST;
-
-
-/****************************************
-	Buddy Global vars
-*****************************************/
-BUDDY_INFO *g_pBIStart=NULL;
-
-
-DWORD g_tvIndex=0;
-
-HIMAGELIST g_hILFlags = NULL;
-
-BOOL g_bTREELOADED = FALSE;
 
 #define COL_PB			0
 #define COL_PRIVATE		1
@@ -141,6 +125,30 @@ BOOL g_bTREELOADED = FALSE;
 #define MAX_COLUMNS COL_IP+1
 
 
+
+#pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ ) 
+#ifndef _DEBUG
+TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION ;
+#else
+TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " Compiled on " __DATE__ " at "__TIME__;
+#endif
+
+
+int g_currentGameIdx = ET_SERVERLIST;
+
+
+/****************************************
+	Buddy Global vars
+*****************************************/
+BUDDY_INFO *g_pBIStart=NULL;
+DWORD g_tvIndex=0;
+
+HIMAGELIST g_hILFlags = NULL;
+
+BOOL g_bTREELOADED = FALSE;
+
+
+
 BOOL bSortColumnAscading[15];
 int iLastColumnSortIndex = COL_PLAYERS;
 
@@ -151,7 +159,7 @@ extern BOOL SCANNER_bCloseApp;
 bool bFirstTimeSizeCalc= true;
 #define BORDER_SIZE 4
 
-string g_sMIRCoutput;
+string g_sMIRCoutput ="";
 
 _WINDOW_CONTAINER WNDCONT[15];
 PLAYERDATA *pCurrentPL=NULL; //a temporary current player list in listview, this will be 
@@ -159,29 +167,16 @@ PLAYERDATA *pCurrentPL=NULL; //a temporary current player list in listview, this
 
 
 
-#pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ ) 
-
-#ifndef _DEBUG
-TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION ;
-#else
-TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " Compiled on " __DATE__ " at "__TIME__;
-#endif
-
-
-//HHOOK hhook = NULL;
-
-using namespace std;
-
 int ImageSizeX = 120;
 //int oldmaxWidth=0;
 
-HTREEITEM iSelected ;
-TVITEM  tvi;
+HTREEITEM iSelected = NULL;
+//TVITEM  tvi;
 
 int tabViewMode = FAVORITE;
 void GameTypeFilter_GetSelectedGameType(HTREEITEM hRoot);
 
-HANDLE hCloseEvent; 
+HANDLE hCloseEvent = NULL; 
 
 struct _splitter
 {
@@ -259,10 +254,6 @@ int ReadCfgInt2(TiXmlElement* pNode, char *szParamName, int& intVal);
 void WriteCfgStr(TiXmlElement * root, char *szParentName, char *szParamName,const char *value) ;
 void WriteCfgInt(TiXmlElement * root, char *szParentName, char *szParamName,int value) ;
 int XML_GetTreeItemInt(TiXmlElement* pNode, const char* attributeName);
-const char * XML_GetTreeItemStr(TiXmlElement* pNode, const char* attributeName,char *szOutput, DWORD maxBytes);
-const char * XML_GetTreeItemStrValue(TiXmlElement* pNode,char *szOutput, DWORD maxBytes);
-const char * XML_GetTreeItemName(TiXmlElement* pNode,char *szOutput, DWORD maxBytes);
-
 int OwnerDrawnComboBox_Country(LPDRAWITEMSTRUCT lpDrawItemStruct, HDC dc);
 void ClearAllServerLinkedList();
 DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite);
@@ -274,7 +265,9 @@ void OnInitialize_MainDlg(HWND hwnd);
 void OnClose();
 void OnRCON();
 void OnPaint(HDC hDC);
-
+void OnMinimize(HWND hWnd);
+void OnStopScanning();
+void OnScanButton();
 void SetImageList();
 DWORD WINAPI ReScanServerList(LPVOID lpParam);
 void StartGame_ConnectToServer(bool connectFromBuddyList);
@@ -282,6 +275,14 @@ void Favorite_Remove();
 void Favorite_Add(bool manually);
 void FilterUpdate();
 char *SplitIPandPORT(char *szIPport,DWORD &port);
+DWORD Build_CountryFilter(HTREEITEM hRoot);
+void Initialize_CountryFilter();
+LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
+HTREEITEM MainTreeView_AddItem(_TREEITEM ti, HTREEITEM hCurrent, bool active=true);
+void TreeView_SetItemText(HTREEITEM hTI, char *szText);
+void Select_item_and_all_childs(HTREEITEM hRoot, bool select);
+int TreeView_GetSelectionV3();
+const char * XML_GetTreeItemStr(TiXmlElement* pNode, const char* attributeName,char *szOutput, DWORD maxBytes);
 
 
 char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
@@ -293,14 +294,7 @@ char EXE_PATH_OLD[_MAX_PATH+_MAX_FNAME];
 DWORD dwCurrPort = 27960;
 bool bDoFirstTimeCheckForUpdate=true;
 
-bool	 bPlayerNameAsc=true,bPlayerClanAsc=true,	bRateAsc = true,bPlayerPingAsc=true;
-
-RECT rcClient;
-
-HBITMAP hbmOldBuffer;
-HBITMAP hbmBuffer;
-HDC hdcBuffer;
-
+bool bPlayerNameAsc=true,bPlayerClanAsc=true,	bRateAsc = true,bPlayerPingAsc=true;
 APP_SETTINGS_NEW AppCFG;
 
 
@@ -309,7 +303,7 @@ SERVER_INFO *g_CurrentSRV = NULL;
 SERVER_INFO g_tmpSRV ;
 SERVER_INFO g_CurrentSelServer;
 bool g_bMinimized=false;
-SERVER_INFO *g_PRIVPASSsrv;
+SERVER_INFO *g_PRIVPASSsrv = NULL;
 HWND g_PROGRESS_DLG,g_DlgProgress= NULL,g_DlgProgressMsg=NULL;
 RECT g_rcDestMapImg;
 HWND g_hwndToolbarOptions = NULL;
@@ -319,32 +313,24 @@ HWND g_hwndComboEdit = NULL;
 HWND g_hWnd=NULL,g_hwndRibbonBar;
 
 HIMAGELIST g_hImageListIcons = NULL;
+HIMAGELIST m_hImageList = NULL;
+HIMAGELIST m_hImageListSearchBar = NULL;
+HIMAGELIST m_hImageListHot = NULL;
+HIMAGELIST m_hImageListDis = NULL;
+HFONT g_hf  =NULL;
+HFONT g_hf2 = NULL;
 
 
-HIMAGELIST m_hImageList,m_hImageListSearchBar;
-HIMAGELIST m_hImageListHot;
-HIMAGELIST m_hImageListDis;
-
-void OnMinimize(HWND hWnd);
-void OnStopScanning();
-void OnScanButton();
-
-HFONT g_hf;
-HFONT g_hf2;
 char g_currServerIP[128];
-
-bool g_bAnimateTaskTray = false;
 bool g_bCancel = false;
-bool bRunningQuery = false;
+bool g_bRunningQuery = false;
 bool g_bRunningQueryServerList = false;
-DWORD dwThreadIdRefreshSrvLst;
 int g_iCurrentSelectedServer = -1;
 int g_statusIcon = -1;
-bool bRefreshBrowserList=false;
 BOOL 	bRunningRefreshThread = FALSE;
-HICON hOnlineIcon,hOfflineIcon;;
+HICON hOnlineIcon = NULL;
+HICON hOfflineIcon = NULL;
 
-HICON hMainIcon;
 
 HWND g_hwndTabControl = NULL;
 HWND g_hwndLogger = NULL,g_hwndStatus = NULL;
@@ -353,11 +339,8 @@ HWND g_hwndListViewServerListHeader = NULL;
 HWND g_hwndMainTreeCtrl=NULL, g_hwndProgressBar=NULL, hwndPaneV=NULL;
 HWND hwndPaneH1=NULL,hwndButtonTest=NULL,hwndButtonOptions=NULL,hwndButtonSearch=NULL;
 HWND hwndButtonAddToFavorite=NULL;
-LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 HTREEITEM hRootItem=NULL,hRootFiltersItem=NULL,hRootCountryFiltersItem=NULL,hRootEuropeItem=NULL,hFilterPingItem=NULL,hFilterGameTypeItem=NULL;
-DWORD Build_CountryFilter(HTREEITEM hRoot);
-void Initialize_CountryFilter();
 
 struct _CountryFilter 
 {
@@ -373,29 +356,19 @@ struct _CountryFilter
 };
 _CountryFilter CountryFilter;
 
-HTREEITEM MainTreeView_AddItem(_TREEITEM ti, HTREEITEM hCurrent, bool active=true);
-//HTREEITEM MainTreeView_AddItem(int iImageIndex, HTREEITEM hCurrent, const char *text, bool expand=false,bool active=true);
-void TreeView_SetItemText(HTREEITEM hTI, char *szText);
-void Select_item_and_all_childs(HTREEITEM hRoot, bool select);
-int TreeView_GetSelectionV3();
-const char * XML_GetTreeItemStr(TiXmlElement* pNode, const char* attributeName,char *szOutput, DWORD maxBytes);
 
 
 TCHAR szPlayerlistColumnString[5][20] = {TEXT("#"),TEXT("Team"),TEXT("Name"), TEXT("Rate/XP"), TEXT("Ping")};
 
 SERVER_CONTAINER SC[MAX_SERVERLIST];
 GAME_INFO GI[MAX_SERVERLIST+1];
-
-GAME_INFO *currCV;
-
+GAME_INFO *currCV = NULL;
 char g_szMapName[MAX_PATH];
-
 HWND g_hwndMainRCON=NULL;
 HWND g_hwndMainSTATS=NULL;
 
 #define EVENT_PING 1010
 UINT_PTR pingTimer;
-
 deque<DWORD> QPing;
 typedef deque<DWORD> deQPing;
 
@@ -1397,7 +1370,7 @@ void OnServerSelected(GAME_INFO *pGI)
 	int i = ListView_GetSelectionMark(g_hwndListViewServer);
 	if(g_iCurrentSelectedServer==i)
 		return;
-	bRunningQuery = true;
+	g_bRunningQuery = true;
 
 
 	if(i!=-1)
@@ -1435,7 +1408,7 @@ void OnServerSelected(GAME_INFO *pGI)
 	UpdateWindow(g_hwndListViewPlayers);
 	UpdateWindow(g_hwndListViewVars);
 
-	bRunningQuery = false;
+	g_bRunningQuery = false;
 }
 
 
@@ -1445,7 +1418,7 @@ void OnBuddySelected()
 	
 	int i = ListView_GetSelectionMark(g_hwndListBuddy);
 	
-	bRunningQuery = true;
+	g_bRunningQuery = true;
 
 	dbg_print("Onbuddy\n");
 	if(i!=-1)
@@ -1491,7 +1464,7 @@ void OnBuddySelected()
 		}
 	}	
 
-	bRunningQuery = false;
+	g_bRunningQuery = false;
 }
 
 void RegisterProtocol(char *path)
@@ -1554,7 +1527,6 @@ void Default_GameSettings()
 		GI[i].iIconIndex =  Get_GameIcon(i);
 
 	}
-
 
 
 	strcpy(GI[ET_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
@@ -1645,8 +1617,8 @@ void Default_GameSettings()
 	strncpy(GI[ETQW_SERVERLIST].szGAME_CMD,"+seta com_usefastvidrestart 1 +seta com_allowconsole 1",MAX_PATH);
 	dwBuffSize = sizeof(GI[ETQW_SERVERLIST].szGAME_PATH);
 	GI[ETQW_SERVERLIST].pSC = &SC[ETQW_SERVERLIST];
+	GI[ETQW_SERVERLIST].bUseHTTPServerList = TRUE;
 
-	
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\ET - QUAKE Wars","EXEString",GI[ETQW_SERVERLIST].szGAME_PATH,&dwBuffSize);
 	if(strlen(GI[ETQW_SERVERLIST].szGAME_PATH)>0)
 		GI[ETQW_SERVERLIST].bActive = true;
@@ -1842,20 +1814,23 @@ void Default_GameSettings()
 	GI[Q2_SERVERLIST].bUseHTTPServerList = FALSE;
 
 
+	strcpy(GI[OPENARENA_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
 	GI[OPENARENA_SERVERLIST].iIconIndex = Get_GameIcon(OPENARENA_SERVERLIST);
 	GI[OPENARENA_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[OPENARENA_SERVERLIST].szGAME_NAME,"Open Arena",MAX_PATH);
 	strncpy(GI[OPENARENA_SERVERLIST].szMasterServerIP,"dpmaster.deathmask.net",MAX_PATH);
 	GI[OPENARENA_SERVERLIST].dwMasterServerPORT = 27950;
-	GI[OPENARENA_SERVERLIST].dwProtocol = 0;
+	GI[OPENARENA_SERVERLIST].dwProtocol = 69;
 	strncpy(GI[OPENARENA_SERVERLIST].szMAP_MAPPREVIEW_PATH,"openarenamaps",MAX_PATH);
 	strncpy(GI[OPENARENA_SERVERLIST].szGAME_CMD,"",MAX_PATH);
 	dwBuffSize = sizeof(GI[OPENARENA_SERVERLIST].szGAME_PATH);
-
-	//"C:\Program Files\Warsow\warsow_x86.exe" +set fs_usehomedir 1 +set fs_basepath "C:/Program Files/Warsow"
-	strcpy(GI[OPENARENA_SERVERLIST].szGAME_PATH,"C:\\Program Files\\Warsow\\warsow_x86.exe");
-	strcpy(GI[OPENARENA_SERVERLIST].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"C:/Program Files/Warsow\"");
+	GI[OPENARENA_SERVERLIST].bUseHTTPServerList = FALSE;
+	strcpy(GI[OPENARENA_SERVERLIST].szQueryString,"openarena");
+	strcpy(GI[OPENARENA_SERVERLIST].szProtocolName,"openarena");
+	GI[OPENARENA_SERVERLIST].dwDefaultPort = 28960;	
+	strcpy(GI[OPENARENA_SERVERLIST].szGAME_PATH,"openarena.exe");
+	strcpy(GI[OPENARENA_SERVERLIST].szGAME_CMD,"");
 
 #ifdef _DEBUG
 	GI[OPENARENA_SERVERLIST].bActive = true;
@@ -1863,9 +1838,6 @@ void Default_GameSettings()
 	GI[OPENARENA_SERVERLIST].bActive = false;
 #endif
 
-	strcpy(GI[OPENARENA_SERVERLIST].szQueryString,"openarena");
-	strcpy(GI[OPENARENA_SERVERLIST].szProtocolName,"openarena");
-	GI[OPENARENA_SERVERLIST].dwDefaultPort = 28960;
 
 	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
 	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
@@ -1882,11 +1854,6 @@ void Default_GameSettings()
 	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
 	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
 	strcpy(GI[OPENARENA_SERVERLIST].szFilename,"openarena.servers");
-
-
-
-
-
 	
 	RegisterProtocol(EXE_PATH);
 }
@@ -2956,7 +2923,7 @@ HTREEITEM MainTreeView_AddItem(_TREEITEM *ti,HTREEITEM hCurrent,bool active)
 DWORD level=1;
 int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 {
-	char szName[50];
+	char szName[100];
 	_TREEITEM ti;
 	if(childItem==NULL)
 		return 0;
@@ -2985,8 +2952,8 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		ti.dwAction = XML_GetTreeItemInt(childItem,"action");
 		ti.dwValue =  XML_GetTreeItemInt(childItem,"value");
 		ZeroMemory(szName,sizeof(szName));
+		ti.strValue = "zz";	
 		XML_GetTreeItemStrValue(childItem,szName,sizeof(szName));
-		ti.strValue = "zz";
 		if(szName!=NULL)
 			ti.strValue = szName;
 
@@ -3663,8 +3630,9 @@ void ListView_SetHeaderSortImage(HWND listView, int columnIndex, BOOL isAscendin
 
 void OnRestore()
 {
+	OutputDebugString("OnRestore\n");
 	//AddLogInfo(ETSV_INFO, "Message WM_SIZE restoring.");
-	Initialize_WindowSizes();
+	//Initialize_WindowSizes();
 	g_iCurrentSelectedServer = -1;
 	ShowWindow(g_hwndLogger,SW_HIDE);
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
@@ -3905,7 +3873,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	g_CurrentSRV = NULL;
 	bRunningRefreshThread = FALSE;
 	g_bRunningQueryServerList = false;
-	bRefreshBrowserList = false;
 	g_bCancel = false;
 	ZeroMemory(&g_CurrentSelServer,sizeof(SERVER_INFO));
 
@@ -4146,9 +4113,12 @@ void OnClose()
 	m_hImageListDis = NULL;
 
 	DeleteObject(g_hf);
+	g_hf = NULL;
 	DeleteObject(g_hf2);
+	g_hf2=NULL;
 
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
+	pCurrentPL = NULL;
 	bMainWindowsRunning=false;
 }
 
@@ -4196,7 +4166,7 @@ void OnInitialize_MainDlg(HWND hwnd)
 	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 	
 
 	strcpy(g_szMapName,"unknownmap.png");
-	AddLogInfo(ETSV_INFO,"Initialize main dialog.");
+	//AddLogInfo(ETSV_INFO,"Initialize main dialog.");
 
 	EnableButtons(TRUE);
 	//EnableDownloadLink(FALSE);	
@@ -4671,14 +4641,16 @@ void CFG_Save()
  	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
 	doc.LinkEndChild( decl );  
 	
+	
  
 	TiXmlElement * root = new TiXmlElement( "ETSVcfg" );  
 	doc.LinkEndChild( root );  
 
 	TiXmlComment * comment = new TiXmlComment();
-	comment->SetValue(" \nSettings for ET Server Viewer\n\nONLY CHANGE VALUES IF YOU KNOW WHAT YOU ARE DOING!\n " );  
-	
+	comment->SetValue(" \nSettings for ET Server Viewer\n\nONLY CHANGE VALUES IF YOU KNOW WHAT YOU ARE DOING!\n " );  	
 	root->LinkEndChild( comment );  
+
+
 
 	TiXmlElement * versions = new TiXmlElement( "Versions" );  
 	root->LinkEndChild( versions );  
@@ -4793,7 +4765,7 @@ void CFG_Save()
 
 	TiXmlElement * xmlLastTabView = new TiXmlElement( "LastGameView" );  
 	root->LinkEndChild( xmlLastTabView );  
-	xmlLastTabView->SetAttribute("index", AppCFG.lastTabView);
+	xmlLastTabView->SetAttribute("index", g_currentGameIdx);
 
 	TiXmlElement * xmlAutoStart = new TiXmlElement( "AutoStart" );  
 	root->LinkEndChild( xmlAutoStart );  
@@ -4815,6 +4787,7 @@ void CFG_Save()
 	TiXmlElement * xmlmIRC = new TiXmlElement( "mIRC" );  
 	root->LinkEndChild( xmlmIRC );  
 	xmlmIRC->SetAttribute("enable", AppCFG.bUseMIRC);
+	xmlmIRC->SetAttribute("command", g_sMIRCoutput.c_str());
 
 	
 	TiXmlElement * xmlElm2 = new TiXmlElement( "OptionalEXEsettings" );  
@@ -4833,12 +4806,12 @@ void CFG_Save()
 	xmlElm5->SetAttribute("useconds", AppCFG.socktimeout.tv_usec);
 
 	doc.SaveFile( "config.xml" );
-
 	AddLogInfo(ETSV_DEBUG,"Saving config...DONE!");
 }
 
 void SetInitialViewStates()
 {
+	OutputDebugString("SetInitialViewStates\n");
 	HMENU hMenu = GetMenu(g_hWnd);					
 	MENUITEMINFO mii;
 	memset(&mii,0,sizeof(MENUITEMINFO));
@@ -4852,9 +4825,14 @@ void SetInitialViewStates()
 	SetMenuItemInfo(hMenu,ID_VIEW_MAPPREVIEW,FALSE,&mii);
 
 	if(AppCFG.bShowBuddyList)
+	{
 		mii.fState = MFS_CHECKED;
+	}
 	else	
+	{
 		mii.fState = MFS_UNCHECKED;
+	}
+
 	SetMenuItemInfo(hMenu,	ID_VIEW_BUDDYLIST,FALSE,&mii);
 	
 	if(AppCFG.bShowPlayerList)
@@ -5008,7 +4986,6 @@ void OnMinimize(HWND hWnd)
 int SetCurrentViewTo(int index)
 {
 	g_currentGameIdx = index;
-	AppCFG.lastTabView = g_currentGameIdx;
 	//Clear old
 	if(currCV!=NULL)
 		currCV->pSC->vRefListSI.clear();
@@ -5232,14 +5209,17 @@ void ChangeViewStates(UINT uItem)
 				
 					SplitterGripArea[0].tvYPos = ((rc.bottom ) * 1)  ;
 					AppCFG.bShowBuddyList = FALSE;
+					WNDCONT[WIN_BUDDYLIST].bShow = FALSE;
 				break;
 				case ID_VIEW_PLAYERLIST: 
 					AppCFG.bShowPlayerList = FALSE;
-					if(!AppCFG.bShowPlayerList && !AppCFG.bShowServerRules)
-					{
-			
-						SplitterGripArea[2].tvYPos =  rc.bottom * 1;
-					}
+					SplitterGripArea[2].tvYPos =  rc.bottom * 1;
+					WNDCONT[WIN_TABCONTROL].bShow = FALSE;
+					WNDCONT[WIN_PLAYERS].bShow = FALSE;
+					WNDCONT[WIN_RCON].bShow = FALSE;
+					WNDCONT[WIN_RULES].bShow = FALSE;
+					WNDCONT[WIN_LOGGER].bShow = FALSE;
+					WNDCONT[WIN_PING].bShow = FALSE;
 				break;
 
 			}
@@ -5253,16 +5233,24 @@ void ChangeViewStates(UINT uItem)
 					WNDCONT[WIN_MAPPREVIEW].bShow = TRUE;
 					AppCFG.bShowMapPreview = true; 
 				break;
-				case ID_VIEW_SERVERRULES: AppCFG.bShowServerRules = true;
+				case ID_VIEW_SERVERRULES: 
+					AppCFG.bShowServerRules = true;
 				break;
 				case ID_VIEW_BUDDYLIST: 
 
 					SplitterGripArea[0].tvYPos = ((rc.bottom ) *  0.65f)  ;
 					AppCFG.bShowBuddyList = TRUE;
+					WNDCONT[WIN_BUDDYLIST].bShow = TRUE;
 				break;
 				case ID_VIEW_PLAYERLIST: 
 					AppCFG.bShowPlayerList = true;
-	
+					WNDCONT[WIN_TABCONTROL].bShow = TRUE;
+					WNDCONT[WIN_PLAYERS].bShow = TRUE;
+					WNDCONT[WIN_RCON].bShow = FALSE;
+					WNDCONT[WIN_RULES].bShow = FALSE;
+					WNDCONT[WIN_LOGGER].bShow = FALSE;
+					WNDCONT[WIN_PING].bShow = FALSE;
+					
 					SplitterGripArea[2].tvYPos =  rc.bottom * 0.5f;
 				break;
 			}
@@ -5338,7 +5326,7 @@ void CalcSplitterGripArea()
 
 void Initialize_WindowSizes()
 {
-
+	OutputDebugString("Initialize_WindowSizes\n");
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
@@ -5346,8 +5334,11 @@ void Initialize_WindowSizes()
 	rc.bottom-= (STATUSBAR_Y_OFFSET + TOOLBAR_Y_OFFSET); //reduce the size of statusbar from the main window size
 
 	float fBuddyScale=0;
-	if(WNDCONT[WIN_BUDDYLIST].bShow)
+	if(AppCFG.bShowBuddyList)	
 		fBuddyScale = 0.4f;
+	else
+		WNDCONT[WIN_BUDDYLIST].bShow = FALSE;
+	
 
 	SetRect(&WNDCONT[WIN_MAINTREEVIEW].rSize,0,TOOLBAR_Y_OFFSET,rc.right*0.2,rc.bottom*(1.0f-fBuddyScale));
 
@@ -5358,13 +5349,30 @@ void Initialize_WindowSizes()
 //	SplitterGripArea[0].tvXPos = offSetX + TOOLBAR_Y_OFFSET ;
 	SplitterGripArea[1].tvXPos = offSetX;
 
-	SetRect(&WNDCONT[WIN_SERVERLIST].rSize,offSetX,TOOLBAR_Y_OFFSET,rc.right-WNDCONT[WIN_MAINTREEVIEW].rSize.right,rc.bottom*0.6);
+	SplitterGripArea[2].tvYPos = offSetY ;
+
+	if(AppCFG.bShowPlayerList==false)		
+	{
+		SplitterGripArea[2].tvYPos =  rc.bottom * 1;
+		WNDCONT[WIN_PLAYERS].bShow = FALSE;
+		WNDCONT[WIN_RULES].bShow = FALSE;
+		WNDCONT[WIN_TABCONTROL].bShow = FALSE;
+	}
+	else
+	{
+		SplitterGripArea[2].tvYPos =  rc.bottom * 0.6;
+		WNDCONT[WIN_PLAYERS].bShow = TRUE;		
+		WNDCONT[WIN_TABCONTROL].bShow = TRUE;
+	}
+
+
+	SetRect(&WNDCONT[WIN_SERVERLIST].rSize,offSetX,TOOLBAR_Y_OFFSET,rc.right-WNDCONT[WIN_MAINTREEVIEW].rSize.right,SplitterGripArea[2].tvYPos);
 
 
 	SetRect(&WNDCONT[WIN_BUDDYLIST].rSize,0,offSetY,offSetX,rc.bottom*fBuddyScale);
 	
 	int iShow = rc.right * 1;
-	if(WNDCONT[WIN_MAPPREVIEW].bShow)
+	if(AppCFG.bShowMapPreview)
 		iShow =  rc.right * 0.4;
 
 	SetRect(&WNDCONT[WIN_TABCONTROL].rSize,offSetX,offSetY,iShow,TABSIZE_Y);
@@ -5379,10 +5387,16 @@ void Initialize_WindowSizes()
 
 
 	SetRect(&WNDCONT[WIN_MAPPREVIEW].rSize,offSetX,offSetY,rc.right*0.2,rc.bottom*0.4);
-	SplitterGripArea[2].tvYPos = offSetY ;
 
-	SetRect(&WNDCONT[WIN_STATUS].rSize,25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE+2,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
-	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,WNDCONT[WIN_STATUS].rSize.right+25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+2,rc.right*0.4,STATUSBAR_Y_OFFSET);
+
+	SetRect(&WNDCONT[WIN_STATUS].rSize,25,offSetY+WNDCONT[WIN_BUDDYLIST].rSize.bottom+BORDER_SIZE+4,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
+	
+	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,
+		WNDCONT[WIN_STATUS].rSize.right+25,
+		TOOLBAR_Y_OFFSET+(rc.bottom)+1,
+		rc.right*0.4,
+		(STATUSBAR_Y_OFFSET-5));
+
 	g_INFOIconRect.top = WNDCONT[WIN_STATUS].rSize.top;
 }
 
@@ -5391,7 +5405,7 @@ void Initialize_WindowSizes()
 
 void Update_WindowSizes()
 {
-
+	OutputDebugString("Update_WindowSizes\n");
 	RECT rc;
 	GetClientRect(g_hWnd, &rc);
 
@@ -5401,13 +5415,15 @@ void Update_WindowSizes()
 	if(WNDCONT[WIN_BUDDYLIST].bShow==FALSE)	
 		SplitterGripArea[0].tvYPos = ((rc.bottom ) * 1);
 	
+	if(AppCFG.bShowPlayerList==false)		
+		SplitterGripArea[2].tvYPos =  rc.bottom * 1;
 
 	SetRect(&WNDCONT[WIN_MAINTREEVIEW].rSize,0,TOOLBAR_Y_OFFSET,SplitterGripArea[1].tvXPos,SplitterGripArea[0].tvYPos);
 
 	int offSetX = WNDCONT[WIN_MAINTREEVIEW].rSize.right + BORDER_SIZE; //get offset for next window to start at 
 	int offSetY = TOOLBAR_Y_OFFSET+WNDCONT[WIN_MAINTREEVIEW].rSize.bottom + BORDER_SIZE; //get offset for next window to start at 
 
-	SetRect(&WNDCONT[WIN_SERVERLIST].rSize,offSetX,TOOLBAR_Y_OFFSET,rc.right-WNDCONT[WIN_MAINTREEVIEW].rSize.right,SplitterGripArea[2].tvYPos);
+	SetRect(&WNDCONT[WIN_SERVERLIST].rSize,offSetX,TOOLBAR_Y_OFFSET,rc.right-(WNDCONT[WIN_MAINTREEVIEW].rSize.right+BORDER_SIZE),SplitterGripArea[2].tvYPos);
 
 
 	SetRect(&WNDCONT[WIN_BUDDYLIST].rSize,0,offSetY,offSetX-BORDER_SIZE,rc.bottom-WNDCONT[WIN_MAINTREEVIEW].rSize.bottom);
@@ -5438,8 +5454,12 @@ void Update_WindowSizes()
 
 	SetRect(&WNDCONT[WIN_MAPPREVIEW].rSize,MapPreviewoffSetX,offSetY,offSetMapX,(rc.bottom-offSetY2)-TABSIZE_Y);
 	
-	SetRect(&WNDCONT[WIN_STATUS].rSize,25,WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom+2,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
-	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,WNDCONT[WIN_STATUS].rSize.right+25,WNDCONT[WIN_STATUS].rSize.top,rc.right*0.4,STATUSBAR_Y_OFFSET);
+	SetRect(&WNDCONT[WIN_STATUS].rSize,25,WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom+4,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
+	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,
+		WNDCONT[WIN_STATUS].rSize.right+25,
+		TOOLBAR_Y_OFFSET+(rc.bottom)+2,
+		rc.right*0.4,
+		STATUSBAR_Y_OFFSET-3);
 
 	
 	
@@ -5696,6 +5716,9 @@ void LoadImageList()
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE1)); //39
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE2)); //40
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKEARENA)); //41
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
 
@@ -6406,7 +6429,8 @@ char Get_GameIcon(char index)
 			return 39;
 		case Q2_SERVERLIST:
 			return 40;
-
+		case OPENARENA_SERVERLIST:
+			return 41;
 		default:
 			return 7;  //unkown icon
 	}
@@ -7554,7 +7578,7 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 	HMENU hPopMenu;
 	if(uMsg == WM_MOUSEMOVE)
 	{
-		if(bRunningQuery)
+		if(g_bRunningQuery)
 			SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
 
 	}
@@ -7851,7 +7875,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 	}
 	else if(uMsg == WM_MOUSEMOVE)
 	{
-		if(bRunningQuery)
+		if(g_bRunningQuery)
 			SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
 
 	}
@@ -8317,7 +8341,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					hEdit=TreeView_GetEditControl(g_hwndMainTreeCtrl);
 				  }
 
-				  if(pnmtv->hdr.code== TVN_ENDLABELEDIT)
+		/*		  if(pnmtv->hdr.code== TVN_ENDLABELEDIT)
 				  {
 					char Text[256]="";
 					tvi.hItem=iSelected;
@@ -8327,7 +8351,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					tvi.pszText=Text;
 					SendDlgItemMessage(hWnd,IDC_MAINTREE,TVM_SETITEM,0,
 									  (WPARAM)&tvi);
-				  }
+				  }*/
 					
 				    if(pnmtv->hdr.code== TVN_ITEMEXPANDED)
 					{
@@ -8505,6 +8529,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_GAMESCANNER, szWindowClass, MAX_LOADSTRING);
 
+	
+
 
 	hOfflineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_GAMESCANNER)); //ICON_APP_LOGO)); 
 	hOnlineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_TASKTRAY)); 
@@ -8541,7 +8567,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 
 	//	bool installed = IsInstalled(ETSV_VERSION);
 	LOGGER_Init();
-
 
 	AddLogInfo(ETSV_INFO,"Initilizing Game Scanner...");
 	AddLogInfo(ETSV_INFO,"Version %s",APP_VERSION);
@@ -8733,7 +8758,9 @@ tryagain:
 	AddLogInfo(ETSV_INFO,"Exit app..");
 	LOGGER_DeInit();
 	
+#ifdef _DEBUG
 	_CrtDumpMemoryLeaks();
+#endif
 
 	return (int) msg.wParam;
 }
@@ -9652,11 +9679,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 int CFG_Load()
 {
+		
 	memset(&AppCFG,0,sizeof(APP_SETTINGS_NEW));
 
 	Default_Appsettings();
 	Default_GameSettings();
 	ListView_SetDefaultColumns();
+
 
 	SetCurrentDirectory(USER_SAVE_PATH);
 	TiXmlDocument doc("config.xml");
@@ -9748,6 +9777,8 @@ int CFG_Load()
 	{
 		pElem->QueryIntAttribute("enable",&intVal);
 		AppCFG.bUseMIRC = intVal;
+		if(pElem->Attribute("command")!=NULL)
+			g_sMIRCoutput = pElem->Attribute("command");
 	} else //set defualt value
 		AppCFG.bUseMIRC = FALSE;
 
@@ -9795,7 +9826,7 @@ int CFG_Load()
 		AppCFG.bShowPlayerList = TRUE;
 		AppCFG.bSortPlayerAsc = TRUE;
 	}
-	
+
 	pElem=hRoot.FirstChild("Minimize").Element();
 	if (pElem)
 	{
@@ -9947,7 +9978,7 @@ int CFG_Load()
 		}
 	}
 
-	dbg_print("\nLoaded config\n");	
+	dbg_print("Loaded config.\n");	
 	return 0;
 
 }
@@ -10100,7 +10131,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 
 		case WM_INITVIEWS:
-			Update_WindowSizes();
+			Initialize_WindowSizes();
+			//Update_WindowSizes();
 			PostMessage(g_hWnd,WM_SIZE,0,0);
 			return TRUE;
 
@@ -10135,7 +10167,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		 }
 		 else if (wParam==SIZE_MINIMIZED)
 		 {
-			 g_bMinimized=TRUE;
+			 g_bMinimized=true;
 			 PostMessage(g_hWnd,WM_CLOSE,0xdead,0);
 			
 			 //Removed since v5.41
@@ -10470,13 +10502,12 @@ const char * XML_GetTreeItemName(TiXmlElement* pNode,char *szOutput, DWORD maxBy
 const char * XML_GetTreeItemStrValue(TiXmlElement* pNode,char *szOutput, DWORD maxBytes)
 {
 	const char *pValue = pNode->Attribute("strval");
-
-		if(pValue!=NULL)
-		{
-			strcpy_s(szOutput,maxBytes,pValue);
-			return szOutput;
-		}
-	AddLogInfo(0,"Error reading XML tag strval");
+	if(pValue!=NULL)
+	{
+		strcpy_s(szOutput,maxBytes,pValue);
+		return szOutput;
+	}
+	AddLogInfo(0,"Error reading XML tag strval (XML_GetTreeItemStrValue)");
 	return NULL;
 }
 

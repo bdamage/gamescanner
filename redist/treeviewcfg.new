@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<ETSVtvcfg Version="4.44">
+<ETSVtvcfg Version="4.45">
     <!--Settings for ET Server Viewer treeview.-->
     <TreeItems>
         <Item name="Wolfenstein - Enemy Territory" strval="" value="0" icon="0" expanded="0" type="1024" state="0" game="0" action="1">
@@ -262,6 +262,7 @@
                 <FilterItem name="No Full" strval="" value="0" icon="9" expanded="0" type="4" state="0" game="7" action="9" />
                 <FilterItem name="Show Private" strval="" value="0" icon="9" expanded="0" type="2" state="0" game="7" action="9" />
                 <FilterItem name="Hide Private" strval="" value="0" icon="9" expanded="0" type="128" state="0" game="7" action="9" />
+				<FilterItem name="No Bots" strval="" value="0" icon="9" expanded="0" type="64" state="0" game="7" action="9" />
                 <GameTypes name="Game types" strval="" value="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
                     <GameTypesItems name="CA" strval="ca" value="1" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
                     <GameTypesItems name="CTF" strval="ctf" value="2" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
@@ -278,6 +279,26 @@
 					<Version name="0.42" strval="0.42" value="4" icon="9" expanded="0" type="29" state="0" game="7" action="9" />							
                 </Versions>
                 <Maps name="Maps" strval="" value="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
+				   <Map name="wdm1" strval="wdm1" value="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm1" strval="wdm1" value="2" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm2" strval="wdm2" value="4" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm3" strval="wdm3" value="8" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm4" strval="wdm4" value="16" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm5" strval="wdm5" value="32" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm6" strval="wdm6" value="64" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm7" strval="wdm7" value="128" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm8" strval="wdm8" value="512" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm9" strval="wdm9" value="1024" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm10" strval="wdm10" value="2048" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm11" strval="wdm11" value="4096" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm12" strval="wdm12" value="8192" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm13" strval="wdm13" value="16384" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm14" strval="wdm14" value="32768" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+				   <Map name="wdm15" strval="wdm15" value="65535" icon="9" expanded="0" type="30" state="0" game="7" action="9" />   				
+				   <Map name="wca1" strval="wca1" value="131070" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wca2" strval="wca2" value="262140" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wctf1" strval="wctf1" value="524280" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wctf2" strval="wctf2" value="1048560" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
                 </Maps>					
             </Filter>
         </Item>

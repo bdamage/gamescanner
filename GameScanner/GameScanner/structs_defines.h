@@ -76,7 +76,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FAVORITE			998
 #define PRIVATE				999
 
-#define MAX_SERVERLIST		15  //This value should be as the last one
+#define MAX_SERVERLIST		16  //This value should be as the last one +1
 #define ET_SERVERLIST		0
 #define ETQW_SERVERLIST		1
 #define Q3_SERVERLIST		2
@@ -309,7 +309,6 @@ struct APP_SETTINGS_NEW
    BOOL bUseFilterOnFavorites;
    BOOL bUseFilterOnPing;
    char szNotifySoundWAVfile[MAX_PATH];
-   int	lastTabView;   //Last active Game
    char szQ4_PATH[MAX_PATH];
    char szQ4_CMD[MAX_PATH];
    char szETQW_PATH[MAX_PATH];

@@ -3,7 +3,15 @@ Version 1.03
 ------------------
 Added support for color encoded servernames and playername (based on ET color table).
 Updated IP to Country database file.
-Better customization for mIRC messages, see options for more details.
+Added more customization for mIRC messages, see options for more details.
+Added support Open Arena game.
+Added new option for each game to optional use HTTP serverlist instead of an master server.
+Added new filter settings to Warsow, you can now hide servers with bots and filter by current map.
+
+
+Some iprovments has been done with with the view states (Buddylist, Tab view etc) and windows resizes.
+
+
 
 
 Version 1.02

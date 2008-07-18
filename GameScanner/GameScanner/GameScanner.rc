@@ -204,14 +204,15 @@ BEGIN
     EDITTEXT        IDC_EDIT_CMD,51,60,212,14,ES_AUTOHSCROLL
     LTEXT           "Executable",IDC_STATIC,12,46,35,8
     LTEXT           "Command",IDC_STATIC,12,62,35,8
-    GROUPBOX        "Settings for Master Server IP, Port && Protocol",IDC_STATIC,7,98,282,49
-    EDITTEXT        IDC_EDIT_MASTER_SERVER,60,110,203,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_MASTER_PORT,60,127,40,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_PROTOCOL,199,128,40,14,ES_AUTOHSCROLL
-    LTEXT           "Master server",IDC_STATIC,12,114,48,8
-    LTEXT           "Port",IDC_STATIC,12,130,39,8
-    LTEXT           "Protocol",IDC_STATIC,167,130,29,8
-    CONTROL         "Active game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
+    GROUPBOX        "Settings for Master Server IP, Port && Protocol",IDC_STATIC,7,98,282,69
+    EDITTEXT        IDC_EDIT_MASTER_SERVER,60,127,203,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MASTER_PORT,60,144,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PROTOCOL,199,145,40,14,ES_AUTOHSCROLL
+    LTEXT           "Master server",IDC_STATIC,12,131,48,8
+    LTEXT           "Port",IDC_STATIC,12,147,39,8
+    LTEXT           "Protocol",IDC_STATIC,167,147,29,8
+    CONTROL         "Activate game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
+    CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,111,245,10
 END
 
 IDD_CFG4 DIALOGEX 0, 0, 296, 196
@@ -503,6 +504,7 @@ IDI_ICON_QUAKE2         ICON                    "res\\icon8.ico"
 IDI_ICON8               ICON                    "C:\\Users\\Kjell\\Pictures\\GSOrg32.ico"
 IDI_ICON4               ICON                    "C:\\Users\\Kjell\\Pictures\\GSPlusOrg16.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
+IDI_ICON_QUAKEARENA     ICON                    "res\\ico00005.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

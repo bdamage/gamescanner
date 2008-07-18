@@ -121,13 +121,14 @@ DWORD STEAM_GetChallenge(SERVER_INFO *pSI, DWORD &dwChallenge)
 		
 		return 1;
 	}
-		packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	packet=(unsigned char*)getpacket(pSocket, &packetlen);
 
 	if(packet) 
 	{
 		A2S_CHALLANGE_RESPONSE_DATA	*data;
 		data = (A2S_CHALLANGE_RESPONSE_DATA	*)packet;
 		dwChallenge = data->dwChallenge;
+		free(packet);
 	}
 	closesocket(pSocket);
 	
@@ -620,8 +621,6 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 
 	dwStartTick = GetTickCount();
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
-
-
 	if(packet) 
 	{
 		STEAM_SERVER_RESPONSE *resp;

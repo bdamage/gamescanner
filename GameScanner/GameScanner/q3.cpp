@@ -275,6 +275,12 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 						}
 					}		
 				break;
+				case WARSOW_SERVERLIST:
+					{
+						szVarValue = Q3_Get_RuleValue("bots",pServRules); //Warsow specific
+						if(szVarValue!=NULL)
+							pSI->cBots = atoi(szVarValue);
+					}
 				case ET_SERVERLIST:
 					{
 						szVarValue = Q3_Get_RuleValue("omnibot_enable",pServRules); //ET specific
@@ -916,14 +922,6 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 	return pointer;
 }
 
-/* QUAKE WORLD MASTER */
-#define QW_GET_SERVERS    'c'
-char qw_masterquery[] = { QW_GET_SERVERS, '\n', '\0' };
-
-/* QUAKE 2 MASTER */
-char q2_masterquery[] = { 'q', 'u', 'e', 'r', 'y', '\n', '\0' };
-
-
 DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 {
 	size_t packetlen=0;
@@ -944,7 +942,12 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		if(pGI->dwProtocol==0)
 			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s empty full",pGI->szQueryString);
 		else
-			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString, pGI->dwProtocol);
+		{
+			if(pGI->cGAMEINDEX == WARSOW_SERVERLIST)
+				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString,pGI->dwProtocol);
+			else
+				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %hu %s empty full",pGI->dwProtocol,pGI->szQueryString);  //open arena needs another order
+		}
 	}
 
 	int len = (int)strlen(sendbuf);

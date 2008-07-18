@@ -43,6 +43,8 @@ distribution.
 #define DEBUG
 #endif
 
+
+
 #ifdef TIXML_USE_STL
 	#include <string>
  	#include <iostream>
@@ -52,6 +54,8 @@ distribution.
 	#include "tinystr.h"
 	#define TIXML_STRING		TiXmlString
 #endif
+
+
 
 // Deprecated library function hell. Compilers want to use the
 // new safe versions. This probably doesn't fully address the problem,
