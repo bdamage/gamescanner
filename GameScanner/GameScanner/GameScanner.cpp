@@ -427,8 +427,8 @@ PLAYERDATA *Get_PlayerBySelection()
 	if(i!=-1)
 	{					
 		PLAYERDATA *pPlayerData = pCurrentPL;
-		for(int i=0;i<i;i++)
-			pPlayerData = pCurrentPL->pNext;
+		for(int x=0;x<i;x++)
+			pPlayerData = pPlayerData->pNext;
 
 		if(pPlayerData==NULL)
 		{

@@ -184,7 +184,7 @@
 				   <Map name="wdm12" strval="wdm12" value="8192" icon="9" expanded="0" type="30" state="0" game="3" action="9" />
 				   <Map name="wdm13" strval="wdm13" value="16384" icon="9" expanded="0" type="30" state="0" game="3" action="9" />
 				   <Map name="wdm14" strval="wdm14" value="32768" icon="9" expanded="0" type="30" state="0" game="3" action="9" />
-				   <Map name="wdm15" strval="wdm15" value="65535" icon="9" expanded="0" type="30" state="0" game="3" action="9" />    				
+				   <Map name="wdm15" strval="wdm15" value="65536" icon="9" expanded="0" type="30" state="0" game="3" action="9" />    				
                 </Maps>					
             </Filter>
         </Item>
@@ -294,11 +294,11 @@
 				   <Map name="wdm12" strval="wdm12" value="8192" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
 				   <Map name="wdm13" strval="wdm13" value="16384" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
 				   <Map name="wdm14" strval="wdm14" value="32768" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-				   <Map name="wdm15" strval="wdm15" value="65535" icon="9" expanded="0" type="30" state="0" game="7" action="9" />   				
-				   <Map name="wca1" strval="wca1" value="131070" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
-				   <Map name="wca2" strval="wca2" value="262140" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
-				   <Map name="wctf1" strval="wctf1" value="524280" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
-				   <Map name="wctf2" strval="wctf2" value="1048560" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wdm15" strval="wdm15" value="65536" icon="9" expanded="0" type="30" state="0" game="7" action="9" />   				
+				   <Map name="wca1" strval="wca1" value="131072" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wca2" strval="wca2" value="262144" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wctf1" strval="wctf1" value="524288" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
+				   <Map name="wctf2" strval="wctf2" value="1048576" icon="9" expanded="0" type="30" state="0" game="7" action="9" /> 
                 </Maps>					
             </Filter>
         </Item>
