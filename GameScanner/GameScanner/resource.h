@@ -19,6 +19,7 @@
 #define IDS_REFRESH_FILTER              107
 #define IDS_COLOR_FONT                  108
 #define IDC_GAMESCANNER                 109
+#define IDS_ADD_NEW_BUDDY               110
 #define IDR_MAINFRAME                   128
 #define IDI_SMALL                       129
 #define IDI_ICON1                       130
@@ -252,9 +253,7 @@
 #define ID_BUDDY_ADDNEW                 32772
 #define IDM_SETTINGS                    32773
 #define ID_TT_SERVER1                   32774
-#define ID_BUDDY_REMOVESELECTID_BUDDY_REMOVESELECTEDBUDDYEDBUDDY 32774
 #define IDM_ADD                         32775
-#define ID_BUDDY_REMOVESELECTID_BUDDY_REMOVESELECTEDBUDDYID_BUDDY_REMOVESELECTEDBUDDYEDBUDDY 32775
 #define ID_FOO2_SERVER3                 32776
 #define ID_BUDDY_REMOVESELECTEDBUDDY    32776
 #define ID_FOO2_SERVER4                 32777

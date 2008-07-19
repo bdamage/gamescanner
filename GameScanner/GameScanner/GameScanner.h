@@ -11,7 +11,7 @@ int LoadConfig(APP_SETTINGS_NEW &appSettings);
 int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort); 
 void ListView_SetDefaultColumns();
 SERVER_INFO Get_ServerInfoByIndex(int index);
-
+char *Get_SelectedServerIP();
 void CalcSplitterGripArea();
 void Default_Appsettings();
 void mysort(int sortBy=3);

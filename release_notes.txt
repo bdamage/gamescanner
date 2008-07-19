@@ -7,11 +7,18 @@ Added more customization for mIRC messages, see options for more details.
 Added support Open Arena game.
 Added new option for each game to optional use HTTP serverlist instead of an master server.
 Added new filter settings to Warsow, you can now hide servers with bots and filter by current map.
-
+Added new buddy icon in the toolbar.
 
 Some iprovments has been done with with the view states (Buddylist, Tab view etc) and windows resizes.
 
+Bug fixes:
+Fixed a memory leak when scanning Counter strike servers.
+Fixed a bug with copy IP address into clipboard.
+Fixed a bug when manually adding a new server IP address.
 
+Known issues:
+Map preview is broken.
+Sorting player list is broken.
 
 
 Version 1.02

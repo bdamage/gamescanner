@@ -10,6 +10,7 @@ ETSV 5.x?     {122CD6F9-B1C2-4124-B5B4-5C0B255B74D1}
 v1.0 beta 2    {EAB596BD-45FF-49A2-87CD-7EC3DF77E69C}
 v 1.0.1 (1.01) {9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}
 v 1.0.2 (1.02) {8F2DE466-8EEB-4D64-8F4A-375553A8D31E}
+v 1.0.3 (1.03) {40ED2250-FB02-4183-B2A6-F0A987C2E277}
 
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -143,7 +144,7 @@ int g_currentGameIdx = ET_SERVERLIST;
 BUDDY_INFO *g_pBIStart=NULL;
 DWORD g_tvIndex=0;
 
-HIMAGELIST g_hILFlags = NULL;
+
 
 BOOL g_bTREELOADED = FALSE;
 
@@ -197,7 +198,7 @@ BOOL g_bIsVisible=FALSE;
 DWORD g_ThreadCounter=0;
 DWORD g_serverIndex=0;
 DWORD g_serverIndexMAX=0;
-
+char g_szIPtoAdd[260];
 DWORD g_nCurrentSortMode = COL_PLAYERS;
 LONG_PTR g_wpOrigTreeViewProc=NULL;
 LONG_PTR g_wpOrigListViewServerProc=NULL;
@@ -272,7 +273,7 @@ void SetImageList();
 DWORD WINAPI ReScanServerList(LPVOID lpParam);
 void StartGame_ConnectToServer(bool connectFromBuddyList);
 void Favorite_Remove();
-void Favorite_Add(bool manually);
+void Favorite_Add(bool manually, char *szIp=NULL);
 void FilterUpdate();
 char *SplitIPandPORT(char *szIPport,DWORD &port);
 DWORD Build_CountryFilter(HTREEITEM hRoot);
@@ -317,6 +318,7 @@ HIMAGELIST m_hImageList = NULL;
 HIMAGELIST m_hImageListSearchBar = NULL;
 HIMAGELIST m_hImageListHot = NULL;
 HIMAGELIST m_hImageListDis = NULL;
+HIMAGELIST g_hILFlags = NULL;
 HFONT g_hf  =NULL;
 HFONT g_hf2 = NULL;
 
@@ -1952,7 +1954,7 @@ void Default_Appsettings()
 void OnButtonClick_AddServer()
 {
 	SERVER_INFO *pSrvInf = NULL;
-	SERVER_INFO pSI;
+
 	char ip[100];
 	DWORD dwPort=0;
 	ZeroMemory(ip,sizeof(ip));
@@ -1962,9 +1964,11 @@ void OnButtonClick_AddServer()
 	{
 		Favorite_Add(true);
 		return;
-	}
+	}else
+		Favorite_Add(true,ip);
 
-
+ return;
+ /*
 	SplitIPandPORT(ip,dwPort);
 
 	if(dwPort==0)
@@ -2002,6 +2006,7 @@ void OnButtonClick_AddServer()
 	{
 		SetStatusText(ICO_WARNING,"Invalid IP address!");
 	}
+	*/
 }
 
 
@@ -2071,17 +2076,17 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 	ZeroMemory(&pSI,sizeof(SERVER_INFO));
 	char destPort[10];
 	
-	if(strlen(szIP)<1)
+	if(strlen(szIP)<7)
 		return 0xFFFFFFFF;
 	
+
 	pSI.cGAMEINDEX = pGI->cGAMEINDEX;
 	strcpy(pSI.szIPaddress,szIP);
 	pSI.dwIP = NetworkNameToIP(szIP,_itoa(dwPort,destPort,10));
 	pSI.dwPort = dwPort;
 
-
 	int iResult =CheckForDuplicateServer(pGI,pSI);
-	if(iResult!=-1) //do we got an exsisting server?
+	if(iResult!=-1) //did we get an exsisting server?
 	{
 		 //If yes then set that server to a favorite
 		if(bFavorite)
@@ -2090,16 +2095,19 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 		return pGI->pSC->vSI[iResult].dwIndex;
 	}
 		
-	//Add a new server to current list!
+	//Add a new server into current list!
 	
 	pSI.dwPing = 9999;
 	strcpy(pSI.szShortCountryName,"zz");
 	pSI.cCountryFlag = 0;
 	pSI.bNeedToUpdateServerInfo = true;
+	
 	pSI.dwIndex = pGI->pSC->vSI.size();
 	if(bFavorite)
 		pSI.cFavorite = 1;
 	
+	int hash = pSI.dwIP + pSI.dwPort;
+	pGI->pSC->shash.insert(Int_Pair(hash,pSI.dwIndex));
 	pGI->pSC->vSI.push_back(pSI);
 	InsertServerItem(pGI,pSI);
 		
@@ -2706,7 +2714,13 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	{
 	case WM_INITDIALOG:
 		
-		//SetDlgItemText(hDlg,IDC_EDIT_PORT,"27960");
+		if(strlen(g_szIPtoAdd)>0)
+		{
+			SetDlgItemText(hDlg,IDC_EDIT_IP,g_szIPtoAdd);
+			PostMessage(GetDlgItem(hDlg,IDC_EDIT_IP),EM_SETSEL,0,strlen(g_szIPtoAdd));
+			PostMessage(GetDlgItem(hDlg,IDC_EDIT_IP),EM_SETSEL,(WPARAM)-1,-1);
+		}
+
 		CenterWindow(hDlg);
 		SetFocus(GetDlgItem(hDlg,IDC_EDIT_IP));
 		//return TRUE;
@@ -2725,8 +2739,7 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			if(dwPort==0)
 				dwPort = GI[g_currentGameIdx].dwDefaultPort;
 
-			if(AddServer(&GI[g_currentGameIdx],ip, dwPort,true)!=0xFFFFFFFF)
-			//if(Q4_AddServer(GI[g_currentGameIdx].pStartServerInfo,ip,dwPort,GI[g_currentGameIdx].cGAMEINDEX,InsertServerItemQ4,true)!=-1)
+			if(AddServer(&GI[g_currentGameIdx],ip, dwPort,true)!=0xFFFFFFFF)		
 			{
 				SetStatusText(ICO_INFO,"Added IP %s:%d into %s favorite serverlist.",ip,dwPort,GI[g_currentGameIdx].szGAME_NAME);
 				
@@ -4167,7 +4180,7 @@ void OnInitialize_MainDlg(HWND hwnd)
 
 	strcpy(g_szMapName,"unknownmap.png");
 	//AddLogInfo(ETSV_INFO,"Initialize main dialog.");
-
+	ZeroMemory(g_szIPtoAdd,sizeof(g_szIPtoAdd));
 	EnableButtons(TRUE);
 	//EnableDownloadLink(FALSE);	
 	PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,0);
@@ -5393,7 +5406,7 @@ void Initialize_WindowSizes()
 	
 	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,
 		WNDCONT[WIN_STATUS].rSize.right+25,
-		TOOLBAR_Y_OFFSET+(rc.bottom)+1,
+		(TOOLBAR_Y_OFFSET+rc.bottom)+5,
 		rc.right*0.4,
 		(STATUSBAR_Y_OFFSET-5));
 
@@ -5457,9 +5470,9 @@ void Update_WindowSizes()
 	SetRect(&WNDCONT[WIN_STATUS].rSize,25,WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom+4,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
 	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,
 		WNDCONT[WIN_STATUS].rSize.right+25,
-		TOOLBAR_Y_OFFSET+(rc.bottom)+2,
+		(TOOLBAR_Y_OFFSET+rc.bottom)+5,
 		rc.right*0.4,
-		STATUSBAR_Y_OFFSET-3);
+		STATUSBAR_Y_OFFSET-5);
 
 	
 	
@@ -6436,6 +6449,7 @@ char Get_GameIcon(char index)
 	}
 
 }
+//This is only for reference purpose
 long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 {
 	LVITEM lvItem;
@@ -6444,14 +6458,14 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	
 	REF_SERVER_INFO refSI;
 	refSI.cGAMEINDEX  = pSI.cGAMEINDEX;
-	refSI.dwIndex = pSI.dwIndex;
+	refSI.dwIndex = pSI.dwIndex;	
 	pGI->pSC->vRefListSI.push_back(refSI);
 
 	return 0; //Game scanner 1.0
 	
 
 //	ListView_SetItemCount(g_hwndListViewServer,currCV->vSIFiltered.size());
-
+/*
 	lvItem.mask = LVIF_IMAGE ;	
 	if(pSI.bPunkbuster)
 		lvItem.iImage = 1; //Punkbuster
@@ -6460,6 +6474,7 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	ListView_InsertItem( g_hwndListViewServer,&lvItem);
 
 	return 0;
+	*/
 }
 
 
@@ -6867,7 +6882,13 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 								HDC  hDC =  pListDraw->nmcd.hdc;
 								RECT rc;								
 								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								return Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+								
+								Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+								if(pSI.cFavorite)
+									ImageList_Draw(g_hImageListIcons,2,hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
+								else
+									ImageList_Draw(g_hImageListIcons,Get_GameIcon(pSI.cGAMEINDEX),hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
+								return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
 							}
 
 						}
@@ -7447,7 +7468,7 @@ int Get_ServerInfoByListIndex(int index)
 	REF_SERVER_INFO refSI;
 	refSI.dwIndex = 0;
 
-	if(currCV->pSC->vRefListSI.size()>0)
+	if(index<currCV->pSC->vRefListSI.size())
 	{
 		try
 		{				
@@ -7492,56 +7513,24 @@ SERVER_INFO Get_ServerInfoByIndex(int index)
 	return srv;
 }
 
-void Favorite_Add(bool manually)
+
+void Favorite_Add(bool manually,char *szIP)
 {
-	LVITEM lvItem;
 	if(manually)
 	{
-		DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ADD_SERVER), NULL,(DLGPROC)AddServerProc);
-		SetStatusText(ICO_INFO,"Added server to Favorites!");
-		RedrawServerListThread(&GI[g_currentGameIdx]);
-	
-	} else
-	{
-
-		char szPORT[20];
-		int i = ListView_GetSelectionMark(g_hwndListViewServer);
-		g_iCurrentSelectedServer = -1;
-		if(i!=-1)
+		if(szIP!=NULL)
+			strcpy(g_szIPtoAdd,szIP);
+		else
 		{
-			
-			memset(&lvItem,0,sizeof(LVITEM));
-			SERVER_INFO *pSrv=NULL;	
-			lvItem.mask =  LVIF_PARAM ; 
-			lvItem.iItem = i;
-			lvItem.iSubItem = 3;		
-			if(ListView_GetItem( g_hwndListViewServer, &lvItem))
-			{
-				pSrv = (SERVER_INFO*)lvItem.lParam;	
-				
-				if(pSrv==NULL)
-				{
-					SetStatusText(ICO_WARNING,"Not a valid server!");
-					InvalidateRect(g_hWnd,NULL,TRUE);
-					return;
-				}
-				pSrv->cFavorite = 1;
-
-				strcpy(g_currServerIP,pSrv->szIPaddress);
-				dwCurrPort = pSrv->dwPort;		
-			}
-			g_iCurrentSelectedServer = i;
-			_itoa(pSrv->dwPort,szPORT,10);
-
-			//To favorite icon
-			memset(&lvItem,0,sizeof(LVITEM));
-			lvItem.iItem = i;
-			lvItem.iSubItem = 3;
-			lvItem.mask = LVIF_IMAGE  ;// |LVIF_INDENT;
-			lvItem.iImage = 2;  //Favorite icon
-			ListView_SetItem(g_hwndListViewServer,&lvItem);
-
+			char *pszIP = Get_SelectedServerIP();
+			if(pszIP!=NULL)
+				strcpy(g_szIPtoAdd,pszIP);
+			else
+				g_szIPtoAdd[0]=0;
 		}
+
+		DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ADD_SERVER), NULL,(DLGPROC)AddServerProc);		
+		RedrawServerListThread(&GI[g_currentGameIdx]);
 	}
 }
 
@@ -7772,6 +7761,18 @@ LRESULT APIENTRY LV_SL_HeaderSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 	return CallWindowProc((WNDPROC)g_wpOrigSLHeaderProc, hwnd, uMsg,  wParam, lParam);  
 }
 
+char *Get_SelectedServerIP()
+{
+	int n=-1;
+	n = ListView_GetSelectionMark(g_hwndListViewServer);
+	if(n!=-1)
+	{
+		SERVER_INFO pSI = Get_ServerInfoByIndex(n);
+		sprintf(g_currServerIP,"%s:%d",pSI.szIPaddress,pSI.dwPort);	
+		return g_currServerIP;
+	}
+	return NULL;
+}
 
 HBITMAP hBmp;
 LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
@@ -7846,19 +7847,14 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 	{
 		if (wParam == HOTKEY_ID_CTRL_C)
 		{
-			int n=-1;
-			char szIP[40];
-			n = ListView_GetSelectionMark(g_hwndListViewServer);
-		
-			ListView_GetItemText(g_hwndListViewServer,n,10,szIP,sizeof(szIP)-1);
-			if(n!=-1)
+			char *pszIP = Get_SelectedServerIP();
+			if(pszIP!=NULL)
 			{				
-				EditCopy(szIP);
-				SetStatusText(ICO_INFO,"IP address %s added to clipboard!",szIP);
+				EditCopy(pszIP);
+				SetStatusText(ICO_INFO,"IP address %s added to clipboard!",pszIP);
 			}else
 			{
 				SetStatusText(ICO_WARNING,"Please select a server before trying to copy to clipboard!");
-				InvalidateRect(g_hWnd,NULL,TRUE);
 				return 0;
 			}
 		}
@@ -7975,27 +7971,18 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 					break;
 				case ID_TT_SERVER2:
 					{
-						int n=-1;
-						char szIP[40];				
-						n = ListView_GetSelectionMark(g_hwndListViewServer);
-									
-						ListView_GetItemText(g_hwndListViewServer,n,10,szIP,sizeof(szIP)-1);
-						ShellExecute(NULL,"open","tracert.exe",szIP,NULL,SW_SHOWNORMAL);
+						char *pszIP = Get_SelectedServerIP();
+						if(pszIP!=NULL)
+							ShellExecute(NULL,"open","tracert.exe",pszIP,NULL,SW_SHOWNORMAL);
 					}
 					break;
 
 				case IDM_COPYIP:
 					{
-						int n=-1;
-						
-						n = ListView_GetSelectionMark(g_hwndListViewServer);
-						if(n!=-1)
-						{
-							char szIP[50];
-							SERVER_INFO pSI = Get_ServerInfoByIndex(n);
-							sprintf(szIP,"%s:%d",pSI.szIPaddress,pSI.dwPort);
-							EditCopy(szIP);
-						}else
+						char *pszIP = Get_SelectedServerIP();
+						if(pszIP!=NULL)
+							EditCopy(pszIP);
+						else
 							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
 					}
 				break;
@@ -9355,7 +9342,7 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 	
 		::SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELONG(24, 24));
 
-		int iNumButtons = 9;
+		int iNumButtons = 10;
 		COLORREF crMask = RGB(255,0,255);
 
 		HBITMAP hbm = ::LoadBitmap(g_hInst, MAKEINTRESOURCE(IDB_TOOLBAR_N));
@@ -9527,7 +9514,13 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 		tbb.fsState = TBSTATE_ENABLED;
 		tbb.fsStyle = TBSTYLE_BUTTON;		
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
-		
+
+		tbb.iBitmap = 9;
+		tbb.idCommand = ID_BUDDY_ADD;
+		tbb.fsState = TBSTATE_ENABLED;
+		tbb.fsStyle = TBSTYLE_BUTTON;		
+		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
+
 		tbb.iBitmap = 8;
 		tbb.idCommand = IDM_FONT_COLOR;
 		tbb.fsState = TBSTATE_ENABLED;

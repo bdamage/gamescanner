@@ -946,7 +946,11 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 			if(pGI->cGAMEINDEX == WARSOW_SERVERLIST)
 				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString,pGI->dwProtocol);
 			else
+			{
+				if(pGI->cGAMEINDEX == OPENARENA_SERVERLIST)
+					pGI->dwProtocol = 69; //temporary fix
 				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %hu %s empty full",pGI->dwProtocol,pGI->szQueryString);  //open arena needs another order
+			}
 		}
 	}
 
