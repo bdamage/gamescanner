@@ -2,7 +2,9 @@
 // Copyright (C) 2007, 2008 Kjell Lloyd 
 
 /*
-Version 1.0.1
+Version 1.04
+
+Set up GUID keys:
 Product code:
 ETSV 5.x?     {122CD6F9-B1C2-4124-B5B4-5C0B255B74D1}
 
@@ -11,6 +13,7 @@ v1.0 beta 2    {EAB596BD-45FF-49A2-87CD-7EC3DF77E69C}
 v 1.0.1 (1.01) {9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}
 v 1.0.2 (1.02) {8F2DE466-8EEB-4D64-8F4A-375553A8D31E}
 v 1.0.3 (1.03) {40ED2250-FB02-4183-B2A6-F0A987C2E277}
+v 1.0.4 (1.04) {398C9890-FAD1-48DB-A1D0-DE2BBBE661AA}
 
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -2186,7 +2189,7 @@ DWORD TreeView_UncheckAllTypes(char cGameIdx, DWORD dwType)
 			tvitem.hItem = vTI.at(i).hTreeItem;
 			tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
 			TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
-			return TreeView_SetDWCheckState(&tvitem, vTI.at(i), FALSE);		
+			TreeView_SetDWCheckState(&tvitem, vTI.at(i), FALSE);		
 		}
 	}
 	return 0;
@@ -2976,7 +2979,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		ti.dwState =  XML_GetTreeItemInt(childItem,"state");
 		ti.bExpanded = (bool) XML_GetTreeItemInt(childItem,"expanded");
 		ti.dwLevel = level;
-		ti.dwIndex = vTI.size()+1;
+		ti.dwIndex = vTI.size();
 		bool active=true;
 		if(ti.cGAMEINDEX!=-25)
 		{
