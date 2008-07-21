@@ -71,7 +71,7 @@ DWORD WINAPI ProgressGUI_Thread(LPVOID lpParam);
 DWORD WINAPI CheckForUpdates(LPVOID lpParam);
 //DWORD WINAPI  RefreshServerListThread(LPVOID lpParam);
 DWORD WINAPI  GetServerStatusThread(LPVOID lpParam);
-bool FilterServerItem(LPARAM *lp, DWORD dwFlags); //bool bForceFavorites=false, bool bForceHistory=false);
+//bool FilterServerItem(LPARAM *lp, DWORD dwFlags); //bool bForceFavorites=false, bool bForceHistory=false);
 bool FilterServerItemV2(LPARAM *lp, GAME_INFO *pGI); //bool bForceFavorites=false, bool bForceHistory=false);
 DWORD WINAPI RedrawServerList(LPSERVERINFO pServerInfo,DWORD dwFilterFlags=0);// bool bForceFavorites=false, bool bForceHistory=false,bool bForceFavoritesPrivate=false);
 DWORD WINAPI  RedrawServerListThread(LPVOID pvoid );

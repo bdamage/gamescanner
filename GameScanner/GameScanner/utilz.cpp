@@ -270,7 +270,6 @@ void SetLogPath(const char *szPath)
 }
 
 CRITICAL_SECTION	CS_Logger;
-	
 
 
 void LOGGER_Init()
@@ -322,9 +321,7 @@ void AddLogInfo(int color, char *lpszText, ...)
 		else if(color==ETSV_ERROR)
 			strcpy_s(szColor,sizeof(szColor),"FF0000");
 
-		
-
-		char time[128], date[128];
+		char time[64], date[64];
 		// Set time zone from TZ environment variable. If TZ is not set,
 		// the operating system is queried to obtain the default value 
 		// for the variable. 
@@ -332,17 +329,12 @@ void AddLogInfo(int color, char *lpszText, ...)
 		_tzset();
 
 		// Display operating system-style date and time. 
-		_strtime_s( time, 128 );
-	//  printf( "OS time:\t\t\t\t%s\n", tmpbuf );
-		_strdate_s( date, 128 );
-		//printf( "OS date:\t\t\t\t%s\n", tmpbuf );
-
-
+		_strtime_s( time, 64 );
+		_strdate_s( date, 64 );
 			
 			va_list argList;
 			FILE *pFile = NULL;
 	
-
 
 			//Initialize variable argument list
 			va_start(argList, lpszText);
@@ -358,8 +350,6 @@ void AddLogInfo(int color, char *lpszText, ...)
 				fprintf(pFile, "<font face=\"Arial\" size=\"2\" color=\"#%s\"><b>",szColor);
 				fprintf(pFile, "[%s][%s]",date,time);
 				
-				
-			//	fprintf(pFile, lpszText);
 				vfprintf(pFile, lpszText, argList);
 				fprintf(pFile, "</b></font><br>\n");
 
@@ -367,8 +357,6 @@ void AddLogInfo(int color, char *lpszText, ...)
 				fclose(pFile);
 				char szBuffer[512];
 				vsprintf_s(szBuffer,sizeof(szBuffer),lpszText, argList);
-			
-			//	GetWindowTextLength(g_hwndLogger);
 				EnterCriticalSection(&CS_Logger);
 
 				UTILZ_sLogger.append(szBuffer);
@@ -387,10 +375,6 @@ void AddLogInfo(int color, char *lpszText, ...)
 #endif
 					 
 			}
-//#if defined(_DEBUG) && defined(WIN32)
-		//	fprintf(stderr, "%s\n", lpszText);
-			
-//#endif
 			va_end(argList);
 	}
 
@@ -572,8 +556,6 @@ void SetStatusText( int icon, char *szMsg,...)
 		rc.top = WNDCONT[WIN_STATUS].rSize.top; 
 		rc.right = 25;
 		InvalidateRect(g_hWnd,&rc,TRUE);
-	//	for(int i=0;i<13;i++)
-	//		ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
 	}
 }
 
@@ -800,49 +782,6 @@ to start a dedicated server in tournament mode, you would use: quake3.exe +set d
  
 */
 char szGAMETYPEUNKOWN[]={"Unknown"};
-struct _GAMETYPENAME
-{ 
-	char gametype;
-	char szName[20];
-	WORD cETSVGAMETYPE;
-};
-
-_GAMETYPENAME GTWARSOW[16] = {
-	0,"Unknown",GAMETYPE_FFA,
-	1,"ctf",GAMETYPE_CTF,
-	2,"ca",GAMETYPE_CA,
-	3,"tdm",GAMETYPE_TDM,
-	4,"dm",GAMETYPE_DM,
-	5,"duel",GAMETYPE_DUEL,
-	6,"race",GAMETYPE_DM,
-	7,"Unknown",GAMETYPE_UNKNOWN,
-	8,"Unknown",GAMETYPE_UNKNOWN,
-	9,"Unknown",GAMETYPE_UNKNOWN,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
-
-//This applies to both CoD 2 & CoD 4
-_GAMETYPENAME GTCOD2[16] = {
-	0,"Unknown",GAMETYPE_FFA,
-	1,"ctf",GAMETYPE_CTF,
-	2,"ca",GAMETYPE_CA,
-	3,"tdm",GAMETYPE_TDM,
-	4,"dm",GAMETYPE_DM,
-	5,"duel",GAMETYPE_DUEL,
-	6,"race",GAMETYPE_DM,
-	7,"sd",GAMETYPE_SD, //Search & Destroy
-	8,"zom",GAMETYPE_ZOM,
-	9,"hq",GAMETYPE_HQ,
-   10,"Unknown",GAMETYPE_UNKNOWN,
-   11,"Unknown",GAMETYPE_UNKNOWN,
-   12,"Unknown",GAMETYPE_UNKNOWN,
-   13,"Unknown",GAMETYPE_UNKNOWN,
-   14,"Unknown",GAMETYPE_UNKNOWN,
-};
 
 
 

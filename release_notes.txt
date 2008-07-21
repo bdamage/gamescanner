@@ -1,4 +1,13 @@
 
+
+
+Version 1.04 Hot fix!
+---------------------
+Fixed a major bug when doing exit from taks tray icon would save the treeview configuraion file with no item names!!
+Removed a a pop up message box when mIRC is not found.
+Improvements with the logic code when doing a filtered scanning. It should now ignore present state of number of players on server, current map name, bots and version etc.
+
+
 Version 1.03
 ------------------
 Added support for color encoded servernames and playername (based on ET color table).

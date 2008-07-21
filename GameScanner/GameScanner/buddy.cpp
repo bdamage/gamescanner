@@ -309,6 +309,10 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 
 void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 {
+	if(pBI==NULL)
+		return;
+	if(pServerInfo==NULL)
+		return;
 
 	strcpy_s(pBI->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
 	

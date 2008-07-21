@@ -90,7 +90,7 @@ hszSysTopic = DdeCreateStringHandle(
 	 
 	if (hConv == NULL) 
 	{ 
-		MessageBox(NULL, "mIRC is unavailable.", (LPSTR) NULL, MB_OK); 
+		//MessageBox(NULL, "mIRC is unavailable.", (LPSTR) NULL, MB_OK); 
 		return FALSE; 
 	} 
 	

@@ -11,7 +11,7 @@
 #include "scanner.h"
 #include "..\..\iptocountry\iptocountry.h"
 
-#define MAX_PACKETS 500
+#define MAX_PACKETS 600
 extern bool g_bCancel;
 extern HWND g_hWnd;
 
@@ -701,8 +701,9 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 			pSI->bPunkbuster = p[0]; //VAC
 			p++;
 			strncpy_s(pSI->szVersion,sizeof(pSI->szVersion),p,_TRUNCATE);
+			pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
 		}
-		pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+		
 		pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
 		pSI->wMod = Get_MapByName(pSI->cGAMEINDEX, pSI->szMod);
 

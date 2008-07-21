@@ -76,6 +76,11 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FAVORITE			998
 #define PRIVATE				999
 
+#define REDRAWLIST_FAVORITES_PUBLIC		0x00000001
+#define REDRAWLIST_FAVORITES_PRIVATE	0x00000002
+#define REDRAWLIST_HISTORY				0x00000004
+#define FORCE_SCAN_FILTERED				0x00000008
+
 #define MAX_SERVERLIST		16  //This value should be as the last one +1
 #define ET_SERVERLIST		0
 #define ETQW_SERVERLIST		1
@@ -133,89 +138,10 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FILTER_MAX_PLY			101
 
 
-#define FILTER_2	   256	
-#define FILTER_3	   512  
-#define FILTER_4		  1024  
-#define FILTER_5	  2048  
-#define FILTER_6		  4096  
-#define FILTER_7	  8192   
-#define FILTER_8	  16384  
-#define FILTER_9	  32768  
-#define FILTER_10	  65535  
-
-#define MOD_ET_UNKNOWN		 0
-#define MOD_ET_ETMAIN		 1  
-#define MOD_ET_ETPRO		 2  
-#define MOD_ET_JAYMOD		 4  
-#define MOD_ET_NOQUARTER	 8  
-#define MOD_ET_ETPUB		16  
-#define MOD_ET_TCETEST		32
-
-
-#define MOD_ETQW_UNKNOWN	 0
-#define MOD_ETQW_MAIN		 1  
-#define MOD_ETQW_PRO		 2  
-#define MOD_ETQW_WOW		 4  
-
-
-#define MOD_COD4_UNKNOWN	 0
-#define MOD_COD4_MAIN		 1  
-#define MOD_COD4_ZOMBIE		 2  
-#define MOD_COD4_PAM		 4  
-#define MOD_COD4_WARFARE	 8 
-#define MOD_COD4_AWE		 16
 
 #define VERSION_UNKNOWN      0
-#define VER_ET_UNKNOWN		 0
-#define VER_ET_255			 1  
-#define VER_ET_260			 2  
-#define VER_ET_260B			 4  
-
 
 #define GAMETYPE_UNKNOWN	 0
-#define GAMETYPE_DM			 1  //free for all deatch match 
-#define GAMETYPE_SW			 2  //StopWatch
-#define GAMETYPE_LMS		 4  //Last Man Standing
-#define GAMETYPE_TDM		 8  //Team deatch match
-#define GAMETYPE_OBJ		16  //Objective
-#define GAMETYPE_CAMP		32  //Campaign
-#define GAMETYPE_CTF		64  //Capture the Flag
-#define GAMETYPE_CA		   128  //Clan Arena
-#define GAMETYPE_DUEL	   256	//Duel
-#define GAMETYPE_FFA	   512  //Free for all
-#define GAMETYPE_SD		  1024  //Cod2 Search & Destroy
-#define GAMETYPE_ZOM	  2048  //cod
-#define GAMETYPE_HQ		  4096  //CoD 2 & CoD 4 King of The Hill / HeadQuarters??
-#define GAMETYPE_unused	  8192   //
-#define GAMETYPE_SAB	  16384  //CoD 4 Sabotage
-#define GAMETYPE_DOM	  32768  //CoD 4 Domination
-#define GAMETYPE_OTHER	  65535  //All Others :)
-
-
-#define GAMETYPE_Q3_DM		 1  //Free for all / Deatch Match 
-#define GAMETYPE_Q3_FFA		 2  //Free for all
-#define GAMETYPE_Q3_CTF		 4  //Capture the flag
-#define GAMETYPE_Q3_TDM		 8  //Team deatch match
-#define GAMETYPE_Q3_CA		16  //Clan Arean
-#define GAMETYPE_Q3_DUEL	32  //Duel
-
-
-
-#define GAMETYPE_ET_UNUSED1		 1  //??
-#define GAMETYPE_ET_SW			 2  //StopWatch
-#define GAMETYPE_ET_LMS			 4  //Last Man Standing
-#define GAMETYPE_ET_OBJ			 8  //Objective
-#define GAMETYPE_ET_CAMP		16  //Campaign
-
-
-#define GAMETYPE_COD_DUEL		  256	//Duel
-#define GAMETYPE_COD_FFA		  512  //Free for all
-#define GAMETYPE_COD_SD			  1024  //Cod2 Search & Destroy
-#define GAMETYPE_COD_ZOM		  2048  //cod
-#define GAMETYPE_COD_HQ			  4096  //CoD 2 & CoD 4 King of The Hill / HeadQuarters??
-#define GAMETYPE_COD_UNUSED1	  8192   //
-#define GAMETYPE_COD_SAB		  16384  //CoD 4 Sabotage
-#define GAMETYPE_COD_DOM		  32768  //CoD 4 Domination
 
 
 

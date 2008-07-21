@@ -102,10 +102,7 @@ char TREEVIEW_VERSION[20];
 
 #define ETSV_PURGE_COUNTER 5  //Counter after X timeouts to purge (delete) the server
 
-#define REDRAWLIST_FAVORITES_PUBLIC		0x00000001
-#define REDRAWLIST_FAVORITES_PRIVATE	0x00000002
-#define REDRAWLIST_HISTORY				0x00000004
-#define REDRAWLIST_SCAN_FILTERED		0x00000008
+
 
 
 #define COL_PB			0
@@ -2177,7 +2174,7 @@ DWORD TreeView_SetDWCheckState (TVITEM  *pTVitem, _TREEITEM ti, BOOL active)
 }
 
 //Used for group selection such as Ping
-int TreeView_UncheckAllTypes(char cGameIdx, DWORD dwType)
+DWORD TreeView_UncheckAllTypes(char cGameIdx, DWORD dwType)
 {	
 	for(UINT i=0;i<vTI.size();i++)
 	{
@@ -2189,7 +2186,7 @@ int TreeView_UncheckAllTypes(char cGameIdx, DWORD dwType)
 			tvitem.hItem = vTI.at(i).hTreeItem;
 			tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
 			TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
-			TreeView_SetDWCheckState(&tvitem, vTI.at(i), FALSE);		
+			return TreeView_SetDWCheckState(&tvitem, vTI.at(i), FALSE);		
 		}
 	}
 	return 0;
@@ -2240,8 +2237,14 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 	switch(ti.dwType)
 	{
 		case FILTER_PB		: pGI->filter.bPunkbuster = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_SHOW_PRIVATE : TreeView_UncheckAllTypes(ti.cGAMEINDEX,128); pGI->filter.bNoPrivate = FALSE; pGI->filter.bOnlyPrivate = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
-		case FILTER_HIDE_PRIVATE : TreeView_UncheckAllTypes(ti.cGAMEINDEX,2); pGI->filter.bOnlyPrivate = FALSE; pGI->filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		case FILTER_SHOW_PRIVATE : 
+			TreeView_UncheckAllTypes(ti.cGAMEINDEX,128); 
+			pGI->filter.bNoPrivate = FALSE; 
+			pGI->filter.bOnlyPrivate = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		case FILTER_HIDE_PRIVATE : 
+			TreeView_UncheckAllTypes(ti.cGAMEINDEX,2); 
+			pGI->filter.bOnlyPrivate = FALSE; 
+			pGI->filter.bNoPrivate = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 
 		case FILTER_FULL    : 	pGI->filter.bNoFull = TreeView_SwapDWCheckState(tvi,ti.dwState); break;			
 		case FILTER_EMPTY	: 	 pGI->filter.bNoEmpty = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
@@ -2282,7 +2285,7 @@ void Select_all_childs(HTREEITEM hRoot, bool selected)
 
 		TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem);
 		int iSel = (int)tvitem.lParam;
-		AddLogInfo(ETSV_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwAction);
+		//AddLogInfo(ETSV_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwAction);
 
 		if(selected==false)
 			tvitem.iSelectedImage =	tvitem.iImage = UNCHECKED_ICON;  //Unchecked image
@@ -3060,8 +3063,8 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 			return 0;
 		}
 		pElemRoot->LinkEndChild( elem );  
-		vTI.at(iSel).sName.clear();
-		vTI.at(iSel).strValue.clear();
+//		vTI.at(iSel).sName.clear();
+//		vTI.at(iSel).strValue.clear();
 		
 
 		DWORD nextlevel = vTI.at(g_save_counter).dwLevel;
@@ -3083,6 +3086,18 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		
 	}
 	return vTI.at(g_save_counter).dwLevel;
+}
+void TreeView_cleanup()
+{
+	vTI.size();
+	for(int i=0;i<vTI.size();i++)
+	{
+		vTI.at(i).sElementName.clear();
+		vTI.at(i).sName.clear();
+		vTI.at(i).strValue.clear();
+	}
+
+	vTI.clear();
 }
 
 int TreeView_save()
@@ -4130,6 +4145,16 @@ void OnClose()
 	DeleteObject(g_hf2);
 	g_hf2=NULL;
 
+	OutputDebugString("Cleaning up filter Gametypes, Map, Mod and Versions.\n");
+	for(int i=0;i<MAX_SERVERLIST;i++)
+	{
+		
+		GI[i].pSC->vFilterGameType.clear();
+		GI[i].pSC->vFilterMap.clear();
+		GI[i].pSC->vFilterMod.clear();
+		GI[i].pSC->vFilterVersion.clear();
+	}
+
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
 	pCurrentPL = NULL;
 	bMainWindowsRunning=false;
@@ -4629,6 +4654,8 @@ DWORD WINAPI SavingFilesCleaningUpThread(LPVOID pvoid )
 	if((DWORD)pvoid!=0x0000FFFF)
 		PostMessage(g_hWnd,WM_DESTROY,(WPARAM)pvoid,0);
 	
+	TreeView_cleanup();
+	g_sMIRCoutput.clear();
 	g_bCancel = false;
 	bWaitingToSave = FALSE;
 	SCANNER_bCloseApp = FALSE;
@@ -5162,22 +5189,26 @@ void OnPaint(HDC hDC)
 				}
 			}
 
-
 		}
 		if(!dib)
 			dib = FreeImage_Load(FIF_PNG, "unknownmap.png", PNG_DEFAULT);
 
-		SetStretchBltMode(hDC, COLORONCOLOR);
-		StretchDIBits(hDC, 
-			g_rcDestMapImg.left, 
-			g_rcDestMapImg.top, 
-			g_rcDestMapImg.right-g_rcDestMapImg.left, 
-			g_rcDestMapImg.bottom-g_rcDestMapImg.top, 
-		0, 0, FreeImage_GetWidth(dib), FreeImage_GetHeight(dib),
-		FreeImage_GetBits(dib), FreeImage_GetInfo(dib), DIB_RGB_COLORS, SRCCOPY);
-		FreeImage_Unload(dib);
+		Rectangle(hDC,  g_rcDestMapImg.left, g_rcDestMapImg.top,g_rcDestMapImg.right,g_rcDestMapImg.bottom);
 
-	//	Rectangle(hDC,  g_rcDestMapImg.left, g_rcDestMapImg.top,g_rcDestMapImg.left+5, g_rcDestMapImg.top+5);
+		if(dib!=NULL)
+		{
+			SetStretchBltMode(hDC, COLORONCOLOR);
+			StretchDIBits(hDC, 
+				g_rcDestMapImg.left, 
+				g_rcDestMapImg.top, 
+				g_rcDestMapImg.right-g_rcDestMapImg.left, 
+				g_rcDestMapImg.bottom-g_rcDestMapImg.top, 
+			0, 0, FreeImage_GetWidth(dib), FreeImage_GetHeight(dib),
+			FreeImage_GetBits(dib), FreeImage_GetInfo(dib), DIB_RGB_COLORS, SRCCOPY);
+			FreeImage_Unload(dib);
+		}
+
+		
 	} 
 
 	pt.y = g_INFOIconRect.top; //rc.bottom;
@@ -6089,7 +6120,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 	DWORD bForceFavorites = (dwFilterFlags & REDRAWLIST_FAVORITES_PUBLIC);
 	DWORD bForceHistory = (dwFilterFlags & REDRAWLIST_HISTORY) ;
 	DWORD bForceFavoritesPrivate = dwFilterFlags & REDRAWLIST_FAVORITES_PRIVATE;
-	DWORD bRescanFilter = dwFilterFlags & REDRAWLIST_SCAN_FILTERED;
+	DWORD bRescanFilter = dwFilterFlags & FORCE_SCAN_FILTERED;
 
 	SERVER_INFO *srv=NULL;
 	bool returnVal=false;
@@ -6141,11 +6172,60 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 
 			if(AppCFG.filter.cActiveMaxPlayer && (srv->nCurrentPlayers>(int)AppCFG.filter.dwShowServerWithMaxPlayers))
 				return false;
+		
+			if(pGI->filter.bNoBots)
+				if(srv->cBots>0)
+					return false;
+
+			if(pGI->filter.dwMap>0)
+			{
+				returnVal=false;
+				DWORD val = 1;
+				for(int i=0;i<pGI->pSC->vFilterMap.size();i++)
+				{
+					if(pGI->filter.dwMap & val)
+					{
+						DWORD result = (srv->dwMap & val);
+				
+						if(result) 
+						{
+							returnVal=true;
+							break;
+						}
+					}
+					
+					val=val*2;
+				}
+
+				if(returnVal==false)
+					return false;
+			}
+			if(pGI->filter.dwVersion>0)
+			{
+				returnVal=false;
+				DWORD val = 1;
+				for(int i=0;i<pGI->pSC->vFilterVersion.size();i++)
+				{
+					if(pGI->filter.dwVersion & val)
+					{
+						DWORD result = (srv->dwVersion & val);
+				
+						if(result) 
+						{
+							returnVal=true;
+							break;
+						}
+					}
+					
+					val=val*2;
+				}
+
+				if(returnVal==false)
+					return false;
+			}
 		}
 
-		if(pGI->filter.bNoBots)
-			if(srv->cBots>0)
-				return false;
+
 
 		if(pGI->filter.bRanked && (srv->cGAMEINDEX == ETQW_SERVERLIST))
 			if(srv->cRanked==0)
@@ -6226,52 +6306,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 		if(returnVal==false)
 			return false;
 	}
-	if(pGI->filter.dwMap>0)
-	{
-		returnVal=false;
-		DWORD val = 1;
-		for(int i=0;i<pGI->pSC->vFilterMap.size();i++)
-		{
-			if(pGI->filter.dwMap & val)
-			{
-				DWORD result = (srv->dwMap & val);
-		
-				if(result) 
-				{
-					returnVal=true;
-					break;
-				}
-			}
-			
-			val=val*2;
-		}
 
-		if(returnVal==false)
-			return false;
-	}
-	if(pGI->filter.dwVersion>0)
-	{
-		returnVal=false;
-		DWORD val = 1;
-		for(int i=0;i<pGI->pSC->vFilterVersion.size();i++)
-		{
-			if(pGI->filter.dwVersion & val)
-			{
-				DWORD result = (srv->dwVersion & val);
-		
-				if(result) 
-				{
-					returnVal=true;
-					break;
-				}
-			}
-			
-			val=val*2;
-		}
-
-		if(returnVal==false)
-			return false;
-	}
 		returnVal=false;
 
 	//	if(AppCFG.bUseCountryFilter)
@@ -6318,6 +6353,8 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 	GAME_INFO *pGI = (GAME_INFO *)pvoid;
 	vSRV_INF::iterator  iLst;
 
+
+
 //	SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
 
 	ListView_DeleteAllItems(g_hwndListViewServer);
@@ -6337,11 +6374,10 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 				pGI->pSC->vRefListSI.push_back(refSI);
 			}
 		}
-		dbg_print("Created filtered serverlist!\n");
-
-		Do_ServerListSort(iLastColumnSortIndex);
+			Do_ServerListSort(iLastColumnSortIndex);
 	}
-	
+	dbg_print("Created filtered serverlist! View flags %d Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
+
 	ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());
 	
 	bRunningRefreshThread=FALSE;
@@ -8390,6 +8426,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										return TRUE;
 									} else
 									{
+										GI[g_currentGameIdx].dwViewFlags = FORCE_SCAN_FILTERED;
 										OnActivate_ServerList(SCAN_FILTERED);
 										return TRUE;
 									}
@@ -10306,9 +10343,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 				}
 				case IDM_SCAN_ALL_GAMES:
+					GI[g_currentGameIdx].dwViewFlags = 0;
 					OnActivate_ServerList(SCAN_ALL_GAMES);
 					break;
 				case IDM_SCAN_FILTERED:
+					GI[g_currentGameIdx].dwViewFlags = FORCE_SCAN_FILTERED;
 					OnActivate_ServerList(SCAN_FILTERED);
 					break;
 
@@ -10317,6 +10356,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 				case IDM_REFRESH:  //Toolbar
 				case ID_OPTIONS_REFRESH: 
+					GI[g_currentGameIdx].dwViewFlags = 0;
 					OnScanButton();							
 				break;
 				case IDC_DOWNLOAD:
