@@ -1575,7 +1575,7 @@ void Default_GameSettings()
 	GI[Q3_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[Q3_SERVERLIST].szQueryString,"");
 	GI[Q3_SERVERLIST].pSC = &SC[Q3_SERVERLIST];
-//	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[Q3_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GI[Q3_SERVERLIST].szGAME_PATH,&dwBuffSize);
 
 	strcpy(GI[RTCW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
@@ -1641,11 +1641,11 @@ void Default_GameSettings()
 	strncpy(GI[COD2_SERVERLIST].szMAP_MAPPREVIEW_PATH,"cod2maps",MAX_PATH);
 	strncpy(GI[COD2_SERVERLIST].szGAME_CMD,"",MAX_PATH);
 	dwBuffSize = sizeof(GI[COD2_SERVERLIST].szGAME_PATH);
-	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\ETQW Beta 2","EXEString",GI[ETQW_SERVERLIST].szGAME_PATH,&dwBuffSize);
-	//if(strlen(GI[ETQW_SERVERLIST].szGAME_PATH)>0)
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 2\\","MultiEXEString",GI[COD2_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	if(strlen(GI[COD2_SERVERLIST].szGAME_PATH)>0)
+		GI[COD2_SERVERLIST].bActive = true;
+	else
 		GI[COD2_SERVERLIST].bActive = false;
-	//else
-	//	GI[ETQW_SERVERLIST].bActive = false;
 	strcpy(GI[COD2_SERVERLIST].szProtocolName,"cod2");
 	GI[COD2_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD2_SERVERLIST].szQueryString,"");
@@ -1662,11 +1662,11 @@ void Default_GameSettings()
 	strncpy(GI[COD_SERVERLIST].szMAP_MAPPREVIEW_PATH,"codmaps",MAX_PATH);
 	strncpy(GI[COD_SERVERLIST].szGAME_CMD,"",MAX_PATH);
 	dwBuffSize = sizeof(GI[COD_SERVERLIST].szGAME_PATH);
-	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty","EXEString",GI[ETQW_SERVERLIST].szGAME_PATH,&dwBuffSize);
-	//if(strlen(GI[ETQW_SERVERLIST].szGAME_PATH)>0)
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty","InstallPath",GI[COD_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	if(strlen(GI[ETQW_SERVERLIST].szGAME_PATH)>0)
 		GI[COD_SERVERLIST].bActive = false;
-	//else
-	//	GI[ETQW_SERVERLIST].bActive = false;
+	else
+		GI[COD_SERVERLIST].bActive = false;
 	strcpy(GI[COD_SERVERLIST].szProtocolName,"cod");
 	GI[COD_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD_SERVERLIST].szQueryString,"");
@@ -1711,9 +1711,6 @@ void Default_GameSettings()
 	strncpy(GI[COD4_SERVERLIST].szMAP_MAPPREVIEW_PATH,"cod4maps",MAX_PATH);
 	strncpy(GI[COD4_SERVERLIST].szGAME_CMD,"+set cl_playintro 0 +set ui_skip_titlescreen 1 +set ui_skip_legalscreen 1",MAX_PATH);
 	dwBuffSize = sizeof(GI[COD4_SERVERLIST].szGAME_PATH);
-
-	//strcpy(GI[COD4_SERVERLIST].szGAME_PATH,"C:\\Program Files\\Activision\\Call of Duty 4 - Modern Warfare\\iw3mp.exe");
-	
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GI[COD4_SERVERLIST].szGAME_PATH,&dwBuffSize);
 	if(strlen(GI[COD4_SERVERLIST].szGAME_PATH)>0)
 		GI[COD4_SERVERLIST].bActive = true;
