@@ -63,7 +63,12 @@ LRESULT APIENTRY DlgProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ;
 char* ReCalcTextCB();
 //LRESULT ListViewNotifyNEW(HWND hWnd,  WPARAM wParam, LPARAM lParam);
 void Initialize_RedrawServerListThread();
+BOOL TreeView_SetItemCheckState(char gameIdx, DWORD dwType,DWORD dwNewState);
+BOOL TreeView_SetFilterGroupCheckState(char gameIdx, DWORD dwType,DWORD dwFilterValue);
+BOOL TreeView_SetCheckBoxState(int iSel,DWORD dwState);
+BOOL TreeView_SetDWValueByItemType(DWORD dwType,DWORD dwNewValue,DWORD dwNewState, char*pszNewStrValue=NULL);
 
+DWORD TreeView_GetItemStateByType(char cGameIdx,DWORD dwType);
 DWORD WINAPI  QueryThread(LPVOID lpParam );
 DWORD WINAPI  PlayNotify(LPVOID lpParam );
 DWORD WINAPI GetServerList(LPVOID lpParam );

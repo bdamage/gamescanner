@@ -1299,7 +1299,7 @@ char *Registry_GetGamePath(HKEY hkey,char *pszRegPath,char *pszRegKey,char *pszO
 			}
 		RegCloseKey(HKey);
 		}
-	AddGetLastErrorIntoLog("Registry_GetGamePath");
+//	AddGetLastErrorIntoLog("Registry_GetGamePath");
 	pszOutputString = NULL;
 	dwSizeOfBuffer=0;
 
@@ -2311,6 +2311,17 @@ HTREEITEM TreeView_GetTIByItemType(DWORD dwType)
 	return NULL;
 }
 
+
+DWORD TreeView_GetItemStateByType(char cGameIdx,DWORD dwType)
+{
+	for(UINT i=0;i<vTI.size();i++)
+	{
+		if((vTI.at(i).dwType == dwType) && (vTI.at(i).cGAMEINDEX == cGameIdx))
+			return vTI.at(i).dwState;
+	}
+	return 0;
+}
+
 /*******************************************************
  
  Sets a new value depending of type.
@@ -2319,19 +2330,22 @@ HTREEITEM TreeView_GetTIByItemType(DWORD dwType)
 	therefore recommendation is that dwType is unique.
 
 ********************************************************/
-BOOL TreeView_SetDWValueByItemType(DWORD dwType,DWORD dwNewValue)
+BOOL TreeView_SetDWValueByItemType(DWORD dwType,DWORD dwNewValue,DWORD dwNewState, char*pszNewStrValue)
 {
 	for(UINT i=0;i<vTI.size();i++)
 	{
 		if(vTI.at(i).dwType == dwType)
 		{
 			vTI.at(i).dwValue = dwNewValue;
-			
+			vTI.at(i).dwState = dwNewState;
+			if(pszNewStrValue!=NULL)
+				vTI.at(i).strValue = pszNewStrValue;
 			 if(vTI.at(i).dwAction==DO_GLOBAL_EDIT_FILTER)
 			 {
 				char text[256];
 				sprintf(text,"%s %d",vTI.at(i).sName.c_str(),vTI.at(i).dwValue);
 				TreeView_SetItemText(vTI.at(i).hTreeItem,text);
+				TreeView_SetCheckBoxState(i,vTI.at(i).dwState);
 			}
 			return TRUE;
 		}
@@ -2352,6 +2366,46 @@ BOOL TreeView_SetItemStateByNameAndType(string name,DWORD dwType,DWORD dwNewStat
 	}
 	return FALSE;
 }
+/*********************************************************
+This function is good for when upgrading the treeview list,
+purpose is to restore it original user value.
+**********************************************************/
+
+BOOL TreeView_SetFilterGroupCheckState(char gameIdx, DWORD dwType,DWORD dwFilterValue)
+{
+	BOOL bChanges=FALSE;
+	for(UINT i=0;i<vTI.size();i++)
+	{
+
+		if((vTI.at(i).cGAMEINDEX == gameIdx) && (vTI.at(i).dwType == dwType))
+		{		
+			if(vTI.at(i).dwValue & dwFilterValue)
+			{
+				vTI.at(i).dwState = 1;	
+				TreeView_SetCheckBoxState(i,vTI.at(i).dwState);
+				bChanges = TRUE;
+
+			}
+		}
+	}
+	return bChanges;
+}
+
+BOOL TreeView_SetFilterCheckState(char gameIdx, DWORD dwType,DWORD dwNewState)
+{
+	BOOL bChanges=FALSE;
+	for(UINT i=0;i<vTI.size();i++)
+	{
+
+		if((vTI.at(i).cGAMEINDEX == gameIdx) && (vTI.at(i).dwType == dwType))
+		{		
+				TreeView_SetCheckBoxState(i,dwNewState);
+				bChanges = TRUE;
+		}
+	}
+	return bChanges;
+}
+
 /*******************************************************
  
  Gets a new value depending of type.
@@ -2424,11 +2478,11 @@ int TreeView_SetAllChildItemExpand(int startIdx, bool expand)
 	return -1;
 }
 
-BOOL TreeView_SetCheckBoxState(HTREEITEM hTreeItem,int iSel,DWORD dwState)
+BOOL TreeView_SetCheckBoxState(int iSel,DWORD dwState)
 {
 	TVITEM  tvitem;
 	ZeroMemory(&tvitem,sizeof(TVITEM));
-	tvitem.hItem = hTreeItem;
+	tvitem.hItem = vTI.at(iSel).hTreeItem;
 	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
 
 	if(dwState) //Is it checked
@@ -2439,6 +2493,8 @@ BOOL TreeView_SetCheckBoxState(HTREEITEM hTreeItem,int iSel,DWORD dwState)
 	vTI.at(iSel).dwState = tvitem.iSelectedImage - UNCHECKED_ICON ; //set the value
 	return TreeView_SetItem(g_hwndMainTreeCtrl, &tvitem );	
 }
+
+
 
 int TreeView_GetSelectionV3()
 {
@@ -2469,7 +2525,7 @@ int TreeView_GetSelectionV3()
 			return SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); 
 		case DO_CHECKBOX: 
 			{
-				TreeView_SetCheckBoxState(hTreeItem,iSel,vTI.at(iSel).dwState);
+				TreeView_SetCheckBoxState(iSel,vTI.at(iSel).dwState);
 			}	
 			break; 
 		case DO_EDIT:
@@ -3305,8 +3361,8 @@ int TreeView_load()
 		
 			}
 			//Clear all old filtering settings... ugly hack.
-			for(int i=0; i<MAX_SERVERLIST; i++)
-				ZeroMemory(&GI[i].filter,sizeof(FILTER_SETTINGS));
+		//	for(int i=0; i<MAX_SERVERLIST; i++)  //removed since 1.05
+		//		ZeroMemory(&GI[i].filter,sizeof(FILTER_SETTINGS));//removed since 1.05
 		}
 			
 	}
@@ -3324,6 +3380,7 @@ int TreeView_load()
 	}	
 	char szBuffer[200];
 
+	//Let's do some resync values, this will help to ensure after an upgrade of the treeview  structure to display correct
 	for(int i=0; i<MAX_SERVERLIST;i++)
 	{
 		GI[i].hTI = TreeView_GetTIByItemGame(i);
@@ -3333,15 +3390,21 @@ int TreeView_load()
 		{
 			TreeView_SetItemText(GI[i].hTI,szBuffer);
 			TreeView_SetItemState(g_hwndMainTreeCtrl,GI[i].hTI,TVIS_BOLD ,TVIS_BOLD);
-			GI[i].filter.bHideOfflineServers = TreeView_GetDWStateByGameType(i,1,9);
-			GI[i].filter.bNoBots = TreeView_GetDWStateByGameType(i,64,9);
-			GI[i].filter.bNoEmpty = TreeView_GetDWStateByGameType(i,8,9);
-			GI[i].filter.bNoFull = TreeView_GetDWStateByGameType(i,4,9);
-			GI[i].filter.bNoPrivate = TreeView_GetDWStateByGameType(i,128,9);
-			GI[i].filter.bOnlyPrivate = TreeView_GetDWStateByGameType(i,2,9);
-			GI[i].filter.bPunkbuster = TreeView_GetDWStateByGameType(i,1,9);
-			GI[i].filter.bPure = TreeView_GetDWStateByGameType(i,26,9);
-			GI[i].filter.bRanked = TreeView_GetDWStateByGameType(i,27,9);		
+			TreeView_SetFilterCheckState(i, 1,GI[i].filter.bPunkbuster);
+			TreeView_SetFilterCheckState(i, 2,GI[i].filter.bOnlyPrivate);
+			TreeView_SetFilterCheckState(i, 128,GI[i].filter.bNoPrivate);
+			TreeView_SetFilterCheckState(i, 4,GI[i].filter.bNoFull);
+			TreeView_SetFilterCheckState(i, 8,GI[i].filter.bNoEmpty);
+			TreeView_SetFilterCheckState(i, 64,GI[i].filter.bNoBots);
+			TreeView_SetFilterCheckState(i, 26,GI[i].filter.bPure);
+			TreeView_SetFilterCheckState(i, 27,GI[i].filter.bRanked);
+
+	
+	
+			TreeView_SetFilterGroupCheckState(i,FILTER_MOD,GI[i].filter.dwMod);
+			TreeView_SetFilterGroupCheckState(i,FILTER_MAP,GI[i].filter.dwMap);
+			TreeView_SetFilterGroupCheckState(i,FILTER_VERSION,GI[i].filter.dwVersion);
+			TreeView_SetFilterGroupCheckState(i,FILTER_GAMETYPE,GI[i].filter.dwGameTypeFilter);
 		}
 	}
 
@@ -3349,13 +3412,26 @@ int TreeView_load()
 	{
 		if((vTI.at(i).sElementName == "Ping") && (vTI.at(i).dwValue==AppCFG.filter.dwPing))
 		{
-			TreeView_SetCheckBoxState(vTI.at(i).hTreeItem,i,vTI.at(i).dwState);
+			TreeView_SetCheckBoxState(i,1);
+		}
+		if((vTI.at(i).sName == "Hide offline servers"))
+		{
+			if(AppCFG.filter.bHideOfflineServers)
+				TreeView_SetCheckBoxState(i,1);
+			else
+				TreeView_SetCheckBoxState(i,0);
+
 		}
 	}
+	//TreeView_SetItemCheckState(i, DWORD dwType,GI[i]);
+	//AppCFG.filter.bHideOfflineServers = TreeView_GetDWValue(FILTER_OFFLINE,8);
+	//AppCFG.filter.dwShowServerWithMinPlayers = TreeView_GetDWValue(FILTER_MIN_PLY,11);
+	//AppCFG.filter.dwShowServerWithMaxPlayers = TreeView_GetDWValue(FILTER_MAX_PLY,11);
+	
+	TreeView_SetDWValueByItemType(FILTER_MIN_PLY, AppCFG.filter.dwShowServerWithMinPlayers,AppCFG.filter.cActiveMinPlayer);
+	TreeView_SetDWValueByItemType(FILTER_MAX_PLY, AppCFG.filter.dwShowServerWithMaxPlayers,AppCFG.filter.cActiveMaxPlayer);
+	
 
-	AppCFG.filter.bHideOfflineServers = TreeView_GetDWValue(16,8);
-	AppCFG.filter.dwShowServerWithMinPlayers = TreeView_GetDWValue(100,11);
-	AppCFG.filter.dwShowServerWithMaxPlayers = TreeView_GetDWValue(101,11);
 
 	Initialize_CountryFilter();
 	SetFocus(g_hwndMainTreeCtrl);
@@ -4722,6 +4798,8 @@ void CFG_Save()
 		WriteCfgInt(abc, "GameData", "Protocol",GI[i].dwProtocol);
 		WriteCfgInt(abc, "GameData", "IconIndex",GI[i].iIconIndex);
 		WriteCfgInt(abc, "GameData", "FilterMod",GI[i].filter.dwMod);
+		WriteCfgInt(abc, "GameData", "FilterVersion",GI[i].filter.dwVersion);
+		WriteCfgInt(abc, "GameData", "FilterMap",GI[i].filter.dwMap);
 		WriteCfgInt(abc, "GameData", "FilterGameType",GI[i].filter.dwGameTypeFilter);
 		WriteCfgInt(abc, "GameData", "FilterHideFull",GI[i].filter.bNoFull);
 		WriteCfgInt(abc, "GameData", "FilterHideEmpty",GI[i].filter.bNoEmpty);
@@ -6356,7 +6434,7 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 
 
 //	SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
-
+	dbg_print("View flags: %d",pGI->dwViewFlags);
 	ListView_DeleteAllItems(g_hwndListViewServer);
 	pGI->pSC->vRefListSI.clear();
 	if(pGI->pSC->vSI.size()>0)
@@ -9314,9 +9392,9 @@ LRESULT CALLBACK MINMAX_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 				GetDlgItemText(hDlg,IDC_EDIT_MINMAX,szTemp,sizeof(szTemp)-1);
 				*dwMaxMin= atoi(szTemp);
 				if(bSettingMax)
-					TreeView_SetDWValueByItemType(FILTER_MAX_PLY,*dwMaxMin);
+					TreeView_SetDWValueByItemType(FILTER_MAX_PLY,*dwMaxMin,TreeView_GetItemStateByType(-25,FILTER_MAX_PLY));
 				else
-					TreeView_SetDWValueByItemType(FILTER_MIN_PLY,*dwMaxMin);
+					TreeView_SetDWValueByItemType(FILTER_MIN_PLY,*dwMaxMin,TreeView_GetItemStateByType(-25,FILTER_MIN_PLY));
 
 			}
 
@@ -9989,6 +10067,8 @@ int CFG_Load()
 					ReadCfgInt( pNode, "Protocol",(int&)GI[i].dwProtocol);		
 					ReadCfgInt(pNode, "Active",(int&)GI[i].bActive);
 					ReadCfgInt(pNode, "FilterMod",(int&)GI[i].filter.dwMod);
+					ReadCfgInt(pNode, "FilterVersion",(int&)GI[i].filter.dwVersion);
+					ReadCfgInt(pNode, "FilterMap",(int&)GI[i].filter.dwMap);
 					ReadCfgInt(pNode, "FilterGameType",(int&)GI[i].filter.dwGameTypeFilter);					
 					ReadCfgInt(pNode, "FilterHideFull",(int&)GI[i].filter.bNoFull);
 					ReadCfgInt(pNode, "FilterHideEmpty",(int&)GI[i].filter.bNoEmpty);
