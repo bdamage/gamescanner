@@ -2,6 +2,10 @@ Version 1.05
 ------------
 Fixed a filter save bug with when activated Version and Map, you might have to uncheck and check again to correct the state.
 Most filter (except countries) setting should now survive a tree view structure upgrade.
+When a new version is available Game Scanner will prompt if you want to upgrade or not.
+Added initial support for Team Fortress 2.
+
+
 
 
 Version 1.04 Hot fix!

@@ -229,8 +229,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			if (hNewItem)
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
-			hNewItem = TreeView_AddItem(GI[ET_SERVERLIST].iIconIndex,"ET");
-			hNewItem = TreeView_AddItem(GI[ETQW_SERVERLIST].iIconIndex,"ETQW");
+			for(int i=0;i<MAX_SERVERLIST;i++)
+				hNewItem = TreeView_AddItem(GI[i].iIconIndex,GI[i].szGAME_SHORTNAME);
+/*			hNewItem = TreeView_AddItem(GI[ETQW_SERVERLIST].iIconIndex,"ETQW");
 			hNewItem = TreeView_AddItem(GI[Q3_SERVERLIST].iIconIndex,"Quake 3");			
 			hNewItem = TreeView_AddItem(GI[Q4_SERVERLIST].iIconIndex,"Quake 4");
 			hNewItem = TreeView_AddItem(GI[RTCW_SERVERLIST].iIconIndex,"RTCW");
@@ -244,7 +245,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			hNewItem = TreeView_AddItem(GI[QW_SERVERLIST].iIconIndex,"Quake World");
 			hNewItem = TreeView_AddItem(GI[Q2_SERVERLIST].iIconIndex,"Quake 2");
 			hNewItem = TreeView_AddItem(GI[OPENARENA_SERVERLIST].iIconIndex,"Open Arena");
-
+*/
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
 					
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));

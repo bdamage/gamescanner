@@ -192,7 +192,10 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 
 		int i=0;
 		if(data->response != A2S_PLAYERRESPONSE)
+		{	
+			free(packet);
 			return 1;
+		}
 
 		while(p<pEndAddress)
 		{

@@ -9,7 +9,7 @@
 #pragma warning(disable : 4995)
 #pragma warning(disable : 4996)
 
-#define MAX_PACKETS 150
+#define MAX_PACKETS 250
 
 
 HWND hwndLVserverlist=NULL;

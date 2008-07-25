@@ -293,7 +293,7 @@ char EXE_PATH_OLD[_MAX_PATH+_MAX_FNAME];
 
 
 DWORD dwCurrPort = 27960;
-bool bDoFirstTimeCheckForUpdate=true;
+bool g_bDoFirstTimeCheckForUpdate=true;
 
 bool bPlayerNameAsc=true,bPlayerClanAsc=true,	bRateAsc = true,bPlayerPingAsc=true;
 APP_SETTINGS_NEW AppCFG;
@@ -1772,9 +1772,6 @@ void Default_GameSettings()
 	dwBuffSize = sizeof(GI[CSS_SERVERLIST].szGAME_PATH);
 	strcpy(GI[CSS_SERVERLIST].szGAME_PATH,"HL2.EXE");
 	GI[CSS_SERVERLIST].bActive = false;
-
-	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GI[CSS_SERVERLIST].szGAME_PATH,&dwBuffSize);
-	
 	strcpy(GI[CSS_SERVERLIST].szProtocolName,"css");
 	GI[CSS_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[CSS_SERVERLIST].szQueryString,"\\gamedir\\cstrike");
@@ -1838,6 +1835,45 @@ void Default_GameSettings()
 #endif
 
 
+	GI[TF2_SERVERLIST].cGAMEINDEX = TF2_SERVERLIST;
+	GI[TF2_SERVERLIST].iIconIndex = Get_GameIcon(TF2_SERVERLIST);
+	GI[TF2_SERVERLIST].dwViewFlags = 0;
+	strncpy(GI[TF2_SERVERLIST].szGAME_NAME,"Team Fortress 2",MAX_PATH);
+	strncpy(GI[TF2_SERVERLIST].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
+	GI[TF2_SERVERLIST].dwMasterServerPORT = 27011;
+	GI[TF2_SERVERLIST].dwProtocol = 0;
+	strncpy(GI[TF2_SERVERLIST].szMAP_MAPPREVIEW_PATH,"tf2maps",MAX_PATH);
+	strncpy(GI[TF2_SERVERLIST].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
+	dwBuffSize = sizeof(GI[TF2_SERVERLIST].szGAME_PATH);
+	strcpy(GI[TF2_SERVERLIST].szGAME_PATH,"HL2.EXE");
+	GI[TF2_SERVERLIST].bActive = false;
+	strcpy(GI[TF2_SERVERLIST].szProtocolName,"tf2");
+	GI[TF2_SERVERLIST].dwDefaultPort = 28960;
+	strcpy(GI[TF2_SERVERLIST].szQueryString,"");
+	GI[TF2_SERVERLIST].pSC = &SC[TF2_SERVERLIST];
+#ifdef _DEBUG
+	GI[TF2_SERVERLIST].bActive = true;
+#else
+	GI[TF2_SERVERLIST].bActive = false;
+#endif
+
+		strcpy(GI[ET_SERVERLIST].szGAME_SHORTNAME,"ET");
+		strcpy(GI[ETQW_SERVERLIST].szGAME_SHORTNAME,"ETQW");
+		strcpy(GI[Q3_SERVERLIST].szGAME_SHORTNAME,"Quake 3");			
+		strcpy(GI[Q4_SERVERLIST].szGAME_SHORTNAME,"Quake 4");
+		strcpy(GI[RTCW_SERVERLIST].szGAME_SHORTNAME,"RTCW");
+		strcpy(GI[COD_SERVERLIST].szGAME_SHORTNAME,"CoD");
+		strcpy(GI[COD2_SERVERLIST].szGAME_SHORTNAME,"CoD 2");	
+		strcpy(GI[WARSOW_SERVERLIST].szGAME_SHORTNAME,"Warsow");
+		strcpy(GI[COD4_SERVERLIST].szGAME_SHORTNAME,"CoD 4");
+		strcpy(GI[CS_SERVERLIST].szGAME_SHORTNAME,"CS");
+		strcpy(GI[CSCZ_SERVERLIST].szGAME_SHORTNAME,"CS Zero");
+		strcpy(GI[CSS_SERVERLIST].szGAME_SHORTNAME,"CS Source");
+		strcpy(GI[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
+		strcpy(GI[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
+		strcpy(GI[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
+		strcpy(GI[TF2_SERVERLIST].szGAME_SHORTNAME,"TF2");
+
 	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
 	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
 	strcpy(GI[Q4_SERVERLIST].szFilename,"q4.servers");
@@ -1853,6 +1889,7 @@ void Default_GameSettings()
 	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
 	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
 	strcpy(GI[OPENARENA_SERVERLIST].szFilename,"openarena.servers");
+	strcpy(GI[TF2_SERVERLIST].szFilename,"tf2.servers");
 	
 	RegisterProtocol(EXE_PATH);
 }
@@ -5949,6 +5986,7 @@ nextGame:
 				}
 			}
 			break;
+		case TF2_SERVERLIST:
 		case CSCZ_SERVERLIST:
 		case CS_SERVERLIST:
 		case CSS_SERVERLIST:
@@ -6137,6 +6175,7 @@ nextGame:
 				Q4_ConnectToMasterServer(&GI[currGameIdx]);			
 			}
 			break;
+		case TF2_SERVERLIST:
 		case CSCZ_SERVERLIST:
 		case CS_SERVERLIST:
 		case CSS_SERVERLIST:
@@ -6756,7 +6795,14 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 		SetTextColor(hDC,col);
 		pText = &pszText[i];
 
+//Code for testing UNICODE/ widecharacter
+//		wchar_t wc[2];	
+//		mbtowc( &wc[0], pText, MB_CUR_MAX );
+//		wc[1]=0;
+//	ExtTextOutW(hDC,rc.left,rc.top,0, &rc,&wc[0], 1,NULL); 
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
+	
+
 		rc.left+=nCharWidth;
 
 	}
@@ -9110,7 +9156,6 @@ DWORD WINAPI ProgressGUI_Thread(LPVOID lpParam)
 	return 0;
 }
 
-DWORD dwThreadIdProgress;
 
 DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 {
@@ -9170,9 +9215,10 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 		{
 			Show_ToolbarButton(IDC_DOWNLOAD, true);
 			//EnableDownloadLink(TRUE);
-			SetStatusText(ICO_INFO,"*** New version detected! ***");
-			AddLogInfo(ICO_INFO,"*** New version detected! ***");
+			SetStatusText(ICO_INFO,"*** New version %s is available for download.***",szVersion);
+			AddLogInfo(ICO_INFO,"*** New version %s detected! ***",szVersion);
 			bAnyUpdates=TRUE;
+			PostMessage(g_hWnd,WM_COMMAND,IDC_DOWNLOAD,0);
 		} else
 		{
 			AddLogInfo(ICO_INFO,"No new version detected!");
@@ -9181,7 +9227,7 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 
 	}
 	
-	bDoFirstTimeCheckForUpdate=false;
+	g_bDoFirstTimeCheckForUpdate=false;
 	return 0;
 }
 
@@ -9624,12 +9670,6 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 		tbb.fsStyle = TBSTYLE_BUTTON;		
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);		 
 		
-		tbb.iBitmap = 4;
-		tbb.idCommand = IDC_DOWNLOAD;
-		tbb.fsState = TBSTATE_ENABLED;
-		tbb.fsStyle = TBSTYLE_BUTTON;		
-		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
-
 		tbb.iBitmap = 9;
 		tbb.idCommand = ID_BUDDY_ADD;
 		tbb.fsState = TBSTATE_ENABLED;
@@ -9638,6 +9678,12 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 
 		tbb.iBitmap = 8;
 		tbb.idCommand = IDM_FONT_COLOR;
+		tbb.fsState = TBSTATE_ENABLED;
+		tbb.fsStyle = TBSTYLE_BUTTON;		
+		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
+		
+		tbb.iBitmap = 4;
+		tbb.idCommand = IDC_DOWNLOAD;
 		tbb.fsState = TBSTATE_ENABLED;
 		tbb.fsStyle = TBSTYLE_BUTTON;		
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
@@ -9650,8 +9696,6 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
 
 #endif
-
-
 		g_hwndSearchToolbar = hwndTB;
 		g_hwndSearchCombo = TOOLBAR_CreateSearchComboBox(hwndTB);
 	
@@ -10342,15 +10386,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						if(wmId==IDC_COMBOBOXEX_CMD) 
 						{
-
 							char ip[100];
 							GetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,ip,99);
 							if(strlen(ip)>0)
 							{
 								Show_ToolbarButton(IDC_BUTTON_FIND,true);
 								FindServer(ip);
-								SetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,ip);
-					
+								SetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,ip);					
 								SetCursor(::LoadCursor(NULL,IDC_ARROW));
 								ShowCursor(TRUE);
 								SendDlgItemMessage (g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_SETEDITSEL, 0,MAKELPARAM(strlen(ip),strlen(ip))); 
@@ -10441,16 +10483,19 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 				case IDC_DOWNLOAD:
 					{
-						HANDLE hThread;
-						hThread = CreateThread( NULL, 0, &AutomaticDownloadUpdateSetUp, g_hWnd,0, NULL);                
-						if (hThread == NULL) 
+						if(MessageBox(hWnd,"Do you want to download and install the update?","Update Game Scanner",MB_YESNO)==IDYES)
 						{
-							AddLogInfo(ETSV_WARNING, "CreateThread failed  <AutomaticDownloadUpdateSetUp> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
-						}
-						else 
-						{
-							dbg_print("CreateThread  success AutomaticDownloadUpdateSetUp");
-							CloseHandle( hThread );
+							HANDLE hThread;
+							hThread = CreateThread( NULL, 0, &AutomaticDownloadUpdateSetUp, g_hWnd,0, NULL);                
+							if (hThread == NULL) 
+							{
+								AddLogInfo(ETSV_WARNING, "CreateThread failed  <AutomaticDownloadUpdateSetUp> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
+							}
+							else 
+							{
+								dbg_print("CreateThread  success AutomaticDownloadUpdateSetUp");
+								CloseHandle( hThread );
+							}
 						}
 					}
 				
