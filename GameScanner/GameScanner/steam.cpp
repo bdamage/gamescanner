@@ -658,7 +658,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 		strncpy_s(pSI->szMap,sizeof(pSI->szMap),p,_TRUNCATE);
 		p+=strlen(p)+1;
 
-		strncpy_s(pSI->szMod,sizeof(pSI->szMap),p,_TRUNCATE);
+		strncpy_s(pSI->szMod,sizeof(pSI->szMod),p,_TRUNCATE);
 		p+=strlen(p)+1;
 
 		strncpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName),p,_TRUNCATE);
@@ -708,7 +708,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 		}
 		
 		pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
-		pSI->wMod = Get_MapByName(pSI->cGAMEINDEX, pSI->szMod);
+		pSI->wMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
 
 	
 		DWORD dwChallenge;

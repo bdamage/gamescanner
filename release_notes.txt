@@ -4,6 +4,8 @@ Fixed a filter save bug with when activated Version and Map, you might have to u
 Most filter (except countries) setting should now survive a tree view structure upgrade.
 When a new version is available Game Scanner will prompt if you want to upgrade or not.
 Added initial support for Team Fortress 2.
+Found another memory leak in steam aprt of the code.
+Steam servers now retrieves their mod index correctly (which means MOD filters works now).
 
 
 

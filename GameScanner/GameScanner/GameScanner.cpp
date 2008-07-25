@@ -1340,6 +1340,7 @@ SERVER_INFO * GetServerInfo(int gametype,SERVER_INFO *pSrvInf)
 			Q4_OnServerSelection(pSrvInf,&UpdatePlayerListQ3,&UpdateRulesList);
 			break;
 		}
+		case TF2_SERVERLIST:
 		case CS_SERVERLIST:
 		case CSCZ_SERVERLIST:
 		case CSS_SERVERLIST:
