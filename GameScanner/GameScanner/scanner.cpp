@@ -101,7 +101,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	}
 	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->pSC->vRefScanSI.size(),pGI->pSC->vSI.size());
 
-	if(pGI->dwViewFlags == FORCE_SCAN_FILTERED)
+	if(pGI->dwViewFlags & FORCE_SCAN_FILTERED)
 		pGI->dwViewFlags = 0;
 
 	if(g_hwndProgressBar!=NULL)

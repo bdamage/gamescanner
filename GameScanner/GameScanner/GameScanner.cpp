@@ -347,14 +347,10 @@ HTREEITEM hRootItem=NULL,hRootFiltersItem=NULL,hRootCountryFiltersItem=NULL,hRoo
 struct _CountryFilter 
 {
 	int counter;
-	char countryIndex[255];
+
 	LPARAM lParam[255];
 	char szShortCountryName[255][4];
-	DWORD dwMinPing;
-	DWORD dwGameType;
-	DWORD dwReserved1;
-	char cReserved2;	
-	BOOL bReserved3;
+
 };
 _CountryFilter CountryFilter;
 
@@ -885,9 +881,9 @@ bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
 	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_GAMETYPE].bSortAsc)
-		return (pSIa.cGameTypeCVAR < pSIb.cGameTypeCVAR);
+		return (pSIa.dwGameType < pSIb.dwGameType);
 	else
-		return (pSIa.cGameTypeCVAR > pSIb.cGameTypeCVAR );
+		return (pSIa.dwGameType > pSIb.dwGameType );
 }
 
 void Do_ServerListSort(int iColumn)
@@ -1155,7 +1151,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				case COL_GAMETYPE:
 					{
 						if(strlen(pSrvInf->szGameTypeName)==0)	
-							strncpy(pLVItem->pszText,Get_GameTypeNameByGameType(pSrvInf->cGAMEINDEX,pSrvInf->cGameTypeCVAR),pLVItem->cchTextMax);
+							strncpy(pLVItem->pszText,Get_GameTypeNameByGameType(pSrvInf->cGAMEINDEX,pSrvInf->dwGameType),pLVItem->cchTextMax);
 						else
 							strncpy(pLVItem->pszText,pSrvInf->szGameTypeName,pLVItem->cchTextMax);
 						return TRUE;
@@ -1340,7 +1336,7 @@ SERVER_INFO * GetServerInfo(int gametype,SERVER_INFO *pSrvInf)
 			Q4_OnServerSelection(pSrvInf,&UpdatePlayerListQ3,&UpdateRulesList);
 			break;
 		}
-		case TF2_SERVERLIST:
+		case HL2_SERVERLIST:
 		case CS_SERVERLIST:
 		case CSCZ_SERVERLIST:
 		case CSS_SERVERLIST:
@@ -1836,26 +1832,26 @@ void Default_GameSettings()
 #endif
 
 
-	GI[TF2_SERVERLIST].cGAMEINDEX = TF2_SERVERLIST;
-	GI[TF2_SERVERLIST].iIconIndex = Get_GameIcon(TF2_SERVERLIST);
-	GI[TF2_SERVERLIST].dwViewFlags = 0;
-	strncpy(GI[TF2_SERVERLIST].szGAME_NAME,"Team Fortress 2",MAX_PATH);
-	strncpy(GI[TF2_SERVERLIST].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
-	GI[TF2_SERVERLIST].dwMasterServerPORT = 27011;
-	GI[TF2_SERVERLIST].dwProtocol = 0;
-	strncpy(GI[TF2_SERVERLIST].szMAP_MAPPREVIEW_PATH,"tf2maps",MAX_PATH);
-	strncpy(GI[TF2_SERVERLIST].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
-	dwBuffSize = sizeof(GI[TF2_SERVERLIST].szGAME_PATH);
-	strcpy(GI[TF2_SERVERLIST].szGAME_PATH,"HL2.EXE");
-	GI[TF2_SERVERLIST].bActive = false;
-	strcpy(GI[TF2_SERVERLIST].szProtocolName,"tf2");
-	GI[TF2_SERVERLIST].dwDefaultPort = 28960;
-	strcpy(GI[TF2_SERVERLIST].szQueryString,"");
-	GI[TF2_SERVERLIST].pSC = &SC[TF2_SERVERLIST];
+	GI[HL2_SERVERLIST].cGAMEINDEX = HL2_SERVERLIST;
+	GI[HL2_SERVERLIST].iIconIndex = Get_GameIcon(HL2_SERVERLIST);
+	GI[HL2_SERVERLIST].dwViewFlags = 0;
+	strncpy(GI[HL2_SERVERLIST].szGAME_NAME,"Half-Life 2",MAX_PATH);
+	strncpy(GI[HL2_SERVERLIST].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
+	GI[HL2_SERVERLIST].dwMasterServerPORT = 27011;
+	GI[HL2_SERVERLIST].dwProtocol = 0;
+	strncpy(GI[HL2_SERVERLIST].szMAP_MAPPREVIEW_PATH,"hf2maps",MAX_PATH);
+	strncpy(GI[HL2_SERVERLIST].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
+	dwBuffSize = sizeof(GI[HL2_SERVERLIST].szGAME_PATH);
+	strcpy(GI[HL2_SERVERLIST].szGAME_PATH,"HL2.EXE");
+	GI[HL2_SERVERLIST].bActive = false;
+	strcpy(GI[HL2_SERVERLIST].szProtocolName,"hf2");
+	GI[HL2_SERVERLIST].dwDefaultPort = 28960;
+	strcpy(GI[HL2_SERVERLIST].szQueryString,"");
+	GI[HL2_SERVERLIST].pSC = &SC[HL2_SERVERLIST];
 #ifdef _DEBUG
-	GI[TF2_SERVERLIST].bActive = true;
+	GI[HL2_SERVERLIST].bActive = true;
 #else
-	GI[TF2_SERVERLIST].bActive = false;
+	GI[HL2_SERVERLIST].bActive = false;
 #endif
 
 		strcpy(GI[ET_SERVERLIST].szGAME_SHORTNAME,"ET");
@@ -1873,7 +1869,7 @@ void Default_GameSettings()
 		strcpy(GI[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
 		strcpy(GI[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
 		strcpy(GI[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
-		strcpy(GI[TF2_SERVERLIST].szGAME_SHORTNAME,"TF2");
+		strcpy(GI[HL2_SERVERLIST].szGAME_SHORTNAME,"TF2");
 
 	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
 	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
@@ -1890,7 +1886,7 @@ void Default_GameSettings()
 	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
 	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
 	strcpy(GI[OPENARENA_SERVERLIST].szFilename,"openarena.servers");
-	strcpy(GI[TF2_SERVERLIST].szFilename,"tf2.servers");
+	strcpy(GI[HL2_SERVERLIST].szFilename,"tf2.servers");
 	
 	RegisterProtocol(EXE_PATH);
 }
@@ -2300,6 +2296,9 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwVersion); break;
 		case FILTER_MAP:
 				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwMap); break;
+		case FILTER_REGION:
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwRegion); break;
+
 		case 0: break;
 		default: return 0;
 	}	
@@ -2621,9 +2620,7 @@ int TreeView_GetSelectionV3()
 void Initialize_CountryFilter()
 {
 	CountryFilter.counter=0;
-	memset(&CountryFilter.countryIndex,0,sizeof(CountryFilter.countryIndex));
-
-	TVITEM  tvitem;
+TVITEM  tvitem;
 	memset(&tvitem,0,sizeof(TVITEM));
 	hRootCountryFiltersItem = TreeView_GetTIByItemType(1001);
 	tvitem.hItem = hRootCountryFiltersItem;
@@ -4217,6 +4214,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	g_hf = MyCreateFont(hwnd);
 	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Courier New");
+	SetFontToDlgItem(hwnd,g_hf,IDC_TAB1);
 	SetFontToDlgItem(hwnd,g_hf,IDC_LIST_SERVER);
 	SetFontToDlgItem(hwnd,g_hf,IDC_EDIT_STATUS);
 	SetFontToDlgItem(hwnd,g_hf,IDC_CUSTOM2);
@@ -4322,7 +4320,8 @@ void OnInitialize_MainDlg(HWND hwnd)
 	ZeroMemory(g_szIPtoAdd,sizeof(g_szIPtoAdd));
 	EnableButtons(TRUE);
 	//EnableDownloadLink(FALSE);	
-	PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,0);
+	if(g_bDoFirstTimeCheckForUpdate)
+		PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,0);
 	
 	CenterWindow(g_hWnd);
 
@@ -4440,7 +4439,7 @@ void SaveServerList(GAME_INFO *pGI)
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d%c%d%c%d",sep,pSI.cBots,sep,pSI.cFavorite,sep,pSI.cHistory,sep,pSI.cPure);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
-					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d%c%d%c%d",sep,pSI.cGameTypeCVAR,sep,pSI.dwMap,sep,pSI.cPurge,sep,pSI.dwPing);
+					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d%c%d%c%d",sep,pSI.dwGameType,sep,pSI.dwMap,sep,pSI.cPurge,sep,pSI.dwPing);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
 					sprintf_s(szBuffer,sizeof(szBuffer),"%c%d%c%d",sep,pSI.wMod,sep,pSI.dwIP);
 					fwrite((const void*)&szBuffer, strlen(szBuffer), 1, fp2);	
@@ -4573,7 +4572,7 @@ void LoadServerListV2(GAME_INFO *pGI)
 						srv.cPure = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.cGameTypeCVAR = (WORD)atoi(szByte); 
+						srv.dwGameType = (WORD)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
 						srv.dwMap = (char)atoi(szByte); 
@@ -4836,6 +4835,7 @@ void CFG_Save()
 		WriteCfgInt(abc, "GameData", "Protocol",GI[i].dwProtocol);
 		WriteCfgInt(abc, "GameData", "IconIndex",GI[i].iIconIndex);
 		WriteCfgInt(abc, "GameData", "FilterMod",GI[i].filter.dwMod);
+		WriteCfgInt(abc, "GameData", "FilterRegion",GI[i].filter.dwRegion);
 		WriteCfgInt(abc, "GameData", "FilterVersion",GI[i].filter.dwVersion);
 		WriteCfgInt(abc, "GameData", "FilterMap",GI[i].filter.dwMap);
 		WriteCfgInt(abc, "GameData", "FilterGameType",GI[i].filter.dwGameTypeFilter);
@@ -5987,7 +5987,7 @@ nextGame:
 				}
 			}
 			break;
-		case TF2_SERVERLIST:
+		case HL2_SERVERLIST:
 		case CSCZ_SERVERLIST:
 		case CS_SERVERLIST:
 		case CSS_SERVERLIST:
@@ -6176,7 +6176,7 @@ nextGame:
 				Q4_ConnectToMasterServer(&GI[currGameIdx]);			
 			}
 			break;
-		case TF2_SERVERLIST:
+		case HL2_SERVERLIST:
 		case CSCZ_SERVERLIST:
 		case CS_SERVERLIST:
 		case CSS_SERVERLIST:
@@ -6361,8 +6361,6 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			if(srv->cHistory==0)
 				return false;
 
-
-
 		if(pGI->filter.bPunkbuster)
 			if(srv->bPunkbuster==0)
 				return false;
@@ -6385,7 +6383,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 		{
 			if(pGI->filter.dwGameTypeFilter & val)
 			{
-				DWORD result = (srv->cGameTypeCVAR & val);
+				DWORD result = (srv->dwGameType & val);
 		
 				if(result) 
 				{
@@ -6427,7 +6425,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 
 		returnVal=false;
 
-	//	if(AppCFG.bUseCountryFilter)
+		if(CountryFilter.counter!=0)
 		{
 			for(int i=0; i<CountryFilter.counter;i++)
 			{
@@ -6435,17 +6433,11 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 				{
 					returnVal=true;
 					break;
-				} else if((srv->cCountryFlag==0) && (CountryFilter.countryIndex[i]==98))
-				{
-					returnVal=true;
-					break;
-				}
+				} 
 			}
 		}
-
-		if(CountryFilter.counter==0)
+		else
 			returnVal=true;
-
 
 	}
 	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
@@ -6454,7 +6446,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 		dbg_print("Access Violation!!! @ FilterServerItem(...)\n");	
 		return false;
 	}
-	srv->bHide = !returnVal;
+
 	if(returnVal==false)
 		return false;
 	return true;
@@ -10114,6 +10106,7 @@ int CFG_Load()
 					ReadCfgInt(pNode, "FilterMod",(int&)GI[i].filter.dwMod);
 					ReadCfgInt(pNode, "FilterVersion",(int&)GI[i].filter.dwVersion);
 					ReadCfgInt(pNode, "FilterMap",(int&)GI[i].filter.dwMap);
+					ReadCfgInt(pNode, "FilterRegion",(int&)GI[i].filter.dwRegion);
 					ReadCfgInt(pNode, "FilterGameType",(int&)GI[i].filter.dwGameTypeFilter);					
 					ReadCfgInt(pNode, "FilterHideFull",(int&)GI[i].filter.bNoFull);
 					ReadCfgInt(pNode, "FilterHideEmpty",(int&)GI[i].filter.bNoEmpty);

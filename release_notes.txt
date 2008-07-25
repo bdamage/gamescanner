@@ -6,9 +6,20 @@ When a new version is available Game Scanner will prompt if you want to upgrade 
 Added initial support for Team Fortress 2.
 Found another memory leak in steam aprt of the code.
 Steam servers now retrieves their mod index correctly (which means MOD filters works now).
+Added a new Region filter for STEAM (Gold & Source) based games, which will help to reduce the high number of servers.
 
+New games added:
 
-
+Team Fortress: Source
+Day of Defeat: Source
+Half-life 2
+Battle Grounds 2
+PVKII
+Might and Magic Dark Messiah
+Zombie Panic   								
+Hidden: Source
+Garry's Mod (wtf?)
+          
 
 Version 1.04 Hot fix!
 ---------------------

@@ -8,6 +8,7 @@
 #include <Winsock2.h.>
 #include "resource.h"
 
+#pragma pack(1)
 
 using namespace stdext;
 using namespace std;
@@ -97,7 +98,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define QW_SERVERLIST		12
 #define Q2_SERVERLIST		13
 #define OPENARENA_SERVERLIST 14
-#define TF2_SERVERLIST 15			//Team Fortress
+#define HL2_SERVERLIST		15			//Half-Life 2
 
 #define REDRAW_CURRENT_LIST				100
 #define SHOW_FAVORITES_PUBLIC			101
@@ -135,10 +136,19 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FILTER_PING				28
 #define FILTER_VERSION			29
 #define FILTER_MAP				30
+#define FILTER_REGION			31  //Used for steam/valve stuff
 #define FILTER_MIN_PLY			100
 #define FILTER_MAX_PLY			101
 
-
+#define FILTER_REGION_US_EAST   1
+#define FILTER_REGION_US_WEST   2
+#define FILTER_REGION_SOUTH_AMERICA   4
+#define FILTER_REGION_EUROPE		8
+#define FILTER_REGION_ASIA			16
+#define FILTER_REGION_AUSTRALIA		32
+#define FILTER_REGION_MIDDLE_EAST   64
+#define FILTER_REGION_AFRICA0		128
+#define FILTER_REGION_ROW			256
 
 #define VERSION_UNKNOWN      0
 
@@ -178,6 +188,7 @@ struct FILTER_SETTINGS
 	DWORD dwShowServerWithMinPlayers;
 	DWORD dwVersion;
 	DWORD dwMap;
+	DWORD dwRegion;
 	char cActiveMaxPlayer;
 	char cActiveMinPlayer;
 };
@@ -289,30 +300,29 @@ struct SERVER_INFO
 	DWORD wMod;						//Used for faster filtering
 	char szVersion[MAX_VERSION_LEN];
 	DWORD dwVersion;                  //Used for faster filtering
+	DWORD dwGameType;
 	DWORD dwPing;
 	DWORD dwAvgPing;	
 	char bPrivate;
 	char bPunkbuster;
-	char cPurge;          //Purge counter
+	BYTE cPurge;          //Purge counter
 	char bNeedToUpdateServerInfo;
 	char bUpdated;		
-	char szRCONPASS[MAX_RCON_LEN];
-	char szPRIVATEPASS[MAX_PASSWORD_LEN];
-	char nPrivateClients;
+	BYTE nPrivateClients;
 	char cCountryFlag;	
-	char cFavorite;  
-	char cHistory;  //History.... connected to this server.
-	char cGAMEINDEX;  //RTCW, ET, Quake 4....
+	BYTE cFavorite;  
+	BYTE cHistory;  //History.... connected to this server.
+	BYTE cGAMEINDEX;  //RTCW, ET, Quake 4....
 	char cLAN;
-	DWORD cGameTypeCVAR;
 	char szGameTypeName[MAX_GAMETYPENAME_LEN];
-	BOOL bDedicated;
+	BYTE bDedicated;
 	char cPure;
 	char cLocked;
 	char cRanked;
-	char cBots;
-	char szShortCountryName[4];	
-	char bHide;  //Hide from the server list this will be set to tru when it didn't pass the filter test
+	BYTE cBots;
+	char szShortCountryName[3];	
+	char szRCONPASS[MAX_RCON_LEN];
+	char szPRIVATEPASS[MAX_PASSWORD_LEN];
 	PLAYERDATA *pPlayerData;
 	SERVER_RULES *pServerRules;
 };
@@ -396,8 +406,6 @@ struct GAME_INFO
 	DWORD dwScanIdx;
 	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo
 	FILTER_SETTINGS filter;
-	
-
 };
 
 
@@ -430,8 +438,6 @@ struct BUDDY_INFO
 
 typedef BUDDY_INFO* LPBUDDY_INFO;
 
-
-
 struct _TREEITEM
 {
 	HTREEITEM hTreeItem;
@@ -450,8 +456,6 @@ struct _TREEITEM
 	GAME_INFO *pGI;
 	char cGAMEINDEX;
 };
-
-
 
 
 struct _CUSTOM_COLUMN

@@ -65,18 +65,19 @@ long (*CALLBACK_InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI);
 long (*CALLBACK_CheckForBuddy)(PLAYERDATA *pPlayers, SERVER_INFO* pServerInfo);
 
 struct _regions{
-	BYTE cCode;
+	BYTE cCode;	
 	char szName[40];
+	BOOL bActive;
 } REGIONS[] = {
-0x00,  "US East coast",  
-0x01,  "US West coast",  
-0x02,  "South America"  ,
-0x03,  "Europe",
-0x04,  "Asia",  
-0x05,  "Australia",  
-0x06,  "Middle East",
-0x07,  "Africa",  
-0xFF,  "Rest of the world"
+0x00,  "US East coast", FALSE, 
+0x01,  "US West coast", FALSE, 
+0x02,  "South America"  ,FALSE,
+0x03,  "Europe",FALSE,
+0x04,  "Asia",  FALSE,
+0x05,  "Australia",  FALSE,
+0x06,  "Middle East",FALSE,
+0x07,  "Africa",  FALSE,
+0xFF,  "Rest of the world",FALSE
 };
 char cRegionCodeIndex=0;
 
@@ -251,6 +252,17 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 	SOCKET ConnectSocket;
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 
+	DWORD val=1;
+	for(int i=0;i<9;i++)
+	{			
+		REGIONS[i].bActive = FALSE;
+		if(pGI->filter.dwRegion & val)
+			REGIONS[i].bActive = TRUE;
+
+		val = val *2;
+	}
+
+
 	
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); 
    
@@ -309,13 +321,20 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
 			dbg_print("\nWSAWaitForMultipleEvents timed out\n");
-			
+nextRegion:
 			if(cRegionCodeIndex<8)
 			{
+
+				
 				cRegionCodeIndex++;
+				if(pGI->filter.dwRegion!=0)
+					if(REGIONS[cRegionCodeIndex].bActive==FALSE)
+						goto nextRegion;
+
 				//continue on the next region				
 				ZeroMemory(sendbuf,sizeof(sendbuf));
 				sprintf_s(sendbuf,sizeof(sendbuf), "1%c0.0.0.0:0\x00\x00",REGIONS[cRegionCodeIndex].cCode);
+
 				memcpy(&sendbuf[12],pGI->szQueryString,strlen(pGI->szQueryString));
 				int len = 12;
 				int len2 = (int)strlen(pGI->szQueryString)+1;
@@ -359,6 +378,17 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 		{
 			dbg_print("\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
 			ZeroMemory(sendbuf,sizeof(sendbuf));
+nextRegion3:
+			if(cRegionCodeIndex<8)
+			{				
+				
+				if(pGI->filter.dwRegion!=0)
+					if(REGIONS[cRegionCodeIndex].bActive==FALSE)
+					{
+						cRegionCodeIndex++;
+						goto nextRegion3;
+					}
+			}
 			sprintf_s(sendbuf,sizeof(sendbuf), "1%c0.0.0.0:0\x00\x00",REGIONS[cRegionCodeIndex].cCode);
 			memcpy(&sendbuf[12],pGI->szQueryString,strlen(pGI->szQueryString));
 			int len = 12;
@@ -402,10 +432,13 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 			i++;
 			if(dwLastPort==0) //End of server list
 			{
-				
+nextRegion2:				
 				if(cRegionCodeIndex<8)
 				{
 					cRegionCodeIndex++;
+					if(pGI->filter.dwRegion!=0)
+						if(REGIONS[cRegionCodeIndex].bActive==FALSE)
+							goto nextRegion2;
 					strcpy_s(szLastIP,sizeof(szLastIP),"0.0.0.0:0");					
 					
 				} else

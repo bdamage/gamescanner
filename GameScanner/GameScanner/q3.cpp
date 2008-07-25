@@ -322,7 +322,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 				pSI->cPure = atoi(szVarValue);
 			
 			szVarValue = Q3_Get_RuleValue("g_gametype",pServRules);
-			pSI->cGameTypeCVAR = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
+			pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
 
 			szVarValue = Q3_Get_RuleValue("sv_punkbuster",pServRules);
 			if(szVarValue==NULL)
