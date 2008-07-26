@@ -264,7 +264,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		
 		if(pSI.dwPort==0)
 		{
-			OutputDebugString(">>>>ERROR? Breaked scanning thread\n");
+			//OutputDebugString(">>>>ERROR? Breaked scanning thread\n");
 			break;
 		}
 

@@ -262,8 +262,6 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 		val = val *2;
 	}
 
-
-	
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); 
    
 	if(INVALID_SOCKET==ConnectSocket)

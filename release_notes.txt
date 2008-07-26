@@ -1,10 +1,9 @@
 Version 1.05
 ------------
 Fixed a filter save bug with when activated Version and Map, you might have to uncheck and check again to correct the state.
-Most filter (except countries) setting should now survive a tree view structure upgrade.
+Most filter (except countries) setting should now survive a tree view structure update.
 When a new version is available Game Scanner will prompt if you want to upgrade or not.
-Added initial support for Team Fortress 2.
-Found another memory leak in steam aprt of the code.
+Found another memory leak in part of the steam code.
 Steam servers now retrieves their mod index correctly (which means MOD filters works now).
 Added a new Region filter for STEAM (Gold & Source) based games, which will help to reduce the high number of servers.
 

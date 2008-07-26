@@ -2283,6 +2283,7 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 		case FILTER_FULL    : 	pGI->filter.bNoFull = TreeView_SwapDWCheckState(tvi,ti.dwState); break;			
 		case FILTER_EMPTY	: 	 pGI->filter.bNoEmpty = TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_OFFLINE	 : pGI->filter.bHideOfflineServers = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
+		case FILTER_DEDICATED	 : pGI->filter.bDedicated =	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_FAVORITERS : break;
 		case FILTER_BOTS	: pGI->filter.bNoBots = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		
@@ -4848,6 +4849,7 @@ void CFG_Save()
 		WriteCfgInt(abc, "GameData", "FilterHideBots",GI[i].filter.bNoBots);
 		WriteCfgInt(abc, "GameData", "FilterNoPrivate",GI[i].filter.bNoPrivate);
 		WriteCfgInt(abc, "GameData", "FilterOnlyPrivate",GI[i].filter.bOnlyPrivate);
+		WriteCfgInt(abc, "GameData", "FilterDedicated",GI[i].filter.bDedicated);
 		abcd->LinkEndChild( abc ); 
 
 	}
@@ -5880,6 +5882,9 @@ void LoadImageList()
 	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKEARENA)); //41
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_HALFLIFE2)); //42
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+
 	DestroyIcon(hIcon);
 
 }
@@ -6247,8 +6252,11 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 	{
 		srv = (SERVER_INFO*)lp;
 
+		if(pGI->dwViewFlags & REDRAW_SERVERLIST)
+			bRescanFilter = 0; //force filter when only redrawing the serverlist looks better for user
+
 		//If scanning filtered (limited number of servers) ignore following filter options:
-		if(bRescanFilter==0)
+		if((bRescanFilter==0))
 		{
 
 			
@@ -6343,8 +6351,6 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			}
 		}
 
-
-
 		if(pGI->filter.bRanked && (srv->cGAMEINDEX == ETQW_SERVERLIST))
 			if(srv->cRanked==0)
 				return false;
@@ -6353,6 +6359,9 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			if(srv->cPure==0)
 				return false;
 
+		if(pGI->filter.bDedicated)
+			if(srv->bDedicated==0)
+				return false;
 
 		if((srv->cPurge>=ETSV_PURGE_COUNTER) && (srv->cFavorite==0))
 			return false;
@@ -6463,8 +6472,9 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 	GAME_INFO *pGI = (GAME_INFO *)pvoid;
 	vSRV_INF::iterator  iLst;
 
+	pGI->dwViewFlags |= REDRAW_SERVERLIST;
 
-
+	
 //	SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
 	dbg_print("View flags: %d",pGI->dwViewFlags);
 	ListView_DeleteAllItems(g_hwndListViewServer);
@@ -6486,6 +6496,9 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 		}
 			Do_ServerListSort(iLastColumnSortIndex);
 	}
+	if(pGI->dwViewFlags & REDRAW_SERVERLIST)
+		pGI->dwViewFlags ^= REDRAW_SERVERLIST;
+
 	dbg_print("Created filtered serverlist! View flags %d Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
 
 	ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());
@@ -6590,6 +6603,8 @@ char Get_GameIcon(char index)
 			return 40;
 		case OPENARENA_SERVERLIST:
 			return 41;
+		case HL2_SERVERLIST:
+			return 42;
 		default:
 			return 7;  //unkown icon
 	}
@@ -10117,6 +10132,7 @@ int CFG_Load()
 					ReadCfgInt(pNode, "FilterHideBots",(int&)GI[i].filter.bNoBots);
 					ReadCfgInt(pNode, "FilterNoPrivate",(int&)GI[i].filter.bNoPrivate);
 					ReadCfgInt(pNode, "FilterOnlyPrivate",(int&)GI[i].filter.bOnlyPrivate);					
+					ReadCfgInt(pNode, "FilterDedicated",(int&)GI[i].filter.bDedicated);					
 					pElement = pElement->NextSiblingElement();
 					if(pElement==NULL)
 						break;

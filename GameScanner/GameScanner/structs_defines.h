@@ -81,6 +81,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define REDRAWLIST_FAVORITES_PRIVATE	0x00000002
 #define REDRAWLIST_HISTORY				0x00000004
 #define FORCE_SCAN_FILTERED				0x00000008
+#define REDRAW_SERVERLIST				16
 
 #define MAX_SERVERLIST		16  //This value should be as the last one +1
 #define ET_SERVERLIST		0
@@ -126,7 +127,6 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FILTER_FULL			 4  //Full servers
 #define FILTER_EMPTY		 8  //Empty
 #define FILTER_OFFLINE		16  //Offline
-#define FILTER_FAVORITERS		32  //Favorites
 #define FILTER_BOTS				64  //Bots
 #define FILTER_HIDE_PRIVATE		128  
 #define FILTER_MOD				24
@@ -137,6 +137,8 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FILTER_VERSION			29
 #define FILTER_MAP				30
 #define FILTER_REGION			31  //Used for steam/valve stuff
+#define FILTER_FAVORITERS		32  //Favorites
+#define FILTER_DEDICATED		33
 #define FILTER_MIN_PLY			100
 #define FILTER_MAX_PLY			101
 
@@ -181,6 +183,7 @@ struct FILTER_SETTINGS
 	BOOL bRanked;
 	BOOL bPure;
 	BOOL bNoBots;
+	BOOL bDedicated;
 	DWORD dwPing;
 	DWORD dwGameTypeFilter;
 	DWORD dwMod;

@@ -247,6 +247,8 @@
 #define IDI_ICON4                       1097
 #define IDI_ICON_TASKTRAY               1098
 #define IDI_ICON_QUAKEARENA             1099
+#define IDI_ICON_HALFLIFE               1100
+#define IDI_ICON_HALFLIFE2              1100
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -329,7 +331,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1100
+#define _APS_NEXT_RESOURCE_VALUE        1101
 #define _APS_NEXT_COMMAND_VALUE         32777
 #define _APS_NEXT_CONTROL_VALUE         1005
 #define _APS_NEXT_SYMED_VALUE           110

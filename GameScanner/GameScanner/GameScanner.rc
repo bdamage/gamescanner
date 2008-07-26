@@ -506,6 +506,7 @@ IDI_ICON8               ICON                    "C:\\Users\\Kjell\\Pictures\\GSO
 IDI_ICON4               ICON                    "C:\\Users\\Kjell\\Pictures\\GSPlusOrg16.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_QUAKEARENA     ICON                    "res\\ico00005.ico"
+IDI_ICON_HALFLIFE2      ICON                    "res\\ico00006.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

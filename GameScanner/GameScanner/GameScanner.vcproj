@@ -450,6 +450,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\ico00006.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\res\ico00009.ico"
 				>
 			</File>
@@ -558,11 +562,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\small.ico"
+				RelativePath=".\res\small.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\small.ico"
+				RelativePath=".\small.ico"
 				>
 			</File>
 			<File
