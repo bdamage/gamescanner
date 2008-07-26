@@ -193,7 +193,23 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 				if(pVarValue!=NULL)
 					strncpy(pSI->szServerName,pVarValue ,99);
 
+
 			}
+			pVarValue = Q3_Get_RuleValue("status",pServRules); //QW
+			if(pVarValue!=NULL)
+					strncpy(pSI->szSTATUS,pVarValue ,39);
+			else
+			{
+				pVarValue = Q3_Get_RuleValue("time_remaining",pServRules); //Q2
+				if(pVarValue!=NULL)
+						strncpy(pSI->szSTATUS,pVarValue ,39);
+				pVarValue = Q3_Get_RuleValue("#time_left",pServRules); //Q2
+				if(pVarValue!=NULL)
+						strncpy(pSI->szSTATUS,pVarValue ,39);
+
+
+			}
+
 
 			pVarValue = Q3_Get_RuleValue("mapname",pServRules);
 			if(pVarValue!=NULL)

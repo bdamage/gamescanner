@@ -121,9 +121,10 @@ char TREEVIEW_VERSION[20];
 #define COL_COUNTRY		10
 #define COL_PING		11
 #define COL_IP			12
+#define COL_STATUS		13
 
 //if you add something ensure to increase MAX_COLUMNS below
-#define MAX_COLUMNS COL_IP+1
+#define MAX_COLUMNS COL_STATUS+1
 
 
 
@@ -862,6 +863,18 @@ bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 		return (StrSorter(pSIa.szServerName , pSIb.szServerName )<0);
 
 }
+bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
+{
+	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+
+	if(CUSTCOLUMNS[COL_STATUS].bSortAsc)
+		return (StrSorter(pSIa.szSTATUS , pSIb.szSTATUS )>0);
+	 else
+		return (StrSorter(pSIa.szSTATUS , pSIb.szSTATUS )<0);
+
+}
+
 bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
 	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
@@ -919,6 +932,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_IP: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_IP); break;
 			case COL_VERSION: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Version); break;
 			case COL_BOTS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Bots); break;
+			case COL_STATUS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Status); break;
 
 
 		}
@@ -1201,6 +1215,12 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 					{
 						sprintf_s(szText,sizeof(szText)-1,"%d",pSrvInf->cBots);
 						strncpy(pLVItem->pszText,szText,pLVItem->cchTextMax);
+						return TRUE;
+					break;
+					}
+				case COL_STATUS:
+					{
+						strncpy(pLVItem->pszText,pSrvInf->szSTATUS,pLVItem->cchTextMax);
 						return TRUE;
 					break;
 					}
@@ -1925,7 +1945,7 @@ void Default_Appsettings()
 	strcpy(AppCFG.szEXT_EXE_PATH,"C:\\Program Files\\Teamspeak2_RC2\\TeamSpeak.exe");
 	strcpy(AppCFG.szEXT_EXE_CMD,"127.0.0.1?nickname=MyNick?loginname=MyLoginAccount?password=XYZ?channel=Axis");
 	strcpy(AppCFG.szEXT_EXE_WINDOWNAME,"TEAMSPEAK 2");
-	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow");
+	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4");
 	strcpy(AppCFG.szET_CMD,"");
 
 	AppCFG.filter.bNoEmpty = FALSE;
@@ -3794,14 +3814,14 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_PB].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_PRIVATE].id = COL_PRIVATE;
-	CUSTCOLUMNS[COL_PRIVATE].lvColumn.mask =  LVCF_WIDTH;
+	CUSTCOLUMNS[COL_PRIVATE].lvColumn.mask =  LVCF_WIDTH  | LVCF_TEXT;
 	CUSTCOLUMNS[COL_PRIVATE].lvColumn.cx = 16;
 	CUSTCOLUMNS[COL_PRIVATE].sName = "Private";
 	CUSTCOLUMNS[COL_PRIVATE].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PRIVATE].bActive = TRUE;
 	
 	CUSTCOLUMNS[COL_RANKED].id = COL_RANKED;
-	CUSTCOLUMNS[COL_RANKED].lvColumn.mask =  LVCF_WIDTH;
+	CUSTCOLUMNS[COL_RANKED].lvColumn.mask =  LVCF_WIDTH  | LVCF_TEXT;
 	CUSTCOLUMNS[COL_RANKED].lvColumn.cx = 16;
 	CUSTCOLUMNS[COL_RANKED].sName = "Ranked";
 	CUSTCOLUMNS[COL_RANKED].columnIdx = idx++;
@@ -3883,7 +3903,16 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_IP].columnIdx = idx++;
 	CUSTCOLUMNS[COL_IP].bActive = TRUE;
 	CUSTCOLUMNS[COL_IP].bSortAsc = TRUE;
+	
 
+	CUSTCOLUMNS[COL_STATUS].id = COL_STATUS;
+	CUSTCOLUMNS[COL_STATUS].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
+	CUSTCOLUMNS[COL_STATUS].lvColumn.cx = 80;
+	CUSTCOLUMNS[COL_STATUS].sName = "Status";
+	CUSTCOLUMNS[COL_STATUS].columnIdx = idx++;
+	CUSTCOLUMNS[COL_STATUS].bActive = TRUE;
+	CUSTCOLUMNS[COL_STATUS].bSortAsc = TRUE;
+	
 }
 
 void ListView_InitilizeColumns()

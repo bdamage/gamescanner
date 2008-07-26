@@ -118,7 +118,6 @@ void ClickMouse()
   pInputs[0].mi = pMouseInput;
   SendInput(1, pInputs, sizeof(INPUT));
 
- // return;
 
 }
 

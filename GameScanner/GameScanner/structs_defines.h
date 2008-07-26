@@ -326,6 +326,7 @@ struct SERVER_INFO
 	char szShortCountryName[3];	
 	char szRCONPASS[MAX_RCON_LEN];
 	char szPRIVATEPASS[MAX_PASSWORD_LEN];
+	char szSTATUS[40];
 	PLAYERDATA *pPlayerData;
 	SERVER_RULES *pServerRules;
 };
