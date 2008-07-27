@@ -244,7 +244,6 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		
 		memset(&pSI,0,sizeof(SERVER_INFO));
 		
-
 		EnterCriticalSection(&SCANNER_cs);
 		if(pGI->dwScanIdx<size)
 		{
@@ -291,7 +290,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 				SendMessage(g_hwndProgressBar, PBM_STEPIT, (WPARAM) 0, 0);
 		
 	
-		Sleep(100);		
+		Sleep(10);		
 	//	PollForNewServers();
 	//	size = pGI->pSC->vRefScanSI.size();
 		

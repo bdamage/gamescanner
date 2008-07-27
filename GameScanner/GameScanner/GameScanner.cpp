@@ -14,6 +14,7 @@ v 1.0.1 (1.01) {9FF8932F-7A8C-4654-91CB-5EAE02FB1B38}
 v 1.0.2 (1.02) {8F2DE466-8EEB-4D64-8F4A-375553A8D31E}
 v 1.0.3 (1.03) {40ED2250-FB02-4183-B2A6-F0A987C2E277}
 v 1.0.4 (1.04) {398C9890-FAD1-48DB-A1D0-DE2BBBE661AA}
+v 1.0.5 (1.05) {5F677BD9-D1A6-4511-B69C-BD90DD4FCE03}
 
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -2574,7 +2575,7 @@ int TreeView_GetSelectionV3()
 
 	int iSel = (int)tvitem.lParam;
 	
-	AddLogInfo(ETSV_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwAction);
+	//AddLogInfo(ETSV_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwAction);
 
 	switch(vTI.at(iSel).dwAction)
 	{
@@ -3807,9 +3808,9 @@ void ListView_SetDefaultColumns()
 	int idx=0;
 
 	CUSTCOLUMNS[COL_PB].id = COL_PB;
-	CUSTCOLUMNS[COL_PB].lvColumn.mask =  LVCF_WIDTH;
+	CUSTCOLUMNS[COL_PB].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_PB].lvColumn.cx = 20;
-	CUSTCOLUMNS[COL_PB].sName = "PB";
+	CUSTCOLUMNS[COL_PB].sName = "Anti Cheat";
 	CUSTCOLUMNS[COL_PB].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PB].bActive = TRUE;
 
@@ -6100,7 +6101,7 @@ nextGame:
 	if((options==SCAN_ALL_GAMES) && (g_bCancel==false))
 		goto nextGame;
 
-	Show_StopScanningButton(FALSE);
+	
 
 	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 
 
@@ -6115,6 +6116,7 @@ nextGame:
 	      
 		}
 		AddLogInfo(ETSV_DEBUG,  "cancel GetServerList <<<<<");
+		Show_StopScanningButton(FALSE);
 		return 0xFFFF;
 	}
 	if(GI[currGameIdx].pSC->vSI.size()==0)
@@ -6146,6 +6148,7 @@ nextGame:
 exitError:
 	SetStatusText(ICO_WARNING,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
 NoError:
+	Show_StopScanningButton(FALSE);
    g_bRunningQueryServerList = false;
    if (! SetEvent(hCloseEvent) ) 
     {
@@ -10113,7 +10116,7 @@ int CFG_Load()
 						CUSTCOLUMNS[i].columnIdxToSave = CUSTCOLUMNS[i].columnIdx;
 
 						char szOutput[50];
-						if(XML_GetTreeItemStrValue(pElemSortValue,szOutput, sizeof(szOutput)-1)!=NULL)
+						if(ReadCfgStr(pElemSortValue,"strval",szOutput, sizeof(szOutput)-1)!=NULL)
 							CUSTCOLUMNS[i].sName = szOutput;
 						pElemSortIdx = pElemSortIdx->NextSiblingElement();
 						

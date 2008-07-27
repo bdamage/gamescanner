@@ -311,11 +311,7 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 		//
 
 		DWORD dwRet;
-		dwRet = WSAWaitForMultipleEvents(1,
-									 &hEvent,
-									 FALSE,
-									 1000,
-									 FALSE);
+		dwRet = WSAWaitForMultipleEvents(1, &hEvent, FALSE,1000, FALSE);
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
 			dbg_print("\nWSAWaitForMultipleEvents timed out\n");
@@ -480,14 +476,14 @@ nextRegion2:
 		}
 
 		// Close event?
-		if (events.lNetworkEvents & FD_CLOSE)
+/*		if (events.lNetworkEvents & FD_CLOSE)
 		{
 			dbg_print("\nFD_CLOSE: %d",events.iErrorCode[FD_CLOSE_BIT]);
 			break;
 		}
 
 		// Write event?
-	/*	if (events.lNetworkEvents & FD_WRITE)
+		if (events.lNetworkEvents & FD_WRITE)
 		{
 			AddLogInfo(0,"\nFD_WRITE: %d",events.iErrorCode[FD_WRITE_BIT]);
 		}
@@ -534,7 +530,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		ptempSI.dwIP = 0;
 		ptempSI.dwIP = ntohl((DWORD)*dwIP); 
 		
-		if((p[0]==0) && (p[1]==0) && (p[2]==0) && (p[3]==0))
+		if(ptempSI.dwIP==0) //(p[0]==0) && (p[1]==0) && (p[2]==0) && (p[3]==0))
 		{
 			dwLastPort = 0;
 			break;
@@ -544,28 +540,9 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		ptempSI.dwPort  = ((p[0])<<8);
 		ptempSI.dwPort |=(unsigned char)(p[1]);
 		ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
-		
-
-
 		p+=2;
 
 		int hash = ptempSI.dwIP + ptempSI.dwPort;
-
-
-/*	hash test code	
-	ptempSI.dwIP =  0xFFaabb01;
-		ptempSI.dwPort = 1001;
-		hash = 0xFFaabb01 + 1001;
-		hmp0.insert(Int_Pair(hash,ptempSI.dwIndex) );
-		pGI->pSC->vSI.push_back(ptempSI);
-
-		ptempSI.dwIP =  0xFFaabb02;
-		ptempSI.dwPort = 1000;
-		int hash2 = 0xFFaabb02 + 1000;
-	
-		if(STEAM_checkforduplicates(pGI,hash2,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
-			hmp0.insert(Int_Pair(hash2,ptempSI.dwIndex+1) );
-	*/
 		//AddLogInfo(0,"Got   >%d %s:%d",i,ptempSI.szIPaddress,ptempSI.dwPort);
 		if(UTILZ_checkforduplicates(pGI,hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)//if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
 		{					

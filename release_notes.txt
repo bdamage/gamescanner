@@ -6,6 +6,7 @@ When a new version is available Game Scanner will prompt if you want to upgrade 
 Found another memory leak in part of the steam code.
 Steam servers now retrieves their mod index correctly (which means MOD filters works now).
 Added a new Region filter for STEAM (Gold & Source) based games, which will help to reduce the high number of servers.
+Added a new column named Status used by QuakeWorld and Quake 2 to display time left in a challange
 
 New games added:
 
@@ -15,7 +16,7 @@ Half-life 2
 Battle Grounds 2
 PVKII
 Might and Magic Dark Messiah
-Zombie Panic   								
+Zombie Panic  
 Hidden: Source
 Garry's Mod (wtf?)
           

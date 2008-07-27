@@ -195,21 +195,40 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 
 			}
-			pVarValue = Q3_Get_RuleValue("status",pServRules); //QW
-			if(pVarValue!=NULL)
-					strncpy(pSI->szSTATUS,pVarValue ,39);
-			else
-			{
-				pVarValue = Q3_Get_RuleValue("time_remaining",pServRules); //Q2
-				if(pVarValue!=NULL)
-						strncpy(pSI->szSTATUS,pVarValue ,39);
-				pVarValue = Q3_Get_RuleValue("#time_left",pServRules); //Q2
-				if(pVarValue!=NULL)
-						strncpy(pSI->szSTATUS,pVarValue ,39);
 
+	
 
+			//getting status value
+			switch(pSI->cGAMEINDEX)
+			{	
+				case QW_SERVERLIST:
+					{
+						pVarValue = Q3_Get_RuleValue("status",pServRules); //QW
+						if(pVarValue!=NULL)
+								strncpy(pSI->szSTATUS,pVarValue ,39);
+					}
+				break;
+				case Q2_SERVERLIST:
+					{
+						pVarValue = Q3_Get_RuleValue("time_remaining",pServRules); //Q2
+						if(pVarValue!=NULL)
+								strncpy(pSI->szSTATUS,pVarValue ,39);
+						else
+						{
+							pVarValue = Q3_Get_RuleValue("#time_left",pServRules); //Q2
+							if(pVarValue!=NULL)
+									strncpy(pSI->szSTATUS,pVarValue ,39);
+							else
+							{
+								pVarValue = Q3_Get_RuleValue("gamestats",pServRules); //Q2
+								if(pVarValue!=NULL)
+									strncpy(pSI->szSTATUS,pVarValue ,39);
+
+							}
+						}
+					}
+				break;
 			}
-
 
 			pVarValue = Q3_Get_RuleValue("mapname",pServRules);
 			if(pVarValue!=NULL)
@@ -414,16 +433,11 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 
 	int i=0;
 	SERVER_INFO ptempSI;
-	DWORD idx = pGI->pSC->vSI.size();
-	
+	DWORD idx = pGI->pSC->vSI.size();	
 	DWORD *dwIP=NULL;
 	DWORD dwResult=0;
-
-	//p = Q3d->data;
-
 	if (p==NULL)
 		return NULL;
-
 
 	char *end;
 	end = p+length-10;
@@ -520,7 +534,6 @@ CoD 4                                                                           
 		
 		int hash = ptempSI.dwIP + ptempSI.dwPort;
 
-		//if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
 		if(UTILZ_checkforduplicates(pGI,  hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
 		{	
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
@@ -660,10 +673,7 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 					endOfString[0] = 0;
 					pointer+=strlen(pointer)+1;
 				}							
-
-
 			}
-
 
 			if(pPlayers==NULL)
 				pPlayers = pCurrentPlayer = player;
@@ -673,12 +683,18 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 			*numPlayers= *numPlayers+1;	
 			if(pointer[0]==0) 
 				break;
-					
 		}
-		
 	}
 	return pPlayers;
 }
+/* CoD 4
+34 30 20 32 34 35 20 22 63 68 65 6e 22 0a                                             40 245 "chen".
+31 36 38 20 31 31 39 20 22 4d 69 4e 64 46 72 45 61 4b 22 0a                          168 119 "MiNdFrEaK".
+34 31 20 33 39 20 22 48 61 6e 64 53 6f 6d 65 22 0a                                    41 39 "HandSome".
+30 20 39 39 39 20 22 4b 75 6e 67 46 75 44 75 63 6b 69 65 22 0a                         0 999 "KungFuDuckie".
+32 20 35 37 20 22 48 45 52 42 45 52 54 22 0a 00 fd fd fd fd ab ab ab ab ab ab ab ab    2 57 "HERBERT"..¤¤¤¤лллллллл	
+
+*/
 PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers,char *szP)
 {
 
@@ -733,7 +749,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				char *ch= NULL;
 				if(bGTVBug==FALSE)
 				{
-					 ch = strchr(pointer,'\"');				
+					ch = strchr(pointer,'\"');				
 					if(ch!=NULL)
 						pointer++; //skip initial byte
 					
@@ -749,42 +765,42 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				player->szPlayerName= _strdup(pointer);
 				pointer+=strlen(pointer)+2;
 				
-				if(pSI->cGAMEINDEX==ET_SERVERLIST) //ETpro for retrieving player status (connecting, spectating, allies & axis)
+				switch(pSI->cGAMEINDEX)
 				{
-					if(szP!=NULL)
+					case ET_SERVERLIST: //ETpro for retrieving player status (connecting, spectating, allies & axis)
 					{
-						int l = strlen(szP);
-						while(Pindex<l)
+						if(szP!=NULL)
 						{
-							if(szP[Pindex]!='-')
+							int l = strlen(szP);
+							while(Pindex<l)
 							{
-								int _idx = (szP[Pindex]-48);
-								player->szClanTag = _strdup(&szPlyType[_idx][0]);
-								Pindex++;					
-								break;
+								if(szP[Pindex]!='-')
+								{
+									int _idx = (szP[Pindex]-48);
+									player->szClanTag = _strdup(&szPlyType[_idx][0]);
+									Pindex++;					
+									break;
+								}
+								Pindex++;						
 							}
-							Pindex++;
-					
 						}
+						break;
+					}
+					case WARSOW_SERVERLIST:
+					{
+						if(strcmp(pointer,"0")==0)
+							player->szClanTag = _strdup("Spectator");
+						else if(strcmp(pointer,"2")==0)
+							player->szClanTag = _strdup("Red");
+						else if(strcmp(pointer,"3")==0)
+							player->szClanTag= _strdup("Blue");
+							
+						pointer++;
+						pointer++;
+						break;
 					}
 				}
-				else if(pSI->cGAMEINDEX==WARSOW_SERVERLIST)
-				{
-					if(strcmp(pointer,"0")==0)
-						player->szClanTag = _strdup("Spectator");
-					else if(strcmp(pointer,"2")==0)
-						player->szClanTag = _strdup("Red");
-					else if(strcmp(pointer,"3")==0)
-						player->szClanTag= _strdup("Blue");
-						
-					pointer++;
-					pointer++;
-				}
-
-
 			}
-
-
 			if(pQ3Players==NULL)
 				pQ3Players = pQ3CurrentPlayer = player;
 			else 
@@ -998,9 +1014,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	// associate it with network events
 	//
 	int nRet;
-	nRet = WSAEventSelect(ConnectSocket,
-						  hEvent,
-						  FD_READ|FD_CONNECT|FD_CLOSE);
+	nRet = WSAEventSelect(ConnectSocket, hEvent,FD_READ|FD_CONNECT|FD_CLOSE);
 	if (nRet == SOCKET_ERROR)
 	{
 		dbg_print("EventSelect()");
@@ -1032,11 +1046,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		//
 		//dbg_print("\nWaitForMultipleEvents()");
 		DWORD dwRet;
-		dwRet = WSAWaitForMultipleEvents(1,
-									 &hEvent,
-									 FALSE,
-									 4000,
-									 FALSE);
+		dwRet = WSAWaitForMultipleEvents(1, &hEvent, FALSE,4000,FALSE);
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
 			dbg_print("\nWait timed out");
@@ -1047,9 +1057,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		// Figure out what happened
 		//
 		//AddLogInfo(0,"\nWSAEnumNetworkEvents()");
-		nRet = WSAEnumNetworkEvents(ConnectSocket,
-								 hEvent,
-								 &events);
+		nRet = WSAEnumNetworkEvents(ConnectSocket, hEvent, &events);
 		if (nRet == SOCKET_ERROR)
 		{
 			dbg_print("WSAEnumNetworkEvents()");
@@ -1070,7 +1078,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 				Q3_bScanningInProgress = FALSE;
 				WSACloseEvent(hEvent);
 				closesocket(ConnectSocket);		
-				 dbg_print("Error sending packet!");
+				dbg_print("Error sending packet!");
 				return 2;
 			}
 		}
@@ -1086,11 +1094,10 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 			if(i>=MAX_PACKETS)
 				break;
 	
-		
 		}
 
 		// Close event?
-		if (events.lNetworkEvents & FD_CLOSE)
+/*		if (events.lNetworkEvents & FD_CLOSE)
 		{
 			AddLogInfo(0,"\nFD_CLOSE: %d",events.iErrorCode[FD_CLOSE_BIT]);
 			break;
@@ -1101,47 +1108,8 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		{
 			AddLogInfo(0,"\nFD_WRITE: %d",events.iErrorCode[FD_WRITE_BIT]);
 		}
-
-	}
-	
-
-
-
-
-	
-	//Retrieve serverlist from the master server
-	//Todo detect when UDP last packet has retrieved instead of timing out....
-	//Now set to maximum 35 packets.... more for safety reason :)
-
-	
-
-/*	for(i=0; i<35;i++)
-	{
-		
-		packet[i]=(unsigned char*)getpacket(ConnectSocket, &packetlen);
-		packet_len[i] = packetlen;
 */
-	/*	ioctlsocket(ConnectSocket, FIONREAD , (u_long FAR*) &iBytesInBuffer);
-		sprintf(szText,"Bytes in buffer after read %d\n",iBytesInBuffer);
-		dbg_print(szText);
-		if(iBytesInBuffer==0)
-		{
-			dbg_print("Received all packets! (empty incomming buffer)\n");
-		//	break;  	
-		} */
-		//dbg_dumpbuf("serverlist.bin", packet[i], packetlen);
-/*		if(packet[i]==NULL) 
-		{
-			dbg_print("Received all packets!\n");
-			break;  	
-		} 
-*/		
-		//Should we add servers or start a new linked list....
-//		if(pGI->pStartServerInfo==NULL)
-//			pGI->pStartServerInfo = Q3_parseServers((char*)packet[i],packetlen,NULL,InsertServerListView);
-//		else
-		
-//	}
+	}
 	
 	closesocket(ConnectSocket);
 	WSACloseEvent(hEvent);
@@ -1152,13 +1120,12 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		{
 		    Q3_parseServers((char*)packet[i],packet_len[i],pGI);
 			free(packet[i]);			
-			SetStatusText(pGI->iIconIndex,"Recieved %d new %s servers from master server.",Q3_dwNewTotalServers,pGI->szGAME_NAME);
 			packet[i]=NULL;
+			SetStatusText(pGI->iIconIndex,"Recieved %d new %s servers from master server.",Q3_dwNewTotalServers,pGI->szGAME_NAME);
 			if(g_bCancel)
 				break;
-			Sleep(200); //give cpu sometime to breath
+			Sleep(50); //give cpu sometime to breath
 		}
-		
 	}
 
 	pGI->dwTotalServers += Q3_dwNewTotalServers;
