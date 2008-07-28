@@ -1,3 +1,10 @@
+Version 1.06
+------------
+* RCON password is now saved
+* Right clicking on a server then selecting RCON will initiate a instant RCON connection.
+* When opening from task tray Game Scanner window will be restored not maximized.
+
+
 Version 1.05
 ------------
 Fixed a filter save bug with when activated Version and Map, you might have to uncheck and check again to correct the state.

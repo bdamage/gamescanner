@@ -1852,7 +1852,7 @@ void Default_GameSettings()
 	GI[OPENARENA_SERVERLIST].bActive = false;
 #endif
 
-
+//"C:\Program Files\Steam\Steam.exe" -applaunch 300
 	GI[HL2_SERVERLIST].cGAMEINDEX = HL2_SERVERLIST;
 	GI[HL2_SERVERLIST].iIconIndex = Get_GameIcon(HL2_SERVERLIST);
 	GI[HL2_SERVERLIST].dwViewFlags = 0;
@@ -1890,7 +1890,7 @@ void Default_GameSettings()
 		strcpy(GI[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
 		strcpy(GI[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
 		strcpy(GI[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
-		strcpy(GI[HL2_SERVERLIST].szGAME_SHORTNAME,"TF2");
+		strcpy(GI[HL2_SERVERLIST].szGAME_SHORTNAME,"HF2");
 
 	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
 	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
@@ -3798,6 +3798,9 @@ void OnRestore()
 	ShowWindow(g_hwndLogger,SW_HIDE);
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
 	ShowWindow(g_hwndListViewVars,SW_HIDE);	
+	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
+	TabCtrl_SetCurSel(g_hwndTabControl,0);
+	ShowWindow(g_hwndListViewPlayers,SW_SHOW);	
 
 }
 
@@ -7743,16 +7746,14 @@ void OnRCON()
 	int i = ListView_GetSelectionMark(g_hwndListViewServer);
 	if(i!=-1)
 	{
-		TabCtrl_SetCurSel(g_hwndTabControl,1);
+		TabCtrl_SetCurSel(g_hwndTabControl,2);
+		ShowWindow(g_hwndListViewPlayers,SW_HIDE);	
 		ShowWindow(g_hwndMainRCON,SW_SHOW);
 		ShowWindow(g_hwndMainSTATS,SW_HIDE);
 		ShowWindow(g_hwndLogger,SW_HIDE);
-		ShowWindow(g_hwndListViewPlayers,SW_HIDE);
-		SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
-		//g_thisRCONServer = Get_ServerInfoByIndex(i);	
-		//RCON_Start(hInst,g_hWnd,&g_thisRCONServer);
-		//currCV->pSC->vSI.at((int)g_thisRCONServer.dwIndex) = g_thisRCONServer;
 	
+		SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
+		SendMessage(g_hwndMainRCON,WM_COMMAND,ID_RCON_CONNECT,0);
 	} else
 	{
 	  MessageBox(NULL,"Please select a server before connecting to Remote Console!","Info!",MB_ICONINFORMATION|MB_OK); 
@@ -8066,8 +8067,6 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			OnServerSelected(currCV);
 			return TRUE;
 		}
-
-
 	}
 	else if(uMsg == WM_MOUSEMOVE)
 	{
@@ -8243,17 +8242,12 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 	
 			}										
 
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_OPTIONS_RCON,"RCON");
+
 				if(g_bRunningQueryServerList==false)
-				{
-				
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_OPTIONS_RCON,"RCON");
 					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_REFRESH,"&Refresh");
-				}
 				else
-				{
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,ID_OPTIONS_RCON,"RCON");
 					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,IDM_REFRESH,"&Refresh");				
-				}
 
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubPopMenu,"Network tools");
 				InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER1,"Ping server");
@@ -10496,7 +10490,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					OnInitialize_MainDlg(g_hWnd);
 					//ShowWindow(g_hWnd, 	 SW_SHOW); 
 					ShowWindow(g_hWnd, 	 SW_SHOW);
-					ShowWindow(g_hWnd, SW_SHOWMAXIMIZED);
+					ShowWindow(g_hWnd, SW_RESTORE);
 					
 					if(g_bMinimized)
 						PostMessage(g_hWnd,WM_INITVIEWS,0,0);

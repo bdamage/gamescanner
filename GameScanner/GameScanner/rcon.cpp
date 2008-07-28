@@ -19,6 +19,7 @@ HWND g_hwndRCONCmd=NULL,g_hwndRCONOut=NULL,g_hRCONDlg=NULL;
 char cGAMEINDEX=0;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_CurrentSelServer;
+extern GAME_INFO GI[MAX_SERVERLIST+1];
 
 char szRCON_CMD_BACKLOG[MAX_BACKLOG][80];
 
@@ -204,6 +205,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 							if(ret == IDOK)
 							{
+								GI[g_RCONServer->cGAMEINDEX].pSC->vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
 								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 
@@ -435,7 +437,8 @@ DWORD RCON_SendCmd(char *szPassword,char *szCmd)
 
 void RCON_Disconnect()
 {
-	AddLogInfo(0,"RCON_Disconnect()");
+	SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) 0, (LPARAM) "Disconnected!");
+	//AddLogInfo(0,"RCON_Disconnect()");
 	if(RCON_ConnectSocket!=NULL)
 		closesocket(RCON_ConnectSocket);
 	RCON_ConnectSocket=NULL;
