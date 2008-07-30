@@ -3,7 +3,7 @@ Version 1.06
 * RCON password is now saved
 * Right clicking on a server then selecting RCON will initiate a instant RCON connection.
 * When opening from task tray Game Scanner window will be restored not maximized.
-
+* Intergrated trace route function (no more console launch).
 
 Version 1.05
 ------------

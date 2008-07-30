@@ -6,7 +6,7 @@
 DWORD WINAPI GetServerListThread(LPVOID lpParam );
 DWORD WINAPI  RCONDlgThread(LPVOID lpParam);
 
-DWORD MyPing(char *ipaddress);
+DWORD MyPing(char *ipaddress, DWORD & dwPing);
 int LoadConfig(APP_SETTINGS_NEW &appSettings);
 int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort); 
 void ListView_SetDefaultColumns();
@@ -81,7 +81,7 @@ bool FilterServerItemV2(LPARAM *lp, GAME_INFO *pGI); //bool bForceFavorites=fals
 DWORD WINAPI RedrawServerList(LPSERVERINFO pServerInfo,DWORD dwFilterFlags=0);// bool bForceFavorites=false, bool bForceHistory=false,bool bForceFavoritesPrivate=false);
 DWORD WINAPI  RedrawServerListThread(LPVOID pvoid );
 void ShowBalloonTip(char *title,char *message);
-
+void _stdcall TraceRoute(char *ipaddress );
 LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 
 void InitShowServer();

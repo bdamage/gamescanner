@@ -372,8 +372,19 @@ UINT_PTR pingTimer;
 deque<DWORD> QPing;
 typedef deque<DWORD> deQPing;
 
+struct _TRACERT_STRUCT
+{
+	UCHAR TTL;
+	ULONG IpAdress;
+	ULONG RTT;
+	char szHostName[260];
 
-void MyDrawFont(HDC hdc, int x, int y, char *szMessage,int angle)
+};
+
+deque<_TRACERT_STRUCT> _TraceRT;
+typedef deque<_TRACERT_STRUCT> TraceRT;
+
+void MyDrawFont(HDC hdc, int x, int y, const char *szMessage, int angle)
 {
 	//RECT rc; 
 	HFONT hfnt, hfntPrev; 
@@ -444,15 +455,329 @@ PLAYERDATA *Get_PlayerBySelection()
 
 
 
+
+void Draw_GraphBackground(HWND hWnd,HDC hDC,UCHAR nGridX,UCHAR nGridY,const char *szTitle,const char* szXLegend, const char* szYLegend,DWORD dwMaxValue,DWORD dwDrawOptions=0);
+
+
+#define DRAW_GRAPH_X_RIGHT_TO_LEFT 0
+#define DRAW_GRAPH_X_LEFT_TO_RIGHT 1
+
+void Draw_GraphBackground(HWND hWnd,HDC hDC,UCHAR nGridX,UCHAR nGridY,const char *szTitle,const char* szXLegend, const char* szYLegend,DWORD dwMaxValue,DWORD dwDrawOptions)
+{
+	RECT size,rect,rectInner;
+	HBRUSH hbrBkgnd=NULL,hbrBar=NULL;
+	HPEN hpen, hpenOld;	
+	HBRUSH  hbrushOld;
+	HGDIOBJ original = NULL;
+	
+	original = SelectObject(hDC,GetStockObject(DC_PEN));
+	GetWindowRect(hWnd,&size);
+		
+	hbrBkgnd = CreateSolidBrush(RGB(0, 0,64)); 
+	hbrushOld = (HBRUSH)SelectObject(hDC, hbrBkgnd);
+
+	SetDCPenColor(hDC,RGB(192,192,255));
+	SetBkColor(hDC,    RGB(0, 0,64));
+	rect.left = 2;
+	rect.top = 2;
+			
+	rect.bottom = (size.bottom - size.top);
+	rect.right = (size.right - size.left);
+	FillRect(hDC, &rect, (HBRUSH) hbrBkgnd);   //fill out the main dark blue background
+			
+	rect.left = X_OFFSET_STATS;
+	rect.top = X_OFFSET_STATS;
+	rect.bottom-=20;
+	rect.right-=20;
+		
+			
+	Rectangle(hDC, rect.left, rect.top ,rect.right, rect.bottom); 
+	CopyRect(&rectInner,&rect);
+			
+	//Shrink one pixel for the maind rawing area
+	rectInner.left = X_OFFSET_STATS+1;
+	rectInner.top = X_OFFSET_STATS+1;
+	rectInner.bottom--;
+	rectInner.right--;
+	FillRect(hDC, &rectInner, (HBRUSH) hbrBkgnd);
+			
+	SetTextColor(hDC,0x00FFFFFF);
+
+	hpen = CreatePen(PS_DOT, 1, RGB(64,64,204));
+	hpenOld = (HPEN) SelectObject(hDC, hpen);
+
+	if(nGridX==0)
+		nGridX = 5;
+
+	int offsetX = rectInner.right / nGridX;
+	int offsetY = rectInner.bottom / nGridY;
+
+	int scale = 10;
+	if(dwMaxValue!=0)
+		scale = dwMaxValue / nGridY-1;
+
+
+	char szTxt[20];
+
+	sprintf(szTxt,"%d",0);
+	if(dwDrawOptions == DRAW_GRAPH_X_RIGHT_TO_LEFT)	
+		MyDrawFont(hDC, rectInner.right, rectInner.bottom+3, szTxt,0);
+	else
+		MyDrawFont(hDC, rectInner.left, rectInner.bottom+3, szTxt,0);
+
+	for(int i=0; i<nGridX-1;i++)
+	{	
+		/****************************
+		 Draw X Grid
+		*****************************/
+		if(dwDrawOptions == DRAW_GRAPH_X_RIGHT_TO_LEFT)
+		{
+			int x = rectInner.right-offsetX*(i+1);
+			if(x>rectInner.left)
+			{				
+				MoveToEx(hDC,x,rectInner.top,NULL);
+				LineTo(hDC,x,rectInner.bottom);				
+				sprintf(szTxt,"%d",(i+1)*nGridX);
+				MyDrawFont(hDC, x, rectInner.bottom+3, szTxt,0);
+			}
+		} else
+		{
+			int x = rectInner.left+offsetX*(i+1);
+
+			if(x<rectInner.right)
+			{				
+				MoveToEx(hDC,x,rectInner.top,NULL);
+				LineTo(hDC,x,rectInner.bottom);				
+				sprintf(szTxt,"%d",(i+1));
+				MyDrawFont(hDC, x, rectInner.bottom+3, szTxt,0);
+			}
+
+		}
+	}
+	for(int i=0; i<nGridY-1;i++)
+	{
+		/****************************
+		 Draw Y Grid
+		*****************************/
+		if((rectInner.bottom-offsetY*(i+1))>rectInner.top)
+		{
+			int y = rectInner.bottom-offsetY*(i+1);
+			MoveToEx(hDC,rectInner.left,y,NULL);
+			LineTo(hDC,rectInner.right,y);
+			sprintf(szTxt,"%d",(i+1)*scale);
+			MyDrawFont(hDC, rectInner.left-12, y, szTxt,900);
+		}
+
+	}
+
+	
+	MyDrawFont(hDC, 5, (rectInner.bottom/2)+40, szYLegend,900);
+	MyDrawFont(hDC, (rectInner.right / 2), rectInner.bottom+10,szXLegend,0);
+
+
+	// Do not forget to clean up.
+	SelectObject(hDC, hpenOld);
+
+	DeleteObject(hpen);
+	SelectObject(hDC, hbrushOld);
+
+	char szText[105];
+	size.left = 20;
+	size.top = 6;
+	sprintf(szText,"%s %s",szTitle,szIPAddressToPing);						
+	TextOut(hDC, size.left+2,size.top-1, szText, strlen(szText));
+	SetTextColor(hDC,0x00000000);
+	if(hbrBkgnd!=NULL)
+		DeleteObject(hbrBkgnd);
+	if(hbrBar!=NULL)
+		DeleteObject(hbrBar);
+	
+	SelectObject(hDC,original);
+}
+
+void Draw_PingStats(HWND hWnd, HDC hDC,UCHAR nGridX,UCHAR nGridY,DWORD dwMaxValue)
+{
+	RECT rect,size,rectInner;
+	GetWindowRect(hWnd,&size);
+	
+	rect.bottom = (size.bottom - size.top);
+	rect.right = (size.right - size.left);
+		
+	rect.left = X_OFFSET_STATS;
+	rect.top = X_OFFSET_STATS;
+	rect.bottom-=20;
+	rect.right-=20;
+	CopyRect(&rectInner,&rect);
+			
+	//Shrink one pixel for the maind rawing area
+	rectInner.left = X_OFFSET_STATS+1;
+	rectInner.top = X_OFFSET_STATS+1;
+	rectInner.bottom--;
+	rectInner.right--;
+
+	int offsetX = (rectInner.right / nGridX) / nGridX;
+	int offsetY = rectInner.bottom / nGridY;
+
+	int scale = 10;
+	if(dwMaxValue!=0)
+		scale = dwMaxValue / nGridY-1;
+
+	int oldX = rectInner.right,
+		oldY = rectInner.bottom;
+
+	HPEN hpen = NULL;
+	HPEN hpenOld=NULL;	
+	HPEN hPenStatus = NULL;
+	hpen = CreatePen(PS_DOT, 1, RGB(64,64,204));
+	hpenOld = (HPEN) SelectObject(hDC, hpen);
+	hPenStatus = CreatePen(PS_SOLID, 1, RGB(0,255,0));
+	SelectObject(hDC, hPenStatus);
+
+	deQPing::reverse_iterator iLst;
+	int i=0;
+	for ( iLst = QPing.rbegin(); iLst != QPing.rend(); iLst++ )
+	{
+		
+		DWORD dwPingi = *iLst;
+		MoveToEx(hDC,oldX,oldY,NULL);
+		int fact = dwPingi / scale;
+			
+		int y = fact * offsetY;
+		y+= dwPingi-(fact*scale);  //rest
+
+		int yTot = rectInner.bottom-y;
+		if(yTot<rectInner.top)
+			yTot = rectInner.top;
+		
+		int x = rectInner.right-(offsetX*(i+1));
+		if(x<rectInner.left)
+			x = rectInner.left;
+		
+		LineTo(hDC,x,yTot);
+		oldX = x;
+		oldY = yTot;
+		i++;
+
+	}
+	SelectObject(hDC, hpenOld);
+	DeleteObject(hPenStatus);
+	DeleteObject(hpen);
+}
+
+
+void Draw_TraceRouteStats(HWND hWnd, HDC hDC,UCHAR nGridX,UCHAR nGridY,DWORD dwMaxValue)
+{
+	RECT rect,size,rectInner;
+	GetWindowRect(hWnd,&size);
+	
+	rect.bottom = (size.bottom - size.top);
+	rect.right = (size.right - size.left);
+		
+	rect.left = X_OFFSET_STATS;
+	rect.top = X_OFFSET_STATS;
+	rect.bottom-=20;
+	rect.right-=20;
+	CopyRect(&rectInner,&rect);
+			
+	//Shrink one pixel for the maind rawing area
+	rectInner.left = X_OFFSET_STATS+1;
+	rectInner.top = X_OFFSET_STATS+1;
+	rectInner.bottom--;
+	rectInner.right--;
+
+	if(nGridX==0)
+		nGridX = 5;
+	int offsetX = rectInner.right / nGridX;
+	int offsetY = rectInner.bottom / nGridY;
+
+	int scale = 10;
+	if(dwMaxValue!=0)
+		scale = dwMaxValue / nGridX-1;
+
+	int oldX = rectInner.left,
+		oldY = rectInner.bottom;
+	HPEN hpen = NULL;
+	HPEN hpenOld=NULL;	
+	HPEN hPenStatus = NULL;
+	hpen = CreatePen(PS_DOT, 1, RGB(64,64,204));
+	hpenOld = (HPEN) SelectObject(hDC, hpen);
+	hPenStatus = CreatePen(PS_SOLID, 1, RGB(0,255,0));
+	SelectObject(hDC, hPenStatus);
+    SetTextColor(hDC,0x00FFFFFF);
+	TraceRT::iterator iLst;
+	int i=1;
+	for ( iLst = _TraceRT.begin(); iLst != _TraceRT.end(); iLst++ )
+	{
+		_TRACERT_STRUCT ts = *iLst;
+		DWORD dwPingi = ts.RTT;
+		MoveToEx(hDC,oldX,oldY,NULL);
+		int fact = dwPingi / scale;
+		int off=-10;	
+		if(i%2)
+			off=2;	
+
+		Ellipse(hDC, oldX-3, oldY-3,oldX+3, oldY+3);
+        
+
+		int y = fact * offsetY;
+		y+= dwPingi-(fact*scale);  //rest
+
+		
+		
+		int yTot = rectInner.bottom-y;
+		if(yTot<rectInner.top)
+			yTot = rectInner.top;
+		
+
+		int x = rectInner.left+(offsetX*(i));
+		
+		if(x>rectInner.right)
+			x = rectInner.right;
+
+		LineTo(hDC,x,yTot);
+
+		if(strlen(ts.szHostName)>0)
+			MyDrawFont(hDC, oldX, oldY+off,ts.szHostName,0);	
+		else
+		{
+		    struct in_addr  LastAddr = {0}; 
+			LastAddr.s_addr = ts.IpAdress;
+			MyDrawFont(hDC, oldX, oldY+off,inet_ntoa(LastAddr),0);	
+		}
+
+		oldX = x;
+		oldY = yTot;
+		i++;
+
+	}
+	SelectObject(hDC, hpenOld);
+	DeleteObject(hPenStatus);
+	DeleteObject(hpen);
+	SetTextColor(hDC,0x00000000);
+}
+DWORD WINAPI TraceRoute_Thread(LPVOID lpParam)
+{
+	SERVER_INFO pSI;
+	int n = ListView_GetSelectionMark(g_hwndListViewServer);
+	if(n!=-1)
+	{
+		pSI  = Get_ServerInfoByIndex(n);
+		strcpy(szIPAddressToPing,pSI.szIPaddress);
+		TraceRoute(pSI.szIPaddress);
+	}
+	InvalidateRect(g_hwndMainSTATS,NULL,TRUE);
+	return 0;
+}
+
+
+BOOL g_bPinging=FALSE;
+
 LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	PAINTSTRUCT ps;
 	HDC  hDC;
-	RECT size,rect,rectInner;
+	RECT size;
 	HBRUSH hbrBkgnd=NULL,hbrBar=NULL;
-	HPEN hpen, hpenOld;
-	HPEN hPenStatus;
-	HBRUSH  hbrushOld;
 	switch (message)
 	{
 		case WM_INITDIALOG:
@@ -461,15 +786,29 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			return TRUE;
 			break;
 		
+
+		case WM_START_TRACERT:
+			HANDLE hThread;
+			SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
+
+			hThread = CreateThread( NULL, 0, &TraceRoute_Thread, g_hWnd,0, NULL);                
+			if (hThread == NULL) 
+			{		
+			}
+			else 
+				CloseHandle( hThread );
+
+			break;
 		case WM_START_PING:
 			{
 				QPing.clear();
 				int n = ListView_GetSelectionMark(g_hwndListViewServer);
 				if(n!=-1)
 				{
-				
+					g_bPinging = TRUE;
 					g_pSIPing  = Get_ServerInfoByIndex(n);
 					strcpy(szIPAddressToPing,g_pSIPing.szIPaddress);
+					// TraceRoute(szIPAddressToPing);
 					//if(strcmp(szIPAddressToPing,szOldIPAddressToPing)!=0)
 					//	QPing.clear();				
 					//strcpy(szOldIPAddressToPing,g_pSIPing.szIPaddress);
@@ -481,21 +820,21 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			}
 			break;
 	case WM_STOP_PING:
+		g_bPinging = FALSE;
 		KillTimer(hWnd,EVENT_PING);
 		break;
 	case WM_TIMER:
 		{
 			if(wParam==EVENT_PING)
 			{
-				
+				DWORD pingi;
+				MyPing(szIPAddressToPing,pingi);
+				QPing.push_back(pingi);
+				if(QPing.size()>150)
+					QPing.pop_front();
 
-					DWORD pingi =  MyPing(szIPAddressToPing);
-					QPing.push_back(pingi);
-					if(QPing.size()>50)
-						QPing.pop_front();
-
-					if(pingi==999)
-						strcpy(szIPAddressToPing,", sorry no response from server.");
+				if(pingi==999)
+					strcpy(szIPAddressToPing,", sorry no response from server.");
 
 				GetClientRect(hWnd,&size);
 				InvalidateRect(hWnd,&size,TRUE);
@@ -509,6 +848,25 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			if(hDC==NULL)
 				return FALSE;
 		
+		if(g_bPinging==TRUE)
+		{
+			deQPing::reverse_iterator iLst;
+			deQPing::iterator MaxElement;
+
+			MaxElement = max_element ( QPing.begin ( ) , QPing.end ( ) );
+			DWORD dwMaxPing = 0;
+			if(MaxElement !=QPing.end())
+				dwMaxPing = *MaxElement;
+
+			Draw_GraphBackground(hWnd,hDC,12, 6,"Ping response from", "seconds" ,"milliseconds",dwMaxPing*2);
+			Draw_PingStats( hWnd, hDC, 12, 6,dwMaxPing*2);
+		}
+		else
+		{
+			Draw_GraphBackground(hWnd,hDC, _TraceRT.size(), 10, "Trace route to","hops" ,"milliseconds",350,DRAW_GRAPH_X_LEFT_TO_RIGHT);
+			Draw_TraceRouteStats( hWnd, hDC,  _TraceRT.size(), 10,350);
+		}
+/*
 			HGDIOBJ original = NULL;
 			original = SelectObject(hDC,GetStockObject(DC_PEN));
 			GetWindowRect(hWnd,&size);
@@ -594,9 +952,7 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			
 			int oldX = rectInner.right,
 				oldY = rectInner.bottom;
-
-			
-
+	
 			int i=0;
 			for ( iLst = QPing.rbegin(); iLst != QPing.rend(); iLst++ )
 			{
@@ -649,7 +1005,7 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				DeleteObject(hbrBar);
 			
 			SelectObject(hDC,original);
-
+*/
 			EndPaint(hWnd, &ps);
 	
 		}
@@ -2756,9 +3112,107 @@ DWORD Build_CountryFilter(HTREEITEM hRoot)
 	return dwReturn;
 }
 
+#pragma pack(1) 
+typedef struct { 
+    BYTE   cbType; 
+    BYTE   cbSize; 
+    BYTE   pointer; 
+    struct in_addr address; 
 
 
-DWORD MyPing(char *ipaddress)
+
+} RecordRouteOption, *PRecordRouteOption; 
+
+
+void _stdcall TraceRoute(char *ipaddress ) 
+{ 
+        char*   SendData = "Hello"; 
+        UCHAR   TTL = 0; 
+        HANDLE  icmp = IcmpCreateFile(); 
+        DWORD   count; 
+		unsigned long ipaddr = INADDR_NONE;
+		ipaddr = inet_addr(ipaddress);
+		if (ipaddr == INADDR_NONE) {
+			dbg_print("usage:  IP address\n");
+			return ;
+		}
+	
+        DWORD   ReplySize = sizeof(ICMP_ECHO_REPLY) + 
+                        sizeof(RecordRouteOption) + 
+                        sizeof("Hello") + 8; 
+        ICMP_ECHO_REPLY* reply = (PICMP_ECHO_REPLY) malloc(ReplySize); 
+        IP_OPTION_INFORMATION info; 
+        struct in_addr  LastAddr = {0}; 
+
+		_TraceRT.clear();
+
+        if( (icmp != INVALID_HANDLE_VALUE) && (reply != NULL) ) 
+        { 
+            dbg_print("Start trace\r\n"); 
+            dbg_print( "\tHops\tReply From\tRoundTrip\n" ); 
+            while( LastAddr.s_addr != ipaddr ) 
+            { 
+                memset( &info, 0, sizeof(info) ); 
+                info.Ttl = TTL++; 
+                count = IcmpSendEcho2( icmp, NULL,NULL,NULL, 
+                               ipaddr, SendData, sizeof("Hello"), 
+                                &info, reply, ReplySize, 1000 ); 
+                if( count ) 
+                { 
+
+					
+					LastAddr.s_addr = reply->Address; 
+						_TRACERT_STRUCT ts;					
+						unsigned int addr;
+					    struct hostent* remoteHost;
+						addr = inet_addr( inet_ntoa(LastAddr));
+						remoteHost = gethostbyaddr((char *) &addr, 4, AF_INET);
+
+                        dbg_print("\t%3d:\t%s:\t%3dms %s %s\r\n", 
+                                info.Ttl, 
+                                inet_ntoa(LastAddr), 
+                                reply->RoundTripTime, 
+								((reply->DataSize && reply->Data)? reply->Data:" "),((remoteHost==NULL)? " ": remoteHost->h_name) 
+                                ); 
+
+						
+						
+						if( remoteHost!=NULL)
+							strcpy(ts.szHostName, remoteHost->h_name);
+						else
+							ts.szHostName[0]=NULL;
+						ts.IpAdress = reply->Address; 
+						ts.TTL = info.Ttl;
+						ts.RTT = reply->RoundTripTime;
+						_TraceRT.push_back(ts);
+						InvalidateRect(g_hwndMainSTATS,NULL,TRUE);
+                }else{ 
+                        // DWORD error = GetLastError(); 
+                        // Add error handling if desired 
+                }; 
+                if( TTL == 0 ) 
+                { 
+                        //ReplySize = sizeof(ICMP_ECHO_REPLY) + sizeof(SendData) + 8; 
+                        //Causes destination to be unable to reply (reply too small). 
+                        dbg_print( "Unreachable within 255 hops, or Program Error\n"); 
+                        break; 
+                }; 
+				if(TTL>20)
+				{
+					 dbg_print( "TTL> 20 breaking the trace rt\n"); 
+					break;
+				}
+            };// while addr 
+            dbg_print("End trace\r\n"); 
+
+        }else{ 
+                // report lack of memory or icmp resources 
+        };// if icmp 
+        free( reply ); 
+        IcmpCloseHandle(icmp); 
+}
+
+DWORD MyPing(char *ipaddress, DWORD & dwPing)
 {
 	HANDLE hIcmpFile;
     unsigned long ipaddr = INADDR_NONE;
@@ -2766,7 +3220,7 @@ DWORD MyPing(char *ipaddress)
     char SendData[] = "Data Buffer";
     LPVOID ReplyBuffer = NULL;
     DWORD ReplySize = 0;
-	
+	dwPing = 999;
     // Validate the parameters
 
     ipaddr = inet_addr(ipaddress);
@@ -2816,9 +3270,14 @@ DWORD MyPing(char *ipaddress)
 
         dbg_print("\tCall to IcmpSendEcho failed.\n");
         dbg_print("\tIcmpSendEcho returned error: %ld\n", GetLastError() );
+		free(ReplyBuffer);
         return 999;
-    }
-    return  pEchoReply->RoundTripTime;
+    
+	}
+	dwPing = pEchoReply->RoundTripTime;
+	free(ReplyBuffer);
+    
+	return 0;
 }    
 
 
@@ -3516,8 +3975,6 @@ void Initialize_GetServerListThread(DWORD options)
 }
 
 
-
-
 void OnActivate_ServerList(DWORD options)
 {
 	
@@ -3795,12 +4252,7 @@ void OnRestore()
 	//AddLogInfo(ETSV_INFO, "Message WM_SIZE restoring.");
 	//Initialize_WindowSizes();
 	g_iCurrentSelectedServer = -1;
-	ShowWindow(g_hwndLogger,SW_HIDE);
-	ShowWindow(g_hwndMainRCON,SW_HIDE);	
-	ShowWindow(g_hwndListViewVars,SW_HIDE);	
-	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
-	TabCtrl_SetCurSel(g_hwndTabControl,0);
-	ShowWindow(g_hwndListViewPlayers,SW_SHOW);	
+
 
 }
 
@@ -4148,7 +4600,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	tci.pszText = "RCON";
 	TabCtrl_InsertItem(g_hwndTabControl,2,&tci);
 	tci.iImage = 37;
-	tci.pszText = "Ping";
+	tci.pszText = "Ping && Trace route";
 	TabCtrl_InsertItem(g_hwndTabControl,3,&tci);
 	tci.iImage = 34;
 	tci.pszText = "Logger";
@@ -4386,6 +4838,13 @@ void OnInitialize_MainDlg(HWND hwnd)
 	Show_ToolbarButton(IDC_DOWNLOAD, false);
 	//RedrawServerList(Get_CurrentServerListByView());
 	
+	ShowWindow(g_hwndLogger,SW_HIDE);
+	ShowWindow(g_hwndMainRCON,SW_HIDE);	
+	ShowWindow(g_hwndListViewVars,SW_HIDE);	
+	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
+	TabCtrl_SetCurSel(g_hwndTabControl,0);
+	ShowWindow(g_hwndListViewPlayers,SW_SHOW);	
+
 	SetStatusText(ICO_INFO,"Initialization done.");
 }
 
@@ -8170,9 +8629,15 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 					break;
 				case ID_TT_SERVER2:
 					{
-						char *pszIP = Get_SelectedServerIP();
-						if(pszIP!=NULL)
-							ShellExecute(NULL,"open","tracert.exe",pszIP,NULL,SW_SHOWNORMAL);
+						
+						TabCtrl_SetCurSel(g_hwndTabControl,3);
+						ShowWindow(g_hwndMainRCON,SW_HIDE);
+						ShowWindow(g_hwndMainSTATS,SW_SHOW);
+						ShowWindow(g_hwndLogger,SW_HIDE);
+						ShowWindow(g_hwndListViewPlayers,SW_HIDE);	
+						SendMessage(g_hwndMainSTATS,WM_START_TRACERT,0,0);
+					//	if(pszIP!=NULL)
+					//		ShellExecute(NULL,"open","tracert.exe",pszIP,NULL,SW_SHOWNORMAL);
 					}
 					break;
 
