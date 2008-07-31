@@ -240,8 +240,9 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 	Buddy_Clear(pBI);
 	pBI = NULL;
 
+	AddLogInfo(ETSV_INFO,"Loading buddies.xml info.");
 	SetCurrentDirectory(USER_SAVE_PATH);
-
+	
 	TiXmlDocument doc("Buddies.xml");
 	if (!doc.LoadFile()) 
 		return 1;
@@ -274,34 +275,44 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 
 		TiXmlElement* pBuddy;
 		pBuddy=hRoot.FirstChild("Buddies").ToElement();
-		pBuddy = pBuddy->FirstChild()->ToElement();
-		while(pBuddy!=NULL)
+		if(pBuddy!=NULL)
 		{
-
-			if(pBuddy!=NULL)
+			if(pBuddy->FirstChild()!=NULL)
 			{
-				TiXmlElement* pBud = pBuddy->FirstChild()->ToElement();
-				ptempBI = (BUDDY_INFO*)malloc(sizeof(BUDDY_INFO));	
-				ZeroMemory(ptempBI,sizeof(BUDDY_INFO));
-				
-				ReadCfgStr2(pBud , "Name",ptempBI->szPlayerName,sizeof(ptempBI->szPlayerName));				
-				ReadCfgStr2(pBud , "Clan",ptempBI->szClan,sizeof(ptempBI->szClan));
-				ReadCfgStr2(pBud , "LastSeenServerName",ptempBI->szLastSeenServerName,sizeof(ptempBI->szLastSeenServerName));
-				ReadCfgStr2(pBud , "LastSeenIP",ptempBI->szLastSeenIPaddress,sizeof(ptempBI->szLastSeenIPaddress));
-				ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)ptempBI->cMatchOnColorEncoded);
-				ReadCfgInt2(pBud , "ExactMatch",(int&)ptempBI->cMatchExact);
-				
-				ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)ptempBI->sIndex);
-				
-				ptempBI->sIndex = -1;  //reset
+				pBuddy = pBuddy->FirstChild()->ToElement();
+				while(pBuddy!=NULL)
+				{
 
-				if(pFirstBI==NULL)
-					pFirstBI = pCurrentBI = ptempBI;
-				else
-					pCurrentBI = pCurrentBI->pNext = ptempBI;
+					if(pBuddy!=NULL)
+					{
+						TiXmlElement* pBud = pBuddy->FirstChild()->ToElement();
+						ptempBI = (BUDDY_INFO*)malloc(sizeof(BUDDY_INFO));	
+						ZeroMemory(ptempBI,sizeof(BUDDY_INFO));
+						
+						ReadCfgStr2(pBud , "Name",ptempBI->szPlayerName,sizeof(ptempBI->szPlayerName));				
+						ReadCfgStr2(pBud , "Clan",ptempBI->szClan,sizeof(ptempBI->szClan));
+						ReadCfgStr2(pBud , "LastSeenServerName",ptempBI->szLastSeenServerName,sizeof(ptempBI->szLastSeenServerName));
+						ReadCfgStr2(pBud , "LastSeenIP",ptempBI->szLastSeenIPaddress,sizeof(ptempBI->szLastSeenIPaddress));
+						ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)ptempBI->cMatchOnColorEncoded);
+						ReadCfgInt2(pBud , "ExactMatch",(int&)ptempBI->cMatchExact);
+						
+						ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)ptempBI->sIndex);
+						
+						ptempBI->sIndex = -1;  //reset
+
+						if(pFirstBI==NULL)
+							pFirstBI = pCurrentBI = ptempBI;
+						else
+							pCurrentBI = pCurrentBI->pNext = ptempBI;
+					}
+					pBuddy = pBuddy->NextSiblingElement();
+				}
+			}else
+			{
+				AddLogInfo(ETSV_ERROR,"No buddies found.");
 			}
-			pBuddy = pBuddy->NextSiblingElement();
-		}
+		}else
+			AddLogInfo(ETSV_ERROR,"Error loading buddy xml data.");
 
 	pBI = pFirstBI;
 	return 0;
