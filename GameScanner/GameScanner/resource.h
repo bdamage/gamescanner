@@ -117,6 +117,7 @@
 #define IDC_BUTTON_BUDDY_SCAN           1002
 #define IDC_BUTTON_APPLY                1002
 #define IDC_STATIC_RCON_INFO            1002
+#define IDC_BUTTON_SEL_FONT             1002
 #define IDC_BUTTON2                     1003
 #define IDC_BUTTON_SRV2                 1003
 #define IDC_SLIDER_TRANS                1003
@@ -247,7 +248,6 @@
 #define IDI_ICON4                       1097
 #define IDI_ICON_TASKTRAY               1098
 #define IDI_ICON_QUAKEARENA             1099
-#define IDI_ICON_HALFLIFE               1100
 #define IDI_ICON_HALFLIFE2              1100
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771

@@ -39,10 +39,13 @@ net.jpg??
 
 
 
-Typical path under Vista:
+Typical user save path under Vista:
 
-C:\Users\UserName\AppData\Roaming\ETSV
+C:\Users\UserName\AppData\Roaming\GameScanner
 
+Under Windows XP:
+
+C:\Documents and Settings\USERNAME\Application Data\GameScanner
 
 
 TreeView XML layout:
@@ -56,7 +59,7 @@ type="2"     - If type is 28 then it is Global Ping item
 state="0"    - State of the item if it is Checked or Unchecked.
 
 action="1"  - If action is 1 then redraw list based on current game="?" index.  
-	      If action is 8 then a GLobal filter Edit (ie Ping).
+	      If action is 8 then a Global filter Edit (ie Ping, Min , Max players).
 	      If action is 10 then it is a country item.
 
 

@@ -5,7 +5,9 @@
 
 DWORD WINAPI GetServerListThread(LPVOID lpParam );
 DWORD WINAPI  RCONDlgThread(LPVOID lpParam);
-
+void ChangeFont(HWND hWnd,HFONT hf);
+LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
+LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
 DWORD MyPing(char *ipaddress, DWORD & dwPing);
 int LoadConfig(APP_SETTINGS_NEW &appSettings);
 int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort); 

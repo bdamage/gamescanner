@@ -382,6 +382,14 @@ void AddLogInfo(int color, char *lpszText, ...)
 #endif
 
 }
+BOOL isNumeric(char c)
+{
+	if((c>='0') && (c<='9'))
+		return TRUE;
+
+	return FALSE;
+}
+
 char *colorfilter(const char* name,char *namefilter,int len)
 {
 	size_t i=0,ii=0;
@@ -414,13 +422,107 @@ char *colorfilter(const char* name,char *namefilter,int len)
 	return namefilter;
 }
 
-BOOL isNumeric(char c)
-{
-	if((c>='0') && (c<='9'))
-		return TRUE;
 
-	return FALSE;
+/*
+http://www.truecarnage.com/quake-4-color-code-chart-r24.htm
+http://www.truecarnage.com/coloring-team-chat-and-name-tricks-in-q4-r2.htm
+^iw00: Gauntlet
+^iw01: Machine Gun
+^iw02: Shotgun
+^iw03: Hyperblaster
+^iw04: Grenade Launcher
+^iw05: Nailgun
+^iw06: Rocket Launcher
+^iw07: Railgun
+^iw08: Lightning Gun
+^iw09: Dark Matter Gun
+
+^ifls: Strogg Flag
+^iflm: Marine Flag
+
+^irgn: Regeneration
+^idbl: Doubler
+^igrd: Guard
+^isct: Scout
+
+^ivce: Voice Enabled
+^ivcd: Voice Disabled
+^ifdd: Player Muted
+^ifde: Player Unmuted
+^ipbe: Punkbuster Logo
+^idse: Armor Shard
+^ipse: Padlock
+^ifve: Star
+^idm0: Skull 'n' Crossbones
+^idm1: Green X
+^iarr: Right Arrow
+
+*/
+char *colorfilterQ4(const char* name,char *namefilter, int len)
+{
+	size_t i=0,ii=0;
+	if(name!=NULL)
+	{
+		memset(namefilter,0,len);
+		while((i<strlen(name)) && (i<len))
+		{
+			if(name[i]=='^')
+			{
+				if((name[i+1]=='i') && (name[i+2]=='d') && (isNumeric(name[i+4]))) //Q4 ^idm0 and ^idm1 icons
+					i+=5;
+				if((name[i+1]=='c') && (isNumeric(name[i+2])) && (isNumeric(name[i+3])) ) //Q4 color encoded RGB ^c000 ^c2456 etc...				
+					i+=5;				
+				else if(name[i+1]!='^')  //for those who are using double ^^
+					i+=2;
+				else
+				{
+					namefilter[ii]=name[i];
+					i++;
+					ii++;
+				}
+			}
+			else
+			{
+				namefilter[ii]=name[i];
+				i++;
+				ii++;
+			}	
+		}
+	} else
+		return "...";
+	return namefilter;
 }
+
+char * colorfilterQW(const char *szInText,char *namefilter, int len)
+{
+	int i=0;
+	memset(namefilter,0,len);
+	while(szInText[i]!=0)
+	{
+		namefilter[i] = szInText[i];
+		if((unsigned char)szInText[i]>127)
+		{
+			UCHAR uc;
+			uc = szInText[i];
+			if(uc==156)
+				uc = '*';
+			else
+			{
+				if((unsigned char)szInText[i]>225)
+					uc-=160;
+				else if((unsigned char)szInText[i]>193)
+					uc-=128;
+				else //if((unsigned char)szInText[i]>193)
+					uc-=67;
+			}
+
+			namefilter[i]=uc;
+		}
+		i++;
+	}
+	return namefilter;
+}
+
 
 
 char * DWORD_IP_to_szIP(DWORD dwIP)
@@ -610,76 +712,6 @@ void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 		free(pPL);
 		pPL = NULL;
 	}
-}
-
-/*
-http://www.truecarnage.com/quake-4-color-code-chart-r24.htm
-http://www.truecarnage.com/coloring-team-chat-and-name-tricks-in-q4-r2.htm
-^iw00: Gauntlet
-^iw01: Machine Gun
-^iw02: Shotgun
-^iw03: Hyperblaster
-^iw04: Grenade Launcher
-^iw05: Nailgun
-^iw06: Rocket Launcher
-^iw07: Railgun
-^iw08: Lightning Gun
-^iw09: Dark Matter Gun
-
-^ifls: Strogg Flag
-^iflm: Marine Flag
-
-^irgn: Regeneration
-^idbl: Doubler
-^igrd: Guard
-^isct: Scout
-
-^ivce: Voice Enabled
-^ivcd: Voice Disabled
-^ifdd: Player Muted
-^ifde: Player Unmuted
-^ipbe: Punkbuster Logo
-^idse: Armor Shard
-^ipse: Padlock
-^ifve: Star
-^idm0: Skull 'n' Crossbones
-^idm1: Green X
-^iarr: Right Arrow
-
-*/
-char *colorfilterQ4(char* name,char *namefilter, size_t len)
-{
-	size_t i=0,ii=0;
-	if(name!=NULL)
-	{
-		memset(namefilter,0,len);
-		while((i<strlen(name)) && (i<len))
-		{
-			if(name[i]=='^')
-			{
-				if((name[i+1]=='i') && (name[i+2]=='d') && (isNumeric(name[i+4]))) //Q4 ^idm0 and ^idm1 icons
-					i+=5;
-				if((name[i+1]=='c') && (isNumeric(name[i+2])) && (isNumeric(name[i+3])) ) //Q4 color encoded RGB ^c000 ^c2456 etc...				
-					i+=5;				
-				else if(name[i+1]!='^')  //for those who are using double ^^
-					i+=2;
-				else
-				{
-					namefilter[ii]=name[i];
-					i++;
-					ii++;
-				}
-			}
-			else
-			{
-				namefilter[ii]=name[i];
-				i++;
-				ii++;
-			}	
-		}
-	} else
-		return "...";
-	return namefilter;
 }
 
 

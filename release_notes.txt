@@ -4,6 +4,9 @@ Version 1.06
 * Right clicking on a server then selecting RCON will initiate a instant RCON connection.
 * When opening from task tray Game Scanner window will be restored not maximized.
 * Intergrated trace route function (no more console launch).
+* Fixed a config load of the launching external application settings.
+* QuakeWorld font is now displayed almost 100% correctly, might be some exceptions still to fix.
+
 
 Version 1.05
 ------------

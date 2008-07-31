@@ -10,7 +10,10 @@
 extern void Default_Appsettings();
 extern void CFG_Save();
 extern string g_sMIRCoutput;
+extern HFONT g_hf;
 string CFG_g_sMIRCoutputTemp;
+extern void ChangeFont(HWND hWnd, HFONT hf);
+extern HWND g_hWnd;
 
 //Config dialog vars
 #define GAME_CFG_INDEX 5   //This is the helper index in treeview where all games configuration starts from
@@ -466,11 +469,52 @@ VOID WINAPI CFG_OnChildDialogInit(HWND hwndDlg)
         hwndParent, GWLP_USERDATA); 
    
 	SetWindowPos(hwndDlg, HWND_TOP, 
-        pHdr->rcDisplay.left+127, pHdr->rcDisplay.top+5, 
+        pHdr->rcDisplay.left+165, pHdr->rcDisplay.top+5, 
         400, 370, SWP_NOSIZE); 
 } 
 
+HFONT FAR PASCAL CFG_SelectFont( void ) 
+{ 
+    CHOOSEFONT cf; 
+    LOGFONT lf; 
+    HFONT hfont; 
+ 
+    // Initialize members of the CHOOSEFONT structure. 
+ 
+    cf.lStructSize = sizeof(CHOOSEFONT); 
+    cf.hwndOwner = (HWND)NULL; 
+    cf.hDC = (HDC)NULL; 
+    cf.lpLogFont = &lf; 
+    cf.iPointSize = 0; 
+    cf.Flags = CF_SCREENFONTS; 
+    cf.rgbColors = RGB(0,0,0); 
+    cf.lCustData = 0L; 
+    cf.lpfnHook = (LPCFHOOKPROC)NULL; 
+    cf.lpTemplateName = (LPSTR)NULL; 
+    cf.hInstance = (HINSTANCE) NULL; 
+    cf.lpszStyle = (LPSTR)NULL; 
+    cf.nFontType = SCREEN_FONTTYPE; 
+    cf.nSizeMin = 0; 
+    cf.nSizeMax = 0; 
+ 
+    // Display the CHOOSEFONT common-dialog box. 
+ 
+    ChooseFont(&cf); 
+ 
+    // Create a logical font based on the user's 
+    // selection and return a handle identifying 
+    // that font. 
+	lf.lfOutPrecision =0;
+	lf.lfCharSet =0;
+	lf.lfClipPrecision =0;
+	lf.lfEscapement = 0;
+	lf.lfPitchAndFamily = 0;
+	lf.lfQuality =0;
 
+
+    hfont = CreateFontIndirect(cf.lpLogFont); 
+    return (hfont); 
+} 
 
 HWND g_hwndScrollTrans;
 HWND g_hwndScrollThreads;
@@ -639,10 +683,16 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			
 			switch (LOWORD(wParam))
             {
-
-					case IDCANCEL:	
-						EndDialog(hDlg, 0);
+				case IDC_BUTTON_SEL_FONT:
+					HFONT hf;
+					hf = CFG_SelectFont();
+					DeleteObject(g_hf);				
+					g_hf = hf;
+					ChangeFont(g_hWnd, g_hf);
 					break;
+				case IDCANCEL:	
+					EndDialog(hDlg, 0);
+				break;
 		
 				case IDC_BUTTON_ET_PATH:
 				{	

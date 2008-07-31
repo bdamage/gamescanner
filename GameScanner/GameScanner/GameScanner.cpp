@@ -1636,7 +1636,11 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 			case 2:
 				{
 				char colFiltered[100];
-				pLVItem->pszText = colorfilter(pPlayerData->szPlayerName,colFiltered,sizeof(colFiltered)-1); 
+				
+				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szPlayerName,colFiltered,sizeof(colFiltered)-1); 
+				else
+					pLVItem->pszText = pPlayerData->szPlayerName;
 				return TRUE;
 				}
 
@@ -1931,7 +1935,9 @@ void Default_GameSettings()
 	
 	GI[ET_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[ET_SERVERLIST].szQueryString,"");
-
+	
+	GI[ET_SERVERLIST].colorfilter = &colorfilter;
+	GI[ET_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	
 	strcpy(GI[Q3_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[Q3_SERVERLIST].cGAMEINDEX = Q3_SERVERLIST;
@@ -1950,6 +1956,8 @@ void Default_GameSettings()
 	strcpy(GI[Q3_SERVERLIST].szQueryString,"");
 	GI[Q3_SERVERLIST].pSC = &SC[Q3_SERVERLIST];
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GI[Q3_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	GI[Q3_SERVERLIST].colorfilter = &colorfilter;
+	GI[Q3_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	strcpy(GI[RTCW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
@@ -1967,6 +1975,8 @@ void Default_GameSettings()
 	GI[RTCW_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[RTCW_SERVERLIST].szQueryString,"");
 	GI[RTCW_SERVERLIST].pSC = &SC[RTCW_SERVERLIST];
+	GI[RTCW_SERVERLIST].colorfilter = &colorfilter;
+	GI[RTCW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	GI[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
 	GI[Q4_SERVERLIST].dwMasterServerPORT = 27650;
@@ -1983,6 +1993,8 @@ void Default_GameSettings()
 	GI[Q4_SERVERLIST].bActive = false;
 	GI[Q4_SERVERLIST].dwDefaultPort = 28004;
 	GI[Q4_SERVERLIST].pSC = &SC[Q4_SERVERLIST];
+	GI[Q4_SERVERLIST].colorfilter = &colorfilterQ4;
+	GI[Q4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	GI[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
 	GI[ETQW_SERVERLIST].iIconIndex = Get_GameIcon(ETQW_SERVERLIST);
@@ -2003,6 +2015,8 @@ void Default_GameSettings()
 
 	strcpy(GI[ETQW_SERVERLIST].szProtocolName,"etqw");
 	GI[ETQW_SERVERLIST].dwDefaultPort = 27733;
+	GI[ETQW_SERVERLIST].colorfilter = &colorfilter;
+	GI[ETQW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	strcpy(GI[COD2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
@@ -2024,6 +2038,8 @@ void Default_GameSettings()
 	GI[COD2_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD2_SERVERLIST].szQueryString,"");
 	GI[COD2_SERVERLIST].pSC = &SC[COD2_SERVERLIST];
+	GI[COD2_SERVERLIST].colorfilter = &colorfilter;
+	GI[COD2_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	strcpy(GI[COD_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
@@ -2073,6 +2089,8 @@ void Default_GameSettings()
 	strcpy(GI[WARSOW_SERVERLIST].szProtocolName,"warsow");
 	GI[WARSOW_SERVERLIST].dwDefaultPort = 28960;
 	GI[WARSOW_SERVERLIST].pSC = &SC[WARSOW_SERVERLIST];
+	GI[WARSOW_SERVERLIST].colorfilter = &colorfilter;
+	GI[WARSOW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	strcpy(GI[COD4_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
@@ -2094,7 +2112,8 @@ void Default_GameSettings()
 	GI[COD4_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD4_SERVERLIST].szQueryString,"");
 	GI[COD4_SERVERLIST].pSC = &SC[COD4_SERVERLIST];
-
+	GI[COD4_SERVERLIST].colorfilter = &colorfilter;
+	GI[COD4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
 	GI[CS_SERVERLIST].cGAMEINDEX = CS_SERVERLIST;
 	GI[CS_SERVERLIST].iIconIndex = Get_GameIcon(CS_SERVERLIST);
@@ -2166,6 +2185,9 @@ void Default_GameSettings()
 	GI[QW_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[QW_SERVERLIST].szQueryString,"");
 	GI[QW_SERVERLIST].bUseHTTPServerList = TRUE;
+	GI[QW_SERVERLIST].colorfilter = &colorfilterQW;
+	GI[QW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
+
 
 	strcpy(GI[Q2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
 	GI[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
@@ -4481,7 +4503,18 @@ void UpdateColumnsPosAfterDrag()
 
 
 
-
+void ChangeFont(HWND hWnd,HFONT hf)
+{
+	SetFontToDlgItem(hWnd,hf,IDC_TAB1);
+	SetFontToDlgItem(hWnd,hf,IDC_LIST_SERVER);
+	SetFontToDlgItem(hWnd,hf,IDC_EDIT_STATUS);
+	SetFontToDlgItem(hWnd,hf,IDC_CUSTOM2);
+	SetFontToDlgItem(hWnd,hf,IDC_EDIT_LOGGER);
+	SetFontToDlgItem(hWnd,hf,IDC_LIST_BUDDY);
+	SetFontToDlgItem(hWnd,hf,IDC_LIST_PLAYERS);
+	
+	SetFontToDlgItem(g_hwndSearchToolbar,g_hf,IDC_COMBOBOXEX_CMD);
+}
 
 void OnCreate(HWND hwnd, HINSTANCE hInst)
 {
@@ -4700,12 +4733,10 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	g_hf = MyCreateFont(hwnd);
 	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Courier New");
-	SetFontToDlgItem(hwnd,g_hf,IDC_TAB1);
-	SetFontToDlgItem(hwnd,g_hf,IDC_LIST_SERVER);
-	SetFontToDlgItem(hwnd,g_hf,IDC_EDIT_STATUS);
-	SetFontToDlgItem(hwnd,g_hf,IDC_CUSTOM2);
-	SetFontToDlgItem(g_hwndSearchToolbar,g_hf,IDC_COMBOBOXEX_CMD);
-	SetFontToDlgItem(hwnd,g_hf,IDC_EDIT_LOGGER);
+
+	ChangeFont(hwnd,g_hf);
+	
+
 
 	ShowWindow(g_hwndLogger,SW_HIDE);
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
@@ -5002,85 +5033,112 @@ void LoadServerListV2(GAME_INFO *pGI)
 						next_token1 = NULL;
 						memset(&srv,0,sizeof(SERVER_INFO));
 						szGameType= strtok_s( buffer, seps, &next_token1);
-						srv.cGAMEINDEX =(char)atoi(szGameType); 
+						if(szGameType!=NULL)
+							srv.cGAMEINDEX =(char)atoi(szGameType); 
 						
 						szGameName = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szServerName,TrimString(szGameName));
+						if(szGameName!=NULL)
+							strcpy(srv.szServerName,TrimString(szGameName));
 
 						szIP = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szIPaddress,TrimString(szIP));
+						if(szIP!=NULL)
+							strcpy(srv.szIPaddress,TrimString(szIP));
 						
 						szPort = strtok_s( NULL, seps, &next_token1);
-						srv.dwPort = (DWORD)atol(szPort); 
+						if(szPort!=NULL)
+							srv.dwPort = (DWORD)atol(szPort); 
 
 						szShortCountryName = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szShortCountryName,TrimString(szShortCountryName));
+						if(szShortCountryName!=NULL)
+							strcpy(srv.szShortCountryName,TrimString(szShortCountryName));
 						
 						szPrivatePassword = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szPRIVATEPASS,TrimString(szPrivatePassword));
+						if(szPrivatePassword!=NULL)
+							strcpy(srv.szPRIVATEPASS,TrimString(szPrivatePassword));
 
 						szRCONPassword = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szRCONPASS,TrimString(szRCONPassword));
+						if(szRCONPassword!=NULL)
+							strcpy(srv.szRCONPASS,TrimString(szRCONPassword));
 						
 						szVersion = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szVersion,TrimString(szVersion));
+						if(szVersion!=NULL)
+							strcpy(srv.szVersion,TrimString(szVersion));
 						
 						szMod = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szMod,TrimString(szMod));
+						if(szMod!=NULL)
+							strcpy(srv.szMod,TrimString(szMod));
 						
 						szMap = strtok_s( NULL, seps, &next_token1);
-						strcpy(srv.szMap,TrimString(szMap));
+						if(szMap!=NULL)
+							strcpy(srv.szMap,TrimString(szMap));
 						
 						szMaxPlayers = strtok_s( NULL, seps, &next_token1);
-						srv.nMaxPlayers = atoi(szMaxPlayers); 
+						if(szMaxPlayers!=NULL)
+							srv.nMaxPlayers = atoi(szMaxPlayers); 
 
 						szCurrentNumberOfPlayers = strtok_s( NULL, seps, &next_token1);
-						srv.nCurrentPlayers = atoi(szCurrentNumberOfPlayers); 
+						if(szCurrentNumberOfPlayers!=NULL)
+							srv.nCurrentPlayers = atoi(szCurrentNumberOfPlayers); 
 
 						szPrivateClients = strtok_s( NULL, seps, &next_token1);
-						srv.nPrivateClients = atoi(szPrivateClients); 
+						if(szPrivateClients!=NULL)
+							srv.nPrivateClients = atoi(szPrivateClients); 
 						
 						szPrivate = strtok_s( NULL, seps, &next_token1);
-						srv.bPrivate = (char)atoi(szPrivate); 
+						if(szPrivate!=NULL)
+							srv.bPrivate = (char)atoi(szPrivate); 
 						
 						szByte = strtok_s( NULL, seps, &next_token1);  //Punkbuster or VAC
-						srv.bPunkbuster = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.bPunkbuster = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  //Dedicated
-						srv.bDedicated = (BOOL)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.bDedicated = (BOOL)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);   //Ranked
-						srv.cRanked = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.cRanked = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);   
-						srv.cBots = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.cBots = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);   
-						srv.cFavorite = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.cFavorite = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);   
-						srv.cHistory = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.cHistory = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.cPure = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.cPure = (char)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.dwGameType = (WORD)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.dwGameType = (WORD)atoi(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.dwMap = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.dwMap = (char)atoi(szByte); 
 						
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.cPurge = (char)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.cPurge = (char)atoi(szByte); 
 					
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.dwPing = (DWORD)atol(szByte); 
+						if(szByte!=NULL)
+							srv.dwPing = (DWORD)atol(szByte); 
 
 						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.wMod = (WORD)atoi(szByte); 
+						if(szByte!=NULL)
+							srv.wMod = (WORD)atoi(szByte); 
 
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						srv.dwIP = (DWORD)atol(szByte); 
+						szByte = strtok_s( NULL, seps, &next_token1); 
+						if(szByte!=NULL)
+							srv.dwIP = (DWORD)atol(szByte); 
 
 
 						szCountry = strtok_s( NULL, seps, &next_token1);
@@ -5090,12 +5148,13 @@ void LoadServerListV2(GAME_INFO *pGI)
 						szByte = strtok_s( NULL, seps, &next_token1);  
 						if(szByte!=NULL)
 							srv.dwVersion = (char)atol(szByte); 
+						else
+							AddLogInfo(0,"Error loading server details!");
 
 						srv.dwIndex = idx++;
 
 						srv.pPlayerData = NULL;
-						srv.pServerRules = NULL;
-						srv.cLocked = 0;
+						srv.pServerRules = NULL;					
 						srv.bUpdated = 0;
 						int hash = srv.dwIP + srv.dwPort;
 						pGI->pSC->shash.insert(Int_Pair(hash,srv.dwIndex));
@@ -7313,6 +7372,115 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 		DeleteObject(hbrSel);
 
 	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+}//0x02C75DE0  243 236 225  47 119 111 114 107  16  65  83  83  67  17   0   óìá/work.ASSC..
+//0x034F6118  157 205 111 114 114 177  69 159   0    .Íorr±EŸ. 
+LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
+{
+	HDC  hDC =  pListDraw->nmcd.hdc;
+	HBRUSH hbrSel= NULL;
+	hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
+	FillRect(hDC, &rc, (HBRUSH) hbrSel);
+
+	if( pListDraw->nmcd.uItemState & ( CDIS_SELECTED))
+	{
+		pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
+		hbrSel = CreateSolidBrush( GetSysColor(COLOR_HIGHLIGHT)); //RGB(51,153,250)); 																
+		FillRect(hDC, &rc, (HBRUSH) hbrSel);
+	}
+	int nCharWidth;
+	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	char *pText;
+	rc.left+=20;
+	rc.top+=2;
+			UCHAR uc[2];
+			uc[1]=0;
+	SelectObject(hDC,g_hf2);
+	for(int i=0;i<strlen(pszText);i++)
+	{
+		COLORREF col = RGB(255,255,255) ;
+		uc[0] = (UCHAR)pszText[i];
+			switch(uc[0])
+			{
+				case 16:
+				{
+					uc[0] = '[';
+					col = RGB(0xff,0xf9,0x80);
+					break;
+				}
+				case 17:
+				{
+					uc[0] = ']';
+					col = RGB(0xff,0xf9,0x80);
+					break;
+				}
+				case 28:
+					uc[0] = '*';
+					break;
+
+			}
+		if((unsigned char)uc[0]>127)
+		{
+			switch(uc[0])
+			{
+
+				case 156:
+				{
+					uc[0] = '*';
+					col = RGB(0xfa,0xbd,0x8e);
+					break;
+				}
+				case 157:
+				{
+
+					uc[0] = '<';
+					col = RGB(0xfa,0xbd,0x8e);
+					break;
+				}
+				case 159:
+					{
+					uc[0] = '>';
+					col = RGB(0xfa,0xbd,0x8e);
+					break;
+				}
+				default:
+				{
+					if((unsigned char)uc[0]>225)
+					{
+						uc[0]-=160;
+						col = RGB(0xfa,0xbd,0x8e);
+					}
+					else if((unsigned char)uc[0]>193)
+					{
+						uc[0]-=128;
+						col = RGB(255,255,255); 
+					}
+					else if((unsigned char)uc[0]>169)
+					{
+						uc[0]-=104;
+						col = RGB(0xff,0xf9,0x80);
+					}
+					else //if((unsigned char)szInText[i]>193)
+					{
+						uc[0]-=67;
+						col = RGB(0xff,0xf9,0x80);
+					}
+
+					break;
+				}
+			}
+	
+		}
+		SetTextColor(hDC,col);
+		pText = (char*)&uc[0];
+		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
+		rc.left+=nCharWidth;
+
+	}
+	SelectObject(hDC,g_hf);								
+	if(hbrSel!=NULL)
+		DeleteObject(hbrSel);
+
+	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
 }
 
 /********************************************************************************
@@ -7613,7 +7781,10 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 							
 								RECT rc;								
 								ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+								if(GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
+									return GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+								//else
+								//	return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
 							}
 						}
 					}
@@ -10433,6 +10604,22 @@ int CFG_Load()
 	} else //set defualt value
 		AppCFG.bUseMIRC = FALSE;
 
+	pElem=hRoot.FirstChild("OptionalEXEsettings").Element();
+	if (pElem)
+	{
+		pElem->QueryIntAttribute("enable",&intVal);
+		AppCFG.bUse_EXT_APP = intVal;
+		if(pElem->Attribute("path")!=NULL)
+			strcpy(AppCFG.szEXT_EXE_PATH,pElem->Attribute("path"));
+
+		if(pElem->Attribute("cmd")!=NULL)
+			strcpy(AppCFG.szEXT_EXE_CMD,pElem->Attribute("cmd"));
+
+		if(pElem->Attribute("WindowName")!=NULL)
+			strcpy(AppCFG.szEXT_EXE_WINDOWNAME,pElem->Attribute("WindowName"));
+
+	} else //set defualt value
+		AppCFG.bUse_EXT_APP = FALSE;
 
 	pElem=hRoot.FirstChild("ShortCountryName").Element();
 	if (pElem)

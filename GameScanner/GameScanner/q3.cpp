@@ -602,7 +602,45 @@ player number, score, time, ping, name, skin, color1, color2
 56 19 7 66 "Judge" "" 4 13
 60 40 5 12 "Mors" "" 13 13    [0a]
 
+0x0392B2E4  20 30 20 30 20 31 32 34 20 22 50 61 7a 75 22 20 22 62 61 73 65 22 20 31 33 20 31 33 0a 35 35   0 0 124 "Pazu" "base" 13 13.55
+0x0392B303  20 31 20 30 20 37 37 20 22 28 31 29 70 6c 61 79 65 72 22 20 22 22 20 30 20 30 0a 35 34 20 30   1 0 77 "(1)player" "" 0 0.54 0
+0x0392B322  20 30 20 35 38 20 22 5a 65 65 44 22 20 22 62 61 73 65 22 20 34 20 34 0a 35 36 20 32 20 30 20   0 58 "ZeeD" "base" 4 4.56 2 0 
+0x0392B341  32 32 20 22 78 2b 79 3d 7a 22 20 22 22 20 31 33 20 39 0a 35 37 20 30 20 30 20 32 37 20 22 28  22 "x+y=z" "" 13 9.57 0 0 27 "(
+0x0392B360  32 29 70 6c 61 79 65 72 22 20 22 22 20 30 20 30 0a 00 00 fd fd fd fd ab ab ab ab ab ab ab ab  2)player" "" 0 0...ýýýý««««««««
+0x0392B37F  00 00 00 00 00 00 00 00 00 58 89 95 23 23 51 06 00 f8 62 90 03 58 9a 08 05
+
+
+0x0392B297  
+32 35 20             25
+34 20                4
+31 30 35 33 20       1053
+32 37 20             27
+22 f2 e5 e4 f2 f5 ed 22 20  "òåäòõí" == REDRUM
+22 32 39 22 20 34 20 34 0a   4 1053 27  "29" 4 4.
+0x0392B2B6  00 00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 73 89 95 08 36  ..
+
+
+0x0496B340  39 35 20 30 20 31 31 20 32 31 20 
+22 c6 72 e1 67 bc 4b be 22 20  "Ærág.K." Frag(K)
+22 24 22 20 31 31 20 33 0a 00  95 0 11 21  "$" 11 3..
+0x0496B35F  00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 30 1a d7 6d bb f7  .ýýýý««««««««.
+0x0496B329  34 35 20 30 20 32 20 34 31 20 22 49 6e 65 72 74 69 61 22 20 22 62 61 73 65 22 20 31 31 20 32  45 0 2 41 "Inertia" "base" 11 2
+0x0496B348  0a 
+34 36 20 32 20 
+32 20 33 38 20 
+22 e6 e9 e5 f2 f5 f3 22 20  "æéåòõó" =FIERUS
+22 22 20 34 20 34 0a 00 00 fd fd  .46 2 2 38 "" 4 4...ýý
+0x0496B367  fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0f 1a d7 52 b8 f7  ýý««««««««
+
+0x0496B2F9  36 31 20 32 35 20 34 20 31 32 20 22 4d 6f 72 73 22 20 22 22 20 31 33 20 31 33 0a 36 32 20 38  61 25 4 12 "Mors" "" 13 13.62 8
+0x0496B318  20 34 20 33 38 20 
+22 2e 2f d2 92 c7 65 d2 2e cd 75 d2 22 20  "./Ò’ÇeÒ.ÍuÒ"  = ./RoGeR.MuR
+22 22 20 34 20 36 0a 35 34 20 38   4 38  "" 4 6.54 8
+0x0496B337  20 34 20 31 32 20 22 5a 65 65 44 22 20 22 62 61 73 65 22 20 34 20 34 0a 00 00 fd fd fd fd ab   4 12 "ZeeD" "base" 4 4..
 */
+
+
+
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers)
 {
 
@@ -622,6 +660,7 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 			if(player==NULL) //Out of memory ?
 				return pPlayers;
 			player->pNext = NULL;
+			player->cGAMEINDEX = pSI->cGAMEINDEX;
 				
 			char *endOfString = strchr(pointer,' ');
 			if(endOfString!=NULL)
@@ -663,6 +702,7 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				{
 					endOfString[0] = 0;
 					player->szPlayerName= _strdup(pointer);  //got the name
+				
 					pointer+=strlen(pointer)+1;
 				}
 

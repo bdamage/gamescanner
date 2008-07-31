@@ -1,6 +1,15 @@
 
 Todo
 ---------
+Add support for QW spectator?
+Add support for multiple executables.
+Add laungage support.
+Add larger font support.
+Add support for Net Quake and Nexuiz.
+
+
+
+
 1 Clean up code
 2 only use XML_ functions in load and save configs
 3 Save listview and treeview window sizes
@@ -19,5 +28,12 @@ DONE List!
 
 Known bugs
 ----------
-FIXED: Copy IP address should be changed to get the IP and port from SERVER_INFO (NOT ListView)
 Buddy code can cause a crash during scanning.
+
+
+
+
+
+
+FIXED: Copy IP address should be changed to get the IP and port from SERVER_INFO (NOT ListView)
+

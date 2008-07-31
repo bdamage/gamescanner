@@ -259,7 +259,7 @@ struct APP_SETTINGS_NEW
    BOOL bUseMIRC;
    DWORD dwRetries;
    DWORD dwThreads;
-	
+
 };
 
 
@@ -275,6 +275,7 @@ struct PLAYERDATA
 	char *szClanTag;
 	BYTE ClanTagPos;
 	BYTE isBot;
+	char cGAMEINDEX;
 	//SERVER_INFO  *pCurrentServer;
 	PLAYERDATA *pNext;
 };
@@ -328,6 +329,7 @@ struct SERVER_INFO
 	char szRCONPASS[MAX_RCON_LEN];
 	char szPRIVATEPASS[MAX_PASSWORD_LEN];
 	char szSTATUS[40];
+
 	PLAYERDATA *pPlayerData;
 	SERVER_RULES *pServerRules;
 };
@@ -411,6 +413,9 @@ struct GAME_INFO
 	DWORD dwScanIdx;
 	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo
 	FILTER_SETTINGS filter;
+    char *(*colorfilter)(const char *szIn, char *szOut,int length);
+	LRESULT (*Draw_ColorEncodedText)(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
+
 };
 
 
