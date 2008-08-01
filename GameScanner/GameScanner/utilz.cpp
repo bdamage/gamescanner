@@ -517,6 +517,25 @@ char * colorfilterQW(const char *szInText,char *namefilter, int len)
 			}
 
 			namefilter[i]=uc;
+		} else
+		{
+			switch(namefilter[i])
+			{
+				case 16:
+				{
+					namefilter[i] = '[';
+					break;
+				}
+				case 17:
+				{
+					namefilter[i] = ']';
+					break;
+				}
+				case 28:
+					namefilter[i] = '*';
+					break;
+
+			}
 		}
 		i++;
 	}

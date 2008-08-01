@@ -15,7 +15,7 @@ v 1.0.2 (1.02) {8F2DE466-8EEB-4D64-8F4A-375553A8D31E}
 v 1.0.3 (1.03) {40ED2250-FB02-4183-B2A6-F0A987C2E277}
 v 1.0.4 (1.04) {398C9890-FAD1-48DB-A1D0-DE2BBBE661AA}
 v 1.0.5 (1.05) {5F677BD9-D1A6-4511-B69C-BD90DD4FCE03}
-
+v 1.0.6 (1.06) {443FDBF3-D249-4510-86A9-93FF61CC8704}
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
 
@@ -138,6 +138,7 @@ TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION " Compiled on " __DATE__ " at
 
 
 int g_currentGameIdx = ET_SERVERLIST;
+int g_currentScanGameIdx = -1;
 
 
 /****************************************
@@ -712,9 +713,9 @@ void Draw_TraceRouteStats(HWND hWnd, HDC hDC,UCHAR nGridX,UCHAR nGridY,DWORD dwM
 		DWORD dwPingi = ts.RTT;
 		MoveToEx(hDC,oldX,oldY,NULL);
 		int fact = dwPingi / scale;
-		int off=-10;	
+		int off=2;	
 		if(i%2)
-			off=2;	
+			off=-14;	
 
 		Ellipse(hDC, oldX-3, oldY-3,oldX+3, oldY+3);
         
@@ -737,12 +738,12 @@ void Draw_TraceRouteStats(HWND hWnd, HDC hDC,UCHAR nGridX,UCHAR nGridY,DWORD dwM
 		LineTo(hDC,x,yTot);
 
 		if(strlen(ts.szHostName)>0)
-			MyDrawFont(hDC, oldX, oldY+off,ts.szHostName,0);	
+			MyDrawFont(hDC, oldX-30, oldY+off,ts.szHostName,0);	
 		else
 		{
 		    struct in_addr  LastAddr = {0}; 
 			LastAddr.s_addr = ts.IpAdress;
-			MyDrawFont(hDC, oldX, oldY+off,inet_ntoa(LastAddr),0);	
+			MyDrawFont(hDC, oldX-30, oldY+off,inet_ntoa(LastAddr),0);	
 		}
 
 		oldX = x;
@@ -765,7 +766,7 @@ DWORD WINAPI TraceRoute_Thread(LPVOID lpParam)
 		strcpy(szIPAddressToPing,pSI.szIPaddress);
 		TraceRoute(pSI.szIPaddress);
 	}
-	InvalidateRect(g_hwndMainSTATS,NULL,TRUE);
+	//InvalidateRect(g_hwndMainSTATS,NULL,TRUE);
 	return 0;
 }
 
@@ -1259,6 +1260,14 @@ bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 void Do_ServerListSort(int iColumn)
 {
 	GAME_INFO *localcurrCV = currCV;
+	
+	//We don't to do sorting on the current scanning game index
+	if((localcurrCV->cGAMEINDEX==g_currentScanGameIdx) && g_bRunningQueryServerList)
+	{
+	//	DebugBreak();
+		return ;
+	}
+
 	BOOL sortdir = FALSE;
 	if(localcurrCV->pSC->vRefListSI.size()>0)
 	{
@@ -1276,23 +1285,131 @@ void Do_ServerListSort(int iColumn)
 
 		switch(id)
 		{
-			case COL_PB : sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Punkbuster); break;
-			case COL_PRIVATE: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Private); break;
-			case COL_RANKED: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Ranked); break;
-			case COL_SERVERNAME: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_ServerName); break;
-			case COL_GAMETYPE: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_GameType); break;
-			case COL_MAP: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Map); break;
-			case COL_MOD: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Mod); break;
-			case COL_PLAYERS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Player); break;
+			case COL_PB : 
+				try
+				{	
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Punkbuster); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+
+			case COL_PRIVATE: 
+				try
+				{	
+				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Private);
+							}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+	
+				break;
+			case COL_RANKED: 
+				try
+				{	
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Ranked); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+			case COL_SERVERNAME: 
+				try
+				{	
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_ServerName); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+			case COL_GAMETYPE: 
+				try{
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_GameType); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+
+			case COL_MAP: 
+				try{
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Map); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+			case COL_MOD: 
+				try{
+				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Mod); 
+								}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+
+			case COL_PLAYERS: 
+				try{
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Player);
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+				
 			case COL_COUNTRY: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Country); break;
-			case COL_PING: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Ping); break;
-			case COL_IP: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_IP); break;
-			case COL_VERSION: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Version); break;
-			case COL_BOTS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Bots); break;
-			case COL_STATUS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Status); break;
+			case COL_PING: 
+				try{
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Ping); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+			case COL_IP: 
+				try{
+				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_IP); 
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+
+			case COL_VERSION: 
+				try{
+				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Version); 
+								}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				break;
+			case COL_BOTS: 
+				try{
+					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Bots);
+				}catch (const exception& e)
+				{
+					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+					DebugBreak();
+				}
+				 break;
+			case COL_STATUS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Status); 
+				break;
 
 
 		}
+
 		ListView_SetHeaderSortImage(g_hwndListViewServer, iColumn,(BOOL) sortdir); //id =iColumn
 		ListView_SetItemCount(g_hwndListViewServer,localcurrCV->pSC->vRefListSI.size());
 	
@@ -4736,8 +4853,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	ChangeFont(hwnd,g_hf);
 	
-
-
 	ShowWindow(g_hwndLogger,SW_HIDE);
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
 	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
@@ -6493,7 +6608,7 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 	if(g_bRunningQueryServerList)	
 		return 0;
 
-
+	g_currentScanGameIdx = g_currentGameIdx;
 	g_bRunningQueryServerList = true;
 
 	if (! ResetEvent(hCloseEvent) ) 
@@ -6638,6 +6753,7 @@ nextGame:
 		}
 		AddLogInfo(ETSV_DEBUG,  "cancel GetServerList <<<<<");
 		Show_StopScanningButton(FALSE);
+		g_currentScanGameIdx = -1;
 		return 0xFFFF;
 	}
 	if(GI[currGameIdx].pSC->vSI.size()==0)
@@ -6648,6 +6764,7 @@ nextGame:
 	//We don't want to overdraw wrong serverlist
 	if(currGameIdx==g_currentGameIdx)
 	{
+		g_currentScanGameIdx = -1;
 		//Modified since ver 5.25		
 		//Initilize_RedrawServerListThread();
 		RedrawServerListThread(&GI[currGameIdx]);
@@ -6669,7 +6786,8 @@ nextGame:
 exitError:
 	SetStatusText(ICO_WARNING,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
 NoError:
-	Show_StopScanningButton(FALSE);
+   g_currentScanGameIdx = -1;
+   Show_StopScanningButton(FALSE);
    g_bRunningQueryServerList = false;
    if (! SetEvent(hCloseEvent) ) 
     {
@@ -6696,6 +6814,7 @@ DWORD WINAPI GetServerListThread(LPVOID lpParam )
 	if (! ResetEvent(hCloseEvent) ) 
        dbg_print("ResetEvent failed\n");
 
+	g_currentScanGameIdx = g_currentGameIdx;
 nextGame:
 	
 	currGameIdx = iGame;
@@ -6766,6 +6885,7 @@ nextGame:
 			dbg_print("SetEvent failed!\n");
 
 		AddLogInfo(ETSV_DEBUG,  "Cancel GetServerListThread!");
+		g_currentScanGameIdx = -1;
 		return 0xFFFF;
 	}
 
@@ -6779,6 +6899,7 @@ nextGame:
 
 
 exitLoop:
+	g_currentScanGameIdx = -1;
 	if(bError)
 		SetStatusText(ICO_INFO,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
 
@@ -7034,23 +7155,35 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 	pGI->pSC->vRefListSI.clear();
 	if(pGI->pSC->vSI.size()>0)
 	{
-		for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
-		{
-			SERVER_INFO pSI = *iLst;
-		
-			REF_SERVER_INFO refSI;
-			refSI.dwIndex = pSI.dwIndex;
-			refSI.cGAMEINDEX = pSI.cGAMEINDEX;
+		try{
 
-			if(FilterServerItemV2((LPARAM*)&pSI,pGI))
+			for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
 			{
-				pGI->pSC->vRefListSI.push_back(refSI);
+				SERVER_INFO pSI = *iLst;
+			
+				REF_SERVER_INFO refSI;
+				refSI.dwIndex = pSI.dwIndex;
+				refSI.cGAMEINDEX = pSI.cGAMEINDEX;
+
+				if(FilterServerItemV2((LPARAM*)&pSI,pGI))
+				{
+					pGI->pSC->vRefListSI.push_back(refSI);
+				}
 			}
+				Do_ServerListSort(iLastColumnSortIndex);
+		}catch (const exception& e)
+		{
+			AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
+			DebugBreak();
 		}
-			Do_ServerListSort(iLastColumnSortIndex);
 	}
 	if(pGI->dwViewFlags & REDRAW_SERVERLIST)
 		pGI->dwViewFlags ^= REDRAW_SERVERLIST;
+
+
+	if(pGI->dwViewFlags & FORCE_SCAN_FILTERED)
+		pGI->dwViewFlags ^= FORCE_SCAN_FILTERED;
+
 
 	dbg_print("Created filtered serverlist! View flags %d Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
 
@@ -7338,12 +7471,13 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 		FillRect(hDC, &rc, (HBRUSH) hbrSel);
 	}
 	int nCharWidth;
+	SelectObject(hDC,g_hf2);
 	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
 	char *pText;
 	rc.left+=20;
 	rc.top+=2;
 	COLORREF col = RGB(255,255,255) ;
-	SelectObject(hDC,g_hf2);
+
 	for(int i=0;i<strlen(pszText);i++)
 	{
 		if(pszText[i]=='^')
@@ -9200,10 +9334,10 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								return TRUE;
 								break;
 							case SHOW_FAVORITES_PUBLIC:
-								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PUBLIC;
+								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PUBLIC ;
 								break;								
 							case SHOW_FAVORITES_PRIVATE:
-								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PRIVATE;
+								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PRIVATE ;
 								break;	
 							case SHOW_HISTORY:
 								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_HISTORY;
@@ -9220,7 +9354,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										return TRUE;
 									} else
 									{
-										GI[g_currentGameIdx].dwViewFlags = FORCE_SCAN_FILTERED;
+										GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
 										OnActivate_ServerList(SCAN_FILTERED);
 										return TRUE;
 									}
@@ -11157,7 +11291,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					OnActivate_ServerList(SCAN_ALL_GAMES);
 					break;
 				case IDM_SCAN_FILTERED:
-					GI[g_currentGameIdx].dwViewFlags = FORCE_SCAN_FILTERED;
+					GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
 					OnActivate_ServerList(SCAN_FILTERED);
 					break;
 

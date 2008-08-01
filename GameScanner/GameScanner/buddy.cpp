@@ -18,6 +18,7 @@ extern BUDDY_INFO *g_pBIStart;
 extern SERVER_INFO *g_CurrentSRV;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_tmpSRV;
+extern GAME_INFO GI[MAX_SERVERLIST+1];
 
 extern void ShowBalloonTip(char *title,char *message);
 extern char Get_GameIcon(char index);
@@ -519,9 +520,23 @@ void Buddy_UpdateList(BUDDY_INFO *pBI)
 			item.iSubItem = 0;
 			item.iImage = 3;
 			item.iItem = i;
-			colorfilter(pBI->szPlayerName,cf,99);
-			item.pszText = cf;
-			item.cchTextMax = (int)strlen(cf);
+			
+			if(GI[pBI->cGAMEINDEX].colorfilter!=NULL)
+			{
+			
+				GI[pBI->cGAMEINDEX].colorfilter(pBI->szPlayerName,cf,99);
+				item.pszText = cf;
+				item.cchTextMax = (int)strlen(cf);
+			}
+			else
+			{
+				item.pszText = pBI->szPlayerName;
+				item.cchTextMax = (int)strlen(pBI->szPlayerName);
+
+			}
+
+			//colorfilter(pBI->szPlayerName,cf,99);			
+			
 			item.lParam = (LPARAM)pBI;
 			ListView_InsertItem( g_hwndListBuddy,&item);
 			

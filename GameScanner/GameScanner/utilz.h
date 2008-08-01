@@ -59,7 +59,7 @@ DEVMODE GetScreenResolution(VOID);
 BOOL	SetScreenResolution(DEVMODE DisplaySettings);
 void SetThreadName( DWORD dwThreadID, char* threadName);
 //HFONT SetFont(HWND hDlg, int nIDDlgItem);
-HFONT  MyCreateFont(HWND hDlg,LONG height = 12, LONG weight = FW_NORMAL, char* pszFontFace="Arial" );
+HFONT  MyCreateFont(HWND hDlg,LONG height = 14, LONG weight = FW_NORMAL, char* pszFontFace="Arial" );
 void SetFontToDlgItem(HWND hDlg,HFONT hf,int nIDDlgItem);
 void Show_ErrorDetails(LPTSTR lpszFunction);
 void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL);

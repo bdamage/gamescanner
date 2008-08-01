@@ -7,6 +7,9 @@ Version 1.06
 * Fixed a config load of the launching external application settings.
 * QuakeWorld font is now displayed almost 100% correctly, might be some exceptions still to fix.
 * Fixed a bug with loading buddies from a xml file that didn't have any buddies. (Thanks goes to Mase for providing the neccessary files.)
+* Scanning options changed when in Favorite or Private folder mode by activateing the Filtered refresh button it only filters your favorite/private servers now.
+* Default font sized is a bit larger. 
+
 
 Version 1.05
 ------------
