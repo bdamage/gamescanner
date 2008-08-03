@@ -1798,7 +1798,7 @@ char *Registry_GetGamePath(HKEY hkey,char *pszRegPath,char *pszRegKey,char *pszO
 			}
 		RegCloseKey(HKey);
 		}
-	AddGetLastErrorIntoLog("Registry_GetGamePath");
+//	AddGetLastErrorIntoLog("Registry_GetGamePath");
 	pszOutputString = NULL;
 	dwSizeOfBuffer=0;
 

@@ -12,6 +12,8 @@ version 1.07
 * Added a time stamp on each scanning, now the "auto filter" scanning only occurs every 5 minutes.
 * Fixed a memory leak in Quake 4 parsing code.
 * Fixed that Warsow exe path is auto detected (this will only occur for new installation or when doing default setting in config).
+* Updated IP to country database which is dated 2008-08-03.
+
 
 Version 1.06
 ------------
