@@ -103,11 +103,11 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 		return 1;
 	}
 
-	char sendbuf[80];
-	ZeroMemory(sendbuf,sizeof(sendbuf));
-	sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFFgetServers"); 
+	//char sendbuf[80];
+	//ZeroMemory(sendbuf,sizeof(sendbuf));
+	char sendbuf[] = {"\xFF\xFFgetServers\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}; 
 
-	if(send(ConnectSocket, sendbuf, (int)strlen(sendbuf)+9, 0)==SOCKET_ERROR) 
+	if(send(ConnectSocket, sendbuf, sizeof(sendbuf), 0)==SOCKET_ERROR) 
 	{
 		Q4_bScanningInProgress = FALSE;
 		closesocket(ConnectSocket);		
@@ -376,12 +376,10 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			}
 
 		
-			
 			szVarValue = Q4_Get_RuleValue("si_gametype",pServRules);
 			if(szVarValue!=NULL)
-			{
-				pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
-				strncpy(pSI->szGameTypeName, szVarValue,14);		
+			{	
+				strncpy(pSI->szGameTypeName, szVarValue,29);		
 			}
 			else
 			{
@@ -393,10 +391,12 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 					else
 						strcpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName),"Unknown");
 
-					pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, pSI->szGameTypeName);
+					
 				}
 
 			}
+			
+			pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, pSI->szGameTypeName);
 
 			szVarValue = Q4_Get_RuleValue("si_pure",pServRules);
 			if(szVarValue!=NULL)
@@ -415,6 +415,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 				strcpy_s(pSI->szMap,sizeof(pSI->szMap),start);
 			}
+			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
 
 			
 			if(Q4_Get_RuleValue("net_serverPunkbusterEnabled",pServRules)!=NULL)
@@ -436,7 +437,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			if(Q4_Get_RuleValue("si_maxPlayers",pServRules)!=NULL)
 				pSI->nMaxPlayers = atoi(Q4_Get_RuleValue("si_maxPlayers",pServRules));
 	
-			 
+
 			
 			//Debug purpose
 			if(pServRules!=pSI->pServerRules)
@@ -445,7 +446,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 				DebugBreak();
 			}
 
-			if(UpdatePlayerListView==NULL)
+		//	if(UpdatePlayerListView==NULL)
 			{
 				Q4_CleanUp_PlayerList(pQ4Players);
 				pSI->pPlayerData = NULL;

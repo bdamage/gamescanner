@@ -163,6 +163,7 @@ struct GAMEFILTER{
 	string sFriendlyName;
 	string sStrValue;
 	DWORD dwValue;
+	DWORD dwExactMatch;
 };
 
 
@@ -292,6 +293,7 @@ typedef SERVER_RULES* LPSERVER_RULES;
 struct SERVER_INFO
 {	
 	DWORD dwIndex;
+	DWORD dwLVIndex; //index of the ListView for on screen update.
 	char szServerName[MAX_NAME_LEN];
 	char szIPaddress[MAX_IP_LEN];
 	DWORD dwIP;
@@ -389,7 +391,7 @@ struct GAME_INFO
 	char szGAME_NAME[MAX_PATH];
 	char szGAME_SHORTNAME[MAX_PATH];
 	char szGAME_PATH[MAX_PATH];
-	char szGAME_CMD[MAX_PATH];
+	char szGAME_CMD[MAX_PATH*2];
 	char szMAP_MAPPREVIEW_PATH[MAX_PATH];
 	char szMAP_YAWN_PATH[MAX_PATH];
 	char szMAP_SPLATTERLADDER_PATH[MAX_PATH];
@@ -415,6 +417,7 @@ struct GAME_INFO
 	FILTER_SETTINGS filter;
     char *(*colorfilter)(const char *szIn, char *szOut,int length);
 	LRESULT (*Draw_ColorEncodedText)(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
+	time_t lastScanTimeStamp;
 
 };
 
@@ -456,6 +459,7 @@ struct _TREEITEM
 	std::string strValue;
 	DWORD dwValue;
 	DWORD dwType;
+	DWORD dwCompare;
 	DWORD dwState;
 	DWORD dwAction;
 	DWORD dwLevel; //XML hierachy

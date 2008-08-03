@@ -89,7 +89,7 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 
 
 		GetDlgItemText(hDlg,IDC_EDIT_PATH,GI_CFG[gameID].szGAME_PATH,MAX_PATH);
-		GetDlgItemText(hDlg,IDC_EDIT_CMD,GI_CFG[gameID].szGAME_CMD,MAX_PATH);
+		GetDlgItemText(hDlg,IDC_EDIT_CMD,GI_CFG[gameID].szGAME_CMD,MAX_PATH*2);
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP,MAX_PATH);						
 		char szTmp[10];
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,szTmp,sizeof(szTmp));

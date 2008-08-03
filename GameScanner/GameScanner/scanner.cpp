@@ -9,7 +9,7 @@ extern HWND g_hwndProgressBar;
 extern HWND g_hWnd;
 
 LPSERVERINFO		SCANNER_pSI_rescan = NULL;
-CRITICAL_SECTION	SCANNER_cs,SCANNER_CSthreadcounter; 
+extern CRITICAL_SECTION	SCANNER_cs,SCANNER_CSthreadcounter; 
 DWORD				SCANNER_dwThreadCounter=0;
 HANDLE SCAN_hContinueEvent;  //This here to help to close all events in a gracefull way
 
@@ -78,6 +78,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 
 	vSRV_INF::iterator  iLst;
 	pGI->pSC->vRefScanSI.clear();
+
 	for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
 	{
 	
@@ -91,12 +92,16 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 		{
 			if(filterServerItem((LPARAM*)&pSI,pGI))
 			{
-
+		
 				pGI->pSC->vRefScanSI.push_back(refSI);
+		
 			}
 		}
 		else
+		{
 			pGI->pSC->vRefScanSI.push_back(refSI);  
+		
+		}
 
 	}
 	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->pSC->vRefScanSI.size(),pGI->pSC->vSI.size());
@@ -113,8 +118,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	}
 	
 
-	InitializeCriticalSection(&SCANNER_cs);
-	InitializeCriticalSection(&SCANNER_CSthreadcounter);					
+
 
 	HANDLE hThreadIndex[MAX_THREADS];
 	DWORD dwThreadId[MAX_THREADS];
@@ -213,8 +217,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	
 	pGI->pSC->vRefScanSI.clear();
 
-	DeleteCriticalSection(&SCANNER_CSthreadcounter);
-	DeleteCriticalSection(&SCANNER_cs);
+
 	CloseHandle(SCAN_hContinueEvent);
 }
 
@@ -284,7 +287,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		}
 			
 		if(SCANNER_UpdateServerListView!=NULL)
-			SCANNER_UpdateServerListView(pSI.dwIndex);
+			SCANNER_UpdateServerListView(pSI.dwLVIndex);
 
 		if(g_hwndProgressBar!=NULL)
 				SendMessage(g_hwndProgressBar, PBM_STEPIT, (WPARAM) 0, 0);

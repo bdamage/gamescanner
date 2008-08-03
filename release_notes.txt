@@ -1,3 +1,18 @@
+version 1.07
+------------
+* Fixed a potential crash bug, when fast changing views from favs/private to internet servers tree selection.
+* Fixed so that column sorting can be done during scanning, this wasn't possible in version 1.06.
+* Added back multithreaded listview. 
+* Fixed a bug when stopped before doing the initial first scan, the server could filtered out because of default 9999 ping and never been scanned.
+* Server details in listview now updates in real-time.
+* Improvements done to the filter code Gametypes and Maps can have different string compare.
+* Warsow has a new gametype, including some fixes with map filter.
+* Quake 4 works again to connect to the master server.
+* Added some Quake 4 filter settings (Gametypes, Mods, Versions and Maps).
+* Added a time stamp on each scanning, now the "auto filter" scanning only occurs every 5 minutes.
+* Fixed a memory leak in Quake 4 parsing code.
+* Fixed that Warsow exe path is auto detected (this will only occur for new installation or when doing default setting in config).
+
 Version 1.06
 ------------
 * RCON password is now saved

@@ -2,10 +2,11 @@
 // or project specific include files that are used frequently, but
 // are changed infrequently
 //
-#define  APP_VERSION "1.06"
+#define  APP_VERSION "1.07"
 
 #pragma once
 #define _SECURE_SCL 0
+#define _SECURE_SCL_THROWS 1
 
 
 #ifndef WINVER				// Allow use of features specific to Windows XP or later.

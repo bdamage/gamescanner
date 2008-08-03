@@ -843,8 +843,15 @@ DWORD Get_GameTypeByName(int gameIdx, char *szGameType)
 	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterGameType.size();i++)
 	{
 		GAMEFILTER gf = GI[gameIdx].pSC->vFilterGameType.at(i);
-		if(strstr(szGameType,gf.sStrValue.c_str())!=NULL)
-			return gf.dwValue;		
+		if(gf.dwExactMatch==0)
+		{
+			if(strstr(szGameType,gf.sStrValue.c_str())!=NULL)
+				return gf.dwValue;		
+		}else
+		{
+			if(strcmp(szGameType,gf.sStrValue.c_str())==0)
+				return gf.dwValue;
+		}
 	}
 	return GAMETYPE_UNKNOWN;
 
@@ -871,8 +878,15 @@ DWORD Get_MapByName(int gameIdx, char *szMapName)
 	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterMap.size();i++)
 	{
 		GAMEFILTER gf = GI[gameIdx].pSC->vFilterMap.at(i);
-		if(strstr(szMapName,gf.sStrValue.c_str())!=NULL)
-			return gf.dwValue;		
+		if(gf.dwExactMatch==0)
+		{
+			if(strstr(szMapName,gf.sStrValue.c_str())!=NULL)
+				return gf.dwValue;		
+		}else
+		{
+			if(strcmp(szMapName,gf.sStrValue.c_str())==0)
+				return gf.dwValue;	
+		}
 	}
 	return GAMETYPE_UNKNOWN;
 }

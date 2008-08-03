@@ -16,6 +16,8 @@ v 1.0.3 (1.03) {40ED2250-FB02-4183-B2A6-F0A987C2E277}
 v 1.0.4 (1.04) {398C9890-FAD1-48DB-A1D0-DE2BBBE661AA}
 v 1.0.5 (1.05) {5F677BD9-D1A6-4511-B69C-BD90DD4FCE03}
 v 1.0.6 (1.06) {443FDBF3-D249-4510-86A9-93FF61CC8704}
+v 1.0.7 (1.07) {CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}
+
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
 
@@ -169,7 +171,8 @@ _WINDOW_CONTAINER WNDCONT[15];
 PLAYERDATA *pCurrentPL=NULL; //a temporary current player list in listview, this will be 
                              //keept when doing a rescan and the user want's to add aplayer to the buddylist for instance.
 
-
+CRITICAL_SECTION	SCANNER_cs,SCANNER_CSthreadcounter; 
+CRITICAL_SECTION	REDRAWLIST_CS; 
 
 int ImageSizeX = 120;
 //int oldmaxWidth=0;
@@ -332,7 +335,7 @@ bool g_bRunningQuery = false;
 bool g_bRunningQueryServerList = false;
 int g_iCurrentSelectedServer = -1;
 int g_statusIcon = -1;
-BOOL 	bRunningRefreshThread = FALSE;
+BOOL g_bRedrawServerListThread = FALSE;
 HICON hOnlineIcon = NULL;
 HICON hOfflineIcon = NULL;
 
@@ -1103,8 +1106,8 @@ int StrSorter(char *a, char *b)
 
 bool Sort_Player(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_PLAYERS].bSortAsc)
 		return (pSIa.nCurrentPlayers > pSIb.nCurrentPlayers);
@@ -1114,8 +1117,8 @@ bool Sort_Player(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Country(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_COUNTRY].bSortAsc)
 		return (strcmp(pSIa.szCountry , pSIb.szCountry )>0);
@@ -1125,8 +1128,8 @@ bool Sort_Country(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Ping(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_PING].bSortAsc)	
 		return (pSIa.dwPing > pSIb.dwPing);	
 	else
@@ -1135,8 +1138,8 @@ bool Sort_Ping(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_MAP].bSortAsc)	
 		return (StrSorter(pSIa.szMap , pSIb.szMap )>0);
@@ -1146,8 +1149,8 @@ bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_MOD].bSortAsc)	
 		return (StrSorter(pSIa.szMod , pSIb.szMod )>0);
 	else
@@ -1156,8 +1159,8 @@ bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_IP].bSortAsc)
 		return (StrSorter(pSIa.szIPaddress , pSIb.szIPaddress )>0);
@@ -1168,8 +1171,8 @@ bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Punkbuster(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_PB].bSortAsc)
 		return (pSIa.bPunkbuster > pSIb.bPunkbuster );
@@ -1180,8 +1183,8 @@ bool Sort_Punkbuster(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Private(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_PRIVATE].bSortAsc)
 		return (pSIa.bPrivate > pSIb.bPrivate );	
@@ -1191,8 +1194,8 @@ bool Sort_Private(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Ranked(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_RANKED].bSortAsc)
 		return (pSIa.cRanked > pSIb.cRanked );	
@@ -1201,8 +1204,8 @@ bool Sort_Ranked(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 }
 bool Sort_Bots(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_BOTS].bSortAsc)
 		return (pSIa.cBots > pSIb.cBots );	
@@ -1212,8 +1215,8 @@ bool Sort_Bots(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_SERVERNAME].bSortAsc)
 		return (StrSorter(pSIa.szServerName , pSIb.szServerName )>0);
@@ -1223,8 +1226,8 @@ bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 }
 bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_STATUS].bSortAsc)
 		return (StrSorter(pSIa.szSTATUS , pSIb.szSTATUS )>0);
@@ -1235,8 +1238,8 @@ bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_VERSION].bSortAsc)
 	{
@@ -1249,8 +1252,8 @@ bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  currCV->pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  currCV->pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_GAMETYPE].bSortAsc)
 		return (pSIa.dwGameType < pSIb.dwGameType);
 	else
@@ -1259,17 +1262,18 @@ bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 void Do_ServerListSort(int iColumn)
 {
-	GAME_INFO *localcurrCV = currCV;
+	int gameIdx = currCV->cGAMEINDEX;
+	
 	
 	//We don't to do sorting on the current scanning game index
-	if((localcurrCV->cGAMEINDEX==g_currentScanGameIdx) && g_bRunningQueryServerList)
-	{
-	//	DebugBreak();
+/*	if((localcurrCV->cGAMEINDEX==g_currentScanGameIdx) && g_bRunningQueryServerList)	
 		return ;
-	}
+	*/
 
+//	EnterCriticalSection(&SCANNER_cs);
 	BOOL sortdir = FALSE;
-	if(localcurrCV->pSC->vRefListSI.size()>0)
+	dbg_print("idx %d\nList view Size %d",gameIdx,GI[gameIdx].pSC->vRefListSI.size());
+	if(GI[gameIdx].pSC->vRefListSI.size()>0)
 	{
 		DWORD id=0;
 		for(int i=0;i<MAX_COLUMNS;i++)
@@ -1288,7 +1292,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_PB : 
 				try
 				{	
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Punkbuster); 
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Punkbuster); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1299,7 +1303,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_PRIVATE: 
 				try
 				{	
-				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Private);
+				sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Private);
 							}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1310,7 +1314,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_RANKED: 
 				try
 				{	
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Ranked); 
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Ranked); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1320,7 +1324,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_SERVERNAME: 
 				try
 				{	
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_ServerName); 
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_ServerName); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1329,7 +1333,7 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_GAMETYPE: 
 				try{
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_GameType); 
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_GameType); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1339,7 +1343,7 @@ void Do_ServerListSort(int iColumn)
 
 			case COL_MAP: 
 				try{
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Map); 
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Map); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1348,8 +1352,8 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_MOD: 
 				try{
-				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Mod); 
-								}catch (const exception& e)
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Mod); 
+				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
 					DebugBreak();
@@ -1358,7 +1362,7 @@ void Do_ServerListSort(int iColumn)
 
 			case COL_PLAYERS: 
 				try{
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Player);
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Player);
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1366,10 +1370,10 @@ void Do_ServerListSort(int iColumn)
 				}
 				break;
 				
-			case COL_COUNTRY: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Country); break;
+			case COL_COUNTRY: sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Country); break;
 			case COL_PING: 
 				try{
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Ping); 
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Ping); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1378,7 +1382,7 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_IP: 
 				try{
-				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_IP); 
+				sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_IP); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1388,7 +1392,7 @@ void Do_ServerListSort(int iColumn)
 
 			case COL_VERSION: 
 				try{
-				sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Version); 
+				sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Version); 
 								}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1397,22 +1401,22 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_BOTS: 
 				try{
-					sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Bots);
+					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Bots);
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
 					DebugBreak();
 				}
 				 break;
-			case COL_STATUS: sort(localcurrCV->pSC->vRefListSI.begin(),localcurrCV->pSC->vRefListSI.end(),Sort_Status); 
+			case COL_STATUS: sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Status); 
 				break;
 
 
 		}
 
 		ListView_SetHeaderSortImage(g_hwndListViewServer, iColumn,(BOOL) sortdir); //id =iColumn
-		ListView_SetItemCount(g_hwndListViewServer,localcurrCV->pSC->vRefListSI.size());
-	
+		ListView_SetItemCount(g_hwndListViewServer,GI[gameIdx].pSC->vRefListSI.size());
+	//	LeaveCriticalSection(&SCANNER_cs);
 	}
 
 }
@@ -1564,6 +1568,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	try
 	{	
 		refSI = currCV->pSC->vRefListSI.at((int)pLVItem->iItem);
+		currCV->pSC->vSI.at(refSI.dwIndex).dwLVIndex = pLVItem->iItem;
 		pSI = currCV->pSC->vSI.at(refSI.dwIndex);
 	}
 	catch(const exception& e)
@@ -1793,7 +1798,7 @@ char *Registry_GetGamePath(HKEY hkey,char *pszRegPath,char *pszRegKey,char *pszO
 			}
 		RegCloseKey(HKey);
 		}
-//	AddGetLastErrorIntoLog("Registry_GetGamePath");
+	AddGetLastErrorIntoLog("Registry_GetGamePath");
 	pszOutputString = NULL;
 	dwSizeOfBuffer=0;
 
@@ -2192,16 +2197,17 @@ void Default_GameSettings()
 	strncpy(GI[WARSOW_SERVERLIST].szGAME_CMD,"",MAX_PATH);
 	dwBuffSize = sizeof(GI[WARSOW_SERVERLIST].szGAME_PATH);
 
-	//"C:\Program Files\Warsow\warsow_x86.exe" +set fs_usehomedir 1 +set fs_basepath "C:/Program Files/Warsow"
-	strcpy(GI[WARSOW_SERVERLIST].szGAME_PATH,"C:\\Program Files\\Warsow\\warsow_x86.exe");
-	strcpy(GI[WARSOW_SERVERLIST].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"C:/Program Files/Warsow\"");
+	Registry_GetGamePath(HKEY_CLASSES_ROOT, "warsow\\DefaultIcon","",GI[WARSOW_SERVERLIST].szGAME_PATH,&dwBuffSize);
 
-#ifdef _DEBUG
-	GI[WARSOW_SERVERLIST].bActive = true;
-#else
-	GI[WARSOW_SERVERLIST].bActive = false;
-#endif
-
+	if(strlen(GI[WARSOW_SERVERLIST].szGAME_PATH)>0)
+	{
+		GI[WARSOW_SERVERLIST].bActive = true;
+		sprintf(GI[WARSOW_SERVERLIST].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"%s\"",GI[WARSOW_SERVERLIST].szGAME_PATH);
+	}else
+	{
+		GI[WARSOW_SERVERLIST].bActive = false;
+		sprintf(GI[WARSOW_SERVERLIST].szGAME_CMD,"");
+	}
 	strcpy(GI[WARSOW_SERVERLIST].szQueryString,"Warsow");
 	strcpy(GI[WARSOW_SERVERLIST].szProtocolName,"warsow");
 	GI[WARSOW_SERVERLIST].dwDefaultPort = 28960;
@@ -3127,8 +3133,8 @@ int TreeView_GetSelectionV3()
 
 	TreeView_SelectItem(g_hwndMainTreeCtrl,NULL);	
 	SetCurrentViewTo(g_currentGameIdx);
-	RedrawServerListThread(&GI[g_currentGameIdx]);
-	//Initialize_RedrawServerListThread();
+	//RedrawServerListThread(&GI[g_currentGameIdx]);
+	Initialize_RedrawServerListThread();
 	return DO_NOTHING;
 }
 
@@ -3659,6 +3665,12 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 	for( childItem; childItem; childItem=childItem->NextSiblingElement() )
 	{	
 		
+		ti.dwAction = 0;
+		ti.dwType = 0;
+		ti.dwCompare = 0;
+		ti.dwState = 0;
+		ti.dwValue = 0;
+		
 
 		ti.sName = "No name";
 		XML_GetTreeItemName(childItem,szName,sizeof(szName));		
@@ -3670,6 +3682,8 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
  
 		ti.cGAMEINDEX = (char)XML_GetTreeItemInt(childItem,"game");
 		ti.dwType =  XML_GetTreeItemInt(childItem,"type");
+	
+		ti.dwCompare =  XML_GetTreeItemInt(childItem,"compare");
 
 		if(ti.dwType==1024)
 			ti.iIconIndex = Get_GameIcon(ti.cGAMEINDEX);
@@ -3727,6 +3741,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
+			gf.dwExactMatch = ti.dwCompare;
 			GI[ti.cGAMEINDEX].pSC->vFilterMap.push_back(gf);
 		}
 		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
@@ -3760,6 +3775,7 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
 		elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
 		elem->SetAttribute("value",vTI.at(iSel).dwValue);
+		elem->SetAttribute("compare",vTI.at(iSel).dwCompare);
 		elem->SetAttribute("icon",vTI.at(iSel).iIconIndex);
 		elem->SetAttribute("expanded",(UINT)vTI.at(iSel).bExpanded);
 		elem->SetAttribute("type",vTI.at(iSel).dwType);
@@ -4060,6 +4076,7 @@ int TreeView_load()
 			TreeView_SetFilterGroupCheckState(i,FILTER_MAP,GI[i].filter.dwMap);
 			TreeView_SetFilterGroupCheckState(i,FILTER_VERSION,GI[i].filter.dwVersion);
 			TreeView_SetFilterGroupCheckState(i,FILTER_GAMETYPE,GI[i].filter.dwGameTypeFilter);
+			TreeView_SetFilterGroupCheckState(i,FILTER_REGION,GI[i].filter.dwRegion);
 		}
 	}
 
@@ -4646,7 +4663,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	STEAM_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, &InsertServerItem);
 
 	g_CurrentSRV = NULL;
-	bRunningRefreshThread = FALSE;
+	g_bRedrawServerListThread =  FALSE;
 	g_bRunningQueryServerList = false;
 	g_bCancel = false;
 	ZeroMemory(&g_CurrentSelServer,sizeof(SERVER_INFO));
@@ -5271,6 +5288,7 @@ void LoadServerListV2(GAME_INFO *pGI)
 						srv.pPlayerData = NULL;
 						srv.pServerRules = NULL;					
 						srv.bUpdated = 0;
+						srv.bNeedToUpdateServerInfo = true;
 						int hash = srv.dwIP + srv.dwPort;
 						pGI->pSC->shash.insert(Int_Pair(hash,srv.dwIndex));
 						pGI->pSC->vSI.push_back(srv);
@@ -5414,7 +5432,7 @@ DWORD WINAPI SavingFilesCleaningUpThread(LPVOID pvoid )
 		}
 	}
 	
-	while(bRunningRefreshThread)
+	while(g_bRunningQueryServerList)
 	{
 		dbg_print("Sleeping...\n");
 		Sleep(300);
@@ -5760,7 +5778,7 @@ DWORD WINAPI StopScanningThread(LPVOID pvoid )
 		}
 	}
 	
-	while(bRunningRefreshThread)
+	while(g_bRunningQueryServerList)
 	{
 		dbg_print("Sleeping...\n");
 		Sleep(300);
@@ -5811,8 +5829,9 @@ int SetCurrentViewTo(int index)
 {
 	g_currentGameIdx = index;
 	//Clear old
-	if(currCV!=NULL)
-		currCV->pSC->vRefListSI.clear();
+	//if(currCV!=NULL)
+	//	currCV->pSC->vRefListSI.clear();
+
 	currCV = &GI[g_currentGameIdx];
 	if(g_hwndMainTreeCtrl==NULL)
 		return 0;
@@ -6603,7 +6622,8 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 	
 	//We don't want to overdraw wrong serverlist
 	if(currGameIdx==g_currentGameIdx)
-		RedrawServerListThread(&GI[currGameIdx]); //Modifed version since 5.25
+		Initialize_RedrawServerListThread();
+		//RedrawServerListThread(&GI[currGameIdx]); //Modifed version since 5.25
 
 	if(g_bRunningQueryServerList)	
 		return 0;
@@ -6614,7 +6634,9 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 	if (! ResetEvent(hCloseEvent) ) 
         dbg_print("ResetEvent failed\n");
 
-	
+	time(&GI[currGameIdx].lastScanTimeStamp);
+
+
 	int iGame=0;
 nextGame:
 	if(options==SCAN_ALL_GAMES)
@@ -6766,8 +6788,8 @@ nextGame:
 	{
 		g_currentScanGameIdx = -1;
 		//Modified since ver 5.25		
-		//Initilize_RedrawServerListThread();
-		RedrawServerListThread(&GI[currGameIdx]);
+		Initialize_RedrawServerListThread();
+		//RedrawServerListThread(&GI[currGameIdx]);
 		
 	}
 
@@ -6949,8 +6971,15 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 					return false;	
 			}
 
+
+
 			if(AppCFG.filter.bHideOfflineServers && (srv->dwPing==9999))
-				return false;
+			{
+				if(srv->bNeedToUpdateServerInfo)
+					returnVal=true;
+				else
+					return false;
+			}
 		
 			if(AppCFG.filter.dwPing>0)
 			{
@@ -7138,25 +7167,27 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 
 DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 {
-	if(bRunningRefreshThread==TRUE)
-		return 0xFF;
+//	if(g_bRedrawServerListThread==TRUE)
+//		return 0xDEADFACE;
+
+	if(TryEnterCriticalSection(&REDRAWLIST_CS)==FALSE)
+		return 0xDEADFACE;
+
+	int gameIdx = (int)pvoid;
+
+	GAME_INFO *pGI = &GI[gameIdx];//(GAME_INFO *)pvoid;
 	
-	bRunningRefreshThread = TRUE;
-	
-	GAME_INFO *pGI = (GAME_INFO *)pvoid;
 	vSRV_INF::iterator  iLst;
 
 	pGI->dwViewFlags |= REDRAW_SERVERLIST;
-
 	
 //	SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
-	dbg_print("View flags: %d",pGI->dwViewFlags);
+	dbg_print("View flags: %d \n idx %d \nList Size %d",pGI->dwViewFlags,gameIdx,pGI->pSC->vSI.size());
 	ListView_DeleteAllItems(g_hwndListViewServer);
 	pGI->pSC->vRefListSI.clear();
 	if(pGI->pSC->vSI.size()>0)
 	{
 		try{
-
 			for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
 			{
 				SERVER_INFO pSI = *iLst;
@@ -7169,13 +7200,13 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 				{
 					pGI->pSC->vRefListSI.push_back(refSI);
 				}
-			}
-				Do_ServerListSort(iLastColumnSortIndex);
+			}			
 		}catch (const exception& e)
 		{
 			AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
 			DebugBreak();
 		}
+		Do_ServerListSort(iLastColumnSortIndex);
 	}
 	if(pGI->dwViewFlags & REDRAW_SERVERLIST)
 		pGI->dwViewFlags ^= REDRAW_SERVERLIST;
@@ -7185,11 +7216,11 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 		pGI->dwViewFlags ^= FORCE_SCAN_FILTERED;
 
 
-	dbg_print("Created filtered serverlist! View flags %d Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
+	dbg_print("Created filtered serverlist! View flags %d\n Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
 
 	ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());
+	LeaveCriticalSection(&REDRAWLIST_CS);
 	
-	bRunningRefreshThread=FALSE;
 	return 0;
 }
 
@@ -7198,7 +7229,7 @@ void Initialize_RedrawServerListThread()
 {
 		HANDLE hThread;
 		DWORD dwThreadIdBrowser;
-		AddLogInfo(ETSV_DEBUG,  "executing InitilizeRedrawServerListThread");	
+//		AddLogInfo(ETSV_DEBUG,  "executing InitilizeRedrawServerListThread");	
 
 		if(g_currentGameIdx==-1) //since v5.41
 			return;
@@ -7208,8 +7239,8 @@ void Initialize_RedrawServerListThread()
 	//		bRunningRefreshThread = TRUE;
 			dbg_print("Creating RedrawServerListThread thread!\n");
 			hThread = NULL;		
-	
-			hThread = CreateThread( NULL, 0, &RedrawServerListThread, (LPVOID)&GI[g_currentGameIdx],0, &dwThreadIdBrowser);                
+			int gameIdx = g_currentGameIdx;
+			hThread = CreateThread( NULL, 0, &RedrawServerListThread, (LPVOID)gameIdx,0, &dwThreadIdBrowser);                
 			if (hThread == NULL) 
 			{
 				AddLogInfo(ETSV_WARNING,"CreateThread failed (%d)\n", GetLastError() ); 
@@ -7219,7 +7250,7 @@ void Initialize_RedrawServerListThread()
 				CloseHandle( hThread );
 			}
 		}
-		AddLogInfo(ETSV_DEBUG,  "executing InitilizeRedrawServerListThread done");
+//		AddLogInfo(ETSV_DEBUG,  "executing InitilizeRedrawServerListThread done");
 }
 
 
@@ -8469,6 +8500,7 @@ SERVER_INFO Get_ServerInfoByIndex(int index)
 		srv = currCV->pSC->vSI.at(idx);
 	}catch(std::out_of_range)
 	{
+		
 		//DebugBreak();
 		AddLogInfo(0,"Vector: Out of range");
 	}catch(const exception& e)
@@ -8497,7 +8529,8 @@ void Favorite_Add(bool manually,char *szIP)
 		}
 
 		DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ADD_SERVER), NULL,(DLGPROC)AddServerProc);		
-		RedrawServerListThread(&GI[g_currentGameIdx]);
+		int gameIdx = g_currentGameIdx;
+		RedrawServerListThread((LPVOID)gameIdx);
 	}
 }
 
@@ -8549,8 +8582,11 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 				case IDM_SCAN:
 					OnActivate_ServerList();
 				break;
-				case IDM_REFRESH: 
-					RedrawServerListThread(&GI[g_currentGameIdx]);
+				case IDM_REFRESH:
+					{
+					int gameIdx = g_currentGameIdx;
+					RedrawServerListThread((LPVOID)gameIdx);
+					}
 				break;
 				case IDM_ADDIP:
 					Favorite_Add(true);
@@ -9276,6 +9312,10 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						case IDM_FONT_COLOR: 
 							lpttt->lpszText = MAKEINTRESOURCE(IDS_COLOR_FONT); 
 							break; 
+						case ID_BUDDY_ADD:
+							lpttt->lpszText = MAKEINTRESOURCE(IDS_ADD_NEW_BUDDY); 
+							break; 
+
 					} 
 					break; 
 				} 
@@ -9354,15 +9394,25 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 										return TRUE;
 									} else
 									{
-										GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
-										OnActivate_ServerList(SCAN_FILTERED);
-										return TRUE;
+										time_t currTime;
+										time(&currTime);
+										double seconds = difftime(currTime,GI[g_currentGameIdx].lastScanTimeStamp);
+										dbg_print("Seconds since last scan %f",seconds);
+										if(seconds>(60*5))
+										{
+										
+											GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
+											OnActivate_ServerList(SCAN_FILTERED);
+											return TRUE;
+										}
+									
 									}
 								}
 								break;
 
 						} //end switch
-						RedrawServerListThread(&GI[g_currentGameIdx]);
+						Initialize_RedrawServerListThread();
+						//RedrawServerListThread(&GI[g_currentGameIdx]);
 						return TRUE;
 					}					
 				}
@@ -9674,6 +9724,9 @@ tryagain:
 		}
 		goto tryagain;
 	}
+	InitializeCriticalSection(&SCANNER_cs);
+	InitializeCriticalSection(&SCANNER_CSthreadcounter);					
+	InitializeCriticalSection(&REDRAWLIST_CS);					
 
 	 
 	// Main message loop:
@@ -9693,6 +9746,9 @@ tryagain:
 
 		}
 	}
+	DeleteCriticalSection(&REDRAWLIST_CS);
+	DeleteCriticalSection(&SCANNER_CSthreadcounter);
+	DeleteCriticalSection(&SCANNER_cs);
 
 	 Q4_CleanUp_PlayerList(pCurrentPL);
 	
@@ -11113,7 +11169,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			return TRUE;
 
 		case WM_REFRESHSERVERLIST:
-			RedrawServerListThread(&GI[g_currentGameIdx]);
+			Initialize_RedrawServerListThread();
+			//RedrawServerListThread(&GI[g_currentGameIdx]);
 			return TRUE;
 		case WM_CREATE:
 		{
@@ -11223,7 +11280,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							else
 							{
 								Show_ToolbarButton(IDC_BUTTON_FIND,false);
-								RedrawServerListThread(&GI[g_currentGameIdx]);
+								int gameIdx = g_currentGameIdx;
+								RedrawServerListThread((LPVOID)gameIdx);
 							}
 						}
 						return FALSE;
@@ -11294,7 +11352,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
 					OnActivate_ServerList(SCAN_FILTERED);
 					break;
-
 				case IDM_SCAN:  //Toolbar
 					OnActivate_ServerList(SCAN_ALL);
 				break;
@@ -11377,9 +11434,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					
 				break;
 				case IDM_FONT_COLOR:
-					AppCFG.bUseColorEncodedFont = !AppCFG.bUseColorEncodedFont;
-					RedrawServerListThread(&GI[g_currentGameIdx]);
-					DrawCurrentPlayerList(pCurrentPL);
+					{
+						AppCFG.bUseColorEncodedFont = !AppCFG.bUseColorEncodedFont;
+						int gameIdx = g_currentGameIdx;
+						RedrawServerListThread((LPVOID)gameIdx);
+						DrawCurrentPlayerList(pCurrentPL);
+					}
 					break;
 				case ID_VIEW_MAPPREVIEW :						
 				case ID_VIEW_SERVERRULES:
