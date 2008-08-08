@@ -333,12 +333,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_47AD694FC3E2897CF0B27B1B56A9BF66"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_47CC44CA648B447AABD5E074840DDA27"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -467,12 +461,6 @@
         {
         "MsmKey" = "8:_663BE43C659E4382903569615436F911"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_6B5BBCC7082B8331F1F9CDEBFF0E8419"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -1109,12 +1097,6 @@
         {
         "MsmKey" = "8:_F33648B64A8246EE94A5FFE110950428"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_F4C55CAE2F00DD120B2FB6F46E1308BD"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -2293,26 +2275,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47AD694FC3E2897CF0B27B1B56A9BF66"
-            {
-            "SourcePath" = "8:HttpFileDownload.dll"
-            "TargetName" = "8:HttpFileDownload.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_47CC44CA648B447AABD5E074840DDA27"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_ca.gif"
@@ -2751,26 +2713,6 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
-            "IsolateTo" = "8:"
-            }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6B5BBCC7082B8331F1F9CDEBFF0E8419"
-            {
-            "SourcePath" = "8:FreeImage.dll"
-            "TargetName" = "8:FreeImage.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_6CCEF5CB366B487E9AE9ABB77C3719AE"
@@ -4873,26 +4815,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F4C55CAE2F00DD120B2FB6F46E1308BD"
-            {
-            "SourcePath" = "8:IPtoCountry.dll"
-            "TargetName" = "8:IPtoCountry.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F5C3A8672C564108B85D7F458195C3C0"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_tz.gif"
@@ -5052,7 +4974,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
         "ProductCode" = "8:{CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}"
-        "PackageCode" = "8:{7E571E4A-A050-4D5F-BE0A-1F0E0F50B6AC}"
+        "PackageCode" = "8:{BC49FF15-72A7-422B-AAA4-6399E2B819B6}"
         "UpgradeCode" = "8:{1E1FC67E-A466-4A1F-A278-286B6905C57B}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -5066,7 +4988,7 @@
         "Subject" = "8:"
         "ARPCONTACT" = "8:bDamage"
         "Keywords" = "8:"
-        "ARPCOMMENTS" = "8:"
+        "ARPCOMMENTS" = "8:Multiplayer game browser"
         "ARPURLINFOABOUT" = "8:"
         "ARPPRODUCTICON" = "8:"
         "ARPIconIndex" = "3:0"
@@ -5074,7 +4996,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:"
+        "PostBuildEvent" = "8:\"$(ProjectDir)EnableLaunchApplication.js\" \"$(BuiltOutputPath)\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
@@ -5286,7 +5208,7 @@
                 {
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_FD9131F7B2614AC5A402993F060B5429"
                     {
-                    "Sequence" = "3:100"
+                    "Sequence" = "3:200"
                     "DisplayName" = "8:Finished"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
