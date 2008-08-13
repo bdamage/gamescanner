@@ -2437,7 +2437,7 @@ void Default_Appsettings()
 	AppCFG.filter.dwGameTypeFilter = 0;
 	AppCFG.bUseColorEncodedFont = TRUE;
 	AppCFG.dwThreads = 32;
-	AppCFG.bUseFilterOnPing = FALSE;
+
 
 	memset(AppCFG.szEXT_EXE_CMD,0,MAX_PATH);	
 	memset(AppCFG.szEXT_EXE_PATH,0,MAX_PATH);
@@ -4773,8 +4773,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	tci.pszText = "Logger";
 	TabCtrl_InsertItem(g_hwndTabControl,4,&tci);
 
-
-
 	DWORD dwExStyle = 0;
 
 	dwExStyle = TreeView_GetExtendedStyle(g_hwndMainTreeCtrl);
@@ -5566,7 +5564,6 @@ void CFG_Save()
 	//---------------------------
 	TiXmlElement * filters = new TiXmlElement( "Filters" );  
 	root->LinkEndChild( filters );  
-	WriteCfgInt(filters,"Filter","FilterPing",AppCFG.bUseFilterOnPing);
 	WriteCfgInt(filters,"Filter","HideOfflineServers",AppCFG.filter.bHideOfflineServers);
 
 	WriteCfgInt(filters,"Filter","NumMaxPlayers",AppCFG.filter.dwShowServerWithMaxPlayers);
@@ -10706,7 +10703,6 @@ int CFG_Load()
 		return 1;
 	}
 
-	AppCFG.bUseFilterOnPing = FALSE;
 	AppCFG.bUseFilterOnFavorites = FALSE;
 	AppCFG.bUseShortCountry = FALSE;	
 	AppCFG.filter.bPunkbuster = FALSE;
@@ -10891,21 +10887,14 @@ int CFG_Load()
 		g_currentGameIdx  = 0;
 	
 
-	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"FilterPing",(int&)AppCFG.bUseFilterOnPing);
+	
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"HideOfflineServers",(int&)AppCFG.filter.bHideOfflineServers);
-
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NoEmpty",(int&)AppCFG.filter.bNoEmpty);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NoFull",(int&)AppCFG.filter.bNoFull);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NoPrivate",(int&)AppCFG.filter.bNoPrivate);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"OnlyPrivate",(int&)AppCFG.filter.bOnlyPrivate);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"Punkbuster",(int&)AppCFG.filter.bPunkbuster);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"OnlyRanked",(int&)AppCFG.filter.bRanked);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"Pure",(int&)AppCFG.filter.bPure);
-//	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NoBots",(int&)AppCFG.filter.bNoBots);
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMaxPlayers",(int&)AppCFG.filter.dwShowServerWithMaxPlayers);
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMinPlayers",(int&)AppCFG.filter.dwShowServerWithMinPlayers);
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMaxPlayersActive",(int&)AppCFG.filter.cActiveMaxPlayer);
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMinPlayersActive",(int&)AppCFG.filter.cActiveMinPlayer);
+	
+	
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"Ping",(int&)AppCFG.filter.dwPing);
 
 	

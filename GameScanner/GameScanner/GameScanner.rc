@@ -155,15 +155,15 @@ END
 // Dialog
 //
 
-IDD_DIALOG_CONFIG DIALOGEX 0, 0, 467, 268
+IDD_DIALOG_CONFIG DIALOGEX 0, 0, 591, 284
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Configuration"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,147,248,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,271,248,50,14
-    PUSHBUTTON      "Set default",IDC_BUTTON_DEFAULT,208,248,50,14
-    CONTROL         "",IDC_TREE_CONF,"SysTreeView32",TVS_HASBUTTONS | TVS_LINESATROOT | TVS_FULLROWSELECT | WS_BORDER | WS_HSCROLL | WS_TABSTOP,2,4,107,259
+    DEFPUSHBUTTON   "OK",IDOK,223,264,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,347,264,50,14
+    PUSHBUTTON      "Set default",IDC_BUTTON_DEFAULT,284,264,50,14
+    CONTROL         "",IDC_TREE_CONF,"SysTreeView32",TVS_HASBUTTONS | TVS_LINESATROOT | TVS_FULLROWSELECT | WS_BORDER | WS_HSCROLL | WS_TABSTOP,2,8,107,271
 END
 
 IDD_CFG1 DIALOGEX 0, 0, 355, 205
@@ -173,10 +173,10 @@ BEGIN
     CONTROL         "Auto Start on boot up.",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,21,191,10
     CONTROL         "Use short country name.",IDC_CHECK_SHORTNAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,32,191,10
     CONTROL         "Notify mIRC when joining servers (experimental)",IDC_CHECK_MIRC,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,62,250,9
-    GROUPBOX        "mIRC",IDC_STATIC,7,51,340,91
-    EDITTEXT        IDC_EDIT_MIRC,18,83,322,15,ES_AUTOHSCROLL
-    LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",IDC_STATIC,17,106,262,31
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,109,250,9
+    GROUPBOX        "mIRC",IDC_STATIC,7,98,340,91
+    EDITTEXT        IDC_EDIT_MIRC,18,130,322,15,ES_AUTOHSCROLL
+    LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",IDC_STATIC,17,153,262,31
 END
 
 IDD_CFG2 DIALOGEX 0, 0, 360, 186
@@ -247,12 +247,14 @@ IDD_CFG_NET DIALOGEX 0, 0, 296, 196
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "",IDC_SLIDER_THREADS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | WS_TABSTOP,16,26,22,95
-    GROUPBOX        "Threads",IDC_STATIC,12,14,55,113
-    LTEXT           "??",IDC_STATIC_THREAD,47,68,14,8
-    GROUPBOX        "Socket timeout settings",IDC_STATIC,7,140,90,30
-    EDITTEXT        IDC_EDIT_SOCK_TIMEOUT_S,24,150,36,13,ES_AUTOHSCROLL
+    CONTROL         "",IDC_SLIDER_THREADS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | WS_TABSTOP,34,26,22,95
+    GROUPBOX        "Threads / Connections",IDC_STATIC,12,14,81,113
+    LTEXT           "??",IDC_STATIC_THREAD,71,68,14,8
+    GROUPBOX        "Socket timeout settings",IDC_STATIC,7,138,90,31
+    EDITTEXT        IDC_EDIT_SOCK_TIMEOUT_S,24,149,36,14,ES_AUTOHSCROLL
     LTEXT           "ms",IDC_STATIC,66,152,10,8
+    GROUPBOX        "Retries",IDC_STATIC,117,138,80,31
+    EDITTEXT        IDC_EDIT_CFG_RETRIES,130,149,49,15,ES_AUTOHSCROLL
 END
 
 IDD_ABOUTBOX DIALOGEX 22, 17, 160, 223
@@ -385,6 +387,47 @@ BEGIN
     LTEXT           "Please enter a number (0 = ignore):",IDC_STATIC,7,7,172,8
 END
 
+IDD_CFG3_NEW DIALOGEX 0, 0, 464, 249
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Settings for Master Server IP, Port && Protocol",-1,10,163,445,71
+    EDITTEXT        IDC_EDIT_MASTER_SERVER,133,191,322,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MASTER_PORT,60,208,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_PROTOCOL,199,209,40,14,ES_AUTOHSCROLL
+    LTEXT           "Master server",-1,12,195,48,8
+    LTEXT           "Port",-1,12,212,39,8
+    LTEXT           "Protocol",-1,167,212,29,8
+    CONTROL         "Activate game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
+    CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,175,245,10
+    CONTROL         "",IDC_LIST_CFG_EXES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,10,34,445,67
+    PUSHBUTTON      "Edit installation setting",IDC_BUTTON_EDIT_INSTALL,189,107,97,16
+    PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,73,107,97,16
+    PUSHBUTTON      "Delete installation setting",IDC_BUTTON_DELETE_INSTALL,305,107,97,16
+END
+
+IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 395, 174
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Properties for game installation"
+FONT 8, "MS Shell Dlg", 400, 0, 0x0
+BEGIN
+    RTEXT           "Launch when Version is equal to:",IDC_STATIC,17,80,145,11
+    GROUPBOX        "Add a new executable",IDC_STATIC_GAME_NAME,7,7,379,121
+    EDITTEXT        IDC_EDIT_PATH,56,41,309,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_BUTTON_ET_PATH,367,41,19,14
+    EDITTEXT        IDC_EDIT_CMD,54,58,332,14,ES_AUTOHSCROLL
+    LTEXT           "Executable",IDC_STATIC,17,44,35,8
+    LTEXT           "Command",IDC_STATIC,17,60,35,8
+    RTEXT           "Launch when Mod name is equal to:",IDC_STATIC,17,103,145,11
+    EDITTEXT        IDC_EDIT_CFG_VERSION,162,78,224,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CFG_MOD,162,100,224,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CFG_VERSION2,80,18,82,14,ES_AUTOHSCROLL
+    RTEXT           "Property name:",IDC_STATIC,17,20,56,11
+    DEFPUSHBUTTON   "Cancel",IDC_BUTTON_CFG_EXE_CANCEL,88,137,74,21
+    PUSHBUTTON      "Save",IDC_BUTTON_EXE_CFG_OK,205,137,74,21
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -411,13 +454,13 @@ GUIDELINES DESIGNINFO
 BEGIN
     IDD_DIALOG_CONFIG, DIALOG
     BEGIN
-        RIGHTMARGIN, 461
-        BOTTOMMARGIN, 263
+        RIGHTMARGIN, 585
+        BOTTOMMARGIN, 279
     END
 
     IDD_CFG1, DIALOG
     BEGIN
-        RIGHTMARGIN, 328
+        RIGHTMARGIN, 347
     END
 
     IDD_CFG2, DIALOG
@@ -436,12 +479,40 @@ BEGIN
         VERTGUIDE, 309
     END
 
+    IDD_CFG_NET, DIALOG
+    BEGIN
+        HORZGUIDE, 138
+        HORZGUIDE, 169
+    END
+
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
         VERTGUIDE, 156
         TOPMARGIN, 7
         BOTTOMMARGIN, 217
+    END
+
+    IDD_CFG3_NEW, DIALOG
+    BEGIN
+        RIGHTMARGIN, 455
+        VERTGUIDE, 10
+        BOTTOMMARGIN, 234
+        HORZGUIDE, 108
+        HORZGUIDE, 123
+    END
+
+    IDD_ADD_NEW_GAME_INSTALLATION, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 388
+        VERTGUIDE, 17
+        VERTGUIDE, 162
+        VERTGUIDE, 386
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 167
+        HORZGUIDE, 137
+        HORZGUIDE, 158
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -530,8 +601,8 @@ IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
 IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
 IDI_ICON_QUAKE1         ICON                    "res\\icon4.ico"
 IDI_ICON_QUAKE2         ICON                    "res\\icon8.ico"
-IDI_ICON8               ICON                    "C:\\Users\\Kjell\\Pictures\\GSOrg32.ico"
-IDI_ICON4               ICON                    "C:\\Users\\Kjell\\Pictures\\GSPlusOrg16.ico"
+IDI_ICON8               ICON                    "res\\icon9.ico"
+IDI_ICON4               ICON                    "res\\icon9.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_QUAKEARENA     ICON                    "res\\ico00005.ico"
 IDI_ICON_HALFLIFE2      ICON                    "res\\ico00006.ico"

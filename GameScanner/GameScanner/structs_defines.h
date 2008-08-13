@@ -250,7 +250,6 @@ struct APP_SETTINGS_NEW
    char cBuddyColumnSort;
    char cServerColumnSort;
    BOOL bUseFilterOnFavorites;
-   BOOL bUseFilterOnPing;
    char szNotifySoundWAVfile[MAX_PATH];
    char szQ4_PATH[MAX_PATH];
    char szQ4_CMD[MAX_PATH];

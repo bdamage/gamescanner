@@ -14,6 +14,7 @@
 #define IDM_EXIT                        105
 #define IDS_FAST_CONNECT                105
 #define IDS_DOWNLOAD                    106
+#define IDD_ADD_NEW_GAME_INSTALLATION   106
 #define IDI_GAMESCANNER                 107
 #define IDI_NODISKVIEWER                107
 #define IDS_REFRESH_FILTER              107
@@ -118,21 +119,31 @@
 #define IDC_BUTTON_APPLY                1002
 #define IDC_STATIC_RCON_INFO            1002
 #define IDC_BUTTON_SEL_FONT             1002
+#define IDC_BUTTON_CFG_EXE_CANCEL       1002
+#define IDC_BUTTON_EDIT_INSTALL         1002
 #define IDC_BUTTON2                     1003
 #define IDC_BUTTON_SRV2                 1003
 #define IDC_SLIDER_TRANS                1003
 #define IDC_BUTTON_ADD_SERVER           1003
 #define IDC_EDIT_MIRC                   1003
+#define IDC_BUTTON_EXE_CFG_OK           1003
 #define IDC_BUTTON_JOIN                 1004
 #define IDC_EDIT_PASS                   1004
 #define IDC_CHECK_USE_HTTP              1004
 #define IDC_BUTTON_SRV3                 1005
 #define IDC_STATIC_TEXT                 1005
+#define IDC_LIST_CFG_EXES               1005
 #define IDC_BUTTON_SRV4                 1006
 #define IDC_EDIT_MASTER_SERVER          1006
+#define IDC_EDIT_CFG_VERSION            1006
 #define IDC_LIST2                       1007
 #define IDC_EDIT_MASTER_PORT            1007
+#define IDC_EDIT_CFG_MOD                1007
+#define IDC_EDIT_CFG_RETRIES            1007
 #define IDC_CHECK1                      1008
+#define IDC_EDIT_CFG_VERSION2           1008
+#define IDC_BUTTON3                     1008
+#define IDC_BUTTON_DELETE_INSTALL       1008
 #define IDC_CHECK2                      1009
 #define IDC_CHECK3                      1010
 #define IDC_CHECK5                      1011
@@ -233,6 +244,7 @@
 #define IDC_MAINTREE                    1074
 #define IDI_ICON_USERS                  1075
 #define IDD_DIALOG_STATS                1077
+#define IDD_CFG3_NEW                    1078
 #define IDI_ICON_STATS                  1082
 #define IDI_ICON_PAINT                  1083
 #define IDI_ICON_LOGGER                 1084
@@ -249,6 +261,7 @@
 #define IDI_ICON_TASKTRAY               1098
 #define IDI_ICON_QUAKEARENA             1099
 #define IDI_ICON_HALFLIFE2              1100
+#define IDC_BUTTON_ADD_INSTALL          1101
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -333,7 +346,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1101
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1005
+#define _APS_NEXT_CONTROL_VALUE         1008
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

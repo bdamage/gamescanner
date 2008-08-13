@@ -112,6 +112,9 @@ void CFG_Apply_Network(HWND hDlg)
 	AppCFGtemp.socktimeout.tv_usec = atoi(szTmp) - (AppCFGtemp.socktimeout.tv_sec*1000);
 
 	AppCFGtemp.dwThreads = (DWORD)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_THREADS),TBM_GETPOS,0,(LPARAM)0) ; 
+
+	GetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szTmp,sizeof(szTmp));
+	AppCFGtemp.dwRetries = atoi(szTmp);
 				
 
 }
@@ -234,21 +237,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			for(int i=0;i<MAX_SERVERLIST;i++)
 				hNewItem = TreeView_AddItem(GI[i].iIconIndex,GI[i].szGAME_SHORTNAME);
-/*			hNewItem = TreeView_AddItem(GI[ETQW_SERVERLIST].iIconIndex,"ETQW");
-			hNewItem = TreeView_AddItem(GI[Q3_SERVERLIST].iIconIndex,"Quake 3");			
-			hNewItem = TreeView_AddItem(GI[Q4_SERVERLIST].iIconIndex,"Quake 4");
-			hNewItem = TreeView_AddItem(GI[RTCW_SERVERLIST].iIconIndex,"RTCW");
-			hNewItem = TreeView_AddItem(GI[COD_SERVERLIST].iIconIndex,"CoD");
-			hNewItem = TreeView_AddItem(GI[COD2_SERVERLIST].iIconIndex,"CoD 2");	
-			hNewItem = TreeView_AddItem(GI[WARSOW_SERVERLIST].iIconIndex,"Warsow");
-			hNewItem = TreeView_AddItem(GI[COD4_SERVERLIST].iIconIndex,"CoD 4");
-			hNewItem = TreeView_AddItem(GI[CS_SERVERLIST].iIconIndex,"CS");
-			hNewItem = TreeView_AddItem(GI[CSCZ_SERVERLIST].iIconIndex,"CS Zero");
-			hNewItem = TreeView_AddItem(GI[CSS_SERVERLIST].iIconIndex,"CS Source");
-			hNewItem = TreeView_AddItem(GI[QW_SERVERLIST].iIconIndex,"Quake World");
-			hNewItem = TreeView_AddItem(GI[Q2_SERVERLIST].iIconIndex,"Quake 2");
-			hNewItem = TreeView_AddItem(GI[OPENARENA_SERVERLIST].iIconIndex,"Open Arena");
-*/
+
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
 					
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
@@ -265,12 +254,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
   case WM_NOTIFY: 
 	  {
-	//	NMITEMACTIVATE *lpnmia;
-	//	lpnmia = (LPNMITEMACTIVATE)lParam;
-
 		NMTREEVIEW *lpnmtv;
-
-
 		lpnmtv = (LPNMTREEVIEW)lParam;
 
 		switch (wParam) 
@@ -396,7 +380,7 @@ VOID WINAPI CFG_OnTabbedDialogInit(HWND hwndDlg)
     // Save a pointer to the DLGHDR structure. 
     SetWindowLong(hwndDlg, GWLP_USERDATA, (LONG) g_pHdr); 
  
-	g_pHdr->hwndTab = GetDlgItem(hwndDlg,IDC_TREE_CONF); //IDC_LIST_CONFIG);
+	g_pHdr->hwndTab = GetDlgItem(hwndDlg,IDC_TREE_CONF); 
  
     // Lock the resources for the three child dialog boxes. 
     g_pHdr->apRes[0] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG1)); 
@@ -404,7 +388,7 @@ VOID WINAPI CFG_OnTabbedDialogInit(HWND hwndDlg)
 	g_pHdr->apRes[2] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG4)); 
 	g_pHdr->apRes[3] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG5)); 
 	g_pHdr->apRes[4] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_NET)); 
-	g_pHdr->apRes[5] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG3_ET)); 
+	g_pHdr->apRes[5] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG3_NEW)); 
 	
 	g_currSelCfg=-1;
     CFG_OnSelChanged(hwndDlg); 
@@ -519,6 +503,82 @@ HFONT FAR PASCAL CFG_SelectFont( void )
 HWND g_hwndScrollTrans;
 HWND g_hwndScrollThreads;
 
+LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	char szFile[260];
+	switch(uMsg)
+	{
+		case WM_COMMAND:
+			{
+				switch (LOWORD(wParam))
+	            {
+					case IDC_BUTTON_CFG_EXE_CANCEL:
+						EndDialog(hDlg,0);
+						break;
+					case IDC_BUTTON_EXE_CFG_OK:
+						break;
+
+					case IDC_BUTTON_ET_PATH:
+					{	
+						 
+						OPENFILENAME ofn;
+						memset(&ofn,0,sizeof(OPENFILENAME));
+						ofn.lStructSize = sizeof (OPENFILENAME);
+						ofn.hwndOwner = hDlg;
+						ofn.lpstrFilter = NULL;
+						ofn.lpstrFile = szFile;
+
+						// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
+						// use the contents of szFile to initialize itself.
+						//
+						ofn.lpstrFile[0] = '\0';
+						ofn.nMaxFile = sizeof(szFile);
+						ofn.lpstrFilter = "All\0*.*\0ET exe\0*.exe\0";
+						ofn.nFilterIndex = 2;
+						ofn.lpstrFileTitle = NULL;
+						ofn.nMaxFileTitle = 0;
+						ofn.lpstrInitialDir = NULL;
+						int gameID=-1;
+						gameID = CFG_GetGameID(g_currSelCfg);
+
+						if(gameID!=-1)
+						{
+
+							ofn.lpstrInitialDir = GI_CFG[gameID].szGAME_PATH;
+						}
+						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+						if(GetOpenFileName(&ofn))
+							SetDlgItemText(hDlg,IDC_EDIT_PATH,ofn.lpstrFile);
+
+						return TRUE;					
+					}
+
+				}
+				break;
+			}
+
+	}
+	return FALSE;
+}
+
+void CFG_Enumerate_installations(HWND hDlg,int GameId)
+{
+	HWND hwndLVexes;
+	hwndLVexes = GetDlgItem(hDlg,IDC_LIST_CFG_EXES);
+
+	LVITEM lvItem;
+	ZeroMemory(&lvItem, sizeof(LVITEM));
+
+	lvItem.mask = LVIF_TEXT ;	
+	lvItem.iSubItem = 0;
+	lvItem.pszText = "Default";
+	ListView_InsertItem( hwndLVexes,&lvItem);
+	ListView_SetItemText(hwndLVexes,lvItem.iItem,3,GI_CFG[GameId].szGAME_PATH);
+	ListView_SetItemText(hwndLVexes,lvItem.iItem,4,GI_CFG[GameId].szGAME_CMD);
+
+}
+
 LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	char szText[256];
@@ -531,43 +591,64 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 		case WM_INITDIALOG:
 			{
 			
-			g_bChanged = false;
-			CFG_OnChildDialogInit(hDlg);
-	 		
-			SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0, (LPARAM)"ALT");  
-			SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0 ,(LPARAM)"CONTROL");  
-			SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0, (LPARAM)"SHIFT");  
-		
-
-			if(AppCFGtemp.dwMinimizeMODKey == MOD_ALT)
-				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 0, 0);  
-			else if(AppCFGtemp.dwMinimizeMODKey == MOD_CONTROL)
-				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 1, 0);  
-			else if(AppCFGtemp.dwMinimizeMODKey == MOD_SHIFT)
-				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 2, 0);  
-
-			sprintf(tmp,"%c",AppCFGtemp.cMinimizeKey);
-			SetDlgItemText(hDlg,IDC_EDIT_KEY,tmp);
-			SendDlgItemMessage (hDlg,IDC_EDIT_KEY, EM_SETLIMITTEXT,1, 0);  
-
-
-			if(AppCFGtemp.bAutostart)
-				CheckDlgButton(hDlg,IDC_CHECK1,BST_CHECKED);
-			else			
-				CheckDlgButton(hDlg,IDC_CHECK1,BST_UNCHECKED);
-
-			if(AppCFGtemp.bUseShortCountry)
-				CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,BST_CHECKED);
-			else			
-				CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,BST_UNCHECKED);
-
-
+				g_bChanged = false;
+				CFG_OnChildDialogInit(hDlg);
+		 		
+				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0, (LPARAM)"ALT");  
+				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0 ,(LPARAM)"CONTROL");  
+				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0, (LPARAM)"SHIFT");  
 			
 
-			if(AppCFGtemp.bUse_minimize)
-				CheckDlgButton(hDlg,IDC_CHECK2,BST_CHECKED);
-			else
-				CheckDlgButton(hDlg,IDC_CHECK2,BST_UNCHECKED);
+				if(AppCFGtemp.dwMinimizeMODKey == MOD_ALT)
+					SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 0, 0);  
+				else if(AppCFGtemp.dwMinimizeMODKey == MOD_CONTROL)
+					SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 1, 0);  
+				else if(AppCFGtemp.dwMinimizeMODKey == MOD_SHIFT)
+					SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 2, 0);  
+
+				sprintf(tmp,"%c",AppCFGtemp.cMinimizeKey);
+				SetDlgItemText(hDlg,IDC_EDIT_KEY,tmp);
+				SendDlgItemMessage (hDlg,IDC_EDIT_KEY, EM_SETLIMITTEXT,1, 0);  
+
+
+				if(AppCFGtemp.bAutostart)
+					CheckDlgButton(hDlg,IDC_CHECK1,BST_CHECKED);
+				else			
+					CheckDlgButton(hDlg,IDC_CHECK1,BST_UNCHECKED);
+
+				if(AppCFGtemp.bUseShortCountry)
+					CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,BST_CHECKED);
+				else			
+					CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,BST_UNCHECKED);
+				
+				LVCOLUMN lvColumn;
+				//initialize the columns
+				lvColumn.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM ;
+				lvColumn.fmt = LVCFMT_LEFT;
+
+				HWND hwndLVexes;
+				hwndLVexes = GetDlgItem(hDlg,IDC_LIST_CFG_EXES);
+
+				lvColumn.cx = 80;
+				lvColumn.pszText = "Name";
+				ListView_InsertColumn(hwndLVexes, 0, &lvColumn);
+				lvColumn.cx = 80;
+				lvColumn.pszText = "Launch by Version";
+				ListView_InsertColumn(hwndLVexes, 1, &lvColumn);
+				lvColumn.pszText = "Launch by Mod";
+				ListView_InsertColumn(hwndLVexes, 2, &lvColumn);
+				lvColumn.cx = 180;
+				lvColumn.pszText = "Executable path";
+				ListView_InsertColumn(hwndLVexes, 3, &lvColumn);
+				lvColumn.pszText = "Command";
+				ListView_InsertColumn(hwndLVexes, 4, &lvColumn);
+
+						
+
+				if(AppCFGtemp.bUse_minimize)
+					CheckDlgButton(hDlg,IDC_CHECK2,BST_CHECKED);
+				else
+					CheckDlgButton(hDlg,IDC_CHECK2,BST_UNCHECKED);
 
 
 			if(AppCFGtemp.bUSE_SCREEN_RESTORE )
@@ -577,6 +658,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			sprintf(szText,"%d",(AppCFGtemp.socktimeout.tv_sec*1000)+AppCFGtemp.socktimeout.tv_usec);
 			SetDlgItemText(hDlg,IDC_EDIT_SOCK_TIMEOUT_S,szText);
 			
+			sprintf(szText,"%d",AppCFGtemp.dwRetries);
+			SetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szText);
+
+
 			SetDlgItemText(hDlg,IDC_EDIT_MIRC,g_sMIRCoutput.c_str());
 		
 
@@ -613,6 +698,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				else
 					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_UNCHECKED);				
 
+				CFG_Enumerate_installations(hDlg,gameID);
 			}
 
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_EXE,AppCFGtemp.szEXT_EXE_PATH);
@@ -630,7 +716,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			SetDlgTrans(hDlg,AppCFGtemp.g_cTransparancy);
 
 			g_hwndScrollThreads =  GetDlgItem(hDlg,IDC_SLIDER_THREADS);
-			SendMessage( g_hwndScrollThreads,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(1, 255)) ;
+			SendMessage( g_hwndScrollThreads,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(1, 256)) ;
 			SendMessage(g_hwndScrollThreads,TBM_SETPOS,TRUE,(LPARAM)AppCFGtemp.dwThreads) ; 
 
 			char sztemp[20];
@@ -693,7 +779,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				case IDCANCEL:	
 					EndDialog(hDlg, 0);
 				break;
-		
+				case IDC_BUTTON_ADD_INSTALL:
+					DialogBox(g_hInst, (LPCTSTR)IDD_ADD_NEW_GAME_INSTALLATION, hDlg, (DLGPROC)CFG_AddNewInstall_Proc);	
+			
+					break;
 				case IDC_BUTTON_ET_PATH:
 				{	
 					 
