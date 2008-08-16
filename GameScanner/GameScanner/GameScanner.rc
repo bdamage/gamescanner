@@ -392,18 +392,18 @@ STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     GROUPBOX        "Settings for Master Server IP, Port && Protocol",-1,10,163,445,71
-    EDITTEXT        IDC_EDIT_MASTER_SERVER,133,191,322,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_MASTER_PORT,60,208,40,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MASTER_SERVER,80,191,361,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_MASTER_PORT,80,208,40,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_PROTOCOL,199,209,40,14,ES_AUTOHSCROLL
-    LTEXT           "Master server",-1,12,195,48,8
-    LTEXT           "Port",-1,12,212,39,8
+    LTEXT           "Master server",-1,30,193,48,8
+    LTEXT           "Port",-1,30,210,39,8
     LTEXT           "Protocol",-1,167,212,29,8
     CONTROL         "Activate game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
     CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,175,245,10
     CONTROL         "",IDC_LIST_CFG_EXES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,10,34,445,67
-    PUSHBUTTON      "Edit installation setting",IDC_BUTTON_EDIT_INSTALL,189,107,97,16
+    PUSHBUTTON      "Edit installation settings",IDC_BUTTON_EDIT_INSTALL,189,107,97,16
     PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,73,107,97,16
-    PUSHBUTTON      "Delete installation setting",IDC_BUTTON_DELETE_INSTALL,305,107,97,16
+    PUSHBUTTON      "Delete installation settings",IDC_BUTTON_DELETE_INSTALL,305,107,97,16
 END
 
 IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 395, 174
@@ -422,7 +422,7 @@ BEGIN
     RTEXT           "Launch when Mod name is equal to:",IDC_STATIC,17,103,145,11
     EDITTEXT        IDC_EDIT_CFG_VERSION,162,78,224,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_CFG_MOD,162,100,224,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_CFG_VERSION2,80,18,82,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CFG_PROPNAME,80,18,82,14,ES_AUTOHSCROLL
     RTEXT           "Property name:",IDC_STATIC,17,20,56,11
     DEFPUSHBUTTON   "Cancel",IDC_BUTTON_CFG_EXE_CANCEL,88,137,74,21
     PUSHBUTTON      "Save",IDC_BUTTON_EXE_CFG_OK,205,137,74,21
@@ -601,8 +601,8 @@ IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
 IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
 IDI_ICON_QUAKE1         ICON                    "res\\icon4.ico"
 IDI_ICON_QUAKE2         ICON                    "res\\icon8.ico"
-IDI_ICON8               ICON                    "res\\icon9.ico"
-IDI_ICON4               ICON                    "res\\icon9.ico"
+IDI_ICON8               ICON                    "res\\GSOrg32.ico"
+IDI_ICON4               ICON                    "res\\GSPlusOrg16.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_QUAKEARENA     ICON                    "res\\ico00005.ico"
 IDI_ICON_HALFLIFE2      ICON                    "res\\ico00006.ico"

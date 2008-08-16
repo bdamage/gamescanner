@@ -87,9 +87,6 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 		else
 			GI_CFG[gameID].bUseHTTPServerList = TRUE;
 
-
-		GetDlgItemText(hDlg,IDC_EDIT_PATH,GI_CFG[gameID].szGAME_PATH,MAX_PATH);
-		GetDlgItemText(hDlg,IDC_EDIT_CMD,GI_CFG[gameID].szGAME_CMD,MAX_PATH*2);
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP,MAX_PATH);						
 		char szTmp[10];
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,szTmp,sizeof(szTmp));
@@ -502,12 +499,26 @@ HFONT FAR PASCAL CFG_SelectFont( void )
 
 HWND g_hwndScrollTrans;
 HWND g_hwndScrollThreads;
+int CFG_editexeIdx;
 
-LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	char szFile[260];
 	switch(uMsg)
 	{
+		case WM_INITDIALOG:
+			{
+				CFG_editexeIdx = lParam;
+				int gameID = CFG_GetGameID(g_currSelCfg);	
+				GAME_INSTALLATIONS gi;
+				gi = GI_CFG[gameID].pSC->vGAME_INST.at(lParam);
+
+				SetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,gi.sName.c_str());
+				SetDlgItemText(hDlg,IDC_EDIT_PATH,gi.szGAME_PATH.c_str());
+				SetDlgItemText(hDlg,IDC_EDIT_CMD,gi.szGAME_CMD.c_str());
+
+				break;
+			}
 		case WM_COMMAND:
 			{
 				switch (LOWORD(wParam))
@@ -516,6 +527,23 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 						EndDialog(hDlg,0);
 						break;
 					case IDC_BUTTON_EXE_CFG_OK:
+						{
+							int gameID = CFG_GetGameID(g_currSelCfg);
+							char szTemp[MAX_PATH*2];
+							GAME_INSTALLATIONS gi;
+							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
+							gi.sName = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_PATH,szTemp,MAX_PATH);
+							gi.szGAME_PATH = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_CMD,szTemp,MAX_PATH*2);
+							gi.szGAME_CMD = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_CFG_VERSION,szTemp,MAX_PATH*2);
+							gi.sVersion = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,szTemp,MAX_PATH*2);
+							gi.sMod = szTemp;
+							GI_CFG[gameID].pSC->vGAME_INST.at(CFG_editexeIdx) = gi;
+							EndDialog(hDlg,0);
+						}
 						break;
 
 					case IDC_BUTTON_ET_PATH:
@@ -533,7 +561,90 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 						//
 						ofn.lpstrFile[0] = '\0';
 						ofn.nMaxFile = sizeof(szFile);
-						ofn.lpstrFilter = "All\0*.*\0ET exe\0*.exe\0";
+						ofn.lpstrFilter = "All\0*.*\0Executable\0*.exe\0";
+						ofn.nFilterIndex = 2;
+						ofn.lpstrFileTitle = NULL;
+						ofn.nMaxFileTitle = 0;
+						ofn.lpstrInitialDir = NULL;
+						int gameID=-1;
+						gameID = CFG_GetGameID(g_currSelCfg);
+
+						if(gameID!=-1)
+						{
+
+							ofn.lpstrInitialDir = GI_CFG[gameID].szGAME_PATH;
+						}
+						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+						if(GetOpenFileName(&ofn))
+							SetDlgItemText(hDlg,IDC_EDIT_PATH,ofn.lpstrFile);
+
+						return TRUE;					
+					}
+
+				}
+				break;
+			}
+
+	}
+	return FALSE;
+}
+
+LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+	char szFile[260];
+	switch(uMsg)
+	{
+		case WM_INITDIALOG:
+			{
+
+
+				break;
+			}
+		case WM_COMMAND:
+			{
+				switch (LOWORD(wParam))
+	            {
+					case IDC_BUTTON_CFG_EXE_CANCEL:
+						EndDialog(hDlg,0);
+						break;
+					case IDC_BUTTON_EXE_CFG_OK:
+						{
+							int gameID = CFG_GetGameID(g_currSelCfg);
+							char szTemp[MAX_PATH*2];
+							GAME_INSTALLATIONS gi;
+							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
+							gi.sName = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_PATH,szTemp,MAX_PATH);
+							gi.szGAME_PATH = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_CMD,szTemp,MAX_PATH*2);
+							gi.szGAME_CMD = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_CFG_VERSION,szTemp,MAX_PATH*2);
+							gi.sVersion = szTemp;
+							GetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,szTemp,MAX_PATH*2);
+							gi.sMod = szTemp;
+							GI_CFG[gameID].pSC->vGAME_INST.push_back(gi);
+
+							EndDialog(hDlg,0);
+						}
+						break;
+
+					case IDC_BUTTON_ET_PATH:
+					{	
+						 
+						OPENFILENAME ofn;
+						memset(&ofn,0,sizeof(OPENFILENAME));
+						ofn.lStructSize = sizeof (OPENFILENAME);
+						ofn.hwndOwner = hDlg;
+						ofn.lpstrFilter = NULL;
+						ofn.lpstrFile = szFile;
+
+						// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
+						// use the contents of szFile to initialize itself.
+						//
+						ofn.lpstrFile[0] = '\0';
+						ofn.nMaxFile = sizeof(szFile);
+						ofn.lpstrFilter = "All\0*.*\0Executable\0*.exe\0";
 						ofn.nFilterIndex = 2;
 						ofn.lpstrFileTitle = NULL;
 						ofn.nMaxFileTitle = 0;
@@ -570,12 +681,28 @@ void CFG_Enumerate_installations(HWND hDlg,int GameId)
 	LVITEM lvItem;
 	ZeroMemory(&lvItem, sizeof(LVITEM));
 
+	vGAME_INSTALLS::reverse_iterator  iLst;
 	lvItem.mask = LVIF_TEXT ;	
 	lvItem.iSubItem = 0;
-	lvItem.pszText = "Default";
-	ListView_InsertItem( hwndLVexes,&lvItem);
-	ListView_SetItemText(hwndLVexes,lvItem.iItem,3,GI_CFG[GameId].szGAME_PATH);
-	ListView_SetItemText(hwndLVexes,lvItem.iItem,4,GI_CFG[GameId].szGAME_CMD);
+
+	ListView_DeleteAllItems(hwndLVexes);
+
+	for ( iLst = GI_CFG[GameId].pSC->vGAME_INST.rbegin(); iLst != GI_CFG[GameId].pSC->vGAME_INST.rend( ); iLst++ )
+	{
+	
+		GAME_INSTALLATIONS gi = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
+		if(gi.sName.length()>0)
+			lvItem.pszText = (LPSTR)gi.sName.c_str();
+		else
+			lvItem.pszText = "Default";
+
+		ListView_InsertItem( hwndLVexes,&lvItem);
+		ListView_SetItemText(hwndLVexes,lvItem.iItem,1,(LPSTR)gi.sVersion.c_str());
+		ListView_SetItemText(hwndLVexes,lvItem.iItem,2,(LPSTR)gi.sMod.c_str());
+		ListView_SetItemText(hwndLVexes,lvItem.iItem,3,(LPSTR)gi.szGAME_PATH.c_str());
+		ListView_SetItemText(hwndLVexes,lvItem.iItem,4,(LPSTR)gi.szGAME_CMD.c_str());
+
+	}
 
 }
 
@@ -632,7 +759,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				lvColumn.cx = 80;
 				lvColumn.pszText = "Name";
 				ListView_InsertColumn(hwndLVexes, 0, &lvColumn);
-				lvColumn.cx = 80;
+				lvColumn.cx = 120;
 				lvColumn.pszText = "Launch by Version";
 				ListView_InsertColumn(hwndLVexes, 1, &lvColumn);
 				lvColumn.pszText = "Launch by Mod";
@@ -643,7 +770,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				lvColumn.pszText = "Command";
 				ListView_InsertColumn(hwndLVexes, 4, &lvColumn);
 
-						
+				DWORD dwExStyle=0;
+				dwExStyle = ListView_GetExtendedListViewStyle(hwndLVexes);
+				dwExStyle |= LVS_EX_FULLROWSELECT |  LVS_EX_LABELTIP ;
+				ListView_SetExtendedListViewStyle(hwndLVexes,dwExStyle);			
 
 				if(AppCFGtemp.bUse_minimize)
 					CheckDlgButton(hDlg,IDC_CHECK2,BST_CHECKED);
@@ -683,8 +813,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			{
 				sprintf(szText,"Executable path for %s",GI_CFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
-				SetDlgItemText(hDlg,IDC_EDIT_PATH,GI_CFG[gameID].szGAME_PATH);
-				SetDlgItemText(hDlg,IDC_EDIT_CMD,GI_CFG[gameID].szGAME_CMD);
+
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP);
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GI_CFG[gameID].dwMasterServerPORT,szTmp,10));
 				SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GI_CFG[gameID].dwProtocol,szTmp,10));
@@ -780,8 +909,23 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					EndDialog(hDlg, 0);
 				break;
 				case IDC_BUTTON_ADD_INSTALL:
-					DialogBox(g_hInst, (LPCTSTR)IDD_ADD_NEW_GAME_INSTALLATION, hDlg, (DLGPROC)CFG_AddNewInstall_Proc);	
-			
+					{
+						DialogBox(g_hInst, (LPCTSTR)IDD_ADD_NEW_GAME_INSTALLATION, hDlg, (DLGPROC)CFG_AddNewInstall_Proc);				
+						int gameID = CFG_GetGameID(g_currSelCfg);			
+						CFG_Enumerate_installations(hDlg,gameID);
+					}
+					break;
+				case IDC_BUTTON_EDIT_INSTALL:
+					{
+						int n;
+						n = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_LIST_CFG_EXES));
+						if(n!=-1)
+						{
+							DialogBoxParam(g_hInst, (LPCTSTR)IDD_ADD_NEW_GAME_INSTALLATION, hDlg, (DLGPROC)CFG_EditInstall_Proc,n);				
+							int gameID = CFG_GetGameID(g_currSelCfg);			
+							CFG_Enumerate_installations(hDlg,gameID);
+						}
+					}
 					break;
 				case IDC_BUTTON_ET_PATH:
 				{	

@@ -680,6 +680,7 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				if(endOfString!=NULL)
 				{
 					endOfString[0] = 0;
+					player->time = atoi(pointer);
 					//skip time				
 					pointer+=strlen(pointer)+1;
 				}
@@ -714,6 +715,7 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 					pointer+=strlen(pointer)+1;
 				}							
 			}
+			player->dwServerIndex = pSI->dwIndex;
 
 			if(pPlayers==NULL)
 				pPlayers = pCurrentPlayer = player;
@@ -753,8 +755,10 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
 			if(player==NULL) //Out of memory
 				return pQ3Players;
-			player->pNext = NULL;
-				
+			player->pNext = NULL;							
+			player->cGAMEINDEX = pSI->cGAMEINDEX;
+			player->dwServerIndex = pSI->dwIndex;
+
 			char *endString = strchr(pointer,' ');
 			if(endString!=NULL)
 			{
@@ -804,7 +808,8 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 
 				player->szPlayerName= _strdup(pointer);
 				pointer+=strlen(pointer)+2;
-				
+
+
 				switch(pSI->cGAMEINDEX)
 				{
 					case ET_SERVERLIST: //ETpro for retrieving player status (connecting, spectating, allies & axis)

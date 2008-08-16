@@ -208,6 +208,8 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 				break;
 			player->pNext = NULL;
 			player->szClanTag = NULL;
+			player->cGAMEINDEX = pSI->cGAMEINDEX;
+			player->dwServerIndex = pSI->dwIndex;
 
 			p++; //player index
 
@@ -224,6 +226,7 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 			player->rate = (DWORD)*dwP;  //kills
 			p+=4;
 			p+=4; //time
+
 
 			if(pQ3Players==NULL)
 				pQ3Players = pQ3CurrentPlayer = player;

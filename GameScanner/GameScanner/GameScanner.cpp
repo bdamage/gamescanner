@@ -362,7 +362,7 @@ _CountryFilter CountryFilter;
 
 
 
-TCHAR szPlayerlistColumnString[5][20] = {TEXT("#"),TEXT("Team"),TEXT("Name"), TEXT("Rate/XP"), TEXT("Ping")};
+TCHAR szPlayerlistColumnString[7][20] = {TEXT("#"),TEXT("Team"),TEXT("Name"), TEXT("Rate/XP"), TEXT("Ping"),TEXT("Time"),TEXT("Server name")};
 
 SERVER_CONTAINER SC[MAX_SERVERLIST];
 GAME_INFO GI[MAX_SERVERLIST+1];
@@ -1775,7 +1775,21 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				sprintf_s(szText,sizeof(szText)-1,"%d",pPlayerData->ping);
 				pLVItem->pszText = szText;
 				return TRUE;
-
+			case 5:
+				sprintf_s(szText,sizeof(szText)-1,"%d",pPlayerData->time);
+				pLVItem->pszText = szText;
+				return TRUE;
+			case 6:
+				{
+				char colFiltered[100];
+				
+				SERVER_INFO pSI = GI[pPlayerData->cGAMEINDEX].pSC->vSI.at(pPlayerData->dwServerIndex);
+				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pSI.szServerName,colFiltered,sizeof(colFiltered)-1); 
+				else
+					pLVItem->pszText = pSI.szServerName;
+				return TRUE;
+				}				
 		}
 	return TRUE;
 }
@@ -1959,8 +1973,6 @@ void OnBuddySelected()
 					UpdateCurrentServerUI();
 				}
 
-	
-			
 				
 			}//if pSrv
 		}
@@ -4810,12 +4822,14 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	lvColumn.cx = 30;
 	int dd;
-	for(dd = 0; dd <5; dd++)
+	for(dd = 0; dd <7; dd++)
 	{
 		if(dd==2)
 			lvColumn.cx = 180;
 		else if(dd==0)
 			lvColumn.cx = 30;
+		else if(dd>5)
+			lvColumn.cx = 180;
 		else
 			lvColumn.cx = 60;
 		lvColumn.pszText = szPlayerlistColumnString[dd];
@@ -5532,6 +5546,9 @@ void CFG_Save()
 		WriteCfgInt(abc, "GameData", "FilterNoPrivate",GI[i].filter.bNoPrivate);
 		WriteCfgInt(abc, "GameData", "FilterOnlyPrivate",GI[i].filter.bOnlyPrivate);
 		WriteCfgInt(abc, "GameData", "FilterDedicated",GI[i].filter.bDedicated);
+		TiXmlElement * installs = new TiXmlElement( "Installs" ); 
+
+		abc->LinkEndChild( installs ); 
 		abcd->LinkEndChild( abc ); 
 
 	}
@@ -10832,6 +10849,15 @@ int CFG_Load()
 	} else //set defualt value
 		AppCFG.bUseColorEncodedFont = TRUE;
 
+	pElem=hRoot.FirstChild("AutoStart").Element();
+	if (pElem)
+	{
+		pElem->QueryIntAttribute("enable",&intVal);
+		AppCFG.bAutostart  = intVal;
+	} else //set defualt value
+		AppCFG.bAutostart = FALSE;
+
+
 	pElem=hRoot.FirstChild("PlayerList").Element();
 	if (pElem)
 	{
@@ -10969,6 +10995,17 @@ int CFG_Load()
 					ReadCfgStr(pNode, "GameName",GI[i].szGAME_NAME,MAX_PATH);
 					ReadCfgStr(pNode, "Path",GI[i].szGAME_PATH,MAX_PATH);
 					ReadCfgStr(pNode, "Cmd",GI[i].szGAME_CMD,sizeof(GI[i].szGAME_CMD));
+					ReadCfgStr(pNode, "LaunchByVer",GI[i].szLaunchByVersion,MAX_PATH);
+					ReadCfgStr(pNode, "LaunchByMod",GI[i].szLaunchByMod,MAX_PATH);
+
+					GAME_INSTALLATIONS gi;
+					gi.szGAME_PATH = GI[i].szGAME_PATH;
+					gi.szGAME_CMD = GI[i].szGAME_CMD;
+					gi.sMod = GI[i].szLaunchByMod;		
+					gi.sVersion = GI[i].szLaunchByVersion;
+
+					GI[i].pSC->vGAME_INST.push_back(gi);
+					
 				//	ReadCfgStr( pNode, "yawn",GI[i].szMAP_YAWN_PATH,sizeof(GI[i].szMAP_YAWN_PATH));
 					ReadCfgStr( pNode, "MapPreview",GI[i].szMAP_MAPPREVIEW_PATH,sizeof(GI[i].szMAP_MAPPREVIEW_PATH));
 					ReadCfgStr( pNode, "MasterServer",GI[i].szMasterServerIP,sizeof(GI[i].szMasterServerIP));		

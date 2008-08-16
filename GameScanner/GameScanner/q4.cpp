@@ -515,7 +515,9 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 		{
 			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
 			player->pNext = NULL;
-			
+			player->cGAMEINDEX = pSI->cGAMEINDEX;
+			player->dwServerIndex = pSI->dwIndex;
+
 			player->iPlayer = pointer[0]; //Player Index
 			pointer++; 
 

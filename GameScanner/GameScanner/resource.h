@@ -120,7 +120,6 @@
 #define IDC_STATIC_RCON_INFO            1002
 #define IDC_BUTTON_SEL_FONT             1002
 #define IDC_BUTTON_CFG_EXE_CANCEL       1002
-#define IDC_BUTTON_EDIT_INSTALL         1002
 #define IDC_BUTTON2                     1003
 #define IDC_BUTTON_SRV2                 1003
 #define IDC_SLIDER_TRANS                1003
@@ -144,6 +143,7 @@
 #define IDC_EDIT_CFG_VERSION2           1008
 #define IDC_BUTTON3                     1008
 #define IDC_BUTTON_DELETE_INSTALL       1008
+#define IDC_EDIT_CFG_PROPNAME           1008
 #define IDC_CHECK2                      1009
 #define IDC_CHECK3                      1010
 #define IDC_CHECK5                      1011
@@ -262,6 +262,7 @@
 #define IDI_ICON_QUAKEARENA             1099
 #define IDI_ICON_HALFLIFE2              1100
 #define IDC_BUTTON_ADD_INSTALL          1101
+#define IDC_BUTTON_EDIT_INSTALL         1102
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -346,7 +347,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1101
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1008
+#define _APS_NEXT_CONTROL_VALUE         1200
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

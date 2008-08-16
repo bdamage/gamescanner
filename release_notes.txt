@@ -1,3 +1,11 @@
+version 1.08
+------------
+* Fixed a bug with the auto start setting.
+* Added a new player list field to support Quake World player time.
+* Added a new player list field that shows which server the player plays on (this might be handy for future use ).
+
+
+
 version 1.07
 ------------
 * Fixed a potential crash bug, when fast changing views from favs/private to internet servers tree selection.

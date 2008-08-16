@@ -186,7 +186,7 @@ void SelfInstall(char *path)
 	strcpy_s(path2,sizeof(path2),totpath);
 
 	ret = RegCreateKeyEx(HKEY_CURRENT_USER , "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
-	ret = RegSetValueEx( hkey, "ETServerViewer", 0, REG_SZ, (const unsigned char*)path2, strlen(path2)); 
+	ret = RegSetValueEx( hkey, "GameScanner", 0, REG_SZ, (const unsigned char*)path2, strlen(path2)); 
 	RegCloseKey( hkey ); 
 
 }
@@ -197,6 +197,7 @@ void UnInstall()
 	DWORD dwDisposition;
 	ret = RegCreateKeyEx(HKEY_CURRENT_USER , "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
 	ret = RegDeleteValue(hkey,"ETServerViewer");
+	ret = RegDeleteValue(hkey,"GameScanner");
 	RegCloseKey( hkey ); 
 }
 void dbg_dumpbuf(const char *file, const void *buf, size_t size) {

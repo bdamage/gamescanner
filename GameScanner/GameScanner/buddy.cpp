@@ -330,7 +330,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	
 	pBI->pSERVER = NULL; //pServerInfo;
 	pBI->cGAMEINDEX = pServerInfo->cGAMEINDEX;
-	pBI->sIndex = (short) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+	pBI->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
 	
 	HWND hwndLV = g_hwndListBuddy;
 
@@ -496,6 +496,8 @@ BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,char *szName,SERVER_INFO *pServer)
 		strcpy(pCurrentBI->szIPaddress,szIP);
 		strcpy(pCurrentBI->szLastSeenIPaddress,szIP);
 		pCurrentBI->cGAMEINDEX = pServer->cGAMEINDEX;
+		pCurrentBI->sIndex = pServer->dwIndex;
+
 	}
 	return pBI;
 }

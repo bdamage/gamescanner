@@ -271,11 +271,14 @@ struct PLAYERDATA
 	char iPlayer;  //Player number or index
 	DWORD ping;
 	DWORD rate;
+	DWORD time;
+	DWORD dwServerIndex;
 	char *szPlayerName;
 	char *szClanTag;
 	BYTE ClanTagPos;
 	BYTE isBot;
 	char cGAMEINDEX;
+	char szServerName[MAX_NAME_LEN];
 	//SERVER_INFO  *pCurrentServer;
 	PLAYERDATA *pNext;
 };
@@ -358,6 +361,15 @@ struct REF_SERVER_INFO
 typedef REF_SERVER_INFO* LPREFSERVER_INF;
 
 
+struct GAME_INSTALLATIONS
+{
+	string sName;
+	string szGAME_PATH;
+	string szGAME_CMD;
+	string sVersion;
+	string sMod;
+};
+
 
 /*
 Reference server info, this will only point to the full server info container 
@@ -368,7 +380,7 @@ typedef vector<REF_SERVER_INFO> vREF_SRV_INF;
 typedef pair <int, int> Int_Pair;
 typedef hash_multimap <int, int> serverhash;
 // create an empty hash_multimap hmp0 of key type integer
-
+typedef vector<GAME_INSTALLATIONS> vGAME_INSTALLS;
 
 struct SERVER_CONTAINER
 {
@@ -380,8 +392,8 @@ struct SERVER_CONTAINER
 	vGF	 vFilterGameType;
 	vGF	 vFilterMap;
 	vGF	 vFilterVersion;
+	vGAME_INSTALLS vGAME_INST;
 };
-
 
 struct GAME_INFO
 {
@@ -391,6 +403,8 @@ struct GAME_INFO
 	char szGAME_SHORTNAME[MAX_PATH];
 	char szGAME_PATH[MAX_PATH];
 	char szGAME_CMD[MAX_PATH*2];
+	char szLaunchByVersion[MAX_PATH];
+	char szLaunchByMod[MAX_PATH];
 	char szMAP_MAPPREVIEW_PATH[MAX_PATH];
 	char szMAP_YAWN_PATH[MAX_PATH];
 	char szMAP_SPLATTERLADDER_PATH[MAX_PATH];
@@ -421,14 +435,7 @@ struct GAME_INFO
 };
 
 
-struct PLAYER_DATA
-{
-	char szPlayerName[MAX_NAME_LEN];
-	char szPlayerNameFilter[MAX_NAME_LEN];
-	char szScore[12];
-	char szPing[10];
-	char szTeam[25];
-};
+
 
 struct BUDDY_INFO
 {
