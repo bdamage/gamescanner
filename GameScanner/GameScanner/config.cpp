@@ -516,7 +516,8 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				SetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,gi.sName.c_str());
 				SetDlgItemText(hDlg,IDC_EDIT_PATH,gi.szGAME_PATH.c_str());
 				SetDlgItemText(hDlg,IDC_EDIT_CMD,gi.szGAME_CMD.c_str());
-
+				SetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,gi.sMod.c_str());
+				SetDlgItemText(hDlg,IDC_EDIT_CFG_VERSION,gi.sVersion.c_str());
 				break;
 			}
 		case WM_COMMAND:
@@ -532,6 +533,12 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 							char szTemp[MAX_PATH*2];
 							GAME_INSTALLATIONS gi;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
+							if(strlen(szTemp)==0)
+							{
+								MessageBox(hDlg,"Ensure that a Name is entered.","Error saving",MB_OK);
+								return TRUE;
+							}
+
 							gi.sName = szTemp;
 							GetDlgItemText(hDlg,IDC_EDIT_PATH,szTemp,MAX_PATH);
 							gi.szGAME_PATH = szTemp;
@@ -597,8 +604,6 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 	{
 		case WM_INITDIALOG:
 			{
-
-
 				break;
 			}
 		case WM_COMMAND:
@@ -614,6 +619,11 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 							char szTemp[MAX_PATH*2];
 							GAME_INSTALLATIONS gi;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
+							if(strlen(szTemp)==0)
+							{
+								MessageBox(hDlg,"Ensure that a Name is entered.","Error saving",MB_OK);
+								return TRUE;
+							}
 							gi.sName = szTemp;
 							GetDlgItemText(hDlg,IDC_EDIT_PATH,szTemp,MAX_PATH);
 							gi.szGAME_PATH = szTemp;
@@ -924,6 +934,22 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 							DialogBoxParam(g_hInst, (LPCTSTR)IDD_ADD_NEW_GAME_INSTALLATION, hDlg, (DLGPROC)CFG_EditInstall_Proc,n);				
 							int gameID = CFG_GetGameID(g_currSelCfg);			
 							CFG_Enumerate_installations(hDlg,gameID);
+						}
+					}
+					break;
+				case IDC_BUTTON_DELETE_INSTALL:
+					{
+						int n;
+						n = ListView_GetSelectionMark(GetDlgItem(hDlg,IDC_LIST_CFG_EXES));
+						if(n!=-1)
+						{
+									
+							int gameID = CFG_GetGameID(g_currSelCfg);	
+							if(gameID!=-1)
+							{
+								GI_CFG[gameID].pSC->vGAME_INST.erase(GI_CFG[gameID].pSC->vGAME_INST.begin()+n);
+								CFG_Enumerate_installations(hDlg,gameID);
+							}
 						}
 					}
 					break;

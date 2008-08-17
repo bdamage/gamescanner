@@ -142,7 +142,6 @@
 #define IDC_CHECK1                      1008
 #define IDC_EDIT_CFG_VERSION2           1008
 #define IDC_BUTTON3                     1008
-#define IDC_BUTTON_DELETE_INSTALL       1008
 #define IDC_EDIT_CFG_PROPNAME           1008
 #define IDC_CHECK2                      1009
 #define IDC_CHECK3                      1010
@@ -263,6 +262,7 @@
 #define IDI_ICON_HALFLIFE2              1100
 #define IDC_BUTTON_ADD_INSTALL          1101
 #define IDC_BUTTON_EDIT_INSTALL         1102
+#define IDC_BUTTON_DELETE_INSTALL       1103
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -337,6 +337,9 @@
 #define IDM_RESTORE_COLUMNS             32900
 #define IDM_DELETE_SERVERLIST           32901
 #define IDM_FONT_COLOR                  32902
+#define IDM_COPY_VERSION                32903
+#define IDM_COPY_MODNAME                32904
+
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 

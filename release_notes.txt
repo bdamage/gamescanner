@@ -3,7 +3,9 @@ version 1.08
 * Fixed a bug with the auto start setting.
 * Added a new player list field to support Quake World player time.
 * Added a new player list field that shows which server the player plays on (this might be handy for future use ).
-
+* Fixed auto detection for Warsow so the command only passes a full working game path.
+* Added support multiple installations, including Launch by criteria depending on Version or Mod name value.
+* Added new copy to clipboard to make it easier to set criterias.
 
 
 version 1.07

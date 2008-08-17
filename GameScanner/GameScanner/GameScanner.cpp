@@ -2032,13 +2032,14 @@ void RegisterProtocol(char *path)
 ****************************************************/
 void Default_GameSettings()
 {
-
+	
 	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
 		ZeroMemory(&GI[i],sizeof(GAME_INFO));
 		GI[i].cGAMEINDEX = i;
 		GI[i].pSC = &SC[i];
 		GI[i].iIconIndex =  Get_GameIcon(i);
+		GI[i].pSC->vGAME_INST.clear();
 
 	}
 
@@ -2061,6 +2062,13 @@ void Default_GameSettings()
 		GI[ET_SERVERLIST].bActive = false;
 	
 	GI[ET_SERVERLIST].pSC = &SC[ET_SERVERLIST];
+
+	GAME_INSTALLATIONS gi;
+	gi.sName = "Default";
+	gi.szGAME_PATH = GI[ET_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[ET_SERVERLIST].szGAME_CMD;
+	GI[ET_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 //	MyFindFile();
 
@@ -2093,6 +2101,10 @@ void Default_GameSettings()
 	GI[Q3_SERVERLIST].colorfilter = &colorfilter;
 	GI[Q3_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
+	gi.szGAME_PATH = GI[Q3_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[Q3_SERVERLIST].szGAME_CMD;
+	GI[Q3_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 	strcpy(GI[RTCW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
 	GI[RTCW_SERVERLIST].dwMasterServerPORT = 27950;
@@ -2111,6 +2123,10 @@ void Default_GameSettings()
 	GI[RTCW_SERVERLIST].pSC = &SC[RTCW_SERVERLIST];
 	GI[RTCW_SERVERLIST].colorfilter = &colorfilter;
 	GI[RTCW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GI[RTCW_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[RTCW_SERVERLIST].szGAME_CMD;
+	GI[RTCW_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 	GI[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
 	GI[Q4_SERVERLIST].dwMasterServerPORT = 27650;
@@ -2129,6 +2145,10 @@ void Default_GameSettings()
 	GI[Q4_SERVERLIST].pSC = &SC[Q4_SERVERLIST];
 	GI[Q4_SERVERLIST].colorfilter = &colorfilterQ4;
 	GI[Q4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GI[Q4_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[Q4_SERVERLIST].szGAME_CMD;
+	GI[Q4_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 	GI[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
 	GI[ETQW_SERVERLIST].iIconIndex = Get_GameIcon(ETQW_SERVERLIST);
@@ -2151,6 +2171,10 @@ void Default_GameSettings()
 	GI[ETQW_SERVERLIST].dwDefaultPort = 27733;
 	GI[ETQW_SERVERLIST].colorfilter = &colorfilter;
 	GI[ETQW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GI[ETQW_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[ETQW_SERVERLIST].szGAME_CMD;
+	GI[ETQW_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 	strcpy(GI[COD2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
@@ -2174,6 +2198,10 @@ void Default_GameSettings()
 	GI[COD2_SERVERLIST].pSC = &SC[COD2_SERVERLIST];
 	GI[COD2_SERVERLIST].colorfilter = &colorfilter;
 	GI[COD2_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GI[COD2_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[COD2_SERVERLIST].szGAME_CMD;
+	GI[COD2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 	strcpy(GI[COD_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
@@ -2195,6 +2223,9 @@ void Default_GameSettings()
 	GI[COD_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD_SERVERLIST].szQueryString,"");
 	GI[COD_SERVERLIST].pSC = &SC[COD_SERVERLIST];
+	gi.szGAME_PATH = GI[COD_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[COD_SERVERLIST].szGAME_CMD;
+	GI[COD_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 
 	strcpy(GI[WARSOW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetinfo");
@@ -2214,7 +2245,14 @@ void Default_GameSettings()
 	if(strlen(GI[WARSOW_SERVERLIST].szGAME_PATH)>0)
 	{
 		GI[WARSOW_SERVERLIST].bActive = true;
-		sprintf(GI[WARSOW_SERVERLIST].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"%s\"",GI[WARSOW_SERVERLIST].szGAME_PATH);
+		char sztempi[MAX_PATH*2];
+		strcpy(sztempi,GI[WARSOW_SERVERLIST].szGAME_PATH);
+		char* pos = strrchr(sztempi,'\\');
+		if(pos!=NULL)
+		{
+			pos[1]=0;
+		}
+		sprintf(GI[WARSOW_SERVERLIST].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"%s\"",sztempi);
 	}else
 	{
 		GI[WARSOW_SERVERLIST].bActive = false;
@@ -2226,6 +2264,10 @@ void Default_GameSettings()
 	GI[WARSOW_SERVERLIST].pSC = &SC[WARSOW_SERVERLIST];
 	GI[WARSOW_SERVERLIST].colorfilter = &colorfilter;
 	GI[WARSOW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+
+	gi.szGAME_PATH = GI[WARSOW_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[WARSOW_SERVERLIST].szGAME_CMD;
+	GI[WARSOW_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 	strcpy(GI[COD4_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
@@ -2249,6 +2291,10 @@ void Default_GameSettings()
 	GI[COD4_SERVERLIST].pSC = &SC[COD4_SERVERLIST];
 	GI[COD4_SERVERLIST].colorfilter = &colorfilter;
 	GI[COD4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GI[COD4_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[COD4_SERVERLIST].szGAME_CMD;
+	GI[COD4_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 	GI[CS_SERVERLIST].cGAMEINDEX = CS_SERVERLIST;
 	GI[CS_SERVERLIST].iIconIndex = Get_GameIcon(CS_SERVERLIST);
@@ -2260,15 +2306,15 @@ void Default_GameSettings()
 	strncpy(GI[CS_SERVERLIST].szMAP_MAPPREVIEW_PATH,"csmaps",MAX_PATH);
 	strncpy(GI[CS_SERVERLIST].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
 	dwBuffSize = sizeof(GI[CS_SERVERLIST].szGAME_PATH);
-
-	
-
 	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GI[CSS_SERVERLIST].szGAME_PATH,&dwBuffSize);
 	GI[CS_SERVERLIST].bActive = false;
 	strcpy(GI[CS_SERVERLIST].szProtocolName,"cs");
 	GI[CS_SERVERLIST].dwDefaultPort = 27015;
 	strcpy(GI[CS_SERVERLIST].szQueryString,"\\gamedir\\cstrike");
 	GI[CS_SERVERLIST].pSC = &SC[CS_SERVERLIST];
+	gi.szGAME_PATH = GI[CS_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[CS_SERVERLIST].szGAME_CMD;
+	GI[CS_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 
 	GI[CSCZ_SERVERLIST].cGAMEINDEX = CSCZ_SERVERLIST;
@@ -2287,6 +2333,10 @@ void Default_GameSettings()
 	GI[CSCZ_SERVERLIST].dwDefaultPort = 27015;
 	strcpy(GI[CSCZ_SERVERLIST].szQueryString,"\\gamedir\\czero");
 	GI[CSCZ_SERVERLIST].pSC = &SC[CSCZ_SERVERLIST];
+	gi.szGAME_PATH = GI[CSCZ_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[CSCZ_SERVERLIST].szGAME_CMD;
+	GI[CSCZ_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 	GI[CSS_SERVERLIST].cGAMEINDEX = CSS_SERVERLIST;
 	GI[CSS_SERVERLIST].iIconIndex = Get_GameIcon(CSS_SERVERLIST);
@@ -2304,6 +2354,9 @@ void Default_GameSettings()
 	GI[CSS_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[CSS_SERVERLIST].szQueryString,"\\gamedir\\cstrike");
 	GI[CSS_SERVERLIST].pSC = &SC[CSS_SERVERLIST];
+	gi.szGAME_PATH = GI[CSS_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[CSS_SERVERLIST].szGAME_CMD;
+	GI[CSS_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 	strcpy(GI[QW_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
 	GI[QW_SERVERLIST].cGAMEINDEX = QW_SERVERLIST;
@@ -2322,7 +2375,9 @@ void Default_GameSettings()
 	GI[QW_SERVERLIST].bUseHTTPServerList = TRUE;
 	GI[QW_SERVERLIST].colorfilter = &colorfilterQW;
 	GI[QW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
-
+	gi.szGAME_PATH = GI[QW_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[QW_SERVERLIST].szGAME_CMD;
+	GI[QW_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 	strcpy(GI[Q2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
 	GI[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
@@ -2339,7 +2394,9 @@ void Default_GameSettings()
 	GI[Q2_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[Q2_SERVERLIST].szQueryString,"");
 	GI[Q2_SERVERLIST].bUseHTTPServerList = FALSE;
-
+	gi.szGAME_PATH = GI[Q2_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[Q2_SERVERLIST].szGAME_CMD;
+	GI[Q2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 	strcpy(GI[OPENARENA_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
@@ -2358,12 +2415,10 @@ void Default_GameSettings()
 	GI[OPENARENA_SERVERLIST].dwDefaultPort = 28960;	
 	strcpy(GI[OPENARENA_SERVERLIST].szGAME_PATH,"openarena.exe");
 	strcpy(GI[OPENARENA_SERVERLIST].szGAME_CMD,"");
-
-#ifdef _DEBUG
-	GI[OPENARENA_SERVERLIST].bActive = true;
-#else
 	GI[OPENARENA_SERVERLIST].bActive = false;
-#endif
+	gi.szGAME_PATH = GI[OPENARENA_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[OPENARENA_SERVERLIST].szGAME_CMD;
+	GI[OPENARENA_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
 //"C:\Program Files\Steam\Steam.exe" -applaunch 300
 	GI[HL2_SERVERLIST].cGAMEINDEX = HL2_SERVERLIST;
@@ -2387,6 +2442,10 @@ void Default_GameSettings()
 #else
 	GI[HL2_SERVERLIST].bActive = false;
 #endif
+	gi.szGAME_PATH = GI[HL2_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[HL2_SERVERLIST].szGAME_CMD;
+	GI[HL2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+
 
 		strcpy(GI[ET_SERVERLIST].szGAME_SHORTNAME,"ET");
 		strcpy(GI[ETQW_SERVERLIST].szGAME_SHORTNAME,"ETQW");
@@ -5518,8 +5577,7 @@ void CFG_Save()
 	{
 		TiXmlElement * abc = new TiXmlElement( "Game" );  
 		WriteCfgStr(abc, "GameData", "GameName",GI[i].szGAME_NAME) ;
-		WriteCfgStr(abc, "GameData", "Cmd",GI[i].szGAME_CMD);
-		WriteCfgStr(abc, "GameData", "Path",GI[i].szGAME_PATH);
+
 		WriteCfgStr(abc, "GameData", "yawn",GI[i].szMAP_YAWN_PATH);
 		WriteCfgStr(abc, "GameData", "MasterServer",GI[i].szMasterServerIP);
 		WriteCfgStr(abc, "GameData", "MapPreview",GI[i].szMAP_MAPPREVIEW_PATH);
@@ -5546,9 +5604,18 @@ void CFG_Save()
 		WriteCfgInt(abc, "GameData", "FilterNoPrivate",GI[i].filter.bNoPrivate);
 		WriteCfgInt(abc, "GameData", "FilterOnlyPrivate",GI[i].filter.bOnlyPrivate);
 		WriteCfgInt(abc, "GameData", "FilterDedicated",GI[i].filter.bDedicated);
-		TiXmlElement * installs = new TiXmlElement( "Installs" ); 
-
-		abc->LinkEndChild( installs ); 
+		
+		for(int n=0;n<GI[i].pSC->vGAME_INST.size();n++)
+		{
+			TiXmlElement * installs = new TiXmlElement( "Installs" ); 
+			WriteCfgStr(installs, "Install", "Name",GI[i].pSC->vGAME_INST.at(n).sName.c_str());
+			WriteCfgStr(installs, "Install", "Path",GI[i].pSC->vGAME_INST.at(n).szGAME_PATH.c_str());
+			WriteCfgStr(installs, "Install", "Cmd",GI[i].pSC->vGAME_INST.at(n).szGAME_CMD.c_str());
+			WriteCfgStr(installs, "Install", "LaunchByMod",GI[i].pSC->vGAME_INST.at(n).sMod.c_str());
+			WriteCfgStr(installs, "Install", "LaunchByVer",GI[i].pSC->vGAME_INST.at(n).sVersion.c_str());
+			abc->LinkEndChild( installs ); 
+		}
+	
 		abcd->LinkEndChild( abc ); 
 
 	}
@@ -8794,7 +8861,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 { 
 	HMENU hPopMenu;
 	POINT lpClickPoint;
-	HMENU hSubPopMenu;		
+	HMENU hSubPopMenu,hSubForceLaunchPopMenu,hSubClipboardPopMenu;		
 	
 	switch(uMsg)
 	{
@@ -8896,6 +8963,19 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			wmId    = LOWORD(wParam); 
 			wmEvent = HIWORD(wParam); 
 
+		
+				for(int x=0; x<currCV->pSC->vGAME_INST.size();x++)
+					if(wmId == 36000+x)
+					{
+						int i = ListView_GetSelectionMark(g_hwndListViewServer);
+						if(i!=-1)
+						{
+							SERVER_INFO pSrv;	
+							pSrv = Get_ServerInfoByIndex(i);
+							LaunchGame(pSrv,&GI[g_currentGameIdx],x);
+						}
+					}
+
 			// Parse the menu selections:
 			switch (wmId)
 			{
@@ -8991,11 +9071,42 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						ShowWindow(g_hwndLogger,SW_HIDE);
 						ShowWindow(g_hwndListViewPlayers,SW_HIDE);	
 						SendMessage(g_hwndMainSTATS,WM_START_TRACERT,0,0);
-					//	if(pszIP!=NULL)
-					//		ShellExecute(NULL,"open","tracert.exe",pszIP,NULL,SW_SHOWNORMAL);
+
 					}
 					break;
 
+				case IDM_COPY_VERSION:
+					{
+						char szClipTemp[50];
+						int n=-1;
+						n = ListView_GetSelectionMark(g_hwndListViewServer);
+						if(n!=-1)
+						{
+							SERVER_INFO pSI = Get_ServerInfoByIndex(n);
+							sprintf(szClipTemp,"%s",pSI.szVersion);								
+							EditCopy(szClipTemp);
+
+						}
+						else
+							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
+					}
+				break;	
+				case IDM_COPY_MODNAME:
+					{
+						char szClipTemp[50];
+						int n=-1;
+						n = ListView_GetSelectionMark(g_hwndListViewServer);
+						if(n!=-1)
+						{
+							SERVER_INFO pSI = Get_ServerInfoByIndex(n);
+							sprintf(szClipTemp,"%s",pSI.szMod);								
+							EditCopy(szClipTemp);
+
+						}
+						else
+							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
+					}
+					break;
 				case IDM_COPYIP:
 					{
 						char *pszIP = Get_SelectedServerIP();
@@ -9004,7 +9115,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						else
 							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
 					}
-				break;
+				break;				
 				case IDM_CONNECT:
 					StartGame_ConnectToServer(false);					
 				break;
@@ -9017,6 +9128,8 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			hPopMenu = CreatePopupMenu();
 		
 			hSubPopMenu = CreatePopupMenu();
+			hSubForceLaunchPopMenu = CreatePopupMenu();
+			hSubClipboardPopMenu  = CreatePopupMenu();
 			int n=-1;
 			n = ListView_GetSelectionMark(g_hwndListViewServer);
 			if(n!=-1)
@@ -9043,7 +9156,13 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				SERVER_INFO pSI = Get_ServerInfoByIndex(n); 						
 				
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,"Launch game only.");
+				
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubForceLaunchPopMenu,"Force Launch");
+				for(int x=0; x<currCV->pSC->vGAME_INST.size();x++)
+					InsertMenu(hSubForceLaunchPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,36000+x,currCV->pSC->vGAME_INST.at(x).sName.c_str());
 
+			
+			
 				if(pSI.cFavorite==0)
 					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,"Add Server to favorites");
 				else
@@ -9069,6 +9188,12 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				else
 					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,IDM_REFRESH,"&Refresh");				
 
+				
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubClipboardPopMenu,"Copy to clipboard");
+				InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_VERSION,"Version");
+				InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_MODNAME,"Mod name");
+
+
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubPopMenu,"Network tools");
 				InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER1,"Ping server");
 				InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER2,"Trace route server");
@@ -9080,6 +9205,10 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				SendMessage(hwnd,WM_NULL,0,0);
 				DestroyMenu(hPopMenu);
 				DestroyMenu(hSubPopMenu);
+				DestroyMenu(hSubForceLaunchPopMenu);
+				DestroyMenu(hSubClipboardPopMenu);
+				
+
 				DeleteObject(hBmp);
 	
 			return 0;
@@ -9144,19 +9273,20 @@ void Sync_ServerInfo(SERVER_INFO pSI)
 	pGI->pSC->vSI.at(pSI.dwIndex) = pSI;
 }
 
-BOOL ExecuteGame(GAME_INFO *pGI,char *szCmd)
+BOOL ExecuteGame(GAME_INFO *pGI,char *szCmd,int GameInstallIdx)
 {
 	char LoadLocation[512],  WETFolder[512];
 	HINSTANCE hret=NULL;
-	if(strlen(pGI->szGAME_PATH)>0)
+	if(pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_PATH.length()>0)
 	{			
-		strcpy(WETFolder,pGI->szGAME_PATH);
+		strcpy(WETFolder,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
 		char* pos = strrchr(WETFolder,'\\');
 		if(pos!=NULL)
 		{
 			pos[1]=0;
 		}
-		strcpy(LoadLocation,pGI->szGAME_PATH);
+		strcpy(LoadLocation,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
+		AddLogInfo(ETSV_DEBUG,WETFolder);
 		AddLogInfo(ETSV_DEBUG,LoadLocation);
 		hret = ShellExecute(NULL, "open", LoadLocation, szCmd,WETFolder, 1);
 
@@ -9857,7 +9987,7 @@ LRESULT CALLBACK PROGRESS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 }
 
-void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI)
+void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 {
 	char CommandParameters[512];	
 	int typeRecognized = -1;
@@ -9906,10 +10036,37 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI)
 			Sleep(500);
 		}
 	}
-	
-		sprintf(CommandParameters,"+connect %s:%d +password %s %s",pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS,pGI->szGAME_CMD);					
-	
-		if(ExecuteGame(pGI,CommandParameters))
+
+		for(int x=0; x<pGI->pSC->vGAME_INST.size();x++)
+		{
+			if(pSI.szMod!=NULL)
+			{
+				if(pGI->pSC->vGAME_INST.at(x).sMod.length()>0)
+				{
+					if(strcmp(pSI.szMod,pGI->pSC->vGAME_INST.at(x).sMod.c_str())==0)
+					{
+						GameInstallIdx = x;
+						break;
+					}
+				}
+			}
+			else if((pSI.szVersion!=NULL) && (pGI->pSC->vGAME_INST.at(x).sVersion.length()>0)) 
+			{
+				if(strcmp(pSI.szVersion,pGI->pSC->vGAME_INST.at(x).sVersion.c_str())==0)
+				{
+					GameInstallIdx = x;
+					break;
+				}
+			}
+		}
+				
+		if(strlen(pSI.szPRIVATEPASS)>0)
+			sprintf(CommandParameters,"+connect %s:%d +password %s %s",pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_CMD.c_str());					
+		else
+			sprintf(CommandParameters,"+connect %s:%d %s",pSI.szIPaddress,pSI.dwPort,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_CMD.c_str());					
+		AddLogInfo(0,CommandParameters);
+
+		if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
 		{
 			//A Successfull launch
 			PostMessage(g_hWnd,WM_CLOSE,0xdead,0);  //Minimize ETSV
@@ -10709,7 +10866,7 @@ int CFG_Load()
 	memset(&AppCFG,0,sizeof(APP_SETTINGS_NEW));
 
 	Default_Appsettings();
-	Default_GameSettings();
+
 	ListView_SetDefaultColumns();
 
 
@@ -10993,18 +11150,56 @@ int CFG_Load()
 				if(pNode!=NULL)
 				{
 					ReadCfgStr(pNode, "GameName",GI[i].szGAME_NAME,MAX_PATH);
-					ReadCfgStr(pNode, "Path",GI[i].szGAME_PATH,MAX_PATH);
-					ReadCfgStr(pNode, "Cmd",GI[i].szGAME_CMD,sizeof(GI[i].szGAME_CMD));
-					ReadCfgStr(pNode, "LaunchByVer",GI[i].szLaunchByVersion,MAX_PATH);
-					ReadCfgStr(pNode, "LaunchByMod",GI[i].szLaunchByMod,MAX_PATH);
+					
+					if(ReadCfgStr(pNode, "Path",GI[i].szGAME_PATH,MAX_PATH)!=NULL) //old changed since ver 1.08
+					{
+						GI[i].pSC->vGAME_INST.clear();
+						ReadCfgStr(pNode, "Cmd",GI[i].szGAME_CMD,sizeof(GI[i].szGAME_CMD));
+						ReadCfgStr(pNode, "LaunchByVer",GI[i].szLaunchByVersion,MAX_PATH);
+						ReadCfgStr(pNode, "LaunchByMod",GI[i].szLaunchByMod,MAX_PATH);
 
-					GAME_INSTALLATIONS gi;
-					gi.szGAME_PATH = GI[i].szGAME_PATH;
-					gi.szGAME_CMD = GI[i].szGAME_CMD;
-					gi.sMod = GI[i].szLaunchByMod;		
-					gi.sVersion = GI[i].szLaunchByVersion;
+						GAME_INSTALLATIONS gi;
+						gi.sName = "Default";
+						gi.szGAME_PATH = GI[i].szGAME_PATH;
+						gi.szGAME_CMD = GI[i].szGAME_CMD;
+						gi.sMod = GI[i].szLaunchByMod;		
+						gi.sVersion = GI[i].szLaunchByVersion;
 
-					GI[i].pSC->vGAME_INST.push_back(gi);
+						GI[i].pSC->vGAME_INST.push_back(gi);
+					} else
+					{
+						TiXmlNode* pInstallTags = pElement->FirstChild("Installs");
+						
+						if( pInstallTags!=NULL)
+						{
+							TiXmlElement* pInstalls = pInstallTags->ToElement();
+							if(pInstalls!=NULL)
+								GI[i].pSC->vGAME_INST.clear();
+							while(pInstalls!=NULL)
+							{
+								TiXmlElement* pInstall = pInstalls->FirstChild("Install")->ToElement();
+								char szTemp[512];
+								ReadCfgStr(pInstall, "Name",szTemp,MAX_PATH); 
+								ReadCfgStr(pInstall, "Path",GI[i].szGAME_PATH,MAX_PATH); //old changed since ver 1.08
+								ReadCfgStr(pInstall, "Cmd",GI[i].szGAME_CMD,sizeof(GI[i].szGAME_CMD));
+								ReadCfgStr(pInstall, "LaunchByVer",GI[i].szLaunchByVersion,MAX_PATH);
+								ReadCfgStr(pInstall, "LaunchByMod",GI[i].szLaunchByMod,MAX_PATH);
+
+								GAME_INSTALLATIONS gi;
+								gi.sName = szTemp;
+								gi.szGAME_PATH = GI[i].szGAME_PATH;
+								gi.szGAME_CMD = GI[i].szGAME_CMD;
+								gi.sMod = GI[i].szLaunchByMod;		
+								gi.sVersion = GI[i].szLaunchByVersion;
+
+								GI[i].pSC->vGAME_INST.push_back(gi);
+								pInstalls = pInstalls->NextSiblingElement();
+								if(pInstalls==NULL)
+									break;
+								
+							}
+						}
+					}
 					
 				//	ReadCfgStr( pNode, "yawn",GI[i].szMAP_YAWN_PATH,sizeof(GI[i].szMAP_YAWN_PATH));
 					ReadCfgStr( pNode, "MapPreview",GI[i].szMAP_MAPPREVIEW_PATH,sizeof(GI[i].szMAP_MAPPREVIEW_PATH));
