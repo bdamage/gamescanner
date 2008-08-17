@@ -2429,7 +2429,7 @@ void Default_GameSettings()
 	GI[HL2_SERVERLIST].dwMasterServerPORT = 27011;
 	GI[HL2_SERVERLIST].dwProtocol = 0;
 	strncpy(GI[HL2_SERVERLIST].szMAP_MAPPREVIEW_PATH,"hf2maps",MAX_PATH);
-	strncpy(GI[HL2_SERVERLIST].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
+	strncpy(GI[HL2_SERVERLIST].szGAME_CMD,"-game %MODNAME%",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
 	dwBuffSize = sizeof(GI[HL2_SERVERLIST].szGAME_PATH);
 	strcpy(GI[HL2_SERVERLIST].szGAME_PATH,"HL2.EXE");
 	GI[HL2_SERVERLIST].bActive = false;
@@ -2492,10 +2492,8 @@ void Default_Appsettings()
 	
 	ZeroMemory(&AppCFG,sizeof(APP_SETTINGS_NEW));
 
-	g_sMIRCoutput = "%SERVERNAME% %GAMENAME% %IP% %PRIVATE%";
+	g_sMIRCoutput = "is joining server %SERVERNAME% %GAMENAME% %IP% %PRIVATE%";
 	
-
-
 	AppCFG.dwVersion = 14;
 	AppCFG.bAutostart = FALSE;
 	AppCFG.bUse_ETpro_path = TRUE;
@@ -2508,7 +2506,6 @@ void Default_Appsettings()
 	AppCFG.filter.dwGameTypeFilter = 0;
 	AppCFG.bUseColorEncodedFont = TRUE;
 	AppCFG.dwThreads = 32;
-
 
 	memset(AppCFG.szEXT_EXE_CMD,0,MAX_PATH);	
 	memset(AppCFG.szEXT_EXE_PATH,0,MAX_PATH);
@@ -2548,7 +2545,6 @@ void Default_Appsettings()
 	AppCFG.bShowBuddyList = TRUE;
 	AppCFG.bShowMapPreview = FALSE;
 
-	//AppCFG.bUseFilterOnFavorites = true;
 	AppCFG.bPlayNotifySound   = TRUE;
 	AppCFG.bShowServerRules = TRUE;
 	AppCFG.bShowPlayerList = TRUE;
@@ -2590,47 +2586,6 @@ void OnButtonClick_AddServer()
 		return;
 	}else
 		Favorite_Add(true,ip);
-
- return;
- /*
-	SplitIPandPORT(ip,dwPort);
-
-	if(dwPort==0)
-		dwPort = GI[g_currentGameIdx].dwDefaultPort;
-	DWORD ret = AddServer(&GI[g_currentGameIdx],ip,  dwPort,true);
-	if(ret!=0xFFFFFFFF)	
-	{
-		SetStatusText(ICO_INFO,"Added IP %s:%d into %s favorite serverlist.",ip,dwPort,GI[g_currentGameIdx].szGAME_NAME);
-		
-	   g_iCurrentSelectedServer = ret;
-
-		try
-		{
-			pSI = Get_ServerInfoByIndex(g_iCurrentSelectedServer);
-			if(pSI.dwIP == 0)
-				return;
-			
-		}
-		catch(const exception& e)
-		{
-			AddLogInfo(0,"Exception raised at OnServerSelected() Details: %s\n",e.what());
-			return;
-		}
-		pSrvInf = &pSI;
-		if(pSrvInf!=NULL)
-		{
-			GetServerInfo(g_currentGameIdx,pSrvInf);
-			UpdateServerItem(g_iCurrentSelectedServer);
-			currCV->pSC->vSI.at(pSI.dwIndex) = pSI;			
-			UpdateCurrentServerUI();
-			
-		}//if pSrv
-
-	}else
-	{
-		SetStatusText(ICO_WARNING,"Invalid IP address!");
-	}
-	*/
 }
 
 
@@ -5194,7 +5149,6 @@ void LoadServerListV2(GAME_INFO *pGI)
 	dbg_print("Loading serverlist %s ",szFilename2);
 	fopen_s(&fp,szFilename2, "rb");
 
-
 	char  *next_token1;
 
 	SERVER_INFO	 srv;
@@ -5343,7 +5297,6 @@ void LoadServerListV2(GAME_INFO *pGI)
 						if(szByte!=NULL)
 							srv.dwIP = (DWORD)atol(szByte); 
 
-
 						szCountry = strtok_s( NULL, seps, &next_token1);
 						if(szCountry!=NULL)
 							strcpy(srv.szCountry,TrimString(szCountry));
@@ -5351,8 +5304,6 @@ void LoadServerListV2(GAME_INFO *pGI)
 						szByte = strtok_s( NULL, seps, &next_token1);  
 						if(szByte!=NULL)
 							srv.dwVersion = (char)atol(szByte); 
-						else
-							AddLogInfo(0,"Error loading server details!");
 
 						srv.dwIndex = idx++;
 
@@ -5362,8 +5313,7 @@ void LoadServerListV2(GAME_INFO *pGI)
 						srv.bNeedToUpdateServerInfo = true;
 						int hash = srv.dwIP + srv.dwPort;
 						pGI->pSC->shash.insert(Int_Pair(hash,srv.dwIndex));
-						pGI->pSC->vSI.push_back(srv);
-			
+						pGI->pSC->vSI.push_back(srv);			
 						pGI->dwTotalServers++;
 						i = sizeof(buffer)+1;
 					}  //endif
@@ -9004,23 +8954,23 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				case ID_YAWN_SERVER:
 					{
 						char szURL[512];
-						char szIP[40];
-						int n = ListView_GetSelectionMark(g_hwndListViewServer);
-									
-						ListView_GetItemText(g_hwndListViewServer,n,10,szIP,sizeof(szIP)-1);
-						if(n!=-1)
+						char *pszIP = Get_SelectedServerIP();
+						if(pszIP!=NULL)
 						{
 							switch(g_currentGameIdx)
 							{				
 								default:
 								case ET_SERVERLIST:	
-									sprintf_s(szURL,sizeof(szURL),"http://www.yawn.be/findServer.yawn?hostname=&serverAddress=%s&version=&protocol=&modid=0&game=ET&action=",szIP);
+									sprintf_s(szURL,sizeof(szURL),"http://www.yawn.be/findServer.yawn?hostname=&serverAddress=%s&version=&protocol=&modid=0&game=ET&action=",pszIP);
 									break;								
+								case Q3_SERVERLIST:
+									sprintf_s(szURL,sizeof(szURL),"http://www.yawn.be/findServer.yawn?hostname=&serverAddress=%s&version=&protocol=&modid=0&game=Q3&action=",pszIP);
+									break;
 								case Q4_SERVERLIST:
-									sprintf_s(szURL,sizeof(szURL),"http://www.yawn.be/findServer.yawn?hostname=&serverAddress=%s&version=&protocol=&modid=0&game=Q4&action=",szIP);
+									sprintf_s(szURL,sizeof(szURL),"http://www.yawn.be/findServer.yawn?hostname=&serverAddress=%s&version=&protocol=&modid=0&game=Q4&action=",pszIP);
 									break;
 								case ETQW_SERVERLIST:
-									sprintf_s(szURL,sizeof(szURL),"http://etqw.splatterladder.com/?mod=serverlist&phrase=%s",szIP);
+									sprintf_s(szURL,sizeof(szURL),"http://etqw.splatterladder.com/?mod=serverlist&phrase=%s",pszIP);
 									break;
 
 
@@ -9037,7 +8987,6 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 					break;
 				case IDM_ADDIP:
 					{
-
 						int n = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(n!=-1)
 						{
@@ -9045,7 +8994,6 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 							pSI.cFavorite =! pSI.cFavorite;							
 							currCV->pSC->vSI.at((int)pSI.dwIndex) = pSI;
 							UpdateServerItem(n);
-
 						}
 					}
 				break;
@@ -9181,35 +9129,30 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 	
 			}										
 
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_OPTIONS_RCON,"RCON");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_OPTIONS_RCON,"RCON");
 
-				if(g_bRunningQueryServerList==false)
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_REFRESH,"&Refresh");
-				else
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,IDM_REFRESH,"&Refresh");				
+			if(g_bRunningQueryServerList==false)
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_REFRESH,"&Refresh");
+			else
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,IDM_REFRESH,"&Refresh");				
 
-				
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubClipboardPopMenu,"Copy to clipboard");
-				InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_VERSION,"Version");
-				InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_MODNAME,"Mod name");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubClipboardPopMenu,"Copy to clipboard");
+			InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_VERSION,"Version");
+			InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_MODNAME,"Mod name");
 
-
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubPopMenu,"Network tools");
-				InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER1,"Ping server");
-				InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER2,"Trace route server");
-
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubPopMenu,"Network tools");
+			InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER1,"Ping server");
+			InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER2,"Trace route server");
 			
-				
-				SetForegroundWindow(hwnd);
-				TrackPopupMenu(hPopMenu,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_BOTTOMALIGN,lpClickPoint.x, lpClickPoint.y,0,hwnd,NULL);
-				SendMessage(hwnd,WM_NULL,0,0);
-				DestroyMenu(hPopMenu);
-				DestroyMenu(hSubPopMenu);
-				DestroyMenu(hSubForceLaunchPopMenu);
-				DestroyMenu(hSubClipboardPopMenu);
-				
+			SetForegroundWindow(hwnd);
+			TrackPopupMenu(hPopMenu,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_BOTTOMALIGN,lpClickPoint.x, lpClickPoint.y,0,hwnd,NULL);
+			SendMessage(hwnd,WM_NULL,0,0);
+			DestroyMenu(hPopMenu);
+			DestroyMenu(hSubPopMenu);
+			DestroyMenu(hSubForceLaunchPopMenu);
+			DestroyMenu(hSubClipboardPopMenu);
 
-				DeleteObject(hBmp);
+			DeleteObject(hBmp);
 	
 			return 0;
 		}	
@@ -9663,20 +9606,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	HACCEL hAccelTable;
 
 	InitCommonControls(); 
-
-  INITCOMMONCONTROLSEX icex;
+	INITCOMMONCONTROLSEX icex;
  
 // Ensure that the common control DLL is loaded. 
-   icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-   icex.dwICC  = ICC_LINK_CLASS | ICC_TREEVIEW_CLASSES;
-   InitCommonControlsEx(&icex);
+	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	icex.dwICC  = ICC_LINK_CLASS | ICC_TREEVIEW_CLASSES;
+	InitCommonControlsEx(&icex);
 
 	// Initialize global strings
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_GAMESCANNER, szWindowClass, MAX_LOADSTRING);
-
-	
-
 
 	hOfflineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_GAMESCANNER)); //ICON_APP_LOGO)); 
 	hOnlineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_TASKTRAY)); 
@@ -9986,6 +9925,26 @@ LRESULT CALLBACK PROGRESS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	return FALSE;
 
 }
+/***************************************
+
+Usage: ReplaceStrInStr(myString,"%IP%","127.0.0.1");
+Return: TRUE if successfull.
+
+****************************************/
+BOOL ReplaceStrInStr(string &strToReplace,const char *szReplace,const char *szReplaceWith)
+{
+	int offset;
+	offset = strToReplace.find(szReplace);
+	if(offset!=-1)
+	{
+		strToReplace.insert(offset,szReplaceWith);
+		offset = strToReplace.find(szReplace);
+		strToReplace.erase(offset,strlen(szReplace));
+		return TRUE;
+	}
+	return FALSE;
+}
+
 
 void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 {
@@ -10037,93 +9996,71 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 		}
 	}
 
-		for(int x=0; x<pGI->pSC->vGAME_INST.size();x++)
+	for(int x=0; x<pGI->pSC->vGAME_INST.size();x++)
+	{
+		if(pSI.szMod!=NULL)
 		{
-			if(pSI.szMod!=NULL)
+			if(pGI->pSC->vGAME_INST.at(x).sMod.length()>0)
 			{
-				if(pGI->pSC->vGAME_INST.at(x).sMod.length()>0)
-				{
-					if(strcmp(pSI.szMod,pGI->pSC->vGAME_INST.at(x).sMod.c_str())==0)
-					{
-						GameInstallIdx = x;
-						break;
-					}
-				}
-			}
-			else if((pSI.szVersion!=NULL) && (pGI->pSC->vGAME_INST.at(x).sVersion.length()>0)) 
-			{
-				if(strcmp(pSI.szVersion,pGI->pSC->vGAME_INST.at(x).sVersion.c_str())==0)
+				if(strcmp(pSI.szMod,pGI->pSC->vGAME_INST.at(x).sMod.c_str())==0)
 				{
 					GameInstallIdx = x;
 					break;
 				}
 			}
 		}
-				
-		if(strlen(pSI.szPRIVATEPASS)>0)
-			sprintf(CommandParameters,"+connect %s:%d +password %s %s",pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_CMD.c_str());					
-		else
-			sprintf(CommandParameters,"+connect %s:%d %s",pSI.szIPaddress,pSI.dwPort,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_CMD.c_str());					
-		AddLogInfo(0,CommandParameters);
-
-		if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
+		else if((pSI.szVersion!=NULL) && (pGI->pSC->vGAME_INST.at(x).sVersion.length()>0)) 
 		{
-			//A Successfull launch
-			PostMessage(g_hWnd,WM_CLOSE,0xdead,0);  //Minimize ETSV
-			
-			if(AppCFG.bUseMIRC)
+			if(strcmp(pSI.szVersion,pGI->pSC->vGAME_INST.at(x).sVersion.c_str())==0)
 			{
-				//Notify mIRC which server user will join
-				DDE_Init();
-	  			char szMsg[350];
-				string::size_type offset;
-				string mircoutput;
-				mircoutput = g_sMIRCoutput;
-				mircoutput.insert(0,"/ame is joining server ");
-				offset = mircoutput.find("%SERVERNAME%");
-				if(offset!=-1)
-				{
-					char colfilter[120];
-					colorfilter(pSI.szServerName,colfilter,119);
-					mircoutput.insert(offset,colfilter);
-					offset = mircoutput.find("%SERVERNAME%");
-					mircoutput.erase(offset,strlen("%SERVERNAME%"));
-				}
-				offset = mircoutput.find("%IP%");
-				if(offset!=-1)
-				{
-					wsprintf(szMsg,"%s:%d",pSI.szIPaddress,pSI.dwPort);	
-					mircoutput.insert(offset,szMsg);
-					offset = mircoutput.find("%IP%");
-					mircoutput.erase(offset,strlen("%IP%"));
-				}
-
-				offset = mircoutput.find("%GAMENAME%");
-				if(offset!=-1)
-				{
-					mircoutput.insert(offset,GI[pSI.cGAMEINDEX].szGAME_NAME);
-					offset = mircoutput.find("%GAMENAME%");
-					mircoutput.erase(offset,strlen("%GAMENAME%"));
-				}
-
-				if(pSI.bPrivate)
-					strcpy(szMsg,"Private");
-				else
-					strcpy(szMsg,"Public");
-
-				offset = mircoutput.find("%PRIVATE%");
-				if(offset!=-1)
-				{
-					mircoutput.insert(offset,szMsg);
-					offset = mircoutput.find("%PRIVATE%");
-					mircoutput.erase(offset,strlen("%PRIVATE%"));
-				}
-
-				//wsprintf(szMsg,"/ame joing server %s (%s IP %s:%d %s)",pSI.szServerName,pGI->szProtocolName,pSI.szIPaddress,pSI.dwPort,pSI.bPrivate?"Private":"");
-				DDE_Send((char*)mircoutput.c_str());
-				DDE_DeInit();
+				GameInstallIdx = x;
+				break;
 			}
 		}
+	}
+	string cmd;
+	cmd = pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_CMD;
+
+	ReplaceStrInStr(cmd,"%MODNAME%",pSI.szMod);
+
+	if(strlen(pSI.szPRIVATEPASS)>0)
+		sprintf(CommandParameters,"+connect %s:%d +password %s %s",pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS,cmd.c_str());					
+	else
+		sprintf(CommandParameters,"+connect %s:%d %s",pSI.szIPaddress,pSI.dwPort,cmd.c_str());					
+	AddLogInfo(0,CommandParameters);
+
+	if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
+	{
+		//A Successfull launch
+		PostMessage(g_hWnd,WM_CLOSE,0xdead,0);  //Minimize ETSV
+		
+		if(AppCFG.bUseMIRC)
+		{
+			//Notify mIRC which server user will join
+			DDE_Init();
+  			char szMsg[350];
+			string::size_type offset;
+			string mircoutput;
+			mircoutput = g_sMIRCoutput;
+			mircoutput.insert(0,"/ame ");
+
+			char colfilter[120];
+			colorfilter(pSI.szServerName,colfilter,119);
+			ReplaceStrInStr(mircoutput,"%SERVERNAME%",colfilter);
+			
+			wsprintf(szMsg,"%s:%d",pSI.szIPaddress,pSI.dwPort);	
+			ReplaceStrInStr(mircoutput,"%IP%",szMsg);		
+			ReplaceStrInStr(mircoutput,"%GAMENAME%",GI[pSI.cGAMEINDEX].szGAME_NAME);
+			
+			if(pSI.bPrivate)
+				ReplaceStrInStr(mircoutput,"%PRIVATE%","Private");
+			else
+				ReplaceStrInStr(mircoutput,"%PRIVATE%","Public");
+
+			DDE_Send((char*)mircoutput.c_str());
+			DDE_DeInit();
+		}
+	}
 				
 }
 
@@ -10174,8 +10111,6 @@ LRESULT CALLBACK About(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		}
 		break;
-
-
 	}
 	return FALSE;
 }
