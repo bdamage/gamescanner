@@ -14,7 +14,7 @@
 #define MAX_PACKETS 600
 extern bool g_bCancel;
 extern HWND g_hWnd;
-
+extern APP_SETTINGS_NEW AppCFG;
 
 #pragma pack(1)
 
@@ -623,7 +623,8 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 
 			pSI->cCountryFlag = 1;
 		}
-
+	DWORD dwRetries=0;
+retry:
 	packetlen = send(pSocket, sendbuf, strlen(A2S_INFO), 0);
 	if(packetlen==SOCKET_ERROR) 
 	{
@@ -635,6 +636,14 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 
 	dwStartTick = GetTickCount();
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(packet==NULL)
+	{
+		if(dwRetries<AppCFG.dwRetries)
+		{
+			dwRetries++;
+			goto retry;
+		}
+	}
 	if(packet) 
 	{
 		STEAM_SERVER_RESPONSE *resp;

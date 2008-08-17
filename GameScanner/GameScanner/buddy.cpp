@@ -372,6 +372,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 {
 	BUDDY_INFO *pBI = g_pBIStart;
+	PLAYERDATA *pStart = pPlayers;
 	if(pBI==NULL)
 		return 0;
 	while(pPlayers!=NULL)
@@ -380,16 +381,12 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 		while(pBI!=NULL)
 		{			
 
+			if(pBI->bRemove)
+				break;
 			if(pPlayers->szPlayerName==NULL)
 				return 0;
-
-			if(_stricmp(pBI->szPlayerName,pPlayers->szPlayerName)==0)
+			if((pBI->cMatchExact) && (pBI->cMatchOnColorEncoded==0))
 			{
-				Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
-				return 1;
-			} else
-			{
-				//Try without color codes
 				char cf[100],cf2[100];
 
 				if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
@@ -403,37 +400,83 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 					strncpy(cf,pBI->szPlayerName,sizeof(cf)-1);
 					strncpy(cf2,pPlayers->szPlayerName,sizeof(cf2)-1);
 				}
-				if(_stricmp(cf,cf2)==0)
+
+				if(strcmp(cf,cf2)==0)
 				{
 					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
 					return 1;
-				}//Try to find FILTERED name of the current online FILTERED playername
-				else if (strstr(cf,cf2)!=NULL)
+				}
+			}else if((pBI->cMatchExact) && (pBI->cMatchOnColorEncoded))
+			{
+			//	dbg_print("%s == %s",pBI->szPlayerName,pPlayers->szPlayerName);
+				
+				if(strcmp(pBI->szPlayerName,pPlayers->szPlayerName)==0)
+				{
+					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+					return 1;
+				} 			
+			}else if(pBI->cMatchOnColorEncoded)
+			{
+			//	dbg_print("%s == %s",pBI->szPlayerName,pPlayers->szPlayerName);
+				
+				if(strstr(pBI->szPlayerName,pPlayers->szPlayerName)!=NULL)
+				{
+					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+					return 1;
+				} 			
+			}
+			else
+			{
+				if(_stricmp(pBI->szPlayerName,pPlayers->szPlayerName)==0)
 				{
 					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
 					return 1;
 				} else
 				{
+					//Try without color codes
+					char cf[100],cf2[100];
 
-					//Try to find playername with lower case
-					char copy1[100],copy2[100];
-					strcpy(copy1,cf);
-					strcpy(copy2,cf2);
-					_strlwr_s( copy1 , 99);
-					if(strlen(copy2)>0)
-						_strlwr_s( copy2 , 99);
-
-					if(strstr(copy1,copy2)!=NULL)
+					if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
 					{
-						Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);				
+						colorfilter(pPlayers->szPlayerName,cf,sizeof(cf));
+						colorfilter(pBI->szPlayerName,cf2,sizeof(cf2));
+					}else
+					{
+						ZeroMemory(cf,sizeof(cf));
+						ZeroMemory(cf2,sizeof(cf2));
+						strncpy(cf,pBI->szPlayerName,sizeof(cf)-1);
+						strncpy(cf2,pPlayers->szPlayerName,sizeof(cf2)-1);
+					}
+					if(_stricmp(cf,cf2)==0)
+					{
+						Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
 						return 1;
+					}//Try to find FILTERED name of the current online FILTERED playername
+					else if (strstr(cf,cf2)!=NULL)
+					{
+						Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+						return 1;
+					} else
+					{
+
+						//Try to find playername with lower case
+						char copy1[100],copy2[100];
+						strcpy(copy1,cf);
+						strcpy(copy2,cf2);
+						_strlwr_s( copy1 , 99);
+						if(strlen(copy2)>0)
+							_strlwr_s( copy2 , 99);
+
+						if(strstr(copy1,copy2)!=NULL)
+						{
+							Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);				
+							return 1;
+						}
 					}
 				}
 			}
 			pBI = pBI->pNext;
-			
 		}
-
 		pPlayers = pPlayers->pNext;
 	}
 
@@ -637,6 +680,7 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 							DialogBox(g_hInst, (LPCTSTR)IDD_DLG_ADD_BUDDY, g_hWnd, (DLGPROC)Buddy_AddBuddyProc);
 						
 						bEditBuddyname=false;
+						Buddy_UpdateList(g_pBIStart);
 					}
 				break;
 				case IDM_REFRESH:				

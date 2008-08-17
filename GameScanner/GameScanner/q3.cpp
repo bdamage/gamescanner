@@ -18,7 +18,7 @@ char Q3_unkown[]={"????"};
 
 extern bool g_bCancel;
 extern GAME_INFO GI[MAX_SERVERLIST+1];
-
+extern APP_SETTINGS_NEW AppCFG;
 bool Q3_bCloseApp=false;
 
 long (*Q3_UpdateServerListView)(DWORD index);
@@ -106,7 +106,8 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 			pSI->cCountryFlag = 1;
 
 		}
-	
+	DWORD dwRetries=0;
+retry:
 	if(GI[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
 		packetlen = send(pSocket, GI[pSI->cGAMEINDEX].szServerRequestInfo, strlen(GI[pSI->cGAMEINDEX].szServerRequestInfo)+1, 0);
 	else
@@ -122,6 +123,15 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	}
 	dwStartTick = GetTickCount();
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(packet==NULL)
+	{
+		if(dwRetries<AppCFG.dwRetries)
+		{
+			dwRetries++;
+			goto retry;
+		}
+	}
+
 	if(packet) 
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);

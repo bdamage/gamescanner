@@ -746,6 +746,8 @@ char *getpacket(SOCKET s, size_t *len) {
 	socktimeout.tv_sec = AppCFG.socktimeout.tv_sec; //3;
 	socktimeout.tv_usec  =  AppCFG.socktimeout.tv_usec;
 
+
+
 	if(select(FD_SETSIZE, &set, NULL, NULL, &socktimeout)>0) 
 	{
 		

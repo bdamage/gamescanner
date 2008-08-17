@@ -158,7 +158,6 @@ BOOL g_bTREELOADED = FALSE;
 BOOL bSortColumnAscading[15];
 int iLastColumnSortIndex = COL_PLAYERS;
 
-extern BOOL g_bQ4;
 extern BOOL SCANNER_bCloseApp;
 
 
@@ -1843,13 +1842,11 @@ SERVER_INFO * GetServerInfo(int gametype,SERVER_INFO *pSrvInf)
 
 		case Q4_SERVERLIST:
 		{
-			g_bQ4 = TRUE;
 			Q4_OnServerSelection(pSrvInf,&UpdatePlayerListQ3,&UpdateRulesList);
 			break;
 		}
 		case ETQW_SERVERLIST:
 		{
-			g_bQ4 = FALSE;
 			Q4_OnServerSelection(pSrvInf,&UpdatePlayerListQ3,&UpdateRulesList);
 			break;
 		}
@@ -5020,6 +5017,8 @@ void OnInitialize_MainDlg(HWND hwnd)
 	else
 		SetCurrentViewTo(FindFirstActiveGame());
 
+	OnActivate_ServerList(SCAN_FILTERED);
+
 	Buddy_Load(g_pBIStart);
 	Buddy_UpdateList(g_pBIStart);
 
@@ -6681,7 +6680,7 @@ nextGame:
 	{
 		case ETQW_SERVERLIST:
 			{
-				g_bQ4 = FALSE;	
+			
 				HFD_SetPath(USER_SAVE_PATH);
 				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
 				if(ret!=0)
@@ -6700,7 +6699,6 @@ nextGame:
 		break;
 		case Q4_SERVERLIST:
 			{
-				g_bQ4 = TRUE;
 				SCAN_Set_CALLBACKS(&Q4_Get_ServerStatus,&UpdateServerItem);				
 				if((DWORD)lpParam==SCAN_FILTERED)
 					Initialize_Rescan2(&GI[Q4_SERVERLIST],&FilterServerItemV2);
@@ -6888,7 +6886,6 @@ nextGame:
 	{
 		case ETQW_SERVERLIST:
 			{
-				g_bQ4 = FALSE;	
 				HFD_SetPath(USER_SAVE_PATH);
 				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
 				if(ret!=0)
@@ -6902,7 +6899,6 @@ nextGame:
 			break;
 		case Q4_SERVERLIST:
 			{
-				g_bQ4 = TRUE;
 				Q4_ConnectToMasterServer(&GI[currGameIdx]);			
 			}
 			break;

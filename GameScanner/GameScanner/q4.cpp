@@ -1,11 +1,14 @@
+
+
 #include "stdafx.h"
 #include "q4.h"
 #include "utilz.h"
 #include "..\..\iptocountry\iptocountry.h"
 
+#define _SECURE_SCL 0
+#pragma warning(disable : 4995)
 
 char Q4_unkown[]={"????"};
-BOOL g_bQ4=FALSE;
 bool Q4_bCloseApp = false;
 
 long (*Q4_UpdateServerListView)(DWORD index);
@@ -15,6 +18,7 @@ long (*Q4_InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI);
 DWORD Q4_dwTotalServers=0;
 DWORD Q4_dwNewTotalServers=0;
 extern HWND g_hwndProgressBar;
+extern APP_SETTINGS_NEW AppCFG;
 BOOL Q4_bScanningInProgress = FALSE;
 
 void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),
@@ -28,24 +32,24 @@ void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),
 
 
 
-char *Q4_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetlen)
+char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char *packet,DWORD packetlen)
 {
 	SERVER_RULES *pSR=NULL;
 	SERVER_RULES *pCurrentSR=NULL;
 	Q4DATA_SERVER_INFO *Q4SI; 
 	ETQWDATA_RESPONSE_SERVERINFO *ETQWResponse;
 	
-	Q4SI = (Q4DATA_SERVER_INFO *)p;
-	ETQWResponse  =(ETQWDATA_RESPONSE_SERVERINFO *)p;
+	Q4SI = (Q4DATA_SERVER_INFO *)packet;
+	ETQWResponse  =(ETQWDATA_RESPONSE_SERVERINFO *)packet;
 	pSR=NULL;
 
 	char *pointer = NULL;
-	if(g_bQ4)
+	if(pSI->cGAMEINDEX==Q4_SERVERLIST)
 		pointer =Q4SI->data;
 	else
 		pointer = ETQWResponse->data;
 
-	if(strcmp(&p[4],"disconnect")==0)
+	if(strcmp(&packet[4],"disconnect")==0)
 	{		
 		dbg_print("Server response Disconnect!\n");
 		return NULL;
@@ -72,8 +76,9 @@ char *Q4_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 		if(pointer[0]==0 && pointer[1]==0)
 			break;
 	}
-	if(g_bQ4)
-		pointer+=2; //move to playerlist data (Q4)
+//	if(g_bQ4)
+
+	pointer+=2; //move to playerlist data (Q4)
 
 
 	return pointer;
@@ -300,7 +305,8 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,&dwIPSHORT,country,szShortName),49);  //Update country info only when adding a new server						
 		strcpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName);
 	}
-
+	DWORD dwRetries=0;
+retry:
 	packetlen = send(pSocket, sendbuf, 14, 0);
 	if(packetlen==SOCKET_ERROR) 
 	{
@@ -317,6 +323,14 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	dwStartTick = GetTickCount();
 
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(packet==NULL)
+	{
+		if(dwRetries<AppCFG.dwRetries)
+		{
+			dwRetries++;
+			goto retry;
+		}
+	}
 	if(packet) 
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);
@@ -328,7 +342,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		char *end = (char*)((packet)+packetlen);
 		
 		char *pCurrPointer=NULL; //will contain the start address for the player data
-		pCurrPointer = Q4_ParseServerRules(pServRules,(char*)packet,packetlen);
+		pCurrPointer = Q4_ParseServerRules(pSI,pServRules,(char*)packet,packetlen);
 		pSI->pServerRules = pServRules;
 		if(pServRules!=NULL)
 		{		
@@ -486,73 +500,65 @@ void Q4_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(
 
 
 
-PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers)
+PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numPlayers)
 {
 	
 	PLAYERDATA *pQ4Players=NULL;
-	if(g_bQ4==FALSE)
-		pointer+=2;
+//	if(pSI->cGAMEINDEX==ETQW_SERVERLIST)
+//		packet+=2;
 
 	pSI->cBots = 0;
-	if(pointer[0]==0x20)
+	if(packet[0]==0x20)
 	{
-		if(pointer[5]==0x01)
+		if(packet[5]==0x01)
 		{
-		//	dbg_print("Found ranked server!\n");
-		//	dbg_print(pSI->szServerName);
-		//	dbg_print("\n");
-			pSI->cRanked = 1;
+			pSI->cRanked = 1;   //ETQW
 		}
 	}
 
-	if(pointer[0]==0 || pointer[0]==1)
+	if(packet[0]==0 || packet[0]==1)
 	{
 		//Parseplayers
 	
 		PLAYERDATA *pQ4CurrentPlayer=NULL;
 		
-		while(pointer<end)
+		while(packet<end)
 		{
 			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
 			player->pNext = NULL;
 			player->cGAMEINDEX = pSI->cGAMEINDEX;
 			player->dwServerIndex = pSI->dwIndex;
 
-			player->iPlayer = pointer[0]; //Player Index
-			pointer++; 
+			player->iPlayer = packet[0]; //Player Index
+			packet++; 
 
 			WORD *ping,*rate;
-			ping = (WORD*)&pointer[0];
+			ping = (WORD*)&packet[0];
 			player->ping  = *ping; 
-			pointer+=2;
-			if(g_bQ4)
+			packet+=2;
+			if(pSI->cGAMEINDEX==Q4_SERVERLIST)
 			{
-				rate = (WORD*)&pointer[0];
+				rate = (WORD*)&packet[0];
 				player->rate  = *rate; 
-				pointer+=4;//Unknown bytes
+				packet+=4;//Unknown bytes
 			}
-		
 
-			player->szPlayerName = _strdup(pointer);
-			pointer+=strlen(pointer)+1;
+			player->szPlayerName = _strdup(packet);
+			packet+=strlen(packet)+1;
 			
-			//	player->pCurrentServer = pSI;
-			if(g_bQ4) //Is it Quake 4
+			if(pSI->cGAMEINDEX==Q4_SERVERLIST) //Is it Quake 4
 			{				
-				player->szClanTag = _strdup(pointer);
-				pointer+=strlen(pointer)+1;
-			} else //Otherwise go for ETQW
+				player->szClanTag = _strdup(packet);
+				packet+=strlen(packet)+1;
+			} 
+			else //Otherwise go for ETQW
 			{
 
-			//	if((strstr(pSI->szVersion,"1.2")!=NULL) || (strstr(pSI->szVersion,"1.4")!=NULL)) //Since ETQW v1.2
-				{
-					pointer++; //Skip Clan tag position info
-					player->szClanTag = _strdup(pointer);						
-					pointer+=strlen(pointer)+1;
-				}
+				packet++; //Skip Clan tag position info
+				player->szClanTag = _strdup(packet);						
+				packet+=strlen(packet)+1;
 
-				//player->ping = pointer[0];
-				if((char)pointer[0] == 0x01)
+				if((char)packet[0] == 0x01)
 				{
 					player->szClanTag = _strdup("BOT");
 					pSI->cBots++;
@@ -560,9 +566,7 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				else
 					player->szClanTag = _strdup("PLAYER");
 
-				pointer++;
-
-			
+				packet++;			
 			}
 
 			if(pQ4Players==NULL)
@@ -571,22 +575,17 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				pQ4CurrentPlayer = pQ4CurrentPlayer->pNext = player;
 
 			*numPlayers= *numPlayers+1;
-			//char szdebug[200];
-			//sprintf(szdebug,"ply (%d) #%d %s\n",g_bQ4,*numPlayers,player->szPlayerName);
-			//dbg_print(szdebug);
-		//	if(*numPlayers>32)
-		//		DebugBreak();
 
-			if(!g_bQ4) //ETQW specific
+			if(pSI->cGAMEINDEX==ETQW_SERVERLIST) //ETQW specific
 			{	
-				if(pointer[5]==0x01)
+				if(packet[5]==0x01)
 				{
 					/*dbg_print("Found ranked server!\n");
 					dbg_print(pSI->szServerName);
 					dbg_print("\n");*/
 					pSI->cRanked = 1;
 				
-				//	pointer++; 4+2
+				//	packet++; 4+2
 					 /* 
 					  int osMask;
 					  byte isRanked;
@@ -602,15 +601,12 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 					  int numConnectedClients; // number of clients on the tv server
 					  int maxClients; // max clients that the tv server supports
 						*/
-
-
 				}
 
 			}
 
-			if (pointer[0]==0x20)  //ETQW & Q4
+			if (packet[0]==0x20)  //ETQW & Q4
 				break;
-				
 		}
 		
 	}
