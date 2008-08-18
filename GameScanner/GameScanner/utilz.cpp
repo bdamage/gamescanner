@@ -469,7 +469,7 @@ char *colorfilterQ4(const char* name,char *namefilter, int len)
 		{
 			if(name[i]=='^')
 			{
-				if((name[i+1]=='i') && (name[i+2]=='d') && (isNumeric(name[i+4]))) //Q4 ^idm0 and ^idm1 icons
+				if((name[i+1]=='i')) //Q4 ^idm0 and ^idm1 icons
 					i+=5;
 				if((name[i+1]=='c') && (isNumeric(name[i+2])) && (isNumeric(name[i+3])) ) //Q4 color encoded RGB ^c000 ^c2456 etc...				
 					i+=5;				

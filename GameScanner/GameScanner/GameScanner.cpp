@@ -1750,8 +1750,14 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 			case 1:
 				if(pPlayerData->szClanTag!=NULL)
 				{
-					char colFiltered[100];
-					pLVItem->pszText = colorfilter(pPlayerData->szClanTag,colFiltered,sizeof(colFiltered)-1);
+				
+				char colFiltered[100];
+				
+				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szClanTag,colFiltered,sizeof(colFiltered)-1); 
+				else
+					pLVItem->pszText = pPlayerData->szClanTag;
+				
 				}
 				return TRUE;
 			case 2:
@@ -2141,7 +2147,7 @@ void Default_GameSettings()
 	GI[Q4_SERVERLIST].dwDefaultPort = 28004;
 	GI[Q4_SERVERLIST].pSC = &SC[Q4_SERVERLIST];
 	GI[Q4_SERVERLIST].colorfilter = &colorfilterQ4;
-	GI[Q4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	GI[Q4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
 	gi.szGAME_PATH = GI[Q4_SERVERLIST].szGAME_PATH;
 	gi.szGAME_CMD = GI[Q4_SERVERLIST].szGAME_CMD;
 	GI[Q4_SERVERLIST].pSC->vGAME_INST.push_back(gi);
@@ -7564,8 +7570,73 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 		DeleteObject(hbrSel);
 
 	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
-}//0x02C75DE0  243 236 225  47 119 111 114 107  16  65  83  83  67  17   0   óìá/work.ASSC..
-//0x034F6118  157 205 111 114 114 177  69 159   0    .Íorr±EŸ. 
+}
+
+LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
+{
+	HDC  hDC =  pListDraw->nmcd.hdc;
+	HBRUSH hbrSel= NULL;
+	hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
+	FillRect(hDC, &rc, (HBRUSH) hbrSel);
+
+	if( pListDraw->nmcd.uItemState & ( CDIS_SELECTED))
+	{
+		pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
+		hbrSel = CreateSolidBrush( GetSysColor(COLOR_HIGHLIGHT)); //RGB(51,153,250)); 																
+		FillRect(hDC, &rc, (HBRUSH) hbrSel);
+	}
+	int nCharWidth;
+	SelectObject(hDC,g_hf2);
+	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	char *pText;
+	rc.left+=20;
+	rc.top+=2;
+	COLORREF col = RGB(255,255,255) ;
+
+	for(int i=0;i<strlen(pszText);i++)
+	{
+		if((pszText[i]=='^') && (pszText[i+1]=='i') ) //&& (pszText[i+2]=='d') )//&& (isNumeric(pszText[i+4]))) //Q4 ^idm0 and ^idm1 icons
+		{
+			i+=4;
+			continue;
+		}
+		else if((pszText[i]=='^') && (pszText[i+1]=='c') )
+		{
+			int r = pszText[i+2]-48;
+			int g = pszText[i+3]-48;
+			int b = pszText[i+4]-48;
+			col = RGB(28*r,28*g,28*b) ;
+
+			i+=4;
+			continue;
+		}
+		else if(pszText[i]=='^')
+		{
+			col = GetColor(pszText[i+1]);
+
+			i++;
+			continue;
+		}
+		SetTextColor(hDC,col);
+		pText = &pszText[i];
+
+//Code for testing UNICODE/ widecharacter
+//		wchar_t wc[2];	
+//		mbtowc( &wc[0], pText, MB_CUR_MAX );
+//		wc[1]=0;
+//	ExtTextOutW(hDC,rc.left,rc.top,0, &rc,&wc[0], 1,NULL); 
+		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
+	
+
+		rc.left+=nCharWidth;
+
+	}
+	SelectObject(hDC,g_hf);								
+	if(hbrSel!=NULL)
+		DeleteObject(hbrSel);
+
+	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+}
 LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
 	HDC  hDC =  pListDraw->nmcd.hdc;
@@ -7904,8 +7975,11 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 								HDC  hDC =  pListDraw->nmcd.hdc;
 								RECT rc;								
 								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								
-								Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+								if(GI[pSI.cGAMEINDEX].Draw_ColorEncodedText!=NULL)
+									GI[pSI.cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+								else
+									Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+
 								if(pSI.cFavorite)
 									ImageList_Draw(g_hImageListIcons,2,hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
 								else

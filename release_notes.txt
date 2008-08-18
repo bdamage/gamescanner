@@ -6,6 +6,7 @@ version 1.08
 * Fixed auto detection for Warsow so the command only passes a full working game path.
 * Added support multiple installations, including Launch by criteria depending on Version or Mod name value.
 * Added new copy to clipboard to make it easier to set criterias.
+* Fixed color encoding and color filtering for Quake 4.
 
 
 version 1.07
