@@ -129,8 +129,6 @@ char TREEVIEW_VERSION[20];
 //if you add something ensure to increase MAX_COLUMNS below
 #define MAX_COLUMNS COL_STATUS+1
 
-
-
 #pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ ) 
 #ifndef _DEBUG
 TCHAR szDialogTitle[]="Game Scanner v" APP_VERSION ;
@@ -1997,9 +1995,9 @@ void RegisterProtocol(char *path)
 	strcpy_s(path2,515,path);
 	//check if it is in root only.. C:\?
    if(strlen(path2)>3)	
-	   strcat_s(path2,515,"\\ETServerViewer.exe");
+	   strcat_s(path2,515,"\\GameScanner.exe");
    else
-	   strcat_s(path2,515,"ETServerViewer.exe");
+	   strcat_s(path2,515,"GameScanner.exe");
 	
    sprintf(totpath,"%s %c1",path2,'%');
 
@@ -2029,13 +2027,8 @@ void RegisterProtocol(char *path)
 	}
 }
 
-
-/***************************************************
-	Set up default settings for each game.
-****************************************************/
-void Default_GameSettings()
+void Initialize_GameSettings()
 {
-	
 	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
 		ZeroMemory(&GI[i],sizeof(GAME_INFO));
@@ -2043,10 +2036,21 @@ void Default_GameSettings()
 		GI[i].pSC = &SC[i];
 		GI[i].iIconIndex =  Get_GameIcon(i);
 		GI[i].pSC->vGAME_INST.clear();
-
 	}
+}
 
-
+/***************************************************
+	Set up default settings for each game.
+****************************************************/
+void Default_GameSettings()
+{
+	for(int i=0; i<MAX_SERVERLIST; i++)
+	{
+		GI[i].bUseHTTPServerList = FALSE;
+		GI[i].szGAME_PATH[0]=0; //quick erase
+		GI[i].pSC = &SC[i];
+		GI[i].pSC->vGAME_INST.clear();
+	}
 	strcpy(GI[ET_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[ET_SERVERLIST].cGAMEINDEX = ET_SERVERLIST;
 	GI[ET_SERVERLIST].dwMasterServerPORT = 27950;
@@ -2056,15 +2060,22 @@ void Default_GameSettings()
 	strncpy(GI[ET_SERVERLIST].szMasterServerIP,"etmaster.idsoftware.com",MAX_PATH);
 	strncpy(GI[ET_SERVERLIST].szMAP_MAPPREVIEW_PATH,"etmaps",MAX_PATH);
 	strncpy(GI[ET_SERVERLIST].szGAME_CMD,"",MAX_PATH);
+	strcpy_s(GI[ET_SERVERLIST].szProtocolName,sizeof(GI[ET_SERVERLIST].szProtocolName),"et");
+	GI[ET_SERVERLIST].dwDefaultPort = 27960;
+	strcpy(GI[ET_SERVERLIST].szQueryString,"");
+	GI[ET_SERVERLIST].colorfilter = &colorfilter;
+	GI[ET_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	DWORD dwBuffSize = sizeof(GI[ET_SERVERLIST].szGAME_PATH);
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[ET_SERVERLIST].szGAME_PATH,&dwBuffSize);
 
 	if(strlen(GI[ET_SERVERLIST].szGAME_PATH)>0)
+	{
 		GI[ET_SERVERLIST].bActive = true;
+		strcat_s(GI[ET_SERVERLIST].szGAME_PATH,sizeof(GI[ET_SERVERLIST].szGAME_PATH),"\\et.exe");
+	}
 	else
 		GI[ET_SERVERLIST].bActive = false;
 	
-	GI[ET_SERVERLIST].pSC = &SC[ET_SERVERLIST];
 
 	GAME_INSTALLATIONS gi;
 	gi.sName = "Default";
@@ -2072,23 +2083,11 @@ void Default_GameSettings()
 	gi.szGAME_CMD = GI[ET_SERVERLIST].szGAME_CMD;
 	GI[ET_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
-
-//	MyFindFile();
-
-	strcat_s(GI[ET_SERVERLIST].szGAME_PATH,sizeof(GI[ET_SERVERLIST].szGAME_PATH),"\\et.exe");
-	strcpy_s(GI[ET_SERVERLIST].szProtocolName,sizeof(GI[ET_SERVERLIST].szProtocolName),"et");
-	
-	GI[ET_SERVERLIST].dwDefaultPort = 27960;
-	strcpy(GI[ET_SERVERLIST].szQueryString,"");
-	
-	GI[ET_SERVERLIST].colorfilter = &colorfilter;
-	GI[ET_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	
 	strcpy(GI[Q3_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[Q3_SERVERLIST].cGAMEINDEX = Q3_SERVERLIST;
 	GI[Q3_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[Q3_SERVERLIST].dwProtocol = 68;
-	GI[Q3_SERVERLIST].iIconIndex =  Get_GameIcon(Q3_SERVERLIST);
 	GI[Q3_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[Q3_SERVERLIST].szGAME_NAME,"Quake 3: Arena",MAX_PATH);
 	strncpy(GI[Q3_SERVERLIST].szMasterServerIP,"monster.idsoftware.com",MAX_PATH);
@@ -2099,7 +2098,6 @@ void Default_GameSettings()
 	GI[Q3_SERVERLIST].bActive = false;
 	GI[Q3_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[Q3_SERVERLIST].szQueryString,"");
-	GI[Q3_SERVERLIST].pSC = &SC[Q3_SERVERLIST];
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GI[Q3_SERVERLIST].szGAME_PATH,&dwBuffSize);
 	GI[Q3_SERVERLIST].colorfilter = &colorfilter;
 	GI[Q3_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
@@ -2112,7 +2110,6 @@ void Default_GameSettings()
 	GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
 	GI[RTCW_SERVERLIST].dwMasterServerPORT = 27950;
 	GI[RTCW_SERVERLIST].dwProtocol = 60;
-	GI[RTCW_SERVERLIST].iIconIndex = Get_GameIcon(RTCW_SERVERLIST);
 	GI[RTCW_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[RTCW_SERVERLIST].szGAME_NAME,"Return To Castle of Wolfenstein",MAX_PATH);
 	strncpy(GI[RTCW_SERVERLIST].szMasterServerIP,"wolfmotd.idsoftware.com",MAX_PATH);
@@ -2123,7 +2120,6 @@ void Default_GameSettings()
 	GI[RTCW_SERVERLIST].bActive = false;
 	GI[RTCW_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[RTCW_SERVERLIST].szQueryString,"");
-	GI[RTCW_SERVERLIST].pSC = &SC[RTCW_SERVERLIST];
 	GI[RTCW_SERVERLIST].colorfilter = &colorfilter;
 	GI[RTCW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GI[RTCW_SERVERLIST].szGAME_PATH;
@@ -2134,7 +2130,6 @@ void Default_GameSettings()
 	GI[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
 	GI[Q4_SERVERLIST].dwMasterServerPORT = 27650;
 	GI[Q4_SERVERLIST].dwProtocol = 0;
-	GI[Q4_SERVERLIST].iIconIndex = Get_GameIcon(Q4_SERVERLIST);
 	GI[Q4_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[Q4_SERVERLIST].szGAME_NAME,"Quake 4",MAX_PATH);
 	strncpy(GI[Q4_SERVERLIST].szMasterServerIP,"q4master.idsoftware.com",MAX_PATH);
@@ -2145,7 +2140,6 @@ void Default_GameSettings()
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE\\Software\\Id\\Quake 4","InstallPath",GI[Q4_SERVERLIST].szGAME_PATH,&dwBuffSize);
 	GI[Q4_SERVERLIST].bActive = false;
 	GI[Q4_SERVERLIST].dwDefaultPort = 28004;
-	GI[Q4_SERVERLIST].pSC = &SC[Q4_SERVERLIST];
 	GI[Q4_SERVERLIST].colorfilter = &colorfilterQ4;
 	GI[Q4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
 	gi.szGAME_PATH = GI[Q4_SERVERLIST].szGAME_PATH;
@@ -2154,14 +2148,13 @@ void Default_GameSettings()
 
 
 	GI[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
-	GI[ETQW_SERVERLIST].iIconIndex = Get_GameIcon(ETQW_SERVERLIST);
+
 	GI[ETQW_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[ETQW_SERVERLIST].szGAME_NAME,"Enemy Territory - Quake Wars",MAX_PATH);
 	strncpy(GI[ETQW_SERVERLIST].szMasterServerIP,"http://etqw-ipgetter.demonware.net/ipgetter/",MAX_PATH);
 	strncpy(GI[ETQW_SERVERLIST].szMAP_MAPPREVIEW_PATH,"etqwmaps",MAX_PATH);
 	strncpy(GI[ETQW_SERVERLIST].szGAME_CMD,"+seta com_usefastvidrestart 1 +seta com_allowconsole 1",MAX_PATH);
 	dwBuffSize = sizeof(GI[ETQW_SERVERLIST].szGAME_PATH);
-	GI[ETQW_SERVERLIST].pSC = &SC[ETQW_SERVERLIST];
 	GI[ETQW_SERVERLIST].bUseHTTPServerList = TRUE;
 
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\ET - QUAKE Wars","EXEString",GI[ETQW_SERVERLIST].szGAME_PATH,&dwBuffSize);
@@ -2181,7 +2174,6 @@ void Default_GameSettings()
 
 	strcpy(GI[COD2_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
-	GI[COD2_SERVERLIST].iIconIndex = Get_GameIcon(COD2_SERVERLIST);
 	GI[COD2_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[COD2_SERVERLIST].szGAME_NAME,"Call of Duty 2",MAX_PATH);
 	strncpy(GI[COD2_SERVERLIST].szMasterServerIP,"cod2master.activision.com",MAX_PATH);
@@ -2198,7 +2190,6 @@ void Default_GameSettings()
 	strcpy(GI[COD2_SERVERLIST].szProtocolName,"cod2");
 	GI[COD2_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD2_SERVERLIST].szQueryString,"");
-	GI[COD2_SERVERLIST].pSC = &SC[COD2_SERVERLIST];
 	GI[COD2_SERVERLIST].colorfilter = &colorfilter;
 	GI[COD2_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GI[COD2_SERVERLIST].szGAME_PATH;
@@ -2208,7 +2199,6 @@ void Default_GameSettings()
 
 	strcpy(GI[COD_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 	GI[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
-	GI[COD_SERVERLIST].iIconIndex = Get_GameIcon(COD_SERVERLIST);
 	GI[COD_SERVERLIST].dwViewFlags = 0;
 	strncpy(GI[COD_SERVERLIST].szGAME_NAME,"Call of Duty",MAX_PATH);
 	strncpy(GI[COD_SERVERLIST].szMasterServerIP,"codmaster.activision.com",MAX_PATH);
@@ -2225,7 +2215,6 @@ void Default_GameSettings()
 	strcpy(GI[COD_SERVERLIST].szProtocolName,"cod");
 	GI[COD_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD_SERVERLIST].szQueryString,"");
-	GI[COD_SERVERLIST].pSC = &SC[COD_SERVERLIST];
 	gi.szGAME_PATH = GI[COD_SERVERLIST].szGAME_PATH;
 	gi.szGAME_CMD = GI[COD_SERVERLIST].szGAME_CMD;
 	GI[COD_SERVERLIST].pSC->vGAME_INST.push_back(gi);
@@ -2264,10 +2253,8 @@ void Default_GameSettings()
 	strcpy(GI[WARSOW_SERVERLIST].szQueryString,"Warsow");
 	strcpy(GI[WARSOW_SERVERLIST].szProtocolName,"warsow");
 	GI[WARSOW_SERVERLIST].dwDefaultPort = 28960;
-	GI[WARSOW_SERVERLIST].pSC = &SC[WARSOW_SERVERLIST];
 	GI[WARSOW_SERVERLIST].colorfilter = &colorfilter;
 	GI[WARSOW_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-
 	gi.szGAME_PATH = GI[WARSOW_SERVERLIST].szGAME_PATH;
 	gi.szGAME_CMD = GI[WARSOW_SERVERLIST].szGAME_CMD;
 	GI[WARSOW_SERVERLIST].pSC->vGAME_INST.push_back(gi);
@@ -2291,7 +2278,6 @@ void Default_GameSettings()
 	strcpy(GI[COD4_SERVERLIST].szProtocolName,"cod4");
 	GI[COD4_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[COD4_SERVERLIST].szQueryString,"");
-	GI[COD4_SERVERLIST].pSC = &SC[COD4_SERVERLIST];
 	GI[COD4_SERVERLIST].colorfilter = &colorfilter;
 	GI[COD4_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GI[COD4_SERVERLIST].szGAME_PATH;
@@ -2371,7 +2357,7 @@ void Default_GameSettings()
 	strncpy(GI[QW_SERVERLIST].szMAP_MAPPREVIEW_PATH,"qwmaps",MAX_PATH);
 	strncpy(GI[QW_SERVERLIST].szGAME_CMD,"",MAX_PATH);
 	GI[QW_SERVERLIST].bActive = false;
-	strcat_s(GI[QW_SERVERLIST].szGAME_PATH,sizeof(GI[QW_SERVERLIST].szGAME_PATH),"quakeworld.exe");
+	strcpy_s(GI[QW_SERVERLIST].szGAME_PATH,sizeof(GI[QW_SERVERLIST].szGAME_PATH),"quakeworld.exe");
 	strcpy_s(GI[QW_SERVERLIST].szProtocolName,sizeof(GI[QW_SERVERLIST].szProtocolName),"qw");
 	GI[QW_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[QW_SERVERLIST].szQueryString,"");
@@ -2392,7 +2378,7 @@ void Default_GameSettings()
 	strncpy(GI[Q2_SERVERLIST].szMAP_MAPPREVIEW_PATH,"q2maps",MAX_PATH);
 	strncpy(GI[Q2_SERVERLIST].szGAME_CMD,"",MAX_PATH);
 	GI[Q2_SERVERLIST].bActive = false;
-	strcat_s(GI[Q2_SERVERLIST].szGAME_PATH,sizeof(GI[Q2_SERVERLIST].szGAME_PATH),"quake2.exe");
+	strcpy_s(GI[Q2_SERVERLIST].szGAME_PATH,sizeof(GI[Q2_SERVERLIST].szGAME_PATH),"quake2.exe");
 	strcpy_s(GI[Q2_SERVERLIST].szProtocolName,sizeof(GI[Q2_SERVERLIST].szProtocolName),"q2");
 	GI[Q2_SERVERLIST].dwDefaultPort = 27960;
 	strcpy(GI[Q2_SERVERLIST].szQueryString,"");
@@ -2439,33 +2425,77 @@ void Default_GameSettings()
 	strcpy(GI[HL2_SERVERLIST].szProtocolName,"hf2");
 	GI[HL2_SERVERLIST].dwDefaultPort = 28960;
 	strcpy(GI[HL2_SERVERLIST].szQueryString,"");
+	GI[HL2_SERVERLIST].bUseHTTPServerList = FALSE;
 	GI[HL2_SERVERLIST].pSC = &SC[HL2_SERVERLIST];
-#ifdef _DEBUG
-	GI[HL2_SERVERLIST].bActive = true;
-#else
-	GI[HL2_SERVERLIST].bActive = false;
-#endif
+
+	Registry_GetGamePath(HKEY_CURRENT_USER, "Software\\Valve\\Steam","SteamExe",GI[HL2_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	if(strlen(GI[HL2_SERVERLIST].szGAME_PATH)>0)
+		GI[HL2_SERVERLIST].bActive = true;
+
 	gi.szGAME_PATH = GI[HL2_SERVERLIST].szGAME_PATH;
-	gi.szGAME_CMD = GI[HL2_SERVERLIST].szGAME_CMD;
+	gi.szGAME_CMD = "-applaunch 300";
+	gi.sMod = "dod";
+	gi.sName = "Day of Defeat Source";
+	GI[HL2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+	gi.szGAME_CMD = "-applaunch 320";
+	gi.sMod = "hl2mp";
+	gi.sName = "Half-Life 2 Deathmatch";
+	GI[HL2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+	gi.szGAME_CMD = "-applaunch 240";
+	gi.sMod = "cstrike";
+	gi.sName = "Counter-Strike Source";
+	GI[HL2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+	gi.szGAME_CMD = "-applaunch 440";
+	gi.sMod = "tf";
+	gi.sName = "Team Fortress 2";
 	GI[HL2_SERVERLIST].pSC->vGAME_INST.push_back(gi);
 
+	strcpy(GI[UTERROR_SERVERLIST].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GI[UTERROR_SERVERLIST].cGAMEINDEX = UTERROR_SERVERLIST;
+	GI[UTERROR_SERVERLIST].dwMasterServerPORT = 27950;
+	GI[UTERROR_SERVERLIST].dwProtocol = 68;
+	GI[UTERROR_SERVERLIST].iIconIndex =  Get_GameIcon(UTERROR_SERVERLIST);
+	GI[UTERROR_SERVERLIST].dwViewFlags = 0;
+	strncpy(GI[UTERROR_SERVERLIST].szGAME_NAME,"Urban Terror",MAX_PATH);
+	strncpy(GI[UTERROR_SERVERLIST].szMasterServerIP,"master.urbanterror.net",MAX_PATH);
+	strncpy(GI[UTERROR_SERVERLIST].szMAP_MAPPREVIEW_PATH,"urbanmaps",MAX_PATH);
+	strncpy(GI[UTERROR_SERVERLIST].szGAME_PATH,"q3.exe",MAX_PATH);
+	strncpy(GI[UTERROR_SERVERLIST].szGAME_CMD,"+fs_game %MODNAME%",MAX_PATH);
+	strcpy(GI[UTERROR_SERVERLIST].szProtocolName,"urban");
+	GI[UTERROR_SERVERLIST].bActive = false;
+	GI[UTERROR_SERVERLIST].dwDefaultPort = 27960;
+	GI[UTERROR_SERVERLIST].bUseHTTPServerList = FALSE;
+	strcpy(GI[UTERROR_SERVERLIST].szQueryString,"");
+	GI[UTERROR_SERVERLIST].pSC = &SC[UTERROR_SERVERLIST];
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GI[UTERROR_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	GI[UTERROR_SERVERLIST].colorfilter = &colorfilter;
+	GI[UTERROR_SERVERLIST].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.sName = "Default";
+	gi.sMod = "";
+	gi.sVersion = "";
+	gi.szGAME_PATH = GI[UTERROR_SERVERLIST].szGAME_PATH;
+	gi.szGAME_CMD = GI[UTERROR_SERVERLIST].szGAME_CMD;
+	GI[UTERROR_SERVERLIST].pSC->vGAME_INST.push_back(gi);
+	strcpy(GI[UTERROR_SERVERLIST].szGAME_SHORTNAME,"Urban Terror");
+	strcpy(GI[UTERROR_SERVERLIST].szFilename,"urbanterror.servers");
 
-		strcpy(GI[ET_SERVERLIST].szGAME_SHORTNAME,"ET");
-		strcpy(GI[ETQW_SERVERLIST].szGAME_SHORTNAME,"ETQW");
-		strcpy(GI[Q3_SERVERLIST].szGAME_SHORTNAME,"Quake 3");			
-		strcpy(GI[Q4_SERVERLIST].szGAME_SHORTNAME,"Quake 4");
-		strcpy(GI[RTCW_SERVERLIST].szGAME_SHORTNAME,"RTCW");
-		strcpy(GI[COD_SERVERLIST].szGAME_SHORTNAME,"CoD");
-		strcpy(GI[COD2_SERVERLIST].szGAME_SHORTNAME,"CoD 2");	
-		strcpy(GI[WARSOW_SERVERLIST].szGAME_SHORTNAME,"Warsow");
-		strcpy(GI[COD4_SERVERLIST].szGAME_SHORTNAME,"CoD 4");
-		strcpy(GI[CS_SERVERLIST].szGAME_SHORTNAME,"CS");
-		strcpy(GI[CSCZ_SERVERLIST].szGAME_SHORTNAME,"CS Zero");
-		strcpy(GI[CSS_SERVERLIST].szGAME_SHORTNAME,"CS Source");
-		strcpy(GI[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
-		strcpy(GI[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
-		strcpy(GI[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
-		strcpy(GI[HL2_SERVERLIST].szGAME_SHORTNAME,"HF2");
+
+	strcpy(GI[ET_SERVERLIST].szGAME_SHORTNAME,"W:ET");
+	strcpy(GI[ETQW_SERVERLIST].szGAME_SHORTNAME,"ETQW");
+	strcpy(GI[Q3_SERVERLIST].szGAME_SHORTNAME,"Quake 3");			
+	strcpy(GI[Q4_SERVERLIST].szGAME_SHORTNAME,"Quake 4");
+	strcpy(GI[RTCW_SERVERLIST].szGAME_SHORTNAME,"RTCW");
+	strcpy(GI[COD_SERVERLIST].szGAME_SHORTNAME,"CoD");
+	strcpy(GI[COD2_SERVERLIST].szGAME_SHORTNAME,"CoD 2");	
+	strcpy(GI[WARSOW_SERVERLIST].szGAME_SHORTNAME,"Warsow");
+	strcpy(GI[COD4_SERVERLIST].szGAME_SHORTNAME,"CoD 4");
+	strcpy(GI[CS_SERVERLIST].szGAME_SHORTNAME,"CS");
+	strcpy(GI[CSCZ_SERVERLIST].szGAME_SHORTNAME,"CS Zero");
+	strcpy(GI[CSS_SERVERLIST].szGAME_SHORTNAME,"CS Source");
+	strcpy(GI[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
+	strcpy(GI[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
+	strcpy(GI[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
+	strcpy(GI[HL2_SERVERLIST].szGAME_SHORTNAME,"HF2");
 
 	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
 	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
@@ -2491,7 +2521,6 @@ void Default_Appsettings()
 {
 
 	AddLogInfo(ETSV_INFO,"Settings set to defaults.");
-	Default_GameSettings();
 	
 	ZeroMemory(&AppCFG,sizeof(APP_SETTINGS_NEW));
 
@@ -2499,16 +2528,14 @@ void Default_Appsettings()
 	
 	AppCFG.dwVersion = 14;
 	AppCFG.bAutostart = FALSE;
-	AppCFG.bUse_ETpro_path = TRUE;
 	AppCFG.bUse_minimize = TRUE;
 	AppCFG.dwMinimizeMODKey =MOD_ALT;
 	AppCFG.cMinimizeKey = 'Z';
-	AppCFG.bViewModeAdvance = FALSE;
 	AppCFG.bLogging = FALSE;
 	AppCFG.bUSE_SCREEN_RESTORE = FALSE;
-	AppCFG.filter.dwGameTypeFilter = 0;
+
 	AppCFG.bUseColorEncodedFont = TRUE;
-	AppCFG.dwThreads = 32;
+	AppCFG.bUseShortCountry = FALSE;	
 
 	memset(AppCFG.szEXT_EXE_CMD,0,MAX_PATH);	
 	memset(AppCFG.szEXT_EXE_PATH,0,MAX_PATH);
@@ -2521,36 +2548,41 @@ void Default_Appsettings()
 	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4");
 	strcpy(AppCFG.szET_CMD,"");
 
+	//Legacy stuff - this should be cleared out from source code...
 	AppCFG.filter.bNoEmpty = FALSE;
 	AppCFG.filter.bNoFull = FALSE;
 	AppCFG.filter.bNoPrivate =FALSE;
 	AppCFG.filter.bPunkbuster = FALSE;
 	AppCFG.filter.bPure = FALSE;
 	AppCFG.filter.bRanked = FALSE;
-	AppCFG.filter.dwPing = 0;
-	AppCFG.filter.bNoBots = FALSE;
+	AppCFG.filter.bNoBots = FALSE;	
+	AppCFG.filter.dwGameTypeFilter = 0;
 
-	AppCFG.filter.dwShowServerWithMaxPlayers = 0;
-	AppCFG.filter.dwShowServerWithMinPlayers = 0;
+	//Global filter defaults
+	AppCFG.filter.dwPing = 9999;
+	AppCFG.filter.dwShowServerWithMaxPlayers = 6;
+	AppCFG.filter.dwShowServerWithMinPlayers = 24;
 	AppCFG.filter.cActiveMaxPlayer = 0;
 	AppCFG.filter.cActiveMinPlayer = 0;
 
+	//Default Network
+	AppCFG.dwThreads = 32;
 	AppCFG.socktimeout.tv_sec = 1;
 	AppCFG.socktimeout.tv_usec  = 0;
 	AppCFG.dwRetries = 0;
 
 	AppCFG.g_cTransparancy = 100;
 
-	AppCFG.filter.dwPing = 9999;
-	AppCFG.filter.dwPing = AppCFG.filter.dwPing;
+
 	AppCFG.cBuddyColumnSort = 0; 
-	AppCFG.bSortBuddyAsc = TRUE;
+	
 	AppCFG.bShowBuddyList = TRUE;
 	AppCFG.bShowMapPreview = FALSE;
-
-	AppCFG.bPlayNotifySound   = TRUE;
 	AppCFG.bShowServerRules = TRUE;
 	AppCFG.bShowPlayerList = TRUE;
+	
+	AppCFG.bSortBuddyAsc = TRUE;
+	AppCFG.bPlayNotifySound   = TRUE;
 	AppCFG.bSortPlayerAsc = TRUE;
 	
 	AppCFG.bUseCountryFilter = FALSE;
@@ -3172,19 +3204,18 @@ int TreeView_GetSelectionV3()
 void Initialize_CountryFilter()
 {
 	CountryFilter.counter=0;
-TVITEM  tvitem;
-	memset(&tvitem,0,sizeof(TVITEM));
+	TVITEM  tvitem;
+	ZeroMemory(&tvitem,sizeof(TVITEM));
 	hRootCountryFiltersItem = TreeView_GetTIByItemType(1001);
 	tvitem.hItem = hRootCountryFiltersItem;
 	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
 	TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
 
 	if(	tvitem.iImage == 9) //Unchecked image
-		AppCFG.bUseCountryFilter = false;
+		AppCFG.bUseCountryFilter = FALSE;
 	else
-		AppCFG.bUseCountryFilter = true;
+		AppCFG.bUseCountryFilter = TRUE;
 
-	dbg_print("Entering Build_CountryFilter() func.");
 	Build_CountryFilter(hRootCountryFiltersItem);
 }
 
@@ -3202,7 +3233,6 @@ DWORD Build_CountryFilter(HTREEITEM hRoot)
 	tvitem.pszText = szBuffer;
 	tvitem.cchTextMax = sizeof(szBuffer);
 	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE | TVIF_TEXT | TVIF_PARAM;
-
 	hCurrent = hRoot;
 	hChild = TreeView_GetNextItem( g_hwndMainTreeCtrl, hRoot, TVGN_CHILD);
 	if(hChild!=NULL)
@@ -3236,11 +3266,11 @@ DWORD Build_CountryFilter(HTREEITEM hRoot)
 
 		tvitem.hItem = hCurrent;
 		TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
-#ifdef _DEBUG
-//		char szDebugTxt[100];
-//		sprintf(szDebugTxt,"%d %s - (%d) dwRet = %d  dwReturn = %d\n",tvitem.iImage,tvitem.pszText,tvitem.lParam,dwRet, dwReturn);
-//		dbg_print(szDebugTxt);
-#endif
+/*#ifdef _DEBUG
+		char szDebugTxt[100];
+		sprintf(szDebugTxt,"%d %s - (%d) dwRet = %d  dwReturn = %d",tvitem.iImage,tvitem.pszText,tvitem.lParam,dwRet, dwReturn);
+		dbg_print(szDebugTxt);
+#endif*/
 		if(	tvitem.iImage == CHECKED_ICON) //Checked country
 		{
 
@@ -3781,26 +3811,25 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 	return 0;
 }
 
-//Ugly hack
-UINT g_save_counter=0;
+UINT g_save_counter=0;  //Ugly hack
 DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 {
 	if(g_save_counter>vTI.size())
 		return 0;
 	
 	while(dwlevel==vTI.at(g_save_counter).dwLevel)
-	{
-			
+	{			
 		int iSel = g_save_counter;
-
 		TiXmlElement * elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
-	
-	//	char padding[40];
-	//	padding[0]=0;
-	//	for(int i=0;i<dwlevel;i++)
-	//		strcat(padding," ");
-	//	AddLogInfo(ETSV_DEBUG,"%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
-		
+
+#ifdef _DEBUG	
+		char padding[40];
+		padding[0]=0;
+		for(int i=0;i<dwlevel;i++)
+			strcat(padding," ");
+		dbg_print("%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
+#endif
+
 		elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
 		elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
 		elem->SetAttribute("value",vTI.at(iSel).dwValue);
@@ -3813,36 +3842,24 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		elem->SetAttribute("action",vTI.at(iSel).dwAction);
 			
 		g_save_counter++;
+		pElemRoot->LinkEndChild( elem ); 
 		if(g_save_counter>=vTI.size())
-		{
-			pElemRoot->LinkEndChild( elem );  
 			return 0;
-		}
-		pElemRoot->LinkEndChild( elem );  
-//		vTI.at(iSel).sName.clear();
-//		vTI.at(iSel).strValue.clear();
-		
-
+		 
 		DWORD nextlevel = vTI.at(g_save_counter).dwLevel;
 		DWORD lvl=0;
 		if(nextlevel>dwlevel)
-		{	lvl = Save_all_by_level(elem,nextlevel);
-
+		{	
+			lvl = Save_all_by_level(elem,nextlevel);
 			if(lvl!=dwlevel)
-			{
-		
 				return lvl;
-			}
-		}
-
-		
+		}		
 		if(g_save_counter>=vTI.size())
-			return 0;		
-		
-		
+			return 0;
 	}
 	return vTI.at(g_save_counter).dwLevel;
 }
+
 void TreeView_cleanup()
 {
 	vTI.size();
@@ -3874,8 +3891,7 @@ int TreeView_save()
 	TiXmlElement * TreeItems = new TiXmlElement( "TreeItems" );  
 
 	HTREEITEM hRoot = TreeView_GetRoot(g_hwndMainTreeCtrl);
-	
-	
+		
 	g_save_counter=0;
 	if(!vTI.empty())
 		Save_all_by_level(TreeItems,vTI.at(g_save_counter).dwLevel);
@@ -4124,16 +4140,10 @@ int TreeView_load()
 
 		}
 	}
-	//TreeView_SetItemCheckState(i, DWORD dwType,GI[i]);
-	//AppCFG.filter.bHideOfflineServers = TreeView_GetDWValue(FILTER_OFFLINE,8);
-	//AppCFG.filter.dwShowServerWithMinPlayers = TreeView_GetDWValue(FILTER_MIN_PLY,11);
-	//AppCFG.filter.dwShowServerWithMaxPlayers = TreeView_GetDWValue(FILTER_MAX_PLY,11);
-	
+
 	TreeView_SetDWValueByItemType(FILTER_MIN_PLY, AppCFG.filter.dwShowServerWithMinPlayers,AppCFG.filter.cActiveMinPlayer);
 	TreeView_SetDWValueByItemType(FILTER_MAX_PLY, AppCFG.filter.dwShowServerWithMaxPlayers,AppCFG.filter.cActiveMaxPlayer);
 	
-
-
 	Initialize_CountryFilter();
 	SetFocus(g_hwndMainTreeCtrl);
 	return 0;
@@ -4895,7 +4905,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	Load_CountryFlags();
 
 	g_hf = MyCreateFont(hwnd);
-	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Courier New");
+	g_hf2 = MyCreateFont(hwnd,16,FW_BOLD,"Courier New");
 
 	ChangeFont(hwnd,g_hf);
 	
@@ -5008,22 +5018,13 @@ void OnInitialize_MainDlg(HWND hwnd)
 	SetInitialViewStates();
 	
 	SetDlgTrans(hwnd,AppCFG.g_cTransparancy);
+	
+	TreeView_BuildList();
 	LoadAllServerList();
 
-	 g_iCurrentSelectedServer = -1;
+	g_iCurrentSelectedServer = -1;
 
-	CountryFilter.counter = 0;
-//	Load_CountryFilter();
-	
 	ListView_InitilizeColumns();
-	TreeView_BuildList();
-	
-	if(GI[g_currentGameIdx].bActive)
-		SetCurrentViewTo(g_currentGameIdx);
-	else
-		SetCurrentViewTo(FindFirstActiveGame());
-
-	OnActivate_ServerList(SCAN_FILTERED);
 
 	Buddy_Load(g_pBIStart);
 	Buddy_UpdateList(g_pBIStart);
@@ -5142,12 +5143,21 @@ void SaveServerList(GAME_INFO *pGI)
 	SetStatusText(ICO_INFO,"Saving... DONE!");
 }
 //TODO rewrite file structure for easier future changes/additional info
-void LoadServerListV2(GAME_INFO *pGI)
+DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 {
+	GAME_INFO *pGI = (GAME_INFO*)lpVoid;
 	SetCurrentDirectory(USER_SAVE_PATH);
+	pGI->pSC->vSI.clear();
+	char szBuffer[100];
+	if(pGI->hTI!=NULL)
+	{
+		sprintf(szBuffer,"%s (Loading...)",pGI->szGAME_NAME);
+		TreeView_SetItemText(pGI->hTI,szBuffer);
+		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
+	}
 
 	char seps[]   = "\t\n";
-
+	
 	FILE *fp=NULL;
 	char szFilename2[260];
 	sprintf(szFilename2,"%s.csv",pGI->szFilename);
@@ -5320,6 +5330,8 @@ void LoadServerListV2(GAME_INFO *pGI)
 						pGI->pSC->shash.insert(Int_Pair(hash,srv.dwIndex));
 						pGI->pSC->vSI.push_back(srv);			
 						pGI->dwTotalServers++;
+	
+		
 						i = sizeof(buffer)+1;
 					}  //endif
 				}
@@ -5327,7 +5339,13 @@ void LoadServerListV2(GAME_INFO *pGI)
 		}
 		fclose(fp);
 	}
-
+	if(pGI->hTI!=NULL)
+	{
+		sprintf(szBuffer,"%s (%d)",pGI->szGAME_NAME,pGI->dwTotalServers);
+		TreeView_SetItemText(pGI->hTI,szBuffer);
+		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
+	}
+	return 0;
 }
 
 
@@ -5339,14 +5357,42 @@ void SaveAllServerList()
 
 void LoadAllServerList()
 {
+	HANDLE hThread;
+	DWORD dwThreadIdBrowser;
+	hThread = NULL;		
+	hThread = CreateThread( NULL, 0, &LoadAllServerListThread, (LPVOID)0,0, &dwThreadIdBrowser);                
+	if (hThread == NULL) 
+	{
+		AddLogInfo(ETSV_WARNING,"CreateThread failed (%d)\n", GetLastError() ); 
+	}
+	else 
+	{
+		CloseHandle( hThread );
+	}
+
+}
+
+DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
+{
+
 	for(int i=0;i<MAX_SERVERLIST;i++)
+	{
 		if(GI[i].pSC->vSI.size()==0) //Only try to load if no list exsists (needed for minimizing and restoring)
-		{
-			GI[i].pSC->vSI.clear();
-			//LoadServerList(&GI[i]);
+		{		
 			LoadServerListV2(&GI[i]);
 		}
+	}
+	
+	if(GI[g_currentGameIdx].bActive)
+		SetCurrentViewTo(g_currentGameIdx);
+	else
+		SetCurrentViewTo(FindFirstActiveGame());
+
+	OnActivate_ServerList(SCAN_FILTERED);
+		
+ return 0;
 }
+
 
 
 void DeleteAllServerLists()
@@ -5682,6 +5728,11 @@ void CFG_Save()
 	root->LinkEndChild( xmlElm5 );  
 	xmlElm5->SetAttribute("seconds", AppCFG.socktimeout.tv_sec);
 	xmlElm5->SetAttribute("useconds", AppCFG.socktimeout.tv_usec);
+	
+	TiXmlElement * xmlElmRet = new TiXmlElement( "NetworkRetries" );  
+	root->LinkEndChild( xmlElmRet );  
+	xmlElmRet->SetAttribute("value", AppCFG.dwRetries);
+
 
 	doc.SaveFile( "config.xml" );
 	AddLogInfo(ETSV_DEBUG,"Saving config...DONE!");
@@ -6605,7 +6656,8 @@ void LoadImageList()
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_HALFLIFE2)); //42
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_URBAN)); //43
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
 
 }
@@ -7355,6 +7407,8 @@ char Get_GameIcon(char index)
 			return 41;
 		case HL2_SERVERLIST:
 			return 42;
+		case UTERROR_SERVERLIST:
+			return 43;
 		default:
 			return 7;  //unkown icon
 	}
@@ -7537,7 +7591,12 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 	int nCharWidth;
 	SelectObject(hDC,g_hf2);
 	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+//	ABC abc;
+//	GetCharABCWidths(hDC,       (UINT)0, (UINT) 0,&abc);
+//	nCharWidth = abc.abcA + abc.abcB + abc.abcC;
+
 	char *pText;
+
 	rc.left+=20;
 	rc.top+=2;
 	COLORREF col = RGB(255,255,255) ;
@@ -7559,6 +7618,9 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 //		mbtowc( &wc[0], pText, MB_CUR_MAX );
 //		wc[1]=0;
 //	ExtTextOutW(hDC,rc.left,rc.top,0, &rc,&wc[0], 1,NULL); 
+
+
+
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
 	
 
@@ -10003,7 +10065,7 @@ Return: TRUE if successfull.
 ****************************************/
 BOOL ReplaceStrInStr(string &strToReplace,const char *szReplace,const char *szReplaceWith)
 {
-	int offset;
+	string::size_type offset;
 	offset = strToReplace.find(szReplace);
 	if(offset!=-1)
 	{
@@ -10018,7 +10080,8 @@ BOOL ReplaceStrInStr(string &strToReplace,const char *szReplace,const char *szRe
 
 void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 {
-	char CommandParameters[512];	
+	char CommandParameters[512];
+	ZeroMemory(CommandParameters,512);
 	int typeRecognized = -1;
 
 	//simple autodetect to try to recognize which game to launch (used for quick launch)
@@ -10093,10 +10156,21 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 
 	ReplaceStrInStr(cmd,"%MODNAME%",pSI.szMod);
 
-	if(strlen(pSI.szPRIVATEPASS)>0)
-		sprintf(CommandParameters,"+connect %s:%d +password %s %s",pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS,cmd.c_str());					
+	if(strstr(cmd.c_str(),"applaunch")!=NULL)  //quick steam fix cmd has to be pre-merged
+	{
+		if(strlen(pSI.szPRIVATEPASS)>0)
+			sprintf(CommandParameters,"%s +connect %s:%d +password %s",cmd.c_str(),pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS);					
+		else
+			sprintf(CommandParameters,"%s +connect %s:%d",cmd.c_str(),pSI.szIPaddress,pSI.dwPort);					
+
+	}
 	else
-		sprintf(CommandParameters,"+connect %s:%d %s",pSI.szIPaddress,pSI.dwPort,cmd.c_str());					
+	{
+		if(strlen(pSI.szPRIVATEPASS)>0)
+			sprintf(CommandParameters,"+connect %s:%d +password %s %s",pSI.szIPaddress,pSI.dwPort,pSI.szPRIVATEPASS,cmd.c_str());					
+		else
+			sprintf(CommandParameters,"+connect %s:%d %s",pSI.szIPaddress,pSI.dwPort,cmd.c_str());					
+	}
 	AddLogInfo(0,CommandParameters);
 
 	if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
@@ -10109,7 +10183,7 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 			//Notify mIRC which server user will join
 			DDE_Init();
   			char szMsg[350];
-			string::size_type offset;
+			
 			string mircoutput;
 			mircoutput = g_sMIRCoutput;
 			mircoutput.insert(0,"/ame ");
@@ -10867,10 +10941,10 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
 int CFG_Load()
 {
-		
-	memset(&AppCFG,0,sizeof(APP_SETTINGS_NEW));
-
+	Initialize_GameSettings();
+	Default_GameSettings();
 	Default_Appsettings();
+
 
 	ListView_SetDefaultColumns();
 
@@ -10882,18 +10956,7 @@ int CFG_Load()
 		return 1;
 	}
 
-	AppCFG.bUseFilterOnFavorites = FALSE;
-	AppCFG.bUseShortCountry = FALSE;	
-	AppCFG.filter.bPunkbuster = FALSE;
-	AppCFG.filter.bNoEmpty = FALSE;
-	AppCFG.filter.bNoFull = FALSE;
-	AppCFG.filter.bNoPrivate = FALSE;
-	AppCFG.filter.bPure = FALSE;
-	AppCFG.filter.bRanked = FALSE;
-	AppCFG.filter.dwShowServerWithMaxPlayers = 0;
-	AppCFG.filter.dwShowServerWithMinPlayers = 0;
-	AppCFG.filter.cActiveMaxPlayer = 0;
-	AppCFG.filter.cActiveMinPlayer = 0;
+
 	 
 	if(AppCFG.filter.dwPing == 0)
 	{
@@ -11103,6 +11166,14 @@ int CFG_Load()
 	{
 		AppCFG.socktimeout.tv_sec   = 1;	
 		AppCFG.socktimeout.tv_usec   = 0;	
+	}
+
+	pElem=hRoot.FirstChild("NetworkRetries").Element();
+	if (pElem)
+	{
+		pElem->QueryIntAttribute("value",&intVal);
+		AppCFG.dwRetries  = intVal;				
+
 	}
 
 	TiXmlElement * pElemSort;

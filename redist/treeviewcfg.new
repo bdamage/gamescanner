@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG Version="4.66">
+<TreeViewCFG Version="4.67">
     <!--Settings for Game Scanner treeview.-->
     <TreeItems>
         <Item name="Wolfenstein - Enemy Territory" strval="" value="0" compare="0" icon="0" expanded="0" type="1024" state="0" game="0" action="1">
@@ -29,7 +29,7 @@
                     <ModItems name="JayMod" strval="jaymod" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="0" action="9" />
                     <ModItems name="NoQuarter" strval="noquarter" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="0" action="9" />
                     <ModItems name="ETPub" strval="etpub" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="0" action="9" />
-                    <ModItems name="tcetest" strval="tcetest" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="0" action="9" />
+                    <ModItems name="True Combat: Elite" strval="tcetest" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="0" action="9" />
                 </Mods>
                 <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="0" action="0">
                     <Version name="2.55" strval="2.55" value="1" compare="0" icon="9" expanded="0" type="29" state="0" game="0" action="9" />
@@ -84,6 +84,54 @@
                 <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="1" action="0" />
             </Filter>
         </Item>
+        <Item name="Quake World" strval="" value="0" compare="0" icon="39" expanded="0" type="1024" state="0" game="12" action="1">
+            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="12" action="1" />
+            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="12" action="5" />
+            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="12" action="6" />
+            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="12" action="7" />
+            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0">
+                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="12" action="9" />
+                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="12" action="9" />
+                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="12" action="9" />
+                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="12" action="9" />
+                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="12" action="9" />
+                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0" />
+                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0">
+                    <ModItems name="QW" strval="QW" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
+                    <ModItems name="Clan Arena" strval="clanarena" value="2" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
+                    <ModItems name="Rocket Arena" strval="arena" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
+                    <ModItems name="Team Fortress" strval="fortress" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
+                    <ModItems name="CTF" strval="ctf" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
+                    <ModItems name="Qizmo" strval="Qizmo" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
+                </Mods>
+                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0" />
+                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0" />
+            </Filter>
+        </Item>
+        <Item name="Quake 2" strval="" value="0" compare="0" icon="40" expanded="0" type="1024" state="0" game="13" action="1">
+            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="13" action="1" />
+            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="13" action="5" />
+            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="13" action="6" />
+            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="13" action="7" />
+            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0">
+                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="13" action="9" />
+                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="13" action="9" />
+                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="13" action="9" />
+                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="13" action="9" />
+                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="13" action="9" />
+                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0" />
+                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0">
+                    <ModItems name="baseq2" strval="baseq2" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
+                    <ModItems name="OSP" strval="OSP Tourney" value="2" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
+                    <ModItems name="OpenTDM" strval="OpenTDM" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
+                    <ModItems name="Quake2 Teamplay" strval="Quake2 Teamplay" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
+                    <ModItems name="Quake2 Battleground" strval="Quake2 Battleground" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
+                    <ModItems name="Rocket Arena v2.25" strval="v2.25" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
+                </Mods>
+                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0" />
+                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0" />
+            </Filter>
+        </Item>
         <Item name="Quake 3: Arena" strval="" value="0" compare="0" icon="24" expanded="0" type="1024" state="0" game="2" action="1">
             <ChildItem name="Internet servers" strval="" value="1" compare="0" icon="12" expanded="0" type="0" state="0" game="2" action="1" />
             <ChildItem name="Favorites Public" strval="" value="1" compare="0" icon="2" expanded="0" type="0" state="0" game="2" action="5" />
@@ -135,7 +183,7 @@
                     <Map name="q3dm8" strval="q3dm8" value="64" compare="0" icon="9" expanded="0" type="30" state="0" game="2" action="9" />
                 </Maps>
             </Filter>
-        </Item>
+        </Item>		
         <Item name="Quake 4" strval="" value="0" compare="0" icon="21" expanded="0" type="1024" state="0" game="3" action="1">
             <ChildItem name="Internet servers" strval="" value="1" compare="0" icon="12" expanded="0" type="0" state="0" game="3" action="1" />
             <ChildItem name="Favorites Public" strval="" value="1" compare="0" icon="2" expanded="0" type="0" state="0" game="3" action="5" />
@@ -181,6 +229,74 @@
                 </Maps>
             </Filter>
         </Item>
+        <Item name="Open Arena" strval="" value="0" compare="0" icon="41" expanded="0" type="1024" state="0" game="14" action="1">
+            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="14" action="1" />
+            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="14" action="5" />
+            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="14" action="6" />
+            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="14" action="7" />
+            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0">
+                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="14" action="9" />
+                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="14" action="9" />
+                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="14" action="9" />
+                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="14" action="9" />
+                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="14" action="9" />
+                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
+                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
+                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
+                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
+            </Filter>
+        </Item>			
+       <Item name="Warsow" strval="" value="0" compare="0" icon="25" expanded="0" type="1024" state="0" game="7" action="1">
+            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="7" action="1" />
+            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="7" action="5" />
+            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="7" action="6" />
+            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="7" action="7" />
+            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
+                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="7" action="9" />
+                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="7" action="9" />
+                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="7" action="9" />
+                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="7" action="9" />
+                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="7" action="9" />
+                <FilterItem name="No Bots" strval="" value="0" compare="0" icon="9" expanded="0" type="64" state="0" game="7" action="9" />
+                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
+                    <GameTypesItems name="CA" strval="ca" value="1" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+                    <GameTypesItems name="CTF" strval="ctf" value="2" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+                    <GameTypesItems name="Deathmatch" strval="dm" value="4" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+                    <GameTypesItems name="Team Deathmatch" strval="tdm" value="8" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+                    <GameTypesItems name="Duel" strval="duel" value="16" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+                    <GameTypesItems name="Race" strval="race" value="32" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+					<GameTypesItems name="DA" strval="da" value="64" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
+                </GameTypes>
+                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0" />
+                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
+                    <Version name="0.40" strval="0.40 " value="1" compare="0" icon="9" expanded="0" type="29" state="0" game="7" action="9" />
+                    <Version name="0.41" strval="0.41" value="2" compare="0" icon="9" expanded="0" type="29" state="0" game="7" action="9" />
+                    <Version name="0.42" strval="0.42" value="4" compare="0" icon="9" expanded="0" type="29" state="0" game="7" action="9" />
+                </Versions>
+                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
+                    <Map name="wdm1" strval="wdm1" value="1" compare="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />                    
+                    <Map name="wdm2" strval="wdm2" value="2" compare="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm3" strval="wdm3" value="4" compare="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm4" strval="wdm4" value="8" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm5" strval="wdm5" value="16" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm6" strval="wdm6" value="32" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm7" strval="wdm7" value="64" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm8" strval="wdm8" value="128" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm9" strval="wdm9" value="512" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm10" strval="wdm10" value="1024" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm11" strval="wdm11" value="2048" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm12" strval="wdm12" value="4096" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm13" strval="wdm13" value="8192" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm14" strval="wdm14" value="16384" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wdm15" strval="wdm15" value="32768" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wca1" strval="wca1" value="65536" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wca2" strval="wca2" value="131072" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wctf1" strval="wctf1" value="262144" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                    <Map name="wctf2" strval="wctf2" value="524288" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+					<Map name="wctf3" strval="wctf3" value="1048576" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
+                </Maps>
+            </Filter>
+        </Item>		
         <Item name="Return To Castle of Wolfenstein" strval="" value="0" compare="0" icon="23" expanded="0" type="1024" state="0" game="4" action="1">
             <ChildItem name="Internet servers" strval="" value="1" compare="0" icon="12" expanded="0" type="0" state="0" game="4" action="1" />
             <ChildItem name="Favorites Public" strval="" value="1" compare="0" icon="2" expanded="0" type="0" state="0" game="4" action="5" />
@@ -232,57 +348,6 @@
                 <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="6" action="0" />
             </Filter>
         </Item>
-        <Item name="Warsow" strval="" value="0" compare="0" icon="25" expanded="0" type="1024" state="0" game="7" action="1">
-            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="7" action="1" />
-            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="7" action="5" />
-            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="7" action="6" />
-            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="7" action="7" />
-            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
-                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="7" action="9" />
-                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="7" action="9" />
-                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="7" action="9" />
-                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="7" action="9" />
-                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="7" action="9" />
-                <FilterItem name="No Bots" strval="" value="0" compare="0" icon="9" expanded="0" type="64" state="0" game="7" action="9" />
-                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
-                    <GameTypesItems name="CA" strval="ca" value="1" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-                    <GameTypesItems name="CTF" strval="ctf" value="2" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-                    <GameTypesItems name="Deathmatch" strval="dm" value="4" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-                    <GameTypesItems name="Team Deathmatch" strval="tdm" value="8" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-                    <GameTypesItems name="Duel" strval="duel" value="16" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-                    <GameTypesItems name="Race" strval="race" value="32" compare="0" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-					<GameTypesItems name="DA" strval="da" value="64" icon="9" expanded="0" type="25" state="0" game="7" action="9" />
-                </GameTypes>
-                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0" />
-                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
-                    <Version name="0.40" strval="0.40 " value="1" compare="0" icon="9" expanded="0" type="29" state="0" game="7" action="9" />
-                    <Version name="0.41" strval="0.41" value="2" compare="0" icon="9" expanded="0" type="29" state="0" game="7" action="9" />
-                    <Version name="0.42" strval="0.42" value="4" compare="0" icon="9" expanded="0" type="29" state="0" game="7" action="9" />
-                </Versions>
-                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="7" action="0">
-                    <Map name="wdm1" strval="wdm1" value="1" compare="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />                    
-                    <Map name="wdm2" strval="wdm2" value="2" compare="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm3" strval="wdm3" value="4" compare="1" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm4" strval="wdm4" value="8" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm5" strval="wdm5" value="16" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm6" strval="wdm6" value="32" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm7" strval="wdm7" value="64" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm8" strval="wdm8" value="128" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm9" strval="wdm9" value="512" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm10" strval="wdm10" value="1024" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm11" strval="wdm11" value="2048" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm12" strval="wdm12" value="4096" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm13" strval="wdm13" value="8192" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm14" strval="wdm14" value="16384" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wdm15" strval="wdm15" value="32768" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wca1" strval="wca1" value="65536" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wca2" strval="wca2" value="131072" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wctf1" strval="wctf1" value="262144" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                    <Map name="wctf2" strval="wctf2" value="524288" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-					<Map name="wctf3" strval="wctf3" value="1048576" compare="0" icon="9" expanded="0" type="30" state="0" game="7" action="9" />
-                </Maps>
-            </Filter>
-        </Item>
         <Item name="Call of Duty 4 - Modern Warfare" strval="" value="0" compare="0" icon="28" expanded="0" type="1024" state="0" game="8" action="1">
             <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="8" action="1" />
             <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="8" action="5" />
@@ -310,6 +375,7 @@
                     <ModItems name="PAM" strval="pam" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="8" action="9" />
                     <ModItems name="Warfare" strval="modwarfare" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="8" action="9" />
                     <ModItems name="AWE" strval="awe" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="8" action="9" />
+					<ModItems name="ProMod" strval="promod" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="8" action="9" />
                 </Mods>
                 <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="8" action="0">
                     <Version name="1.0" strval="1.0" value="1" compare="0" icon="9" expanded="0" type="29" state="0" game="8" action="9" />
@@ -468,71 +534,6 @@
                 </RegionFilter>
             </Filter>
         </Item>
-        <Item name="Quake World" strval="" value="0" compare="0" icon="39" expanded="0" type="1024" state="0" game="12" action="1">
-            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="12" action="1" />
-            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="12" action="5" />
-            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="12" action="6" />
-            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="12" action="7" />
-            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0">
-                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="12" action="9" />
-                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="12" action="9" />
-                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="12" action="9" />
-                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="12" action="9" />
-                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="12" action="9" />
-                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0" />
-                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0">
-                    <ModItems name="QW" strval="QW" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
-                    <ModItems name="Clan Arena" strval="clanarena" value="2" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
-                    <ModItems name="Rocket Arena" strval="arena" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
-                    <ModItems name="Team Fortress" strval="fortress" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
-                    <ModItems name="CTF" strval="ctf" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
-                    <ModItems name="Qizmo" strval="Qizmo" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="12" action="9" />
-                </Mods>
-                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0" />
-                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="12" action="0" />
-            </Filter>
-        </Item>
-        <Item name="Quake 2" strval="" value="0" compare="0" icon="40" expanded="0" type="1024" state="0" game="13" action="1">
-            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="13" action="1" />
-            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="13" action="5" />
-            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="13" action="6" />
-            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="13" action="7" />
-            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0">
-                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="13" action="9" />
-                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="13" action="9" />
-                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="13" action="9" />
-                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="13" action="9" />
-                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="13" action="9" />
-                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0" />
-                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0">
-                    <ModItems name="baseq2" strval="baseq2" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
-                    <ModItems name="OSP" strval="OSP Tourney" value="2" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
-                    <ModItems name="OpenTDM" strval="OpenTDM" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
-                    <ModItems name="Quake2 Teamplay" strval="Quake2 Teamplay" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
-                    <ModItems name="Quake2 Battleground" strval="Quake2 Battleground" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
-                    <ModItems name="Rocket Arena v2.25" strval="v2.25" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="13" action="9" />
-                </Mods>
-                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0" />
-                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="13" action="0" />
-            </Filter>
-        </Item>
-        <Item name="Open Arena" strval="" value="0" compare="0" icon="41" expanded="0" type="1024" state="0" game="14" action="1">
-            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="14" action="1" />
-            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="14" action="5" />
-            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="14" action="6" />
-            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="14" action="7" />
-            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0">
-                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="14" action="9" />
-                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="14" action="9" />
-                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="14" action="9" />
-                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="14" action="9" />
-                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="14" action="9" />
-                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
-                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
-                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
-                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="14" action="0" />
-            </Filter>
-        </Item>
         <Item name="Half-life 2" strval="" value="0" compare="0" icon="42" expanded="0" type="1024" state="0" game="15" action="1">
             <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="15" action="1" />
             <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="15" action="5" />
@@ -588,6 +589,23 @@
                 </RegionFilter>
             </Filter>
         </Item>
+        <Item name="Urban Terror" strval="" value="0" compare="0" icon="27" expanded="0" type="1024" state="0" game="16" action="1">
+            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="16" action="1" />
+            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="16" action="5" />
+            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="16" action="6" />
+            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="16" action="7" />
+            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="16" action="0">
+                <FilterItem name="Punkbuster" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="16" action="9" />
+                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="16" action="9" />
+                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="16" action="9" />
+                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="16" action="9" />
+                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="16" action="9" />
+                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="16" action="0" />
+                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="16" action="0" />
+                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="16" action="0" />
+                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="16" action="0" />
+            </Filter>
+        </Item>		
         <Item name="Global filter" strval="" value="0" compare="0" icon="17" expanded="0" type="0" state="0" game="-25" action="0">
             <FilterItem name="Hide offline servers" strval="" value="0" compare="0" icon="9" expanded="0" type="16" state="0" game="-25" action="8" />
             <FilterItem name="Min Players" strval="" value="6" compare="0" icon="9" expanded="0" type="100" state="0" game="-25" action="11" />

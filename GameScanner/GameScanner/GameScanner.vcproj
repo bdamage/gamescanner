@@ -418,11 +418,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\GSOrg32.ico"
+				RelativePath="C:\Users\Kjell\Pictures\GSOrg32.ico"
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\Kjell\Pictures\GSOrg32.ico"
+				RelativePath=".\res\GSOrg32.ico"
 				>
 			</File>
 			<File
@@ -570,11 +570,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\small.ico"
+				RelativePath=".\res\small.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\small.ico"
+				RelativePath=".\small.ico"
 				>
 			</File>
 			<File
@@ -595,6 +595,10 @@
 			</File>
 			<File
 				RelativePath=".\res\uparrow.bmp"
+				>
+			</File>
+			<File
+				RelativePath=".\res\urbanterror.ico"
 				>
 			</File>
 			<File

@@ -7,6 +7,8 @@ version 1.08
 * Added support multiple installations, including Launch by criteria depending on Version or Mod name value.
 * Added new copy to clipboard to make it easier to set criterias.
 * Fixed color encoding and color filtering for Quake 4.
+* Added new game Urban Terror.
+* New mod filter (ProMod) added for CoD4.
 
 
 version 1.07

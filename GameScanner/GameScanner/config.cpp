@@ -7,6 +7,7 @@
 #pragma warning(disable : 4995)
 #pragma warning(disable : 4996)
 
+extern void Default_GameSettings();
 extern void Default_Appsettings();
 extern void CFG_Save();
 extern string g_sMIRCoutput;
@@ -72,20 +73,17 @@ void CFG_Apply_General(HWND hDlg)
 void CFG_Apply_Games(int gameID,HWND hDlg)
 {
 	g_bChanged = false;
-
 	if(gameID!=-1)
 	{
-
 		if(IsDlgButtonChecked(hDlg,IDC_CHECK_ACTIVE)==BST_CHECKED)
 			GI_CFG[gameID].bActive=true;
 		else
 			GI_CFG[gameID].bActive=false;
 
-
 		if(IsDlgButtonChecked(hDlg,IDC_CHECK_USE_HTTP)==BST_CHECKED)
 			GI_CFG[gameID].bUseHTTPServerList = TRUE;
 		else
-			GI_CFG[gameID].bUseHTTPServerList = TRUE;
+			GI_CFG[gameID].bUseHTTPServerList = FALSE;
 
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP,MAX_PATH);						
 		char szTmp[10];
@@ -93,7 +91,6 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 		GI_CFG[gameID].dwMasterServerPORT = atoi(szTmp);
 		GetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,szTmp,sizeof(szTmp));
 		GI_CFG[gameID].dwProtocol= atoi(szTmp);
-
 	}
 }
 
@@ -240,10 +237,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 			memcpy(&GI_CFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
-
-		//	hNewItem = TreeView_AddItem("mIRC");			
-		//	hNewItem = TreeView_AddItem("Look & Feel");
-		
+	
 			CenterWindow(hDlg);
 			CFG_OnTabbedDialogInit(hDlg) ;
 			return TRUE;			
@@ -302,9 +296,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					EndDialog(hDlg, LOWORD(wParam)); 
 				return TRUE;
 				case IDOK:
-				{
-
-					
+				{					
 					int gameID=-1;
 					switch(g_currSelCfg)
 					{
@@ -342,16 +334,16 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					memcpy(&GI,&GI_CFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
 					ZeroMemory(&GI_CFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
 					ZeroMemory(&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
-
+					
 					CFG_Save();
 					LocalFree(g_pHdr);
 					EndDialog(hDlg, LOWORD(wParam));
 					return TRUE;
 				}
 				case IDC_BUTTON_DEFAULT:
-				{
-				
+				{				
 					Default_Appsettings();
+					Default_GameSettings();
 					memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 					memcpy(&GI_CFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
 					g_currSelCfg=-1;
@@ -735,7 +727,6 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0 ,(LPARAM)"CONTROL");  
 				SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_ADDSTRING, 0, (LPARAM)"SHIFT");  
 			
-
 				if(AppCFGtemp.dwMinimizeMODKey == MOD_ALT)
 					SendDlgItemMessage (hDlg,IDC_COMBO_MOD, CB_SETCURSEL, 0, 0);  
 				else if(AppCFGtemp.dwMinimizeMODKey == MOD_CONTROL)
@@ -821,21 +812,23 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			gameID = CFG_GetGameID(g_currSelCfg);
 			if(gameID!=-1)
 			{
-				sprintf(szText,"Executable path for %s",GI_CFG[gameID].szGAME_NAME);
+				sprintf(szText,"Settings for %s",GI_CFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
 
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP);
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GI_CFG[gameID].dwMasterServerPORT,szTmp,10));
 				SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GI_CFG[gameID].dwProtocol,szTmp,10));
+
+				if(GI_CFG[gameID].bUseHTTPServerList)
+					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
+				else
+					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_UNCHECKED);
+				
 				if(GI_CFG[gameID].bActive)
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_CHECKED);
 				else
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_UNCHECKED);
 
-				if(GI_CFG[gameID].bUseHTTPServerList)
-					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
-				else
-					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_UNCHECKED);				
 
 				CFG_Enumerate_installations(hDlg,gameID);
 			}
@@ -858,13 +851,8 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			SendMessage( g_hwndScrollThreads,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(1, 256)) ;
 			SendMessage(g_hwndScrollThreads,TBM_SETPOS,TRUE,(LPARAM)AppCFGtemp.dwThreads) ; 
 
-			char sztemp[20];
-		
+			char sztemp[20];		
 			SetDlgItemText(hDlg,IDC_STATIC_THREAD,_itoa(AppCFGtemp.dwThreads ,sztemp,10));
-
-		
-
-			
 			break;
 		}
 		case WM_VSCROLL:
@@ -882,9 +870,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				SetDlgItemText(hDlg,IDC_STATIC_THREAD,_itoa(i,sztemp,10));
 				
 
-			}
-
-			
+			}			
 			return FALSE;
 		}
 
@@ -896,18 +882,19 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					g_bChanged = true;
 				
 					break;
-				case BN_CLICKED:
-					
+				case BN_CLICKED:					
 					break;
 				case EN_CHANGE:
 				{
-					g_bChanged = true;
-				
+					g_bChanged = true;				
 				}
 			}
 			
 			switch (LOWORD(wParam))
             {
+				case IDC_CHECK_USE_HTTP:
+					g_bChanged = true;
+					break;
 				case IDC_BUTTON_SEL_FONT:
 					HFONT hf;
 					hf = CFG_SelectFont();

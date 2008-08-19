@@ -84,7 +84,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FORCE_SCAN_FILTERED				0x00000008
 #define REDRAW_SERVERLIST				16
 
-#define MAX_SERVERLIST		16  //This value should be as the last one +1
+#define MAX_SERVERLIST		17  //This value should be as the last one +1
 #define ET_SERVERLIST		0
 #define ETQW_SERVERLIST		1
 #define Q3_SERVERLIST		2
@@ -101,6 +101,8 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define Q2_SERVERLIST		13
 #define OPENARENA_SERVERLIST 14
 #define HL2_SERVERLIST		15			//Half-Life 2
+#define UTERROR_SERVERLIST  16
+
 
 #define REDRAW_CURRENT_LIST				100
 #define SHOW_FAVORITES_PUBLIC			101
@@ -122,12 +124,12 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define DO_GLOBAL_EDIT_FILTER	11
 
 //Generic filter defines
-#define FILTER_UNKNOWN	 0
-#define FILTER_PB			 1  //Punkbuster
+#define FILTER_UNKNOWN			0
+#define FILTER_PB				1  //Punkbuster
 #define FILTER_SHOW_PRIVATE		 2  //Private
-#define FILTER_FULL			 4  //Full servers
-#define FILTER_EMPTY		 8  //Empty
-#define FILTER_OFFLINE		16  //Offline
+#define FILTER_FULL				 4  //Full servers
+#define FILTER_EMPTY			8  //Empty
+#define FILTER_OFFLINE			16  //Offline
 #define FILTER_BOTS				64  //Bots
 #define FILTER_HIDE_PRIVATE		128  
 #define FILTER_MOD				24
@@ -156,8 +158,6 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define VERSION_UNKNOWN      0
 
 #define GAMETYPE_UNKNOWN	 0
-
-
 
 struct GAMEFILTER{
 	string sFriendlyName;
@@ -217,10 +217,8 @@ struct APP_SETTINGS_NEW
    BOOL bAutostart;
    BOOL bUseShortCountry;
    BOOL bUse_minimize;
-   BOOL bUse_ETpro_path;
    DWORD dwMinimizeMODKey;
    char cMinimizeKey;
-   BOOL bViewModeAdvance;
    BOOL bEXTMinimize;
    BOOL bEXTClose;
    char szET_WindowName[MAX_PATH];
@@ -249,7 +247,6 @@ struct APP_SETTINGS_NEW
    char cPlayerColumnSort;
    char cBuddyColumnSort;
    char cServerColumnSort;
-   BOOL bUseFilterOnFavorites;
    char szNotifySoundWAVfile[MAX_PATH];
    char szQ4_PATH[MAX_PATH];
    char szQ4_CMD[MAX_PATH];

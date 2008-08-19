@@ -128,7 +128,6 @@
 #define IDC_BUTTON_EXE_CFG_OK           1003
 #define IDC_BUTTON_JOIN                 1004
 #define IDC_EDIT_PASS                   1004
-#define IDC_CHECK_USE_HTTP              1004
 #define IDC_BUTTON_SRV3                 1005
 #define IDC_STATIC_TEXT                 1005
 #define IDC_LIST_CFG_EXES               1005
@@ -138,7 +137,6 @@
 #define IDC_LIST2                       1007
 #define IDC_EDIT_MASTER_PORT            1007
 #define IDC_EDIT_CFG_MOD                1007
-#define IDC_EDIT_CFG_RETRIES            1007
 #define IDC_CHECK1                      1008
 #define IDC_EDIT_CFG_VERSION2           1008
 #define IDC_BUTTON3                     1008
@@ -261,8 +259,12 @@
 #define IDI_ICON_QUAKEARENA             1099
 #define IDI_ICON_HALFLIFE2              1100
 #define IDC_BUTTON_ADD_INSTALL          1101
+#define IDI_ICON9                       1101
+#define IDI_ICON_URBAN                  1101
 #define IDC_BUTTON_EDIT_INSTALL         1102
 #define IDC_BUTTON_DELETE_INSTALL       1103
+#define IDC_EDIT_CFG_RETRIES            1104
+#define IDC_CHECK_USE_HTTP              1105
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -339,7 +341,6 @@
 #define IDM_FONT_COLOR                  32902
 #define IDM_COPY_VERSION                32903
 #define IDM_COPY_MODNAME                32904
-
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 
@@ -348,7 +349,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1101
+#define _APS_NEXT_RESOURCE_VALUE        1102
 #define _APS_NEXT_COMMAND_VALUE         32777
 #define _APS_NEXT_CONTROL_VALUE         1200
 #define _APS_NEXT_SYMED_VALUE           110

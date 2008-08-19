@@ -36,8 +36,10 @@ const char * XML_GetTreeItemName(TiXmlElement* pNode,char *szOutput, DWORD maxBy
 const char * XML_GetTreeItemStrValue(TiXmlElement* pNode,char *szOutput, DWORD maxBytes);
 const char * XML_GetTreeItemStr(TiXmlElement* pNode, const char* attributeName,char *szOutput, DWORD maxBytes);
 void LoadAllServerList();
+DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid);
 void CFG_Save();
 int CFG_Load();
+void Default_GameSettings();
 int TreeView_load();
 LRESULT TreeView_CustomDraw(LPARAM lParam);
 HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner);

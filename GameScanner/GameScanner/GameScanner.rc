@@ -391,7 +391,7 @@ IDD_CFG3_NEW DIALOGEX 0, 0, 464, 249
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Settings for Master Server IP, Port && Protocol",-1,10,163,445,71
+    GROUPBOX        "Settings for Master Server IP, Port && Protocol",-1,10,163,454,71
     EDITTEXT        IDC_EDIT_MASTER_SERVER,80,191,361,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_MASTER_PORT,80,208,40,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_PROTOCOL,199,209,40,14,ES_AUTOHSCROLL
@@ -400,10 +400,11 @@ BEGIN
     LTEXT           "Protocol",-1,167,212,29,8
     CONTROL         "Activate game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
     CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,175,245,10
-    CONTROL         "",IDC_LIST_CFG_EXES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,10,34,445,67
+    CONTROL         "",IDC_LIST_CFG_EXES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,10,34,439,67
     PUSHBUTTON      "Edit installation settings",IDC_BUTTON_EDIT_INSTALL,189,107,97,16
     PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,73,107,97,16
     PUSHBUTTON      "Delete installation settings",IDC_BUTTON_DELETE_INSTALL,305,107,97,16
+    GROUPBOX        "Game path for Enemy Territory",IDC_STATIC_GAME_NAME,4,5,455,131
 END
 
 IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 395, 203
@@ -496,7 +497,7 @@ BEGIN
 
     IDD_CFG3_NEW, DIALOG
     BEGIN
-        RIGHTMARGIN, 455
+        VERTGUIDE, 4
         VERTGUIDE, 10
         BOTTOMMARGIN, 234
         HORZGUIDE, 108
@@ -608,6 +609,7 @@ IDI_ICON4               ICON                    "res\\GSPlusOrg16.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_QUAKEARENA     ICON                    "res\\ico00005.ico"
 IDI_ICON_HALFLIFE2      ICON                    "res\\ico00006.ico"
+IDI_ICON_URBAN          ICON                    "res\\urbanterror.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
