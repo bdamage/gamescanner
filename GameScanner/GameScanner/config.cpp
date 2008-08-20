@@ -9,7 +9,7 @@
 
 extern void Default_GameSettings();
 extern void Default_Appsettings();
-extern void CFG_Save();
+extern DWORD WINAPI CFG_Save(LPVOID lpVoid);
 extern string g_sMIRCoutput;
 extern HFONT g_hf;
 string CFG_g_sMIRCoutputTemp;
@@ -334,8 +334,18 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					memcpy(&GI,&GI_CFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
 					ZeroMemory(&GI_CFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
 					ZeroMemory(&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
-					
-					CFG_Save();
+					/*HANDLE hThread=NULL; 
+					DWORD dwThreadIdBrowser=0;				
+					hThread = CreateThread( NULL, 0, &CFG_Save,(LPVOID)0 ,0, &dwThreadIdBrowser);                
+					if (hThread == NULL) 
+					{
+						AddLogInfo(ETSV_WARNING, "CreateThread CFG_Save failed (%d)\n", GetLastError() ); 
+					} else
+					{
+						CloseHandle( hThread );
+					}*/
+
+					CFG_Save(0);
 					LocalFree(g_pHdr);
 					EndDialog(hDlg, LOWORD(wParam));
 					return TRUE;

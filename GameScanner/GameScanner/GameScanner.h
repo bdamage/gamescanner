@@ -37,7 +37,7 @@ const char * XML_GetTreeItemStrValue(TiXmlElement* pNode,char *szOutput, DWORD m
 const char * XML_GetTreeItemStr(TiXmlElement* pNode, const char* attributeName,char *szOutput, DWORD maxBytes);
 void LoadAllServerList();
 DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid);
-void CFG_Save();
+DWORD WINAPI CFG_Save(LPVOID lpVoid);
 int CFG_Load();
 void Default_GameSettings();
 int TreeView_load();

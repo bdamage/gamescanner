@@ -421,6 +421,7 @@ struct GAME_INFO
 	int iIconIndex;
 	char szFilename[MAX_PATH];
 	DWORD dwGameTypeFilter;
+	BOOL bLockServerList;
 	SERVER_CONTAINER *pSC;
 	DWORD dwScanIdx;
 	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo

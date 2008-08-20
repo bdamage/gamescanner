@@ -336,6 +336,7 @@ BOOL g_bRedrawServerListThread = FALSE;
 HICON hOnlineIcon = NULL;
 HICON hOfflineIcon = NULL;
 
+BOOL g_bControl = FALSE;
 
 HWND g_hwndTabControl = NULL;
 HWND g_hwndLogger = NULL,g_hwndStatus = NULL;
@@ -1259,6 +1260,9 @@ bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 void Do_ServerListSort(int iColumn)
 {
+	if(currCV==NULL)
+		return;
+
 	int gameIdx = currCV->cGAMEINDEX;
 	
 	
@@ -1551,7 +1555,9 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 		return FALSE;
 
 	pLVDI = (NMLVDISPINFO *)pNMHDR;
-	
+	if(currCV->bLockServerList)
+		return FALSE;
+
 	pLVItem = &pLVDI->item;
 	int size = currCV->pSC->vRefListSI.size();
 	if (size==0)
@@ -1562,15 +1568,15 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	SERVER_INFO pSI;
 	ZeroMemory(&pSI,sizeof(SERVER_INFO));
 	REF_SERVER_INFO refSI;
-	try
-	{	
+	
+	__try{
 		refSI = currCV->pSC->vRefListSI.at((int)pLVItem->iItem);
 		currCV->pSC->vSI.at(refSI.dwIndex).dwLVIndex = pLVItem->iItem;
 		pSI = currCV->pSC->vSI.at(refSI.dwIndex);
 	}
-	catch(const exception& e)
+	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 	{
-		AddLogInfo(0,"Vector err exception Details: %s",e.what());
+		dbg_print("Access violation...@ ListView_SL_OnGetDispInfoList");
 		return FALSE;
 	}
 
@@ -2560,8 +2566,8 @@ void Default_Appsettings()
 
 	//Global filter defaults
 	AppCFG.filter.dwPing = 9999;
-	AppCFG.filter.dwShowServerWithMaxPlayers = 6;
-	AppCFG.filter.dwShowServerWithMinPlayers = 24;
+	AppCFG.filter.dwShowServerWithMaxPlayers = 24;
+	AppCFG.filter.dwShowServerWithMinPlayers = 6;
 	AppCFG.filter.cActiveMaxPlayer = 0;
 	AppCFG.filter.cActiveMinPlayer = 0;
 
@@ -4202,17 +4208,21 @@ PLAYERDATA * Copy_PlayerToCurrentPL(LPPLAYERDATA &pStartPD, PLAYERDATA *pNewPD)
 			pTmp = pTmp->pNext;
 
 	PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
-	memcpy(player,pNewPD,sizeof(PLAYERDATA));
-	if(pNewPD->szClanTag!=NULL)
-		player->szClanTag = _strdup(pNewPD->szClanTag);
-	if(pNewPD->szPlayerName!=NULL)
-		player->szPlayerName = _strdup(pNewPD->szPlayerName);
-	player->pNext = NULL;
-	if(pTmp==NULL)
-		return pStartPD = pTmp = player;
-	else
-		return 	pTmp->pNext = player;
+	if(player!=NULL)
+	{
+		memcpy(player,pNewPD,sizeof(PLAYERDATA));
+		if(pNewPD->szClanTag!=NULL)
+			player->szClanTag = _strdup(pNewPD->szClanTag);
+		if(pNewPD->szPlayerName!=NULL)
+			player->szPlayerName = _strdup(pNewPD->szPlayerName);
+		player->pNext = NULL;
+		if(pTmp==NULL)
+			return pStartPD = pTmp = player;
+		else
+			return 	pTmp->pNext = player;
+	}
 }
+
 long DrawCurrentPlayerList(PLAYERDATA *pPlayer)
 {
 	ListView_DeleteAllItems(g_hwndListViewPlayers);
@@ -4233,46 +4243,38 @@ long DrawCurrentPlayerList(PLAYERDATA *pPlayer)
 
 long UpdatePlayerListQ3(PLAYERDATA *pQ4ply)
 {
-	UTILZ_CleanUp_PlayerList(pCurrentPL);
-	pCurrentPL = NULL;
-	ListView_DeleteAllItems(g_hwndListViewPlayers);
-	int n=0;
+	if(g_hwndListViewPlayers==NULL)
+		return 0xFF;
 
-	  if(g_hwndListViewPlayers!=NULL)
-	  {
-		  while (pQ4ply!=NULL)
-		  {
-	//		item.mask = LVIF_TEXT | LVIF_PARAM;
-			//ZeroMemory(&item, sizeof(LVITEM));
-			//item.mask = LVIF_TEXT ;
-		//	item.iItem=n;
-		//	sprintf(num,"%d",n+1);
-		//	item.pszText = num;
+	if(g_bControl==FALSE)
+	{
+		UTILZ_CleanUp_PlayerList(pCurrentPL);
+		pCurrentPL = NULL;
+		ListView_DeleteAllItems(g_hwndListViewPlayers);
+	}
+	int c=0;
+	PLAYERDATA *pCount=pCurrentPL;
+	if(pCount!=NULL)
+		while(pCount->pNext!=NULL)
+		{
+		//	dbg_print("%d %s",c,pCount->szPlayerName);
+			pCount = pCount->pNext;
+			c++;
+		}
+
+	int n=c;//ListView_GetItemCount(g_hwndListViewPlayers);
+
+	while (pQ4ply!=NULL)
+	{
+		//Potential mem leak, may have to rewrite/improve this part of code
+		PLAYERDATA *pPD = Copy_PlayerToCurrentPL(pCurrentPL,pQ4ply);  //This will keep a copy of the playerlist during scanning
+	//	dbg_print("%d %s",n,pQ4ply->szPlayerName);
+		pQ4ply = pQ4ply->pNext;
+		
+		n++;
 	
-			//Potential mem leak, may have to rewrite/improve this part of code
-			PLAYERDATA *pPD = Copy_PlayerToCurrentPL(pCurrentPL,pQ4ply);  //This will keep a copy of the playerlist during scanning
-
-		//	item.lParam = (LPARAM)pPD; //pQ4ply;	
-
-	//		ListView_InsertItem( g_hwndListViewPlayers,&item);
-	//		char colFiltered[100];
-			
-	//		if(pQ4ply->szClanTag!=NULL)
-	//			ListView_SetItemText(g_hwndListViewPlayers,item.iItem,1,colorfilter(pQ4ply->szClanTag,colFiltered,sizeof(colFiltered)-1));
-			
-	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,2,colorfilter(pQ4ply->szPlayerName,colFiltered,sizeof(colFiltered)-1));
-
-	//		sprintf(colFiltered,"%d",pQ4ply->rate);
-	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,3,colFiltered);
-				
-	//		sprintf(colFiltered,"%d",pQ4ply->ping);
-	//		ListView_SetItemText(g_hwndListViewPlayers,item.iItem,4,colFiltered);
-			pQ4ply = pQ4ply->pNext;
-			n++;
-		  }
-		  ListView_SetItemCount(g_hwndListViewPlayers, n);
-	  }
-	
+	}
+	ListView_SetItemCount(g_hwndListViewPlayers, n);
 
 /*ListView_SetColumnWidth(g_hwndListViewPlayers,0,LVSCW_AUTOSIZE);
 	ListView_SetColumnWidth(g_hwndListViewPlayers,1,LVSCW_AUTOSIZE);
@@ -4905,7 +4907,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	Load_CountryFlags();
 
 	g_hf = MyCreateFont(hwnd);
-	g_hf2 = MyCreateFont(hwnd,16,FW_BOLD,"Courier New");
+	g_hf2 = MyCreateFont(hwnd,16,FW_BOLD,"Verdana");//Courier New");
 
 	ChangeFont(hwnd,g_hf);
 	
@@ -4948,7 +4950,9 @@ void OnClose()
 	OutputDebugString("Cleaning up filter Gametypes, Map, Mod and Versions.\n");
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
-		
+		for(long x=0; x<GI[i].pSC->vSI.size();x++)
+			UTILZ_CleanUp_PlayerList(GI[i].pSC->vSI.at(x).pPlayerData);
+
 		GI[i].pSC->vFilterGameType.clear();
 		GI[i].pSC->vFilterMap.clear();
 		GI[i].pSC->vFilterMod.clear();
@@ -5020,6 +5024,10 @@ void OnInitialize_MainDlg(HWND hwnd)
 	SetDlgTrans(hwnd,AppCFG.g_cTransparancy);
 	
 	TreeView_BuildList();
+
+
+	currCV = &GI[0];
+
 	LoadAllServerList();
 
 	g_iCurrentSelectedServer = -1;
@@ -5378,8 +5386,10 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
 		if(GI[i].pSC->vSI.size()==0) //Only try to load if no list exsists (needed for minimizing and restoring)
-		{		
+		{	
+			GI[i].bLockServerList = TRUE;
 			LoadServerListV2(&GI[i]);
+			GI[i].bLockServerList = FALSE;
 		}
 	}
 	
@@ -5520,7 +5530,7 @@ DWORD WINAPI SavingFilesCleaningUpThread(LPVOID pvoid )
 	g_pBIStart = NULL;
 	
 	//Save_CountryFilter();
-	CFG_Save();
+	CFG_Save(0);
 	if((DWORD)pvoid!=0x0000FFFF)
 		PostMessage(g_hWnd,WM_DESTROY,(WPARAM)pvoid,0);
 	
@@ -5532,7 +5542,7 @@ DWORD WINAPI SavingFilesCleaningUpThread(LPVOID pvoid )
 	
 	return 0x1001;
 }
-void CFG_Save()
+DWORD WINAPI CFG_Save(LPVOID lpVoid)
 {
 
 	SetCurrentDirectory(USER_SAVE_PATH);
@@ -5551,16 +5561,12 @@ void CFG_Save()
  	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
 	doc.LinkEndChild( decl );  
 	
-	
- 
 	TiXmlElement * root = new TiXmlElement( "ETSVcfg" );  
 	doc.LinkEndChild( root );  
 
 	TiXmlComment * comment = new TiXmlComment();
-	comment->SetValue(" \nSettings for ET Server Viewer\n\nONLY CHANGE VALUES IF YOU KNOW WHAT YOU ARE DOING!\n " );  	
+	comment->SetValue(" \nSettings for Game Scanner\n\nONLY CHANGE VALUES IF YOU KNOW WHAT YOU ARE DOING!\n " );  	
 	root->LinkEndChild( comment );  
-
-
 
 	TiXmlElement * versions = new TiXmlElement( "Versions" );  
 	root->LinkEndChild( versions );  
@@ -5736,6 +5742,7 @@ void CFG_Save()
 
 	doc.SaveFile( "config.xml" );
 	AddLogInfo(ETSV_DEBUG,"Saving config...DONE!");
+	return 0;
 }
 
 void SetInitialViewStates()
@@ -5905,7 +5912,7 @@ void OnMinimize(HWND hWnd)
 	Buddy_Clear(g_pBIStart);
 	g_pBIStart = NULL;
 
-	CFG_Save();
+	CFG_Save(0);
 
 	ShowWindow(hWnd,SW_HIDE);
 	//Removed since ver 5.41
@@ -7590,10 +7597,11 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 	}
 	int nCharWidth;
 	SelectObject(hDC,g_hf2);
-	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
-//	ABC abc;
-//	GetCharABCWidths(hDC,       (UINT)0, (UINT) 0,&abc);
-//	nCharWidth = abc.abcA + abc.abcB + abc.abcC;
+	//GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	ABC abc[256];
+	LPABC pAbc = abc;
+	GetCharABCWidths(hDC,       (UINT)0, (UINT) 255,pAbc);
+
 
 	char *pText;
 
@@ -7618,12 +7626,9 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 //		mbtowc( &wc[0], pText, MB_CUR_MAX );
 //		wc[1]=0;
 //	ExtTextOutW(hDC,rc.left,rc.top,0, &rc,&wc[0], 1,NULL); 
-
-
-
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
 	
-
+		nCharWidth = abc[pszText[i]].abcA + abc[pszText[i]].abcB + abc[pszText[i]].abcC;
 		rc.left+=nCharWidth;
 
 	}
@@ -7649,7 +7654,10 @@ LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 	}
 	int nCharWidth;
 	SelectObject(hDC,g_hf2);
-	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	//GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	ABC abc[256];
+	LPABC pAbc = abc;
+	GetCharABCWidths(hDC,       (UINT)0, (UINT) 255,pAbc);  //supports true type font
 	char *pText;
 	rc.left+=20;
 	rc.top+=2;
@@ -7682,14 +7690,8 @@ LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 		SetTextColor(hDC,col);
 		pText = &pszText[i];
 
-//Code for testing UNICODE/ widecharacter
-//		wchar_t wc[2];	
-//		mbtowc( &wc[0], pText, MB_CUR_MAX );
-//		wc[1]=0;
-//	ExtTextOutW(hDC,rc.left,rc.top,0, &rc,&wc[0], 1,NULL); 
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
-	
-
+	    nCharWidth = abc[pszText[i]].abcA + abc[pszText[i]].abcB + abc[pszText[i]].abcC;
 		rc.left+=nCharWidth;
 
 	}
@@ -7713,13 +7715,17 @@ LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 		FillRect(hDC, &rc, (HBRUSH) hbrSel);
 	}
 	int nCharWidth;
-	GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	SelectObject(hDC,g_hf2);
+	//GetCharWidth32(hDC, (UINT) 0, (UINT) 0, &nCharWidth); 				
+	ABC abc[256];
+	LPABC pAbc = abc;
+	GetCharABCWidths(hDC,       (UINT)0, (UINT) 255,pAbc);
 	char *pText;
 	rc.left+=20;
 	rc.top+=2;
 			UCHAR uc[2];
 			uc[1]=0;
-	SelectObject(hDC,g_hf2);
+
 	for(int i=0;i<strlen(pszText);i++)
 	{
 		COLORREF col = RGB(255,255,255) ;
@@ -7798,6 +7804,7 @@ LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 		SetTextColor(hDC,col);
 		pText = (char*)&uc[0];
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
+		nCharWidth = abc[pszText[i]].abcA + abc[pszText[i]].abcB + abc[pszText[i]].abcC;
 		rc.left+=nCharWidth;
 
 	}
@@ -7919,33 +7926,6 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 				SERVER_INFO pSI;
 				pListDraw->clrText   = RGB(0, 0, 0);	
 
-			/*	if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_PLAYERS)
-				{
-				   AddLogInfo(ETSV_INFO,"before if(AppCFG.bUseColorEncodedFont)");
-					if(AppCFG.bUseColorEncodedFont)
-					{
-						AddLogInfo(ETSV_INFO,"After if(AppCFG.bUseColorEncodedFont)");
-						if(pListDraw->iSubItem==2)
-						{
-							PLAYERDATA *pPlayerData = pCurrentPL;
-							if(pPlayerData!=NULL)
-							{
-								for(int i=0;i<nItem;i++)
-									pPlayerData = pPlayerData->pNext;
-
-								HDC  hDC =  pListDraw->nmcd.hdc;				
-							
-								RECT rc;								
-								ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
-
-
-							}
-						}
-					}
-					return  CDRF_DODEFAULT;//CDRF_NEWFONT; 						
-				} 
-					*/	
 				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
 				{
 						try
@@ -8104,13 +8084,17 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 							{
 								for(int i=0;i<nItem;i++)
 									pPlayerData = pPlayerData->pNext;
-
+								
+									
 								HDC  hDC =  pListDraw->nmcd.hdc;				
 							
 								RECT rc;								
-								ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								if(GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
-									return GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+								if(pPlayerData!=NULL)
+								{
+									ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
+									if(GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
+										return GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+								}
 								//else
 								//	return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
 							}
@@ -8628,7 +8612,8 @@ int Get_ServerInfoByListIndex(int index)
 {
 	REF_SERVER_INFO refSI;
 	refSI.dwIndex = 0;
-
+	if(currCV==NULL)
+		return -1;
 	if(index<currCV->pSC->vRefListSI.size())
 	{
 		try
@@ -8647,9 +8632,11 @@ int Get_ServerInfoByListIndex(int index)
 
 SERVER_INFO Get_ServerInfoByIndex(int index)
 {
-
+	
+	
 	SERVER_INFO srv;
 	ZeroMemory(&srv,sizeof(SERVER_INFO));
+	srv.cGAMEINDEX = 0;
 	int idx = Get_ServerInfoByListIndex(index);
 	if(idx==-1)
 	{
@@ -8657,21 +8644,14 @@ SERVER_INFO Get_ServerInfoByIndex(int index)
 		return srv;
 	}
 		//DebugBreak();
-	try
-	{
+	__try{
 
 		srv = currCV->pSC->vSI.at(idx);
-	}catch(std::out_of_range)
-	{
-		
-		//DebugBreak();
-		AddLogInfo(0,"Vector: Out of range");
-	}catch(const exception& e)
-	{
-		//DebugBreak();
-		AddLogInfo(ETSV_ERROR,"<<<<<<< Error at Get_ServerInfoByIndex out of vector scope! %s >>>>>>>>",e.what());
 	}
-
+	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
+	{
+		OutputDebugString("Access violation...@ Get_ServerInfoByIndex");		
+	}
 	return srv;
 }
 
@@ -9657,6 +9637,12 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				else if((lpnmia->hdr.code == NM_CLICK) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
 				{
+					USHORT sKey = GetAsyncKeyState(VK_CONTROL);
+					if(sKey==0x8001)
+						g_bControl = TRUE;
+					else
+						g_bControl= FALSE;
+
 					OnServerSelected(currCV);
 					return TRUE;
 
@@ -9668,8 +9654,8 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				}
 				else if((lpnmia->hdr.code == NM_RETURN) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
 				{
-					OnServerSelected(currCV);					
-					
+					OnServerSelected(currCV);
+					return TRUE;					
 				}
 				else  if(lpnmia->hdr.code == NM_CUSTOMDRAW && (lpnmia->hdr.hwndFrom == g_hwndListViewPlayers))
 					return ListView_PL_CustomDraw(lParam);	 
@@ -11476,7 +11462,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			
 			OnInitialize_MainDlg(hWnd);
 			PostMessage(hWnd, WM_SIZE, 0, 0);
-			PostMessage(g_hWnd,WM_REFRESHSERVERLIST,0,0);
+	
 			
 			return TRUE;
 		break;

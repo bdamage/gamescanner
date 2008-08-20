@@ -9,6 +9,7 @@ version 1.08
 * Fixed color encoding and color filtering for Quake 4.
 * Added new game Urban Terror.
 * New mod filter (ProMod) added for CoD4.
+* Changed color encoded font from "Courier New" to "Verdana" for better reading.
 
 
 version 1.07

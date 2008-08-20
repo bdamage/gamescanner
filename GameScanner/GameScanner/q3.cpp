@@ -406,8 +406,8 @@ retry:
 				pSI->pServerRules = NULL;	
 			}
 
-			UTILZ_CleanUp_PlayerList(pQ3Players);
-			pSI->pPlayerData = NULL;
+		//	UTILZ_CleanUp_PlayerList(pQ3Players);
+		//	pSI->pPlayerData = NULL;
 			
 
 		} //end if(pServRules!=NULL)
