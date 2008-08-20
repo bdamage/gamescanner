@@ -2,7 +2,7 @@ version 1.08
 ------------
 * Fixed a bug with the auto start setting.
 * Added a new player list field to support Quake World player time.
-* Added a new player list field that shows which server the player plays on (this might be handy for future use ).
+* Added a new player list field that shows which server the player plays on - users can by holding down the CONTROL key to multi select servers.
 * Fixed auto detection for Warsow so the command only passes a full working game path.
 * Added support multiple installations, including Launch by criteria depending on Version or Mod name value.
 * Added new copy to clipboard to make it easier to set criterias.
@@ -10,7 +10,8 @@ version 1.08
 * Added new game Urban Terror.
 * New mod filter (ProMod) added for CoD4.
 * Changed color encoded font from "Courier New" to "Verdana" for better reading.
-
+* Bug fix with the color filter code which is based on Quake 3 based games.
+* Fixed a bug with Buddy detection, now exact match and match on color encoding checkboxes should work.
 
 version 1.07
 ------------

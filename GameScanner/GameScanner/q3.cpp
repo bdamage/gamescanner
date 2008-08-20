@@ -175,7 +175,7 @@ retry:
 			
 	
 			pSI->pPlayerData = pQ3Players;
-			if(pQ3Players!=NULL)
+			//if(pQ3Players!=NULL) //removed since ver 1.08
 			{
 				if(UpdatePlayerListView!=NULL)
 					UpdatePlayerListView(pQ3Players);
@@ -202,12 +202,7 @@ retry:
 				pVarValue = Q3_Get_RuleValue("hostname",pServRules);
 				if(pVarValue!=NULL)
 					strncpy(pSI->szServerName,pVarValue ,99);
-
-
 			}
-
-	
-
 			//getting status value
 			switch(pSI->cGAMEINDEX)
 			{	
@@ -406,8 +401,8 @@ retry:
 				pSI->pServerRules = NULL;	
 			}
 
-		//	UTILZ_CleanUp_PlayerList(pQ3Players);
-		//	pSI->pPlayerData = NULL;
+			UTILZ_CleanUp_PlayerList(pQ3Players);
+			pSI->pPlayerData = NULL;
 			
 
 		} //end if(pServRules!=NULL)
@@ -749,17 +744,13 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 */
 PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers,char *szP)
 {
-
 	int Pindex =0;
 	PLAYERDATA *pQ3Players=NULL;
 	BOOL bGTVBug=FALSE;
-
 	if(pointer[0]!=0)
 	{
-		//Parseplayers
-	
-		PLAYERDATA *pQ3CurrentPlayer=NULL;
-		
+		//Parseplayers	
+		PLAYERDATA *pQ3CurrentPlayer=NULL;		
 		while(pointer<end)
 		{
 			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));

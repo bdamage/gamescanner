@@ -19,14 +19,14 @@ var msiViewModifyDelete         = 6
 
 
 
-if (WScript.Arguments.Length != 1)
-{
-	WScript.StdErr.WriteLine(WScript.ScriptName + " file");
-	WScript.Quit(1);
-}
+//if (WScript.Arguments.Length != 1)
+//{
+//	WScript.StdErr.WriteLine(WScript.ScriptName + " file");
+//	WScript.Quit(1);
+//}
 
 var filespec = ".\\Release\\GameScannerSetup.msi"  //WScript.Arguments(0);
-WScript.Echo("filespec: " + filespec);
+//WScript.Echo("filespec: " + filespec);
 
 var installer = WScript.CreateObject("WindowsInstaller.Installer");
 var database = installer.OpenDatabase(filespec, msiOpenDatabaseModeTransact);

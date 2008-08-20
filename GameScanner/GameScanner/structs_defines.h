@@ -276,7 +276,6 @@ struct PLAYERDATA
 	BYTE isBot;
 	char cGAMEINDEX;
 	char szServerName[MAX_NAME_LEN];
-	//SERVER_INFO  *pCurrentServer;
 	PLAYERDATA *pNext;
 };
 

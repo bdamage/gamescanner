@@ -17,6 +17,8 @@ v 1.0.4 (1.04) {398C9890-FAD1-48DB-A1D0-DE2BBBE661AA}
 v 1.0.5 (1.05) {5F677BD9-D1A6-4511-B69C-BD90DD4FCE03}
 v 1.0.6 (1.06) {443FDBF3-D249-4510-86A9-93FF61CC8704}
 v 1.0.7 (1.07) {CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}
+v 1.0.8        {9989D8EB-84F7-4FC8-9AE2-52CFF0A3DADB} beta
+
 
 Upgrade code:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -244,7 +246,7 @@ SERVER_INFO * Get_CurrentServerListByView();
 void ChangeViewStates(UINT uItem);
 SERVER_INFO *FindServer(char *str);
 
-LRESULT ListView_CustomDraw (LPARAM lParam);
+
 
 LRESULT CALLBACK CFG_OnSelChangedProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 
@@ -763,7 +765,7 @@ DWORD WINAPI TraceRoute_Thread(LPVOID lpParam)
 	int n = ListView_GetSelectionMark(g_hwndListViewServer);
 	if(n!=-1)
 	{
-		pSI  = Get_ServerInfoByIndex(n);
+		pSI  = Get_ServerInfoByListViewIndex(currCV,n);
 		strcpy(szIPAddressToPing,pSI.szIPaddress);
 		TraceRoute(pSI.szIPaddress);
 	}
@@ -808,7 +810,7 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 				if(n!=-1)
 				{
 					g_bPinging = TRUE;
-					g_pSIPing  = Get_ServerInfoByIndex(n);
+					g_pSIPing  = Get_ServerInfoByListViewIndex(currCV,n);
 					strcpy(szIPAddressToPing,g_pSIPing.szIPaddress);
 					// TraceRoute(szIPAddressToPing);
 					//if(strcmp(szIPAddressToPing,szOldIPAddressToPing)!=0)
@@ -1906,7 +1908,7 @@ void OnServerSelected(GAME_INFO *pGI)
 	
 		try
 		{
-			g_CurrentSelServer = Get_ServerInfoByIndex(g_iCurrentSelectedServer);
+			g_CurrentSelServer = Get_ServerInfoByListViewIndex(currCV,g_iCurrentSelectedServer);
 			if(g_CurrentSelServer.dwIP == 0)
 				return;				
 		}
@@ -2041,7 +2043,7 @@ void Initialize_GameSettings()
 		GI[i].cGAMEINDEX = i;
 		GI[i].pSC = &SC[i];
 		GI[i].iIconIndex =  Get_GameIcon(i);
-		GI[i].pSC->vGAME_INST.clear();
+		GI[i].pSC->vGAME_INST.clear();		
 	}
 }
 
@@ -2637,7 +2639,7 @@ void OnServerDoubleClick()
 	if(i!=-1)
 	{
 		SERVER_INFO pSrv;	
-		pSrv = Get_ServerInfoByIndex(i);
+		pSrv = Get_ServerInfoByListViewIndex(currCV,i);
 		LaunchGame(pSrv,&GI[g_currentGameIdx]);
 
 	}
@@ -4221,6 +4223,7 @@ PLAYERDATA * Copy_PlayerToCurrentPL(LPPLAYERDATA &pStartPD, PLAYERDATA *pNewPD)
 		else
 			return 	pTmp->pNext = player;
 	}
+	return NULL;
 }
 
 long DrawCurrentPlayerList(PLAYERDATA *pPlayer)
@@ -4252,23 +4255,23 @@ long UpdatePlayerListQ3(PLAYERDATA *pQ4ply)
 		pCurrentPL = NULL;
 		ListView_DeleteAllItems(g_hwndListViewPlayers);
 	}
+	g_bControl=FALSE; //reset
 	int c=0;
 	PLAYERDATA *pCount=pCurrentPL;
 	if(pCount!=NULL)
+	{
 		while(pCount->pNext!=NULL)
 		{
-		//	dbg_print("%d %s",c,pCount->szPlayerName);
 			pCount = pCount->pNext;
 			c++;
 		}
+	}
 
-	int n=c;//ListView_GetItemCount(g_hwndListViewPlayers);
-
+	int n=c;
 	while (pQ4ply!=NULL)
 	{
 		//Potential mem leak, may have to rewrite/improve this part of code
 		PLAYERDATA *pPD = Copy_PlayerToCurrentPL(pCurrentPL,pQ4ply);  //This will keep a copy of the playerlist during scanning
-	//	dbg_print("%d %s",n,pQ4ply->szPlayerName);
 		pQ4ply = pQ4ply->pNext;
 		
 		n++;
@@ -4326,8 +4329,11 @@ void ClearAllServerLinkedList()
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
 		OutputDebugString(GI[i].szGAME_NAME);
-		OutputDebugString(" - Cleaning up serverlist and hashes etc.\n");
+		OutputDebugString(" - Cleaning up serverlist, playerlist and hashes etc.\n");
 		
+		for(long x=0; x<GI[i].pSC->vSI.size();x++)
+			UTILZ_CleanUp_PlayerList(GI[i].pSC->vSI.at(x).pPlayerData);
+
 		GI[i].dwTotalServers = 0;
 		GI[i].pSC->vSI.clear();
 		GI[i].pSC->vRefListSI.clear();
@@ -4687,7 +4693,6 @@ void ChangeFont(HWND hWnd,HFONT hf)
 	SetFontToDlgItem(hWnd,hf,IDC_EDIT_LOGGER);
 	SetFontToDlgItem(hWnd,hf,IDC_LIST_BUDDY);
 	SetFontToDlgItem(hWnd,hf,IDC_LIST_PLAYERS);
-	
 	SetFontToDlgItem(g_hwndSearchToolbar,g_hf,IDC_COMBOBOXEX_CMD);
 }
 
@@ -4825,6 +4830,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewPlayers);
 	dwExStyle |= LVS_EX_FULLROWSELECT ;
+	dwExStyle |= LVS_EX_SUBITEMIMAGES;
 	ListView_SetExtendedListViewStyle(g_hwndListViewPlayers,dwExStyle);
 
 
@@ -4888,9 +4894,9 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	g_hwndRibbonBar = TOOLBAR_CreateRebar(hwnd);
 
-	 long style = GetWindowLong(g_hwndListViewServerListHeader,GWL_STYLE);
-	 style |= HDS_DRAGDROP;
-	 SetWindowLong(g_hwndListViewServerListHeader,GWL_STYLE,style);
+	long style = GetWindowLong(g_hwndListViewServerListHeader,GWL_STYLE);
+	style |= HDS_DRAGDROP;
+	SetWindowLong(g_hwndListViewServerListHeader,GWL_STYLE,style);
 
 
 	AddLogInfo(ETSV_INFO,"Creating Subclasses");
@@ -4907,7 +4913,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	Load_CountryFlags();
 
 	g_hf = MyCreateFont(hwnd);
-	g_hf2 = MyCreateFont(hwnd,16,FW_BOLD,"Verdana");//Courier New");
+	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Verdana");//Courier New");
+	
 
 	ChangeFont(hwnd,g_hf);
 	
@@ -4950,8 +4957,7 @@ void OnClose()
 	OutputDebugString("Cleaning up filter Gametypes, Map, Mod and Versions.\n");
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
-		for(long x=0; x<GI[i].pSC->vSI.size();x++)
-			UTILZ_CleanUp_PlayerList(GI[i].pSC->vSI.at(x).pPlayerData);
+
 
 		GI[i].pSC->vFilterGameType.clear();
 		GI[i].pSC->vFilterMap.clear();
@@ -5013,7 +5019,7 @@ void OnInitialize_MainDlg(HWND hwnd)
 	EnableButtons(TRUE);
 	//EnableDownloadLink(FALSE);	
 	if(g_bDoFirstTimeCheckForUpdate)
-		PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,0);
+		PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,1);
 	
 	CenterWindow(g_hWnd);
 
@@ -7601,31 +7607,25 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 	ABC abc[256];
 	LPABC pAbc = abc;
 	GetCharABCWidths(hDC,       (UINT)0, (UINT) 255,pAbc);
-
-
 	char *pText;
 
 	rc.left+=20;
-	rc.top+=2;
+	//rc.top+=2;
 	COLORREF col = RGB(255,255,255) ;
-
 	for(int i=0;i<strlen(pszText);i++)
 	{
+		
 		if(pszText[i]=='^')
 		{
 			col = GetColor(pszText[i+1]);
-
 			i++;
-			continue;
+			if(pszText[i]!='^') // this fixes these kind of names with double ^^
+				continue;
 		}
+		
 		SetTextColor(hDC,col);
-		pText = &pszText[i];
-
-//Code for testing UNICODE/ widecharacter
-//		wchar_t wc[2];	
-//		mbtowc( &wc[0], pText, MB_CUR_MAX );
-//		wc[1]=0;
-//	ExtTextOutW(hDC,rc.left,rc.top,0, &rc,&wc[0], 1,NULL); 
+		pText = &pszText[i];		
+		
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
 	
 		nCharWidth = abc[pszText[i]].abcA + abc[pszText[i]].abcB + abc[pszText[i]].abcC;
@@ -7636,7 +7636,7 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 	if(hbrSel!=NULL)
 		DeleteObject(hbrSel);
 
-	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+	return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
 }
 
 LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
@@ -7699,7 +7699,7 @@ LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 	if(hbrSel!=NULL)
 		DeleteObject(hbrSel);
 
-	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+	return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
 }
 LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
@@ -7795,7 +7795,6 @@ LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 						uc[0]-=67;
 						col = RGB(0xff,0xf9,0x80);
 					}
-
 					break;
 				}
 			}
@@ -7804,7 +7803,7 @@ LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 		SetTextColor(hDC,col);
 		pText = (char*)&uc[0];
 		ExtTextOut(hDC,rc.left,rc.top,0, &rc,pText, 1,NULL); 
-		nCharWidth = abc[pszText[i]].abcA + abc[pszText[i]].abcB + abc[pszText[i]].abcC;
+		nCharWidth = abc[uc[0]].abcA + abc[uc[0]].abcB + abc[uc[0]].abcC;
 		rc.left+=nCharWidth;
 
 	}
@@ -7812,7 +7811,7 @@ LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 	if(hbrSel!=NULL)
 		DeleteObject(hbrSel);
 
-	return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+	return  (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
 }
 
 /********************************************************************************
@@ -7876,7 +7875,8 @@ void Draw_ShadedRect(HDC hDC,RECT rectFull,char *pszText,int xCurrentValue,int x
 		DeleteObject(hbrBar);
 }
 
-LRESULT ListView_CustomDraw (LPARAM lParam)
+//ServerList custom draw
+LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 {
 	
 	LRESULT lResult = CDRF_DODEFAULT;	
@@ -7898,7 +7898,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
 				{		
 					try{
-						SERVER_INFO pSI = Get_ServerInfoByIndex(iRow); 
+						SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,iRow); 
 						if(pSI.dwIP != 0) //Quick and dirty fix if server index is out of range
 						{
 							if(pSI.bUpdated==false)
@@ -7930,7 +7930,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 				{
 						try
 						{
-							pSI = Get_ServerInfoByIndex(nItem); //currCV->pSC->vSIFiltered.at((int)nItem);
+							pSI = Get_ServerInfoByListViewIndex(currCV,nItem); //currCV->pSC->vSIFiltered.at((int)nItem);
 						}
 						catch(const exception& e)
 						{
@@ -8008,7 +8008,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 							DeleteObject(hbrBkgnd);
 							if(hbrSel!=NULL)
 								DeleteObject(hbrSel);
-							return   CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
+							return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
 						}
 						else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_SERVERNAME].columnIdx)
 						{
@@ -8042,7 +8042,7 @@ LRESULT ListView_CustomDraw (LPARAM lParam)
 }
 
 
-
+//Player list custom draw
 LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 {
 	
@@ -8058,8 +8058,7 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 			return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW);
 			break;
 		case CDDS_ITEMPREPAINT:
-			{
-			
+			{			
 				iRow = (int)pListDraw->nmcd.dwItemSpec;
 				if(iRow%2 == 0)
 					pListDraw->clrTextBk = RGB(202, 221,250);	
@@ -8068,15 +8067,12 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 			break;
 		case CDDS_ITEMPREPAINT|CDDS_SUBITEM:
 			{
-				
-				int    nItem = static_cast<int>( pListDraw->nmcd.dwItemSpec );
+				int nItem = static_cast<int>( pListDraw->nmcd.dwItemSpec );
 				pListDraw->clrText   = RGB(0, 0, 0);	
 				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_PLAYERS)
 				{
-		
 					if(AppCFG.bUseColorEncodedFont)
 					{
-	
 						if(pListDraw->iSubItem==2)
 						{
 							PLAYERDATA *pPlayerData = pCurrentPL;
@@ -8085,9 +8081,7 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 								for(int i=0;i<nItem;i++)
 									pPlayerData = pPlayerData->pNext;
 								
-									
-								HDC  hDC =  pListDraw->nmcd.hdc;				
-							
+								HDC  hDC = pListDraw->nmcd.hdc;							
 								RECT rc;								
 								if(pPlayerData!=NULL)
 								{
@@ -8095,12 +8089,10 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 									if(GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
 										return GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
 								}
-								//else
-								//	return Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
 							}
 						}
 					}
-					return  CDRF_DODEFAULT;					
+					return  CDRF_NEWFONT;					
 				}
 				
 			}
@@ -8601,56 +8593,64 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 		{
 
 			SERVER_INFO pSrv;
-			pSrv =  Get_ServerInfoByIndex(n);//currCV->pSC->vSIFiltered.at(n);
+			pSrv =  Get_ServerInfoByListViewIndex(currCV,n);//currCV->pSC->vSIFiltered.at(n);
 			LaunchGame(pSrv,&GI[g_currentGameIdx]);
 		}
 	}
 
 }
 
-int Get_ServerInfoByListIndex(int index)
-{
-	REF_SERVER_INFO refSI;
-	refSI.dwIndex = 0;
-	if(currCV==NULL)
-		return -1;
-	if(index<currCV->pSC->vRefListSI.size())
-	{
-		try
-		{				
-			refSI = currCV->pSC->vRefListSI.at(index);
-		}	catch(const exception& e)
-		{
-			AddLogInfo(ETSV_ERROR,"Error at GetServerInfoByListIndex %s!",e.what());
-			return -1;
-		}		
 
-	} else
-		return -1;
-	return refSI.dwIndex;
-}
-
-SERVER_INFO Get_ServerInfoByIndex(int index)
-{
-	
-	
+//if not sucessfull a zerofilled SERVER_INFO is returned!!
+//This function should be rewritten...
+SERVER_INFO Get_ServerInfoByListViewIndex(GAME_INFO *pGI,int index)
+{	
 	SERVER_INFO srv;
+	REF_SERVER_INFO refSI;
 	ZeroMemory(&srv,sizeof(SERVER_INFO));
+	
+	refSI.dwIndex = 0;
 	srv.cGAMEINDEX = 0;
-	int idx = Get_ServerInfoByListIndex(index);
-	if(idx==-1)
-	{
-		dbg_print("> Error at Get_ServerInfoByIndex index = %d",index);
-		return srv;
-	}
-		//DebugBreak();
-	__try{
+	if(pGI==NULL)
+		return srv; //return NULL srv
 
-		srv = currCV->pSC->vSI.at(idx);
+	if(index<pGI->pSC->vRefListSI.size())
+	{
+		__try
+		{				
+			refSI = pGI->pSC->vRefListSI.at(index);
+		}
+		__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
+		{
+			AddLogInfo(ETSV_ERROR,"Access Violation @ GetServerInfoByListIndex %s!");
+			return srv;
+		}		
+	} else
+		return srv;
+	//continue if successfull
+	__try
+	{
+		srv = pGI->pSC->vSI.at(refSI.dwIndex);
 	}
 	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 	{
-		OutputDebugString("Access violation...@ Get_ServerInfoByIndex");		
+		AddLogInfo(ETSV_ERROR,"Access Violation...@ GetServerInfoByListIndex");		
+	}
+	return srv; //gotcha... :)
+}
+
+SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index)
+{	
+	SERVER_INFO srv;
+	ZeroMemory(&srv,sizeof(SERVER_INFO));
+	srv.cGAMEINDEX = 0;
+	__try{
+
+		srv = pGI->pSC->vSI.at(index);
+	}
+	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
+	{
+		OutputDebugString("Access violation...@ Get_ServerInfoByListViewIndex");		
 	}
 	return srv;
 }
@@ -8911,7 +8911,7 @@ char *Get_SelectedServerIP()
 	n = ListView_GetSelectionMark(g_hwndListViewServer);
 	if(n!=-1)
 	{
-		SERVER_INFO pSI = Get_ServerInfoByIndex(n);
+		SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);
 		sprintf(g_currServerIP,"%s:%d",pSI.szIPaddress,pSI.dwPort);	
 		return g_currServerIP;
 	}
@@ -9033,7 +9033,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						if(i!=-1)
 						{
 							SERVER_INFO pSrv;	
-							pSrv = Get_ServerInfoByIndex(i);
+							pSrv = Get_ServerInfoByListViewIndex(currCV,i);
 							LaunchGame(pSrv,&GI[g_currentGameIdx],x);
 						}
 					}
@@ -9054,7 +9054,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 							MessageBox(NULL,"Please select a server before setting a private password!","Info!",MB_ICONINFORMATION|MB_OK); 
 							return TRUE;
 						}
-						SERVER_INFO pSI = Get_ServerInfoByIndex(i);
+						SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,i);
 						g_PRIVPASSsrv = &pSI;
 
 						DialogBox(g_hInst, (LPCTSTR)IDD_DLG_SETPRIVPASS, g_hWnd, (DLGPROC)PRIVPASS_Proc);	
@@ -9102,7 +9102,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						int n = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(n!=-1)
 						{
-							SERVER_INFO pSI = Get_ServerInfoByIndex(n); 						
+							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n); 						
 							pSI.cFavorite =! pSI.cFavorite;							
 							currCV->pSC->vSI.at((int)pSI.dwIndex) = pSI;
 							UpdateServerItem(n);
@@ -9142,7 +9142,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						n = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(n!=-1)
 						{
-							SERVER_INFO pSI = Get_ServerInfoByIndex(n);
+							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);
 							sprintf(szClipTemp,"%s",pSI.szVersion);								
 							EditCopy(szClipTemp);
 
@@ -9158,7 +9158,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						n = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(n!=-1)
 						{
-							SERVER_INFO pSI = Get_ServerInfoByIndex(n);
+							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);
 							sprintf(szClipTemp,"%s",pSI.szMod);								
 							EditCopy(szClipTemp);
 
@@ -9213,7 +9213,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				mii.fState = MFS_CHECKED | MFS_DEFAULT;
 				InsertMenuItem(hPopMenu,IDM_CONNECT,FALSE,&mii);
 
-				SERVER_INFO pSI = Get_ServerInfoByIndex(n); 						
+				SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n); 						
 				
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,"Launch game only.");
 				
@@ -9661,7 +9661,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					return ListView_PL_CustomDraw(lParam);	 
 				else  if(lpnmia->hdr.code == NM_CUSTOMDRAW && (lpnmia->hdr.hwndFrom != g_hwndMainTreeCtrl))
 				{					
-					return ListView_CustomDraw(lParam);					
+					return ListView_SL_CustomDraw(lParam);					
 				}
 				else  if(lpnmia->hdr.code == NM_CUSTOMDRAW && (lpnmia->hdr.hwndFrom == g_hwndMainTreeCtrl))
 				{					
@@ -10319,6 +10319,8 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 		{
 			AddLogInfo(ICO_INFO,"No new version detected!");
 			SetStatusText(ICO_INFO,"No new version detected!");
+			if((int)lpParam!=1) //silent?
+				MessageBox(g_hWnd,"No new version available!","Info",MB_OK);
 		}
 
 	}
@@ -10384,8 +10386,7 @@ DWORD WINAPI AutomaticDownloadUpdateSetUp(LPVOID lpParam)
 	{
 		pElement->FirstChild()->ToElement();
 		if(pElement!=NULL)
-		{
-			
+		{			
 			for(int i=0;i<10;i++)
 			{
 	
@@ -10446,7 +10447,7 @@ failed:
 		delete myWrapper;
 
 	PostMessage(g_PROGRESS_DLG,WM_CLOSE,0,0);
-	int ret = MessageBox(NULL,"New ET Server Viewer version has been detected!\nError downloading file(s).\nTake me to the website and download manually!","Update error",MB_YESNO);				
+	int ret = MessageBox(NULL,"New Game Scanner version has been detected!\nError downloading file(s)!\nDo you want to go to the website and download it manually?","Update error",MB_YESNO);				
 	if(ret==IDYES)
 	{
 		ShellExecute(NULL,NULL,"http://www.bdamage.se/",NULL,NULL,SW_SHOWNORMAL);
@@ -11703,7 +11704,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case IDM_UPDATE:
 					{
 						HANDLE hThread;
-						hThread = CreateThread( NULL, 0, &CheckForUpdates, g_hWnd,0, NULL);                
+						hThread = CreateThread( NULL, 0, &CheckForUpdates, (LPVOID)lParam,0, NULL);      //lParam = 1 = silent = no messageboxes          
 						if (hThread == NULL) 
 						{
 							AddLogInfo(ETSV_WARNING, "CreateThread failed  <CheckForUpdates> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 

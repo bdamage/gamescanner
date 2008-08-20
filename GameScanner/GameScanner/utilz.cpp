@@ -394,10 +394,28 @@ BOOL isNumeric(char c)
 char *colorfilter(const char* name,char *namefilter,int len)
 {
 	size_t i=0,ii=0;
+	int n=0;
 	if(name!=NULL)
 	{
 		memset(namefilter,0,len);
-		while(i<strlen(name))
+		for(int i=0;i<strlen(name);i++)
+		{
+			
+			if(name[i]=='^')
+			{
+				i++;
+				if(name[i]!='^') // this fixes these kind of names with double ^^
+					continue;
+			}
+			
+			namefilter[n] = name[i];		
+			n++;
+			
+			
+
+		}
+	}
+	/*	while(i<strlen(name))
 		{
 			if(name[i]=='^')
 			{
@@ -420,6 +438,7 @@ char *colorfilter(const char* name,char *namefilter,int len)
 		}
 	} else
 		return "...";
+		*/
 	return namefilter;
 }
 

@@ -20,6 +20,7 @@ extern HINSTANCE g_hInst;
 extern SERVER_INFO g_tmpSRV;
 extern GAME_INFO GI[MAX_SERVERLIST+1];
 
+extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(char *title,char *message);
 extern char Get_GameIcon(char index);
 extern void StartGame_ConnectToServer(bool connectFromBuddyList);
@@ -36,7 +37,8 @@ void OnAddSelectedPlayerToBuddyList()
 	PLAYERDATA * pPly = Get_PlayerBySelection();
 	if(pPly!=NULL)
 	{
-		Buddy_AddToList(g_pBIStart,pPly->szPlayerName,&g_tmpSRV);
+		SERVER_INFO srv = Get_ServerInfoByIndex(&GI[pPly->cGAMEINDEX],pPly->dwServerIndex);
+		Buddy_AddToList(g_pBIStart,pPly->szPlayerName,&srv);
 		Buddy_UpdateList(g_pBIStart);
 	}													
 }
@@ -538,6 +540,7 @@ BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,char *szName,SERVER_INFO *pServer)
 		strcpy(pCurrentBI->szServerName,pServer->szServerName);
 		strcpy(pCurrentBI->szIPaddress,szIP);
 		strcpy(pCurrentBI->szLastSeenIPaddress,szIP);
+
 		pCurrentBI->cGAMEINDEX = pServer->cGAMEINDEX;
 		pCurrentBI->sIndex = pServer->dwIndex;
 
