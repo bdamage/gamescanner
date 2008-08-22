@@ -47,7 +47,7 @@ Upgrade code:
 #ifdef _DEBUG
 #pragma comment(lib, "tinyxmld.lib")
 #else
-#pragma comment(lib, "tinyxml.lib")
+//#pragma comment(lib, "..\\tinyxml\\Release\\tinyxml.lib")
 #endif
 
 #pragma comment(lib, "HttpFileDownload.lib")

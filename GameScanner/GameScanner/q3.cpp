@@ -1117,7 +1117,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		// Connect event?
 		if (events.lNetworkEvents & FD_CONNECT)
 		{
-			AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
+			//AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
 			dbg_print("Sending command %s Len: %d",sendbuf,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{

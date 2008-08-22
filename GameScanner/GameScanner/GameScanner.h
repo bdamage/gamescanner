@@ -2,6 +2,7 @@
 
 #include "resource.h"
 #include "structs_defines.h"
+#include "..\..\tinyxml\tinyxml.h"
 
 DWORD WINAPI GetServerListThread(LPVOID lpParam );
 DWORD WINAPI  RCONDlgThread(LPVOID lpParam);

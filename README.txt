@@ -1,3 +1,49 @@
+Game Scanner
+------------
+
+
+Description
+
+The open source project Game Scanner is a lightweight, non-bloated and low-memory footprint 
+software for easy browsing of your favorite or any supported internet game servers without 
+starting the game itself.
+
+With just an instant of an click and you're away to join the selected server. It also 
+supports features such as RCON*, in-game minimizing* (for fast and easy switching between 
+desktop and the game) and keeping track of your buddies to see which server they currently 
+is playing on. Integrated mIRC status messaging when joing servers.
+
+
+Currently supported games:
+
+Wolfenstein: Enemy Territory D
+Enemy Territory - Quake Wars
+Return to Castle of Wolfenstein
+QuakeWorld 
+Quake 2
+Quake 3
+Quake 4
+Open Arena
+Call of Duty
+Call of Duty 2
+Call of Duty 4 - Modern Warfare
+Warsow
+Urban Terror
+Counter-Strike
+Counter-Strike: Condition Zero
+Counter-Strike: Source
+Half-Life 2 mods
+- Half-life 2
+- Team Fortress: Source
+- Day of Defeat: Source
+- Battle Grounds 2
+- PVKII
+- Dark Messiah Might and Magic
+- Zombie Panic
+- Hidden: Source 
+
+
+
 Compiling
 ---------
 
