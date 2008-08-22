@@ -2,7 +2,7 @@
 // or project specific include files that are used frequently, but
 // are changed infrequently
 //
-#define  APP_VERSION "1.08"
+#define  APP_VERSION "1.09"
 
 #pragma once
 #define _SECURE_SCL 0
@@ -72,11 +72,12 @@
 #include <iphlpapi.h>
 #include <icmpapi.h>
 
+#include "language.h"
 #include "..\..\HttpFileDownload\HttpFileDownload.h"
 #include "..\..\IPtoCountry\IPtoCountry.h"
-#include "..\..\freeimage\freeimage.h"
-#include "..\..\hashlib\src\hashlibpp.h"
-#include "..\..\tinyxml\tinyxml.h"
+#include <..\..\freeimage\freeimage.h>
+#include <..\..\hashlib\src\hashlibpp.h>
+#include <..\..\tinyxml\tinyxml.h>
 
 // TODO: reference additional headers your program requires here
 

@@ -44,11 +44,11 @@ Upgrade code:
 
 #pragma comment(lib, "ole32.lib")
 
-#ifdef _DEBUG
-#pragma comment(lib, "tinyxmld.lib")
-#else
+//#ifdef _DEBUG
+//#pragma comment(lib, "..\\tinyxml\\Release\\tinyxmld.lib")
+//#else
 //#pragma comment(lib, "..\\tinyxml\\Release\\tinyxml.lib")
-#endif
+//#endif
 
 #pragma comment(lib, "HttpFileDownload.lib")
 #pragma comment(lib, "iptocountry.lib")
@@ -9779,6 +9779,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	AddLogInfo(ETSV_INFO,"Cmd line input %s",lpCmdLine);
 
 	IPC_SetPath(EXE_PATH);
+		
+	CLanguage lang;
+	lang.SetPath(EXE_PATH);
+	lang.loadFile("");
 
 	//Do the conversion of the IP to country database 
 //#ifdef CONVERTIPDATABASE

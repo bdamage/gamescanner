@@ -198,6 +198,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Language.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\q3.cpp"
 				>
 			</File>
@@ -238,6 +242,14 @@
 				>
 			</File>
 			<File
+				RelativePath="..\..\tinyxml\tinystr.cpp"
+				>
+			</File>
+			<File
+				RelativePath="..\..\tinyxml\tinyxml.cpp"
+				>
+			</File>
+			<File
 				RelativePath="..\..\tinyxml\tinyxmlerror.cpp"
 				>
 			</File>
@@ -247,6 +259,10 @@
 			</File>
 			<File
 				RelativePath=".\utilz.cpp"
+				>
+			</File>
+			<File
+				RelativePath=".\XmlFile.cpp"
 				>
 			</File>
 		</Filter>
@@ -280,6 +296,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Language.h"
+				>
+			</File>
+			<File
 				RelativePath=".\q3.h"
 				>
 			</File>
@@ -308,15 +328,7 @@
 				>
 			</File>
 			<File
-				RelativePath="..\..\tinyxml\tinystr.cpp"
-				>
-			</File>
-			<File
 				RelativePath="..\..\tinyxml\tinystr.h"
-				>
-			</File>
-			<File
-				RelativePath="..\..\tinyxml\tinyxml.cpp"
 				>
 			</File>
 			<File
@@ -325,6 +337,10 @@
 			</File>
 			<File
 				RelativePath=".\utilz.h"
+				>
+			</File>
+			<File
+				RelativePath=".\XmlFile.h"
 				>
 			</File>
 		</Filter>
@@ -442,11 +458,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\GSOrg32.ico"
+				RelativePath="C:\Users\Kjell\Pictures\GSOrg32.ico"
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\Kjell\Pictures\GSOrg32.ico"
+				RelativePath=".\res\GSOrg32.ico"
 				>
 			</File>
 			<File
@@ -594,11 +610,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\small.ico"
+				RelativePath=".\res\small.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\small.ico"
+				RelativePath=".\small.ico"
 				>
 			</File>
 			<File
@@ -650,6 +666,10 @@
 				>
 			</File>
 		</Filter>
+		<File
+			RelativePath=".\ClassDiagram1.cd"
+			>
+		</File>
 		<File
 			RelativePath=".\ReadMe.txt"
 			>
