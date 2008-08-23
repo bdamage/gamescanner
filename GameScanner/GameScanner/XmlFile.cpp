@@ -34,6 +34,8 @@ TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const char *szEle
 	if(pElement!=NULL)
 	{
 		TiXmlNode *pNode=NULL;
+		if(strcmp(pElement->Value(),szElementName)==0)
+			return pElement;
 		pNode = pElement->FirstChild(szElementName);
 		if(pNode!=NULL)
 		{
@@ -71,19 +73,22 @@ int CXmlFile::GetText(TiXmlElement *pInElement,const char * szElementName, char 
 {
 
 	TiXmlElement *pElement=NULL;
-	pElement = GetElementSafe(pInElement,szElementName);
-	if(pElement!=NULL)
+	if(szElementName!=NULL)
 	{
-		const char *szTxt = pElement->GetText();
-		if(szTxt!=NULL)
+		pElement = GetElementSafe(pInElement,szElementName);
+		if(pElement!=NULL)
 		{
-			if(strlen(szTxt)+1 <= dwBufferLen)
-				dwBufferLen = strlen(szTxt)+1;
-//			else
-//				OutputDebugString("Tag <%S> value length is overrided, max length is %d - <br>Part of the value will only be readed.",szElementName,dwBufferLen);
-			strcpy_s(pszOut, dwBufferLen,szTxt);	
+			const char *szTxt = pElement->GetText();
+			if(szTxt!=NULL)
+			{
+				if(strlen(szTxt)+1 <= dwBufferLen)
+					dwBufferLen = strlen(szTxt)+1;
+	//			else
+	//				OutputDebugString("Tag <%S> value length is overrided, max length is %d - <br>Part of the value will only be readed.",szElementName,dwBufferLen);
+				strcpy_s(pszOut, dwBufferLen,szTxt);	
+			}
+			return TIXML_SUCCESS;	
 		}
-		return TIXML_SUCCESS;	
 	}
 //	OutputDebugString("Could not find tag <%S> or pInElement is NULL.",szElementName);
 	return TIXML_NO_ATTRIBUTE;

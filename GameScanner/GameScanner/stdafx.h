@@ -75,7 +75,7 @@
 #include "language.h"
 #include "..\..\HttpFileDownload\HttpFileDownload.h"
 #include "..\..\IPtoCountry\IPtoCountry.h"
-#include <..\..\freeimage\freeimage.h>
+#include "..\..\FreeImage\freeimage.h"
 #include <..\..\hashlib\src\hashlibpp.h>
 #include <..\..\tinyxml\tinyxml.h>
 

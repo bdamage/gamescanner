@@ -220,7 +220,7 @@ typedef vector<_TREEITEM> _vecTI;
 _vecTI vTI; //Vector Tree Item
 bool g_bNormalWindowed = true;
 _CUSTOM_COLUMN CUSTCOLUMNS[MAX_COLUMNS];
-
+CLanguage lang;
 
 BOOL Sizing = FALSE;
 
@@ -5413,7 +5413,7 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 
 void DeleteAllServerLists()
 {
-	int ret = MessageBox(NULL,"Are you sure you want to delete all servers including favorites?","Warning!",MB_OKCANCEL | MB_ICONWARNING);
+	int ret = MessageBox(NULL,lang.GetString("AskDeleteServerList"),"Warning!",MB_OKCANCEL | MB_ICONWARNING);
 	if(ret == IDOK)
 	{
 		if(g_bRunningQueryServerList==false)
@@ -5435,16 +5435,16 @@ void DeleteAllServerLists()
 				if(GI[i].bActive)
 					TreeView_SetItemText(GI[i].hTI,szBuffer);
 			}
-			MessageBox(NULL,"Master serverlist deleted!","Info",MB_OK);
+			MessageBox(NULL,lang.GetString("DeletedServerList"),"Info",MB_OK);
 		
 		}else
-			MessageBox(NULL,"You can't delete while scanning/updating servers!","Warning!",MB_OKCANCEL | MB_ICONWARNING);
+			MessageBox(NULL,lang.GetString("ErrorDeletingServerList"),"Warning!",MB_OKCANCEL | MB_ICONWARNING);
 	}
 }
 
 void DeleteServerLists(char cGameIdx)
 {
-	int ret = MessageBox(NULL,"Are you sure you want to delete all servers including favorites?","Warning!",MB_OKCANCEL | MB_ICONWARNING);
+	int ret = MessageBox(NULL,lang.GetString("AskDeleteServerList"),"Warning!",MB_OKCANCEL | MB_ICONWARNING);
 	if(ret == IDOK)
 	{
 		if(g_bRunningQueryServerList==false)
@@ -5472,10 +5472,10 @@ void DeleteServerLists(char cGameIdx)
 			if(GI[cGameIdx].bActive)
 				TreeView_SetItemText(GI[cGameIdx].hTI,szBuffer);
 	
-			MessageBox(NULL,"Master serverlist deleted!","Info",MB_OK);
+			MessageBox(NULL,lang.GetString("DeletedServerList"),"Info",MB_OK);
 		
 		}else
-			MessageBox(NULL,"You can't delete while scanning/updating servers!","Warning!",MB_OKCANCEL | MB_ICONWARNING);
+			MessageBox(NULL,lang.GetString("ErrorDeletingServerList"),"Warning!",MB_OKCANCEL | MB_ICONWARNING);
 	}
 }
 
@@ -8696,7 +8696,7 @@ void OnRCON()
 		SendMessage(g_hwndMainRCON,WM_COMMAND,ID_RCON_CONNECT,0);
 	} else
 	{
-	  MessageBox(NULL,"Please select a server before connecting to Remote Console!","Info!",MB_ICONINFORMATION|MB_OK); 
+	  MessageBox(NULL,lang.GetString("SelectServerAtConnectionRCON"),"Info!",MB_ICONINFORMATION|MB_OK); 
 
 	}
 }
@@ -9148,7 +9148,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 
 						}
 						else
-							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
+							MessageBox(hwnd,lang.GetString("ServerCopyToClipBoard"),NULL,MB_OK);
 					}
 				break;	
 				case IDM_COPY_MODNAME:
@@ -9164,7 +9164,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 
 						}
 						else
-							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
+							MessageBox(hwnd,lang.GetString("ServerCopyToClipBoard"),NULL,MB_OK);
 					}
 					break;
 				case IDM_COPYIP:
@@ -9173,7 +9173,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						if(pszIP!=NULL)
 							EditCopy(pszIP);
 						else
-							MessageBox(hwnd,"Please select a server\nbefore trying to copy it to clipboard!",NULL,MB_OK);
+							MessageBox(hwnd,lang.GetString("ServerCopyToClipBoard"),NULL,MB_OK);
 					}
 				break;				
 				case IDM_CONNECT:
@@ -9347,13 +9347,13 @@ BOOL ExecuteGame(GAME_INFO *pGI,char *szCmd,int GameInstallIdx)
 
 		if((int)hret<=32)
 		{
-			MessageBox(NULL,"Couldn't execute game.\nReason: Install path may not be correct or doesn't exsist.\nSolution: Go to the Options then setup the game paths correct.","Error!",MB_OK);
+			MessageBox(NULL,lang.GetString("ErrorLaunchingGame"),"Error!",MB_OK);
 			return FALSE;
 		}
 		return TRUE;
 	}
 	else
-		MessageBox(NULL,"Invalid game path!\nReason: Install path may not be correct or doesn't exsist.\nSolution: Go to the Options then setup the game paths correct.","Error!",MB_OK);	
+		MessageBox(NULL,lang.GetString("ErrorLaunchingGame"),"Error!",MB_OK);	
 
 	return FALSE;
 }
@@ -9488,31 +9488,31 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					switch (idButton) 
 					{ 
 						case IDM_REFRESH: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_REFRESH); 
+							lpttt->lpszText = (LPSTR)lang.GetString("ScanAll"); //MAKEINTRESOURCE(IDS_REFRESH); 
 							break; 
 						case IDM_SCAN_FILTERED:
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_REFRESH_FILTER); 
+							lpttt->lpszText = (LPSTR)lang.GetString("ScanFiltered"); //MAKEINTRESOURCE(IDS_REFRESH_FILTER); 
 							break;
 						case IDM_SETTINGS: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_OPTIONS); 
+							lpttt->lpszText = (LPSTR)lang.GetString("SettingsButton"); // MAKEINTRESOURCE(IDS_OPTIONS); 
 							break; 
 						case IDC_BUTTON_ADD_SERVER: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_ADD_TO_FAVORITES); 
+							lpttt->lpszText =(LPSTR)lang.GetString("AddToFavorites"); // MAKEINTRESOURCE(IDS_ADD_TO_FAVORITES); 
 							break; 
 						case IDC_BUTTON_QUICK_CONNECT: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_FAST_CONNECT); 
+							lpttt->lpszText = (LPSTR)lang.GetString("QuickConnect"); //MAKEINTRESOURCE(IDS_FAST_CONNECT); 
 							break; 
 						case IDC_BUTTON_FIND: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_SEARCH); 
+							lpttt->lpszText =(LPSTR)lang.GetString("SearchButton"); // MAKEINTRESOURCE(IDS_SEARCH); 
 							break; 
 						case IDC_DOWNLOAD: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_DOWNLOAD); 
+							lpttt->lpszText =(LPSTR)lang.GetString("DownloadButton"); // MAKEINTRESOURCE(IDS_DOWNLOAD); 
 							break; 
 						case IDM_FONT_COLOR: 
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_COLOR_FONT); 
+							lpttt->lpszText = (LPSTR)lang.GetString("FontButton"); //MAKEINTRESOURCE(IDS_COLOR_FONT); 
 							break; 
 						case ID_BUDDY_ADD:
-							lpttt->lpszText = MAKEINTRESOURCE(IDS_ADD_NEW_BUDDY); 
+							lpttt->lpszText =(LPSTR)lang.GetString("AddNewBuddyButton"); // MAKEINTRESOURCE(IDS_ADD_NEW_BUDDY); 
 							break; 
 
 					} 
@@ -9780,7 +9780,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 
 	IPC_SetPath(EXE_PATH);
 		
-	CLanguage lang;
+
 	lang.SetPath(EXE_PATH);
 	lang.loadFile("");
 
@@ -10451,7 +10451,7 @@ failed:
 		delete myWrapper;
 
 	PostMessage(g_PROGRESS_DLG,WM_CLOSE,0,0);
-	int ret = MessageBox(NULL,"New Game Scanner version has been detected!\nError downloading file(s)!\nDo you want to go to the website and download it manually?","Update error",MB_YESNO);				
+	int ret = MessageBox(NULL,lang.GetString("ErrorDownloadingUpdate"),"Update error",MB_YESNO);				
 	if(ret==IDYES)
 	{
 		ShellExecute(NULL,NULL,"http://www.bdamage.se/",NULL,NULL,SW_SHOWNORMAL);

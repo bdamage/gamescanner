@@ -20,6 +20,7 @@ char cGAMEINDEX=0;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_CurrentSelServer;
 extern GAME_INFO GI[MAX_SERVERLIST+1];
+extern CLanguage lang;
 
 char szRCON_CMD_BACKLOG[MAX_BACKLOG][80];
 
@@ -197,7 +198,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 							if(g_CurrentSelServer.dwIP==0)
 							{
-								MessageBox(hDlg,"Please select a server before connecting!","Error",MB_OK);
+								MessageBox(hDlg,lang.GetString("SelectServerAtConnectionRCON"),"Error",MB_OK);
 								return TRUE;
 							}
 							g_RCONServer = &g_CurrentSelServer;
