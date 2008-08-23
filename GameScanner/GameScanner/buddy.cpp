@@ -628,24 +628,7 @@ void Buddy_Add(bool manually)
 
 	}else
 	{
-
-
 		OnAddSelectedPlayerToBuddyList();
-	/*	int n=-1;
-		char szPlayerName[MAX_BUDDYNAME_LEN];
-		n = ListView_GetSelectionMark(g_hwndListViewPlayers);
-		ListView_GetItemText(g_hwndListViewPlayers,n,2,szPlayerName,sizeof(szPlayerName)-1);
-		if(n!=-1)
-		{
-			//char *szName = GetColorEncodedPlayerNameByPlayerName(szPlayerName);
-
-			//Buddy_InsertToList(szPlayerName,szName);
-			Buddy_Add(g_pBIStart,szPlayerName,g_CurrentSRV);
-			Buddy_UpdateList(g_pBIStart);
-
-		} else
-			MessageBox(NULL,"Please select a player from the playerlist\n before adding it to the buddylist!",NULL,NULL);
-			*/
 	}
 }
 

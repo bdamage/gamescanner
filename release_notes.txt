@@ -1,3 +1,8 @@
+version 1.09
+------------
+* Fixed a bug when closing down Game scanner during serverlist loading could cause a crash and lost of config.
+
+
 version 1.08
 ------------
 * Fixed a bug with the auto start setting.

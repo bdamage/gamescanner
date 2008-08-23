@@ -15,6 +15,7 @@ class CLanguage
 	const char *m_pszDirectory;
 	CXmlFile xmlFile;
 public:
+	char m_szError[200];
 	CLanguage(void);
 	~CLanguage(void);
 	int loadFile(const char *filename);

@@ -172,6 +172,7 @@ PLAYERDATA *pCurrentPL=NULL; //a temporary current player list in listview, this
 
 CRITICAL_SECTION	SCANNER_cs,SCANNER_CSthreadcounter; 
 CRITICAL_SECTION	REDRAWLIST_CS; 
+CRITICAL_SECTION	LOAD_SAVE_CS; 
 
 int ImageSizeX = 120;
 //int oldmaxWidth=0;
@@ -362,7 +363,7 @@ _CountryFilter CountryFilter;
 
 
 
-TCHAR szPlayerlistColumnString[7][20] = {TEXT("#"),TEXT("Team"),TEXT("Name"), TEXT("Rate/XP"), TEXT("Ping"),TEXT("Time"),TEXT("Server name")};
+
 
 SERVER_CONTAINER SC[MAX_SERVERLIST];
 GAME_INFO GI[MAX_SERVERLIST+1];
@@ -4804,19 +4805,19 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	ZeroMemory(&tci,sizeof(tci));
 	tci.iImage = 32;
 	tci.mask =  TCIF_IMAGE|TCIF_TEXT;
-	tci.pszText = "Players";
+	tci.pszText = (LPSTR)lang.GetString("TabPlayers");
 	TabCtrl_InsertItem(g_hwndTabControl,0,&tci);
 	tci.iImage = 38;
-	tci.pszText = "Server Rules";
+	tci.pszText = (LPSTR)lang.GetString("TabRules");
 	TabCtrl_InsertItem(g_hwndTabControl,1,&tci);
 	tci.iImage = 33;
-	tci.pszText = "RCON";
+	tci.pszText = (LPSTR)lang.GetString("TabRCON");
 	TabCtrl_InsertItem(g_hwndTabControl,2,&tci);
 	tci.iImage = 37;
-	tci.pszText = "Ping && Trace route";
+	tci.pszText = (LPSTR)lang.GetString("TabNetwork");
 	TabCtrl_InsertItem(g_hwndTabControl,3,&tci);
 	tci.iImage = 34;
-	tci.pszText = "Logger";
+	tci.pszText =  (LPSTR)lang.GetString("TabLogger");
 	TabCtrl_InsertItem(g_hwndTabControl,4,&tci);
 
 	DWORD dwExStyle = 0;
@@ -4855,6 +4856,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	lvColumn.fmt = LVCFMT_LEFT;
 
 
+	TCHAR szPlayerlistColumnString[7][20] = {TEXT("ColumnNo"),TEXT("ColumnTeam"),TEXT("ColumnName"), TEXT("ColumnFrag"), TEXT("ColumnPing"),TEXT("ColumnTime"),TEXT("ColumnServerName")};
 	lvColumn.cx = 30;
 	int dd;
 	for(dd = 0; dd <7; dd++)
@@ -4867,24 +4869,24 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 			lvColumn.cx = 180;
 		else
 			lvColumn.cx = 60;
-		lvColumn.pszText = szPlayerlistColumnString[dd];
+		lvColumn.pszText = (LPSTR)lang.GetString(szPlayerlistColumnString[dd]);
 		ListView_InsertColumn(g_hwndListViewPlayers, dd, &lvColumn);
 	}
 	lvColumn.cx = 150;
-	lvColumn.pszText = "Rule";
+	lvColumn.pszText = (LPSTR)lang.GetString("ColumnRule");
 	ListView_InsertColumn(g_hwndListViewVars, 0, &lvColumn);
 	lvColumn.cx = 175;
-	lvColumn.pszText = "Value";
+	lvColumn.pszText = (LPSTR)lang.GetString("ColumnValue");
 	ListView_InsertColumn(g_hwndListViewVars, 1, &lvColumn);
 	
 	lvColumn.cx = 120;
-	lvColumn.pszText = "Buddy";
+	lvColumn.pszText = (LPSTR)lang.GetString("ColumnBuddy");
 	ListView_InsertColumn(g_hwndListBuddy, 0, &lvColumn);
 	lvColumn.cx = 120;
-	lvColumn.pszText = "Server Name";
+	lvColumn.pszText = (LPSTR)lang.GetString("ColumnServerName");
 	ListView_InsertColumn(g_hwndListBuddy, 1, &lvColumn);
 	lvColumn.cx = 80;
-	lvColumn.pszText = "IP";
+	lvColumn.pszText = (LPSTR)lang.GetString("ColumnIP");
 	ListView_InsertColumn(g_hwndListBuddy, 2, &lvColumn);
 
 	SendMessage(hwnd,WM_SETICON,ICON_SMALL, (LPARAM)hOnlineIcon);
@@ -5388,6 +5390,7 @@ void LoadAllServerList()
 
 DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 {
+	EnterCriticalSection(&LOAD_SAVE_CS);
 
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
@@ -5399,6 +5402,8 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 		}
 	}
 	
+	LeaveCriticalSection(&LOAD_SAVE_CS);
+
 	if(GI[g_currentGameIdx].bActive)
 		SetCurrentViewTo(g_currentGameIdx);
 	else
@@ -5526,10 +5531,26 @@ DWORD WINAPI SavingFilesCleaningUpThread(LPVOID pvoid )
 		Sleep(300);
 	}
 
+	while(1)
+	{
+		if(TryEnterCriticalSection(&LOAD_SAVE_CS)==FALSE)
+		{
+			OutputDebugString("Waiting for Loading to finish.\n"); 
+			Sleep(1000);
+			
+		}else
+			break;
+	}
+		
+
 	SaveAllServerList();
 
 	dbg_print("Cleaning up all linked list!\n");
+	
 	ClearAllServerLinkedList();
+	
+
+	LeaveCriticalSection(&LOAD_SAVE_CS);
 
 	Buddy_Save(g_pBIStart);
 	Buddy_Clear(g_pBIStart);
@@ -9874,6 +9895,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 		MessageBox(NULL,"You can only run one instance of Game Scanner!","Alert",MB_OK);
 		return 0;
 	}
+	InitializeCriticalSection(&SCANNER_cs);
+	InitializeCriticalSection(&SCANNER_CSthreadcounter);					
+	InitializeCriticalSection(&REDRAWLIST_CS);
+	InitializeCriticalSection(&LOAD_SAVE_CS);
 
 	hCloseEvent = CreateEvent( NULL, TRUE, TRUE,"CloseEvent"); 
 
@@ -9929,9 +9954,7 @@ tryagain:
 		}
 		goto tryagain;
 	}
-	InitializeCriticalSection(&SCANNER_cs);
-	InitializeCriticalSection(&SCANNER_CSthreadcounter);					
-	InitializeCriticalSection(&REDRAWLIST_CS);					
+
 
 	 
 	// Main message loop:
@@ -9952,6 +9975,7 @@ tryagain:
 		}
 	}
 	DeleteCriticalSection(&REDRAWLIST_CS);
+	DeleteCriticalSection(&LOAD_SAVE_CS);
 	DeleteCriticalSection(&SCANNER_CSthreadcounter);
 	DeleteCriticalSection(&SCANNER_cs);
 

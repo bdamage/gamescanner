@@ -34,6 +34,7 @@ extern char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this pat
 extern char USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
 extern char COMMON_SAVE_PATH[_MAX_PATH+_MAX_FNAME];   //Used for downloading app update and preview images - purpose to share the same data between users.
 extern char EXE_PATH_OLD[_MAX_PATH+_MAX_FNAME];
+extern CLanguage lang;
 
 typedef struct tag_dlghdr { 
     HWND hwndTab;       // tab control 
@@ -177,7 +178,7 @@ DWORD CFG_GetGameID(int selectionIndex)
 	return 0xFFFFFFFF;
 }
 
-HTREEITEM TreeView_AddItem(int iImage, char *text)
+HTREEITEM TreeView_AddItem(int iImage, const char *text)
 {
 	HTREEITEM hCurrent = TreeView_GetSelection(g_hwndTree);
 
@@ -185,16 +186,11 @@ HTREEITEM TreeView_AddItem(int iImage, char *text)
 	tvs.item.mask                   =  TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
 
 	if (!hCurrent)
-	{
 		tvs.hParent = TVI_ROOT;
-		tvs.item.pszText            = text;    
-	}
 	else
-	{
 		tvs.hParent = hCurrent;
-		tvs.item.pszText            = text;
-	
-	}
+
+	tvs.item.pszText            = (LPSTR)text;    
 	tvs.item.iSelectedImage = tvs.item.iImage = iImage;
 	tvs.item.lParam = g_tvIndexCFG++;
 	tvs.item.cchTextMax             = lstrlen(tvs.item.pszText) + 1;
@@ -219,13 +215,12 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			SendMessage(g_hwndTree, TVM_SETIMAGELIST , TVSIL_NORMAL, (LPARAM)g_hImageListIcons);
 			HTREEITEM hNewItem;
-			hNewItem = TreeView_AddItem(34,"General");
-			hNewItem = TreeView_AddItem(17,"Minimizer");
-			hNewItem = TreeView_AddItem(16,"TeamSpeak & Vent");
-			hNewItem = TreeView_AddItem(36,"Transparancy");
-			hNewItem = TreeView_AddItem(13,"Network");
-
-			hNewItem = TreeView_AddItem(15 ,"Games");
+			hNewItem = TreeView_AddItem(34,lang.GetString("ConfigGeneral"));
+			hNewItem = TreeView_AddItem(17,lang.GetString("ConfigMinimizer"));
+			hNewItem = TreeView_AddItem(16,lang.GetString("ConfigExtExe"));
+			hNewItem = TreeView_AddItem(36,lang.GetString("ConfigGraphic"));
+			hNewItem = TreeView_AddItem(13,lang.GetString("ConfigNetwork"));
+			hNewItem = TreeView_AddItem(15 ,lang.GetString("ConfigGames"));
 			if (hNewItem)
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
@@ -324,7 +319,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 						if (!RegisterHotKey(NULL, HOTKEY_ID, AppCFGtemp.dwMinimizeMODKey ,AppCFGtemp.cMinimizeKey))
 						{
 							//probably already registred
-							MessageBox(NULL,"Couldn't register hotkey!","Hotkey error",NULL);
+							MessageBox(NULL,lang.GetString("ErrorRegHotkey"),"Hotkey error",NULL);
 						}
 					}else
 					{
