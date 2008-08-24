@@ -1,6 +1,8 @@
 version 1.09
 ------------
-* Fixed a bug when closing down Game scanner during serverlist loading could cause a crash and lost of config.
+* Fixed a bug when closing down Game scanner during serverlist loading could cause a crash and lost of config.a
+* Added language support.
+* Disabled sorting same gameindex that is being scanned it could crash.
 
 
 version 1.08

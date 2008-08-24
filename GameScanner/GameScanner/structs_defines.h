@@ -256,6 +256,7 @@ struct APP_SETTINGS_NEW
    BOOL bUseMIRC;
    DWORD dwRetries;
    DWORD dwThreads;
+   char szLanguageFilename[MAX_PATH];
 
 };
 

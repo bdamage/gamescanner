@@ -65,7 +65,7 @@ void Show_ErrorDetails(LPTSTR lpszFunction);
 void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL);
 void UTILZ_SetStatusText( int icon, char *szMsg,...);
 void UTILZ_CleanUp_ServerRules(LPSERVER_RULES &pSR);
-void SetStatusText(int icon, char *szMsg,...);
+void SetStatusText(int icon, const char *szMsg,...);
 char *	ReadPacket(SOCKET socket, size_t *len);
 char * DWORD_IP_to_szIP(DWORD dwIP);
 DWORD NetworkNameToIP(char *host_name,char *port);

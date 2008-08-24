@@ -19,7 +19,7 @@ extern SERVER_INFO *g_CurrentSRV;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_tmpSRV;
 extern GAME_INFO GI[MAX_SERVERLIST+1];
-
+extern CLanguage lang;
 extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(char *title,char *message);
 extern char Get_GameIcon(char index);
@@ -687,6 +687,8 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 						{
 							EditCopy(szIP);
 						}
+						else
+							MessageBox(hwnd,lang.GetString("ErrorServerCopyToClipBoard"),NULL,MB_OK);
 					}
 				break;
 				case IDM_CONNECT:

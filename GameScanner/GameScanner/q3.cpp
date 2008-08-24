@@ -16,6 +16,7 @@ HWND hwndLVserverlist=NULL;
 
 char Q3_unkown[]={"????"};
 
+extern CLanguage lang;
 extern bool g_bCancel;
 extern GAME_INFO GI[MAX_SERVERLIST+1];
 extern APP_SETTINGS_NEW AppCFG;
@@ -1167,7 +1168,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		    Q3_parseServers((char*)packet[i],packet_len[i],pGI);
 			free(packet[i]);			
 			packet[i]=NULL;
-			SetStatusText(pGI->iIconIndex,"Recieved %d new %s servers from master server.",Q3_dwNewTotalServers,pGI->szGAME_NAME);
+			SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q3_dwNewTotalServers,pGI->szGAME_NAME);
 			if(g_bCancel)
 				break;
 			Sleep(50); //give cpu sometime to breath

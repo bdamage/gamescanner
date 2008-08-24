@@ -812,6 +812,15 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				CheckDlgButton(hDlg,IDC_CHECK_MIRC,BST_UNCHECKED);
 
 
+			lang.EnumerateLanguage();
+		   for( map<string,string>::iterator ii=lang.m_Languages.begin(); ii!=lang.m_Languages.end(); ++ii)
+		   {			   
+			   const char *psz = (*ii).first.c_str() ;
+			   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_ADDSTRING, 0, (LPARAM)psz );  			
+		   }
+		   
+		   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_SELECTSTRING, 0, (LPARAM)lang.m_strCurrentLang.c_str() );  			
+
 			char szTmp[10];
 			int gameID=-1;
 			gameID = CFG_GetGameID(g_currSelCfg);
@@ -883,6 +892,22 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 
 			switch(HIWORD(wParam))		
 			{
+				case CBN_SELCHANGE:
+					{
+						if(LOWORD(wParam)==IDC_COMBO_LANG)
+						{
+							
+							char sztemp[200];
+							int idx=   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETCURSEL, 0, (LPARAM)0 );  
+							SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETLBTEXT, idx, (LPARAM)sztemp );
+							strcpy(AppCFGtemp.szLanguageFilename,lang.m_Languages[sztemp].c_str());
+							lang.loadFile(lang.m_Languages[sztemp].c_str());
+							MessageBox(NULL,lang.GetString("AlertRestartRequired"),"Alert!",MB_OK);
+							 
+						}
+					}
+					break;
+
 				case CBN_CLOSEUP :
 					g_bChanged = true;
 				
@@ -891,7 +916,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					break;
 				case EN_CHANGE:
 				{
-					g_bChanged = true;				
+					g_bChanged = true;								
 				}
 			}
 			

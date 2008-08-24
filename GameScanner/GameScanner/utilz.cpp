@@ -670,7 +670,7 @@ bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)
 	 return true;
 }
 
-void SetStatusText( int icon, char *szMsg,...)
+void SetStatusText( int icon,const char *szMsg,...)
 {	
 	char *szBuffer;
 	va_list argList;

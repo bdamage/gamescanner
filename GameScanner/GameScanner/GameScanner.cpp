@@ -1269,10 +1269,13 @@ void Do_ServerListSort(int iColumn)
 	int gameIdx = currCV->cGAMEINDEX;
 	
 	
-	//We don't to do sorting on the current scanning game index
-/*	if((localcurrCV->cGAMEINDEX==g_currentScanGameIdx) && g_bRunningQueryServerList)	
+	//We don't want to do sorting on the current scanning game index due to it is not thread safe.
+	if((gameIdx==g_currentScanGameIdx) && g_bRunningQueryServerList)
+	{
+		dbg_print("Skipping sorting during scan.");	
 		return ;
-	*/
+	}
+
 
 //	EnterCriticalSection(&SCANNER_cs);
 	BOOL sortdir = FALSE;
@@ -2549,8 +2552,8 @@ void Default_Appsettings()
 	memset(AppCFG.szEXT_EXE_CMD,0,MAX_PATH);	
 	memset(AppCFG.szEXT_EXE_PATH,0,MAX_PATH);
 	
-	AppCFG.bUse_EXT_APP = FALSE;
-
+	AppCFG.bUse_EXT_APP = FALSE;	
+	strcpy(AppCFG.szLanguageFilename,"lang_en.xml");
 	strcpy(AppCFG.szEXT_EXE_PATH,"C:\\Program Files\\Teamspeak2_RC2\\TeamSpeak.exe");
 	strcpy(AppCFG.szEXT_EXE_CMD,"127.0.0.1?nickname=MyNick?loginname=MyLoginAccount?password=XYZ?channel=Axis");
 	strcpy(AppCFG.szEXT_EXE_WINDOWNAME,"TEAMSPEAK 2");
@@ -3533,7 +3536,7 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 				
 			}else
 			{
-				SetStatusText(ICO_WARNING,"Invalid IP address!",ip);
+				SetStatusText(ICO_WARNING,lang.GetString("InvalidIP"));
 			}		
 			EndDialog(hDlg, LOWORD(wParam));
 			return TRUE;
@@ -4360,7 +4363,7 @@ void FastConnect()
 	DWORD dwPort;	
 	if(ip[0]==0)
 	{
-		SetStatusText(ICO_WARNING,"Invalid IP address!");
+		SetStatusText(ICO_WARNING,lang.GetString("InvalidIP"));
 		
 		//Try from serverlist if any server selected
 		StartGame_ConnectToServer(false);
@@ -4469,70 +4472,70 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_PB].id = COL_PB;
 	CUSTCOLUMNS[COL_PB].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_PB].lvColumn.cx = 20;
-	CUSTCOLUMNS[COL_PB].sName = "Anti Cheat";
+	CUSTCOLUMNS[COL_PB].sName = lang.GetString("ColumnAntiCheat");
 	CUSTCOLUMNS[COL_PB].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PB].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_PRIVATE].id = COL_PRIVATE;
 	CUSTCOLUMNS[COL_PRIVATE].lvColumn.mask =  LVCF_WIDTH  | LVCF_TEXT;
 	CUSTCOLUMNS[COL_PRIVATE].lvColumn.cx = 16;
-	CUSTCOLUMNS[COL_PRIVATE].sName = "Private";
+	CUSTCOLUMNS[COL_PRIVATE].sName = lang.GetString("ColumnPrivate");
 	CUSTCOLUMNS[COL_PRIVATE].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PRIVATE].bActive = TRUE;
 	
 	CUSTCOLUMNS[COL_RANKED].id = COL_RANKED;
 	CUSTCOLUMNS[COL_RANKED].lvColumn.mask =  LVCF_WIDTH  | LVCF_TEXT;
 	CUSTCOLUMNS[COL_RANKED].lvColumn.cx = 16;
-	CUSTCOLUMNS[COL_RANKED].sName = "Ranked";
+	CUSTCOLUMNS[COL_RANKED].sName = lang.GetString("ColumnRanked");
 	CUSTCOLUMNS[COL_RANKED].columnIdx = idx++;
 	CUSTCOLUMNS[COL_RANKED].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_SERVERNAME].id = COL_SERVERNAME;
 	CUSTCOLUMNS[COL_SERVERNAME].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_SERVERNAME].lvColumn.cx = 220;
-	CUSTCOLUMNS[COL_SERVERNAME].sName = "Servername";
+	CUSTCOLUMNS[COL_SERVERNAME].sName = lang.GetString("ColumnServerName");
 	CUSTCOLUMNS[COL_SERVERNAME].columnIdx = idx++;
 	CUSTCOLUMNS[COL_SERVERNAME].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_VERSION].id = COL_VERSION;
 	CUSTCOLUMNS[COL_VERSION].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_VERSION].lvColumn.cx = 55;
-	CUSTCOLUMNS[COL_VERSION].sName = "Version";
+	CUSTCOLUMNS[COL_VERSION].sName = lang.GetString("ColumnVersion");
 	CUSTCOLUMNS[COL_VERSION].columnIdx = idx++;
 	CUSTCOLUMNS[COL_VERSION].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_GAMETYPE].id = COL_GAMETYPE;
 	CUSTCOLUMNS[COL_GAMETYPE].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_GAMETYPE].lvColumn.cx = 55;
-	CUSTCOLUMNS[COL_GAMETYPE].sName = "Game Type";
+	CUSTCOLUMNS[COL_GAMETYPE].sName = lang.GetString("ColumnGameType");
 	CUSTCOLUMNS[COL_GAMETYPE].columnIdx = idx++;
 	CUSTCOLUMNS[COL_GAMETYPE].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_MAP].id = COL_MAP;
 	CUSTCOLUMNS[COL_MAP].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_MAP].lvColumn.cx = 75;
-	CUSTCOLUMNS[COL_MAP].sName = "Map";
+	CUSTCOLUMNS[COL_MAP].sName = lang.GetString("ColumnMap");
 	CUSTCOLUMNS[COL_MAP].columnIdx = idx++;
 	CUSTCOLUMNS[COL_MAP].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_MOD].id = COL_MOD;
 	CUSTCOLUMNS[COL_MOD].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_MOD].lvColumn.cx = 65;
-	CUSTCOLUMNS[COL_MOD].sName = "Mod";
+	CUSTCOLUMNS[COL_MOD].sName = lang.GetString("ColumnMod");
 	CUSTCOLUMNS[COL_MOD].columnIdx  = idx++;
 	CUSTCOLUMNS[COL_MOD].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_BOTS].id = COL_BOTS;
 	CUSTCOLUMNS[COL_BOTS].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_BOTS].lvColumn.cx = 20;
-	CUSTCOLUMNS[COL_BOTS].sName = "Bots";
+	CUSTCOLUMNS[COL_BOTS].sName = lang.GetString("ColumnBots");
 	CUSTCOLUMNS[COL_BOTS].columnIdx = idx++;
 	CUSTCOLUMNS[COL_BOTS].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_PLAYERS].id = COL_PLAYERS;
 	CUSTCOLUMNS[COL_PLAYERS].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_PLAYERS].lvColumn.cx = 90;
-	CUSTCOLUMNS[COL_PLAYERS].sName = "Players";
+	CUSTCOLUMNS[COL_PLAYERS].sName = lang.GetString("ColumnPlayers");
 	CUSTCOLUMNS[COL_PLAYERS].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PLAYERS].bActive = TRUE;
 	CUSTCOLUMNS[COL_PLAYERS].bSortAsc = TRUE;
@@ -4544,14 +4547,14 @@ void ListView_SetDefaultColumns()
 	else
 		CUSTCOLUMNS[COL_COUNTRY].lvColumn.cx =115;
 
-	CUSTCOLUMNS[COL_COUNTRY].sName = "Country";
+	CUSTCOLUMNS[COL_COUNTRY].sName = lang.GetString("ColumnCountry");
 	CUSTCOLUMNS[COL_COUNTRY].columnIdx = idx++;
 	CUSTCOLUMNS[COL_COUNTRY].bActive = TRUE;
 
 	CUSTCOLUMNS[COL_PING].id = COL_PING;
 	CUSTCOLUMNS[COL_PING].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_PING].lvColumn.cx = 45;
-	CUSTCOLUMNS[COL_PING].sName = "Ping";
+	CUSTCOLUMNS[COL_PING].sName = lang.GetString("ColumnPing");
 	CUSTCOLUMNS[COL_PING].columnIdx = idx++;
 	CUSTCOLUMNS[COL_PING].bActive = TRUE;
 	CUSTCOLUMNS[COL_PING].bSortAsc = TRUE;
@@ -4559,7 +4562,7 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_IP].id = COL_IP;
 	CUSTCOLUMNS[COL_IP].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_IP].lvColumn.cx = 150;
-	CUSTCOLUMNS[COL_IP].sName = "IP";
+	CUSTCOLUMNS[COL_IP].sName = lang.GetString("ColumnIP");
 	CUSTCOLUMNS[COL_IP].columnIdx = idx++;
 	CUSTCOLUMNS[COL_IP].bActive = TRUE;
 	CUSTCOLUMNS[COL_IP].bSortAsc = TRUE;
@@ -4568,7 +4571,7 @@ void ListView_SetDefaultColumns()
 	CUSTCOLUMNS[COL_STATUS].id = COL_STATUS;
 	CUSTCOLUMNS[COL_STATUS].lvColumn.mask =  LVCF_WIDTH | LVCF_TEXT;
 	CUSTCOLUMNS[COL_STATUS].lvColumn.cx = 80;
-	CUSTCOLUMNS[COL_STATUS].sName = "Status";
+	CUSTCOLUMNS[COL_STATUS].sName = lang.GetString("ColumnStatus");
 	CUSTCOLUMNS[COL_STATUS].columnIdx = idx++;
 	CUSTCOLUMNS[COL_STATUS].bActive = TRUE;
 	CUSTCOLUMNS[COL_STATUS].bSortAsc = TRUE;
@@ -5766,6 +5769,9 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	root->LinkEndChild( xmlElmRet );  
 	xmlElmRet->SetAttribute("value", AppCFG.dwRetries);
 
+	TiXmlElement * xmlElmlang = new TiXmlElement( "CurrentLanguage" );  
+	root->LinkEndChild( xmlElmlang );  
+	xmlElmlang->SetAttribute("filename", AppCFG.szLanguageFilename);
 
 	doc.SaveFile( "config.xml" );
 	AddLogInfo(ETSV_DEBUG,"Saving config...DONE!");
@@ -6766,7 +6772,7 @@ nextGame:
 	if(iGame==MAX_SERVERLIST)  //reset
 		currGameIdx = iGame = 0;
 
-	SetStatusText(GI[currGameIdx].iIconIndex,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(GI[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GI[currGameIdx].szGAME_NAME);
 
 	switch(GI[currGameIdx].cGAMEINDEX)
 	{
@@ -6902,7 +6908,7 @@ nextGame:
 	if(GI[currGameIdx].pSC->vSI.size()==0)
 		goto exitError;
 
-	SetStatusText(ICO_INFO,"Receiving %s servers... DONE!",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GI[currGameIdx].szGAME_NAME);
 	
 	//We don't want to overdraw wrong serverlist
 	if(currGameIdx==g_currentGameIdx)
@@ -6927,7 +6933,7 @@ nextGame:
 	goto NoError;
 
 exitError:
-	SetStatusText(ICO_WARNING,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_WARNING,lang.GetString("StatusReceivingServersError"),GI[currGameIdx].szGAME_NAME);
 NoError:
    g_currentScanGameIdx = -1;
    Show_StopScanningButton(FALSE);
@@ -6972,7 +6978,7 @@ nextGame:
 	if(iGame>MAX_SERVERLIST)  //reset
 		currGameIdx = iGame = 0;
 
-	SetStatusText(GI[currGameIdx].iIconIndex,"Receiving %s servers...",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(GI[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GI[currGameIdx].szGAME_NAME);
 
 	switch(GI[currGameIdx].cGAMEINDEX)
 	{
@@ -7033,7 +7039,7 @@ nextGame:
 	if(GI[currGameIdx].pSC->vSI.size()==0) //Well no new servers
 		bError = TRUE;
 
-	SetStatusText(ICO_INFO,"Receiving %s servers... DONE!",GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GI[currGameIdx].szGAME_NAME);
 	
 	g_bCancel = false;
 
@@ -7042,7 +7048,7 @@ nextGame:
 exitLoop:
 	g_currentScanGameIdx = -1;
 	if(bError)
-		SetStatusText(ICO_INFO,"Error receiving %s servers... UNSUCCESSFULL!",GI[currGameIdx].szGAME_NAME);
+		SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersError"),GI[currGameIdx].szGAME_NAME);
 
    if (! SetEvent(hCloseEvent) ) 
         dbg_print("SetEvent failed!\n");      
@@ -8453,7 +8459,7 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 							if(n!=-1)
 							{				
 								char szCMD[80];		
-								int ret = MessageBox(NULL,"Are you sure you want to kick player?!",szPlayerName,MB_YESNO);
+								int ret = MessageBox(NULL,lang.GetString("AskRconKickPlayer"),szPlayerName,MB_YESNO);
 								if(ret==IDYES)
 								{
 									sprintf_s(szCMD,sizeof(szCMD),"kick %s",szPlayerName);
@@ -8532,7 +8538,7 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 			{
 				//place the window/menu there if needed 						
 				hPopMenu = CreatePopupMenu();
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADD,"&Add to buddy list");			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADD,lang.GetString("MenuAddPlayerToBuddyList"));			
 				switch(g_currentGameIdx)
 				{
 					case RTCW_SERVERLIST:
@@ -8542,20 +8548,14 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 					case COD2_SERVERLIST:					
 					case ET_SERVERLIST:
 					case ETQW_SERVERLIST:
-						InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_YAWN_PLAYER,"Search player at YAWn!");			
-					break;
-				}
-				switch(g_currentGameIdx)
-				{
-					case ETQW_SERVERLIST:
-						InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_STATS_PLAYER,"Search player at ETQW stats!");			
+						InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_YAWN_PLAYER,lang.GetString("MenuYAWNPlayer"));			
 					break;
 				}
 
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_KICK_PLAYER,"Kick");			
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_WARN_PLAYER,"Warn");			
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_MUTE_PLAYER,"Mute");			
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_UNMUTE_PLAYER,"UnMute");			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_KICK_PLAYER,lang.GetString("MenuKick"));			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_WARN_PLAYER,lang.GetString("MenuWarn"));			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_MUTE_PLAYER,lang.GetString("MenuMute"));			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_UNMUTE_PLAYER,lang.GetString("MenuUnMute"));			
 												
 				//workaround for microsoft bug, to hide menu w/o selecting
 				SetForegroundWindow(hwnd);
@@ -8785,16 +8785,14 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 				//place the window/menu there if needed 						
 
 			char szText[100];
-			sprintf_s(szText,sizeof(szText),"Find %s internet servers.",GI[g_currentGameIdx].szGAME_NAME);
-
+			sprintf_s(szText,sizeof(szText),lang.GetString("MenuFindInternetServers"),GI[g_currentGameIdx].szGAME_NAME);
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_SCAN,szText);
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,"Launch game only.");
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,"&Add IP to Favorites");
-			sprintf_s(szText,sizeof(szText),"Delete serverlist for %s.",GI[g_currentGameIdx].szGAME_NAME);
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE_SERVERLIST,szText);
-			
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MINIMUMPLAYERS,"&Modify minimum players a server must have.");
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MAXIMUMPLAYERS,"&Modify maximum players a server must have.");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,lang.GetString("MenuLaunchGameOnly"));
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,lang.GetString("MenuAddNewIPToFav"));
+			sprintf_s(szText,sizeof(szText),lang.GetString("MenuDeleteServerList"),GI[g_currentGameIdx].szGAME_NAME);
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE_SERVERLIST,szText);			
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MINIMUMPLAYERS,lang.GetString("MenuModifyMinPly"));
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MAXIMUMPLAYERS,lang.GetString("MenuModifyMaxPly"));
 
 			//workaround for microsoft bug, to hide menu w/o selecting
 			SetForegroundWindow(hwnd);
@@ -9016,10 +9014,10 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			if(pszIP!=NULL)
 			{				
 				EditCopy(pszIP);
-				SetStatusText(ICO_INFO,"IP address %s added to clipboard!",pszIP);
+				SetStatusText(ICO_INFO,lang.GetString("IPAddedToClipBoard"),pszIP);
 			}else
 			{
-				SetStatusText(ICO_WARNING,"Please select a server before trying to copy to clipboard!");
+				SetStatusText(ICO_WARNING,lang.GetString("ServerCopyToClipBoard"));
 				return 0;
 			}
 		}
@@ -9062,6 +9060,9 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			// Parse the menu selections:
 			switch (wmId)
 			{
+				case IDM_SCAN:
+					OnActivate_ServerList();
+				break;
 				case ID_OPTIONS_RCON:
 					{
 						OnRCON();
@@ -9072,7 +9073,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						int i = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(i==-1)
 						{
-							MessageBox(NULL,"Please select a server before setting a private password!","Info!",MB_ICONINFORMATION|MB_OK); 
+							MessageBox(NULL,lang.GetString("ErrorPrivatePassword"),"Info!",MB_ICONINFORMATION|MB_OK); 
 							return TRUE;
 						}
 						SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,i);
@@ -9158,34 +9159,30 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 
 				case IDM_COPY_VERSION:
 					{
-						char szClipTemp[50];
 						int n=-1;
 						n = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(n!=-1)
 						{
-							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);
-							sprintf(szClipTemp,"%s",pSI.szVersion);								
-							EditCopy(szClipTemp);
+							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);								
+							EditCopy(pSI.szVersion);
 
 						}
 						else
-							MessageBox(hwnd,lang.GetString("ServerCopyToClipBoard"),NULL,MB_OK);
+							MessageBox(hwnd,lang.GetString("ErrorServerCopyToClipBoard"),NULL,MB_OK);
 					}
 				break;	
 				case IDM_COPY_MODNAME:
 					{
-						char szClipTemp[50];
 						int n=-1;
 						n = ListView_GetSelectionMark(g_hwndListViewServer);
 						if(n!=-1)
 						{
-							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);
-							sprintf(szClipTemp,"%s",pSI.szMod);								
-							EditCopy(szClipTemp);
+							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n);								
+							EditCopy(pSI.szMod);
 
 						}
 						else
-							MessageBox(hwnd,lang.GetString("ServerCopyToClipBoard"),NULL,MB_OK);
+							MessageBox(hwnd,lang.GetString("ErrorServerCopyToClipBoard"),NULL,MB_OK);
 					}
 					break;
 				case IDM_COPYIP:
@@ -9194,7 +9191,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						if(pszIP!=NULL)
 							EditCopy(pszIP);
 						else
-							MessageBox(hwnd,lang.GetString("ServerCopyToClipBoard"),NULL,MB_OK);
+							MessageBox(hwnd,lang.GetString("ErrorServerCopyToClipBoard"),NULL,MB_OK);
 					}
 				break;				
 				case IDM_CONNECT:
@@ -9229,53 +9226,50 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				mii.wID = IDM_CONNECT;
 				mii.hbmpUnchecked = NULL;
 				mii.hbmpChecked = hBmp;
-				mii.dwTypeData = "Connect";
-				mii.cch = strlen("Connect");
+				mii.dwTypeData = (LPSTR)lang.GetString("MenuConnect");
+				//mii.cch = strlen("Connect");
 				mii.fState = MFS_CHECKED | MFS_DEFAULT;
 				InsertMenuItem(hPopMenu,IDM_CONNECT,FALSE,&mii);
 
 				SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n); 						
 				
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,"Launch game only.");
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,lang.GetString("MenuLaunchGameOnly"));
 				
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubForceLaunchPopMenu,"Force Launch");
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubForceLaunchPopMenu,lang.GetString("MenuForceLaunch"));
 				for(int x=0; x<currCV->pSC->vGAME_INST.size();x++)
 					InsertMenu(hSubForceLaunchPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,36000+x,currCV->pSC->vGAME_INST.at(x).sName.c_str());
 
 			
 			
 				if(pSI.cFavorite==0)
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,"Add Server to favorites");
+					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,lang.GetString("MenuAddServerToFavorites"));
 				else
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,"Remove Server from favorites");
+					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,lang.GetString("MenuRemoveFromFavorites"));
 	
 				//		InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE,"&Delete");
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_PRIVPASS,"Set Private Pass");
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_PRIVPASS,lang.GetString("MenuSetPrivatePass"));
 			
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPYIP,"Copy &IP to text                  (Ctrl+C)");
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPYIP,lang.GetString("MenuCopyIP"));
 
-				if(g_currentGameIdx==ETQW_SERVERLIST)
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_YAWN_SERVER,"Search server at Splatterladder!");
-				else
-					InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_YAWN_SERVER,"Search server at YAWn!");
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_YAWN_SERVER,lang.GetString("MenuYAWN"));
 
 	
 			}										
 
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_OPTIONS_RCON,"RCON");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_OPTIONS_RCON,lang.GetString("MenuRCON"));
 
 			if(g_bRunningQueryServerList==false)
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_REFRESH,"&Refresh");
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_REFRESH,lang.GetString("MenuRefresh"));
 			else
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,IDM_REFRESH,"&Refresh");				
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING|MF_GRAYED,IDM_REFRESH,lang.GetString("MenuRefresh"));				
 
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubClipboardPopMenu,"Copy to clipboard");
-			InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_VERSION,"Version");
-			InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_MODNAME,"Mod name");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubClipboardPopMenu,lang.GetString("MenuCopyToClipboard"));
+			InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_VERSION,lang.GetString("ColumnVersion"));
+			InsertMenu(hSubClipboardPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPY_MODNAME,lang.GetString("ColumnMod"));
 
-			InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubPopMenu,"Network tools");
-			InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER1,"Ping server");
-			InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER2,"Trace route server");
+			InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubPopMenu,lang.GetString("MenuNetworkTools"));
+			InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER1,lang.GetString("MenuPing"));
+			InsertMenu(hSubPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_TT_SERVER2,lang.GetString("MenuTraceRoute"));
 			
 			SetForegroundWindow(hwnd);
 			TrackPopupMenu(hPopMenu,TPM_LEFTALIGN|TPM_LEFTBUTTON|TPM_BOTTOMALIGN,lpClickPoint.x, lpClickPoint.y,0,hwnd,NULL);
@@ -9801,9 +9795,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 
 	IPC_SetPath(EXE_PATH);
 		
-
 	lang.SetPath(EXE_PATH);
-	lang.loadFile("");
+
+	CFG_Load();
 
 	//Do the conversion of the IP to country database 
 //#ifdef CONVERTIPDATABASE
@@ -9818,8 +9812,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	
 	memset((void*)&etMode,0,sizeof(DEVMODE));
 
-	CFG_Load();
-		
+	
+
 	WSADATA wsaData;
 	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != NO_ERROR)
@@ -10961,8 +10955,6 @@ int CFG_Load()
 	Default_Appsettings();
 
 
-	ListView_SetDefaultColumns();
-
 
 	SetCurrentDirectory(USER_SAVE_PATH);
 	TiXmlDocument doc("config.xml");
@@ -11003,6 +10995,13 @@ int CFG_Load()
 		hRoot=TiXmlHandle(pElem);
 	}
 	int intVal=0;
+
+	pElem=hRoot.FirstChild("CurrentLanguage").Element();
+	if (pElem)
+		strcpy(AppCFG.szLanguageFilename,pElem->Attribute("filename"));		
+
+	lang.loadFile(AppCFG.szLanguageFilename);
+	ListView_SetDefaultColumns();
 
 	pElem=hRoot.FirstChild("BuddyList").Element();
 	if (pElem)
@@ -11190,7 +11189,6 @@ int CFG_Load()
 		AppCFG.dwRetries  = intVal;				
 
 	}
-
 	TiXmlElement * pElemSort;
 	pElemSort=hRoot.FirstChild("Sort").ToElement();
 	if(pElemSort!=NULL)
@@ -11214,9 +11212,9 @@ int CFG_Load()
 						ReadCfgInt(pElemSortValue, "cx",(int&)CUSTCOLUMNS[i].lvColumn.cx);
 						CUSTCOLUMNS[i].columnIdxToSave = CUSTCOLUMNS[i].columnIdx;
 
-						char szOutput[50];
-						if(ReadCfgStr(pElemSortValue,"strval",szOutput, sizeof(szOutput)-1)!=NULL)
-							CUSTCOLUMNS[i].sName = szOutput;
+						//char szOutput[50];
+						//if(ReadCfgStr(pElemSortValue,"strval",szOutput, sizeof(szOutput)-1)!=NULL)
+						//	CUSTCOLUMNS[i].sName = szOutput;
 						pElemSortIdx = pElemSortIdx->NextSiblingElement();
 						
 						if(pElemSortIdx==NULL)

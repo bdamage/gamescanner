@@ -80,29 +80,22 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	pGI->pSC->vRefScanSI.clear();
 
 	for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
-	{
-	
+	{	
 		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
 		REF_SERVER_INFO refSI;
 		refSI.dwIndex = pSI.dwIndex;
 		refSI.cGAMEINDEX = pSI.cGAMEINDEX;
-
-
 		if(filterServerItem!=NULL)
 		{
 			if(filterServerItem((LPARAM*)&pSI,pGI))
 			{
-		
-				pGI->pSC->vRefScanSI.push_back(refSI);
-		
+				pGI->pSC->vRefScanSI.push_back(refSI);		
 			}
 		}
 		else
 		{
-			pGI->pSC->vRefScanSI.push_back(refSI);  
-		
+			pGI->pSC->vRefScanSI.push_back(refSI);  		
 		}
-
 	}
 	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->pSC->vRefScanSI.size(),pGI->pSC->vSI.size());
 
@@ -116,9 +109,6 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 		SendMessage(g_hwndProgressBar, PBM_SETRANGE, (WPARAM) 0,MAKELPARAM(0,pGI->pSC->vRefScanSI.size())); 
 		SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 
 	}
-	
-
-
 
 	HANDLE hThreadIndex[MAX_THREADS];
 	DWORD dwThreadId[MAX_THREADS];
@@ -129,8 +119,6 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	SCANNER_dwThreadCounter=0;
 	pGI->dwScanIdx = 0;
 	
-
-
 	//Create and setup Continue Event, this is important! Otherwise ETSV can crash due.
 	SCAN_hContinueEvent = CreateEvent(NULL,TRUE,TRUE,"ScanContinueEvent"); 
     if (SCAN_hContinueEvent == NULL) 
@@ -160,7 +148,6 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 			SCANNER_dwThreadCounter++;  
 			LeaveCriticalSection( &SCANNER_CSthreadcounter ); 
 			//SetThreadName(dwThreadId[SCANNER_dwThreadCounter], "Get_ServerStatusThread2");
-
 		} 
 	}
 		
@@ -168,7 +155,6 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	if (! SetEvent(SCAN_hContinueEvent) ) 
 		dbg_print("SetEvent failed\n");
 	//After this this the thread counter can decrease properly with a noncorrupted handle
-
 
 	DWORD iWaitIndex = 0;
 	int i=0;
@@ -264,7 +250,8 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		}
 		LeaveCriticalSection(&SCANNER_cs);
 		
-		if(pSI.dwPort==0)
+		//Is there any more server to scan?
+		if(pSI.dwPort==0) //if the port is zero then no equal empty SERVER_INFO structure, (Ugly hack but  itworks :))
 		{
 			//OutputDebugString(">>>>ERROR? Breaked scanning thread\n");
 			break;
@@ -293,13 +280,13 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 				SendMessage(g_hwndProgressBar, PBM_STEPIT, (WPARAM) 0, 0);
 		
 	
-		Sleep(10);		
+		Sleep(25);		
 	//	PollForNewServers();
 	//	size = pGI->pSC->vRefScanSI.size();
 		
 	}
 
-	SetStatusText(pGI->iIconIndex, "Waiting for threads to die!");
+	SetStatusText(pGI->iIconIndex, "Waiting for connections to die!");
 	
 	//This ensures that all threads has been created properly and thread count critical sections works correctly
 	//dbg_print("Waiting for all threads to finish the loop!\n");

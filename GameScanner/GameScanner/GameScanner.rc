@@ -143,7 +143,7 @@ END
 IDC_ETSERVERVIEWER ACCELERATORS 
 BEGIN
     "V",            ID_CTRL_V,              VIRTKEY, CONTROL, NOINVERT
-    "A",            ID_FAVORITES_ADDIP,     VIRTKEY, CONTROL, NOINVERT
+    "A",            IDM_ADDIP,              VIRTKEY, CONTROL, NOINVERT
     "/",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
     "?",            IDM_ABOUT,              ASCII,  ALT, NOINVERT
     VK_F5,          IDM_SCAN,               VIRTKEY, NOINVERT
@@ -177,6 +177,8 @@ BEGIN
     GROUPBOX        "mIRC",IDC_STATIC,7,98,340,91
     EDITTEXT        IDC_EDIT_MIRC,18,130,322,15,ES_AUTOHSCROLL
     LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",IDC_STATIC,17,153,262,31
+    GROUPBOX        "Language",IDC_STATIC,9,49,338,41
+    COMBOBOX        IDC_COMBO_LANG,22,65,178,15,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_CFG2 DIALOGEX 0, 0, 360, 186
