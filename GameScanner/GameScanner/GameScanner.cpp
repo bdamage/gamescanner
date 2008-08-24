@@ -4185,6 +4185,8 @@ void Initialize_GetServerListThread(DWORD options)
 void OnActivate_ServerList(DWORD options)
 {
 	
+	Initialize_RedrawServerListThread();
+
 	//if(g_bRunningQueryServerList==false)
 	{
 		HANDLE hThread=NULL; 
@@ -4700,6 +4702,20 @@ void ChangeFont(HWND hWnd,HFONT hf)
 	SetFontToDlgItem(g_hwndSearchToolbar,g_hf,IDC_COMBOBOXEX_CMD);
 }
 
+void ChangeMainMenuLanguage(HWND hWnd)
+{
+	HMENU hmenu;
+	hmenu = GetMenu(hWnd); 
+
+   ModifyMenu(hmenu,IDM_SETTINGS,MF_BYCOMMAND,MF_STRING,"Kalle");
+   ModifyMenu(hmenu,ID_SERVERLIST_PURGEPUBLICSERVLIST,MF_BYCOMMAND,MF_STRING,"Kalle");
+   ModifyMenu(hmenu,IDM_EXIT,MF_BYCOMMAND,MF_STRING,"Kalle");
+   ModifyMenu(hmenu,ID_BUDDY_ADDFROMPLAYERLIST,MF_BYCOMMAND,MF_STRING,"Kalle");
+   ModifyMenu(hmenu,ID_BUDDY_ADD,MF_BYCOMMAND,MF_STRING,"Kalle");
+   ModifyMenu(hmenu,ID_BUDDY_REMOVE,MF_BYCOMMAND,MF_STRING,"Kalle");
+
+}
+
 void OnCreate(HWND hwnd, HINSTANCE hInst)
 {
 	AddLogInfo(ETSV_INFO,"Called OnCreate...");
@@ -4920,6 +4936,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	g_hf = MyCreateFont(hwnd);
 	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Verdana");//Courier New");
 	
+
+	ChangeMainMenuLanguage(hwnd);
 
 	ChangeFont(hwnd,g_hf);
 	
@@ -6749,10 +6767,9 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 	AddLogInfo(ETSV_DEBUG,  "executing GetServerList");
 	
 	//We don't want to overdraw wrong serverlist
-	if(currGameIdx==g_currentGameIdx)
-		Initialize_RedrawServerListThread();
-		//RedrawServerListThread(&GI[currGameIdx]); //Modifed version since 5.25
-
+//	if(currGameIdx==g_currentGameIdx)
+//		Initialize_RedrawServerListThread();
+	
 	if(g_bRunningQueryServerList)	
 		return 0;
 
