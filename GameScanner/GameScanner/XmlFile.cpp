@@ -16,6 +16,7 @@ CXmlFile::~CXmlFile(void)
 
 int CXmlFile::load(const char* pszFilename)
 {
+	m_pDocument->SetCondenseWhiteSpace(false);
 	if (m_pDocument->LoadFile(pszFilename)==false) 
 		return XMLFILE_ERROR_LOADING;
 

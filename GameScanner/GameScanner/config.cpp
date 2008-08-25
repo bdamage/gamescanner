@@ -763,17 +763,17 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				hwndLVexes = GetDlgItem(hDlg,IDC_LIST_CFG_EXES);
 
 				lvColumn.cx = 80;
-				lvColumn.pszText = "Name";
+				lvColumn.pszText = (LPSTR)lang.GetString("ColumnName");
 				ListView_InsertColumn(hwndLVexes, 0, &lvColumn);
 				lvColumn.cx = 120;
-				lvColumn.pszText = "Launch by Version";
+				lvColumn.pszText = (LPSTR)lang.GetString("ColumnLaunchByVer");
 				ListView_InsertColumn(hwndLVexes, 1, &lvColumn);
-				lvColumn.pszText = "Launch by Mod";
+				lvColumn.pszText = (LPSTR)lang.GetString("ColumnLaunchByMod");
 				ListView_InsertColumn(hwndLVexes, 2, &lvColumn);
 				lvColumn.cx = 180;
-				lvColumn.pszText = "Executable path";
+				lvColumn.pszText =  (LPSTR)lang.GetString("ColumnExePath"); 
 				ListView_InsertColumn(hwndLVexes, 3, &lvColumn);
-				lvColumn.pszText = "Command";
+				lvColumn.pszText =  (LPSTR)lang.GetString("ColumnCommand"); 
 				ListView_InsertColumn(hwndLVexes, 4, &lvColumn);
 
 				DWORD dwExStyle=0;
@@ -826,7 +826,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			gameID = CFG_GetGameID(g_currSelCfg);
 			if(gameID!=-1)
 			{
-				sprintf(szText,"Settings for %s",GI_CFG[gameID].szGAME_NAME);
+				sprintf(szText,lang.GetString("CFGSettingsTitle"),GI_CFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
 
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP);
@@ -846,15 +846,18 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 
 				CFG_Enumerate_installations(hDlg,gameID);
 			}
+			SetDlgItemText(hDlg,IDC_BUTTON_ADD_INSTALL,lang.GetString("CFGAddInstall"));
+			SetDlgItemText(hDlg,IDC_BUTTON_EDIT_INSTALL,lang.GetString("CFGEditInstall"));
+			SetDlgItemText(hDlg,IDC_BUTTON_DELETE_INSTALL,lang.GetString("CFGDeleteInstall"));
+
+
 
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_EXE,AppCFGtemp.szEXT_EXE_PATH);
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_CMD,AppCFGtemp.szEXT_EXE_CMD);
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_WINDOWNAME,AppCFGtemp.szEXT_EXE_WINDOWNAME);
 			SetDlgItemText(hDlg,IDC_EDIT_WINDOWNAME,AppCFGtemp.szET_WindowName);
 
-
 			SetDlgItemText(hDlg,IDC_STATIC_INSTALL_PATH,EXE_PATH);		
-
 
 			g_hwndScrollTrans = GetDlgItem(hDlg,IDC_SLIDER_TRANS);
 			SendMessage(g_hwndScrollTrans,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(MIN_TRANSPARANCY, 100)) ; //AppCFG.g_cTransparancy);
@@ -880,14 +883,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				DWORD i = (DWORD)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_THREADS),TBM_GETPOS,0,(LPARAM)0) ; 
 				char sztemp[20];
 				AppCFGtemp.dwThreads = i;
-
 				SetDlgItemText(hDlg,IDC_STATIC_THREAD,_itoa(i,sztemp,10));
-				
-
 			}			
 			return FALSE;
 		}
-
 		case WM_COMMAND:
 
 			switch(HIWORD(wParam))		
@@ -895,8 +894,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				case CBN_SELCHANGE:
 					{
 						if(LOWORD(wParam)==IDC_COMBO_LANG)
-						{
-							
+						{							
 							char sztemp[200];
 							int idx=   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETCURSEL, 0, (LPARAM)0 );  
 							SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETLBTEXT, idx, (LPARAM)sztemp );

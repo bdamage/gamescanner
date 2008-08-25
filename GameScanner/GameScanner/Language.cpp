@@ -36,10 +36,6 @@ int CLanguage::loadFile(const char *filename)
 		while(pElement!=NULL)
 		{
 			xmlFile.GetText(pElement, pElement->Value(),sztemp,sizeof(sztemp)-1);
-			OutputDebugString(pElement->Value());
-			OutputDebugString("=");
-			OutputDebugString(sztemp);
-			OutputDebugString("\n");
 			DefaultLanguage[pElement->Value()] = sztemp;
 			pElement= pElement->NextSiblingElement();			
 		}

@@ -52,6 +52,7 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	{
 	case WM_INITDIALOG:
 		{
+			SetDlgItemText(hDlg,IDC_STATIC_BUDDY_NAME,lang.GetString("BuddyName"));
 		CenterWindow(hDlg);
 		if(bEditBuddyname)
 		{
@@ -72,12 +73,12 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,(WPARAM)-1,-1);
 			}
 
-			SetWindowText(hDlg,"Edit buddy..."); 
+			SetWindowText(hDlg,lang.GetString("TitleEditBuddy")); 
 			SetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,pEditBuddy->szPlayerName);
 
 		}
 		else
-			SetWindowText(hDlg,"Add buddy..."); 
+			SetWindowText(hDlg,lang.GetString("TitleAddBuddy")); 
 		
 			SetFocus(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER));
 

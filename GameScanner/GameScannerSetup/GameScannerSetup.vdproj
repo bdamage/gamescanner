@@ -501,6 +501,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_70BBF9AE1CBF4A31AC9483D6FBCABE92"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_7117D35B0F804692B314DE8D7527CF5E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -532,6 +538,12 @@
         "Entry"
         {
         "MsmKey" = "8:_7C2FA6F59C334BBCB357724E78FBAA9F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7FA69232C61C41A9BEC0BE5E5EB74005"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2853,6 +2865,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_70BBF9AE1CBF4A31AC9483D6FBCABE92"
+            {
+            "SourcePath" = "8:..\\..\\redist\\lang_en.xml"
+            "TargetName" = "8:lang_en.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7117D35B0F804692B314DE8D7527CF5E"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_om.gif"
@@ -2959,6 +2991,26 @@
             "TargetName" = "8:flag_sk.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7FA69232C61C41A9BEC0BE5E5EB74005"
+            {
+            "SourcePath" = "8:..\\..\\redist\\lang_se.xml"
+            "TargetName" = "8:lang_se.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

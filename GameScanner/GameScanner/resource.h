@@ -3,7 +3,6 @@
 // Used by GameScanner.rc
 //
 #define IDC_MYICON                      2
-#define IDD_FORMVIEW                    101
 #define IDD_GAMESCANNER_DIALOG          102
 #define IDD_NODISKVIEWER_DIALOG         102
 #define IDD_ADD_SERVER                  102
@@ -28,7 +27,6 @@
 #define IDR_MENU1                       131
 #define IDI_ICON                        131
 #define IDD_DLG_SETPRIVPASS             131
-#define IDD_DLG_BUTTONS_SETTING         132
 #define IDI_ICON3                       132
 #define IDD_DLG_PROGRESS                133
 #define IDR_241                         139
@@ -57,7 +55,6 @@
 #define IDD_DIALOG_CONFIG               201
 #define IDD_CFG1                        202
 #define IDD_CFG2                        203
-#define IDD_CFG3_ET                     204
 #define IDI_ICON_SLIDER                 204
 #define IDD_CFG4                        205
 #define IDD_CFG5                        206
@@ -109,7 +106,6 @@
 #define IDI_ICON_RCON                   288
 #define IDC_LIST_PLAYERS                1000
 #define IDC_CHECK_COLFILTER             1000
-#define IDC_TAB1                        1000
 #define IDC_MAP_PREVIEW                 1001
 #define ID_RCON_CONNECT                 1001
 #define IDC_BUTTON1                     1002
@@ -166,10 +162,8 @@
 #define IDC_STATIC_CS                   1024
 #define IDC_EDIT_CS_PASSWORD            1025
 #define IDC_LIST_SERVER                 1026
-#define IDC_EDIT1                       1027
 #define IDC_EDIT_IP                     1027
 #define IDC_LIST_BUDDY                  1027
-#define IDC_EDIT2                       1028
 #define IDC_EDIT_PORT                   1028
 #define IDC_STATIC_PASSWORD             1028
 #define IDC_BUTTON_OK                   1029
@@ -177,16 +171,10 @@
 #define IDC_STATIC_CS_SERVERNAME        1030
 #define IDC_BUTTON_REFRESH              1031
 #define IDC_STATIC_CS_COUNTRY           1032
-#define IDC_EDIT3                       1033
-#define IDC_EDIT4                       1034
 #define IDC_STATIC_RSS_FEEDER           1034
-#define IDC_EDIT_PORT1                  1035
 #define IDC_STATIC_RSS_TITLE            1035
-#define IDC_EDIT_PORT2                  1036
 #define IDC_COMBOBOXEX_CMD              1036
-#define IDC_EDIT_PORT3                  1037
 #define IDC_BUTTON_QUICK_CONNECT        1037
-#define IDC_EDIT_PORT4                  1038
 #define IDC_EDIT_QUICK_PASSWORD         1038
 #define IDC_CHECK_EXT_MIN               1039
 #define IDC_CHECK_EXT_CLOSE             1040
@@ -266,6 +254,7 @@
 #define IDC_EDIT_CFG_RETRIES            1104
 #define IDC_CHECK_USE_HTTP              1105
 #define IDC_COMBO_LANG                  1106
+#define IDC_STATIC_BUDDY_NAME           1200
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -352,7 +341,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1107
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1200
+#define _APS_NEXT_CONTROL_VALUE         1201
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

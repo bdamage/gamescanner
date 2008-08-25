@@ -448,7 +448,7 @@ PLAYERDATA *Get_PlayerBySelection()
 
 		if(pPlayerData==NULL)
 		{
-			SetStatusText(ICO_WARNING,"Not a valid player!");
+			SetStatusText(ICO_WARNING,lang.GetString("InvalidPlayer"));
 			InvalidateRect(g_hWnd,NULL,TRUE);
 			return NULL;
 		}	
@@ -4710,16 +4710,16 @@ void ChangeMainMenuLanguage(HWND hWnd)
 	HMENU hmenu;
 	hmenu = GetMenu(hWnd); 
 
-   ModifyMenu(hmenu,IDM_SETTINGS,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuSettings"));
-   ModifyMenu(hmenu,ID_SERVERLIST_PURGEPUBLICSERVLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuDeleteAllServers"));
-   ModifyMenu(hmenu,IDM_EXIT,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuExit"));
-   ModifyMenu(hmenu,ID_BUDDY_ADDFROMPLAYERLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuAddSelectedPlyToBuddylist"));
-   ModifyMenu(hmenu,ID_BUDDY_ADD,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuAddNewBuddy"));
-   ModifyMenu(hmenu,ID_BUDDY_REMOVE,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuRemoveBuddy"));
+   ModifyMenu(hmenu,IDM_SETTINGS,MF_BYCOMMAND,IDM_SETTINGS,lang.GetString("MenuSettings"));
+   ModifyMenu(hmenu,ID_SERVERLIST_PURGEPUBLICSERVLIST,MF_BYCOMMAND,ID_SERVERLIST_PURGEPUBLICSERVLIST,lang.GetString("MenuDeleteAllServers"));
+   ModifyMenu(hmenu,IDM_EXIT,MF_BYCOMMAND,IDM_EXIT,lang.GetString("MenuExit"));
+   ModifyMenu(hmenu,ID_BUDDY_ADDFROMPLAYERLIST,MF_BYCOMMAND,ID_BUDDY_ADDFROMPLAYERLIST,lang.GetString("MenuAddSelectedPlyToBuddylist"));
+   ModifyMenu(hmenu,ID_BUDDY_ADD,MF_BYCOMMAND,ID_BUDDY_ADD,lang.GetString("MenuAddNewBuddy"));
+   ModifyMenu(hmenu,ID_BUDDY_REMOVE,MF_BYCOMMAND,ID_BUDDY_REMOVE,lang.GetString("MenuRemoveBuddy"));
 
-   ModifyMenu(hmenu,ID_VIEW_BUDDYLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuViewBuddy"));
-   ModifyMenu(hmenu,ID_VIEW_MAPPREVIEW,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuViewMap"));
-   ModifyMenu(hmenu,ID_VIEW_PLAYERLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuViewTabs"));
+   ModifyMenu(hmenu,ID_VIEW_BUDDYLIST,MF_BYCOMMAND,ID_VIEW_BUDDYLIST,lang.GetString("MenuViewBuddy"));
+   ModifyMenu(hmenu,ID_VIEW_MAPPREVIEW,MF_BYCOMMAND,ID_VIEW_MAPPREVIEW,lang.GetString("MenuViewMap"));
+   ModifyMenu(hmenu,ID_VIEW_PLAYERLIST,MF_BYCOMMAND,ID_VIEW_PLAYERLIST ,lang.GetString("MenuViewTabs"));
 
 }
 
@@ -10367,7 +10367,7 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 			AddLogInfo(ICO_INFO,"No new version detected!");
 			//SetStatusText(ICO_INFO,"No new version detected!");
 			if((int)lpParam!=1) //silent?
-				MessageBox(g_hWnd,lang.GetString("MessageNoNewVersion","Info",MB_OK);
+				MessageBox(g_hWnd,lang.GetString("MessageNoNewVersion"),"Info",MB_OK);
 		}
 
 	}
@@ -10928,7 +10928,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 	
 	HWND hwndCSTB = TOOLBAR_CreateSearchToolBar(hwndRB);
 
-	rbBand.lpText     = "Search";
+	rbBand.lpText     = (LPSTR)lang.GetString("Search");
 	rbBand.hwndChild  = hwndCSTB;
 	rbBand.cxMinChild = 315;   
 	rbBand.cxIdeal    = 415;
