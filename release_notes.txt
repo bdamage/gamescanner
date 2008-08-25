@@ -1,8 +1,11 @@
 version 1.09
 ------------
-* Fixed a bug when closing down Game scanner during serverlist loading could cause a crash and lost of config.a
-* Added language support.
+* Major fix is to add this version into auto update system (which includes fixes from v1.08).
+* Fixed a bug when closing down Game scanner during serverlist loading, which could cause a crash and lost of config.
 * Fixed a sorting bug that could cause a crash.
+* Added language support, there are still some fields especially in config that needs to be done.
+ - English
+ - Swedish (not 100% translated)
 
 
 version 1.08
