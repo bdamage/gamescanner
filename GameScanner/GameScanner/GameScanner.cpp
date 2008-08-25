@@ -1513,6 +1513,7 @@ LRESULT CALLBACK PRIVPASS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	case WM_INITDIALOG:
 		{
 			
+			SetWindowText(hDlg,lang.GetString("TitleSetPrivatePass"));
 			CenterWindow(hDlg);
 
 			SetFocus(GetDlgItem(hDlg,IDC_EDIT_PASS));
@@ -3504,7 +3505,8 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	switch (message)
 	{
 	case WM_INITDIALOG:
-		
+		{
+			SetWindowText(hDlg,lang.GetString("TitleAddIP"));
 		if(strlen(g_szIPtoAdd)>0)
 		{
 			SetDlgItemText(hDlg,IDC_EDIT_IP,g_szIPtoAdd);
@@ -3515,6 +3517,7 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		CenterWindow(hDlg);
 		SetFocus(GetDlgItem(hDlg,IDC_EDIT_IP));
 		//return TRUE;
+		}
 	break;	
 
 	case WM_COMMAND:
@@ -4391,7 +4394,7 @@ int FindFirstActiveGame()
 		if(GI[i].bActive)
 			return i;
 
-		int i = MessageBox(g_hWnd,"You need to configure atleast one active game.\nDo you want to to configure it now?","Info",MB_YESNO|MB_ICONINFORMATION|MB_TOPMOST);
+		int i = MessageBox(g_hWnd,lang.GetString("MessageNoGamesActive"),"Info",MB_YESNO|MB_ICONINFORMATION|MB_TOPMOST);
 		if(i==IDYES)
 			PostMessage(g_hWnd,WM_COMMAND,LOWORD(IDM_SETTINGS),0);
 
@@ -4707,12 +4710,16 @@ void ChangeMainMenuLanguage(HWND hWnd)
 	HMENU hmenu;
 	hmenu = GetMenu(hWnd); 
 
-   ModifyMenu(hmenu,IDM_SETTINGS,MF_BYCOMMAND,MF_STRING,"Kalle");
-   ModifyMenu(hmenu,ID_SERVERLIST_PURGEPUBLICSERVLIST,MF_BYCOMMAND,MF_STRING,"Kalle");
-   ModifyMenu(hmenu,IDM_EXIT,MF_BYCOMMAND,MF_STRING,"Kalle");
-   ModifyMenu(hmenu,ID_BUDDY_ADDFROMPLAYERLIST,MF_BYCOMMAND,MF_STRING,"Kalle");
-   ModifyMenu(hmenu,ID_BUDDY_ADD,MF_BYCOMMAND,MF_STRING,"Kalle");
-   ModifyMenu(hmenu,ID_BUDDY_REMOVE,MF_BYCOMMAND,MF_STRING,"Kalle");
+   ModifyMenu(hmenu,IDM_SETTINGS,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuSettings"));
+   ModifyMenu(hmenu,ID_SERVERLIST_PURGEPUBLICSERVLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuDeleteAllServers"));
+   ModifyMenu(hmenu,IDM_EXIT,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuExit"));
+   ModifyMenu(hmenu,ID_BUDDY_ADDFROMPLAYERLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuAddSelectedPlyToBuddylist"));
+   ModifyMenu(hmenu,ID_BUDDY_ADD,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuAddNewBuddy"));
+   ModifyMenu(hmenu,ID_BUDDY_REMOVE,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuRemoveBuddy"));
+
+   ModifyMenu(hmenu,ID_VIEW_BUDDYLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuViewBuddy"));
+   ModifyMenu(hmenu,ID_VIEW_MAPPREVIEW,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuViewMap"));
+   ModifyMenu(hmenu,ID_VIEW_PLAYERLIST,MF_BYCOMMAND,MF_STRING,lang.GetString("MenuViewTabs"));
 
 }
 
@@ -8620,9 +8627,9 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 			
 				}
 			}else
-				MessageBox(NULL,"Selected buddy isn't playing\non any server!","Info",MB_OK);
+				MessageBox(NULL,lang.GetString("MessageBuddyNotOnline"),"Info",MB_OK);
 		} else
-			MessageBox(NULL,"Please select a server\nbefore trying to connect!","Info",MB_OK);
+			MessageBox(NULL,lang.GetString("MessageErrorConnecting"),"Info",MB_OK);
 	}
 	else  //From Favorites or the Masterlist
 	{	
@@ -8631,7 +8638,7 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 		{
 
 			SERVER_INFO pSrv;
-			pSrv =  Get_ServerInfoByListViewIndex(currCV,n);//currCV->pSC->vSIFiltered.at(n);
+			pSrv =  Get_ServerInfoByListViewIndex(currCV,n);
 			LaunchGame(pSrv,&GI[g_currentGameIdx]);
 		}
 	}
@@ -10058,6 +10065,7 @@ LRESULT CALLBACK PROGRESS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	{
 		case WM_INITDIALOG:
 			{
+				
 				g_DlgProgress= NULL;
 				g_DlgProgressMsg=NULL;
 				g_DlgProgressMsg = GetDlgItem(hDlg,IDC_STATIC_TEXT);
@@ -10350,16 +10358,16 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 		{
 			Show_ToolbarButton(IDC_DOWNLOAD, true);
 			//EnableDownloadLink(TRUE);
-			SetStatusText(ICO_INFO,"*** New version %s is available for download.***",szVersion);
-			AddLogInfo(ICO_INFO,"*** New version %s detected! ***",szVersion);
+			SetStatusText(ICO_INFO,lang.GetString("StatusNewVersion"),szVersion);
+			AddLogInfo(ICO_INFO,"New version %s detected!",szVersion);
 			bAnyUpdates=TRUE;
 			PostMessage(g_hWnd,WM_COMMAND,IDC_DOWNLOAD,0);
 		} else
 		{
 			AddLogInfo(ICO_INFO,"No new version detected!");
-			SetStatusText(ICO_INFO,"No new version detected!");
+			//SetStatusText(ICO_INFO,"No new version detected!");
 			if((int)lpParam!=1) //silent?
-				MessageBox(g_hWnd,"No new version available!","Info",MB_OK);
+				MessageBox(g_hWnd,lang.GetString("MessageNoNewVersion","Info",MB_OK);
 		}
 
 	}
@@ -10529,8 +10537,8 @@ LRESULT CALLBACK MINMAX_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 	{
 	case WM_INITDIALOG:
 		{
-		CenterWindow(hDlg);
-		hwndEdit = GetDlgItem(hDlg,IDC_EDIT_MINMAX);
+			CenterWindow(hDlg);
+			hwndEdit = GetDlgItem(hDlg,IDC_EDIT_MINMAX);
 
 		if(lParam==0)
 		{
@@ -10538,14 +10546,17 @@ LRESULT CALLBACK MINMAX_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 			_itoa(AppCFG.filter.dwShowServerWithMinPlayers,szTemp,10);	
 			dwMaxMin = &AppCFG.filter.dwShowServerWithMinPlayers;
 		
-			SetWindowText(hDlg,"Set minimum value");
+			//SetWindowText(hDlg,"Set minimum value");
+			SetWindowText(hDlg,lang.GetString("TitleSetMinValue"));
+			
 			bSettingMax=FALSE;
 		}
 		else
 		{
 			dwMaxMin = &AppCFG.filter.dwShowServerWithMaxPlayers;
 			_itoa(AppCFG.filter.dwShowServerWithMaxPlayers,szTemp,10);	
-			SetWindowText(hDlg,"Set maximum value");
+			//SetWindowText(hDlg,"Set maximum value");
+			SetWindowText(hDlg,lang.GetString("TitleSetMaxValue"));
 			bSettingMax=TRUE;
 		}
 
@@ -11255,7 +11266,11 @@ int CFG_Load()
 				TiXmlElement* pNode = pElement->FirstChild()->ToElement();
 				if(pNode!=NULL)
 				{
-					ReadCfgStr(pNode, "GameName",GI[i].szGAME_NAME,MAX_PATH);
+					char temp[MAX_PATH];
+					ReadCfgStr(pNode, "GameName",temp,MAX_PATH);
+					if(strlen(temp)>0)
+						strcpy(GI[i].szGAME_NAME,temp);
+
 					
 					if(ReadCfgStr(pNode, "Path",GI[i].szGAME_PATH,MAX_PATH)!=NULL) //old changed since ver 1.08
 					{
@@ -11689,7 +11704,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 				case IDC_DOWNLOAD:
 					{
-						if(MessageBox(hWnd,"Do you want to download and install the update?","Update Game Scanner",MB_YESNO)==IDYES)
+						if(MessageBox(hWnd,lang.GetString("AskToUpdate"),"Update Game Scanner",MB_YESNO)==IDYES)
 						{
 							HANDLE hThread;
 							hThread = CreateThread( NULL, 0, &AutomaticDownloadUpdateSetUp, g_hWnd,0, NULL);                
