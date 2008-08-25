@@ -10348,6 +10348,11 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 	char szVersion[50];
 
 	pElement=hRoot.FirstChild("Version").ToElement();
+	if(pElement==NULL)
+	{
+		AddLogInfo(ICO_INFO,"Error checking for new version (XML corrupt)!",szVersion);
+		return 0;
+	}
 	pElement->FirstChild()->ToElement();
 
 	if(pElement!=NULL)
