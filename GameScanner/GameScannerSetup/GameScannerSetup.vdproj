@@ -15,12 +15,6 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_003A8AD52ADA46FFA2ECD1582A540F13"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_0265442AAA7F40F181E70F83E90061BC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -143,12 +137,6 @@
         {
         "MsmKey" = "8:_1FA381FA39054356B8273770F09B4127"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_200520DB24A34D89BB8523ADDBD94E46"
-        "OwnerKey" = "8:_003A8AD52ADA46FFA2ECD1582A540F13"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -5064,16 +5052,16 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
         "ProductCode" = "8:{6EFF1869-9A95-4293-AD16-FCB060E41D56}"
-        "PackageCode" = "8:{6CFB6D97-B1A2-42C7-BE5E-39FBB113D7DE}"
-        "UpgradeCode" = "8:{1E1FC67E-A466-4A1F-A278-286B6905C57B}"
+        "PackageCode" = "8:{02BBF037-0ED7-4C50-A95F-3E9876DA9608}"
+        "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
-        "DetectNewerInstalledVersion" = "11:TRUE"
+        "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.0.9"
+        "ProductVersion" = "8:1.1.0"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
-        "ARPHELPLINK" = "8:"
+        "ARPHELPLINK" = "8:www.bdamage.se"
         "Title" = "8:Game Scanner Setup"
         "Subject" = "8:"
         "ARPCONTACT" = "8:bDamage"
@@ -5607,40 +5595,12 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_003A8AD52ADA46FFA2ECD1582A540F13"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:policy_9_0_Microsoft_VC90_DebugCRT_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_200520DB24A34D89BB8523ADDBD94E46"
-            {
-            "UseDynamicProperties" = "11:TRUE"
-            "IsDependency" = "11:TRUE"
-            "SourcePath" = "8:microsoft_vc90_debugcrt_x86.msm"
-                "Properties"
-                {
-                }
-            "LanguageId" = "3:0"
-            "Exclude" = "11:FALSE"
-            "Folder" = "8:"
-            "Feature" = "8:"
-            "IsolateTo" = "8:"
-            }
         }
         "ProjectOutput"
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9572CAEE2F59444B8B9E89C61DF38097"
             {
-            "SourcePath" = "8:..\\Debug\\GameScanner.exe"
+            "SourcePath" = "8:..\\Release\\GameScanner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
