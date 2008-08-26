@@ -1,0 +1,130 @@
+<Language>
+<Name>Finnish</Name>
+<Version>1.0</Version>
+<ErrorOpenFile></ErrorOpenFile>
+<ScanAll>Etsi uudet serverit ja p‰ivit‰ kaikki serverit (F5).</ScanAll>
+<ScanFiltered>P‰ivit‰ vain suodatetut serverit.</ScanFiltered>
+<SettingsButton>Game Scanner asetukset.</SettingsButton>
+<SearchButton>Etsi serveri‰ nimell‰ tai IP osoitteella.</SearchButton>
+<QuickConnect>Yhdist‰ serverille etsi -kent‰n IP osoitteella.</QuickConnect>
+<AddNewBuddyButton>Lis‰‰ uusi kaveri!</AddNewBuddyButton>
+<AddToFavorites>Lis‰‰ valittu serveri tai etsi -kent‰n IP suosikkeihin.</AddToFavorites>
+<FontButton>Valitse joko v‰rilliset tai v‰rittˆm‰t fontit.</FontButton>
+<DownloadButton>Uusi versio saatavilla!!</DownloadButton>
+<NewVersionDetected>Game Scannerin uusi versio saatavilla.\Haluatko ladata?</NewVersionDetected>
+<ErrorPrivatePassword>Valitse serveri ennen salasanan syˆtt‰mist‰!</ErrorPrivatePassword>
+<IPAddedToClipBoard>IP osoite %s lis‰tty leikepˆyd‰lle!</IPAddedToClipBoard>
+<ErrorServerCopyToClipBoard>Valitse serveri ennenkuin yrit‰t lis‰t‰ sit‰ leikepˆyd‰lle!</ErrorServerCopyToClipBoard>
+<ErrorLaunchingGame>Pelill‰ v‰‰r‰ tiedostopolku!
+Syy: Tiedostopolku on v‰‰r‰ tai sit‰ ei ole olemassa.
+Ratkaisu: Mene Asetukset -valikkoon ja korjaa pelin tiedostopolku.</ErrorLaunchingGame>
+<ErrorDownloadingUpdate>Uusi Game Scanner versio saatavilla!
+Virhe ladattaessa tiedostoja!
+Haluako avata ohjelman kotisivun ja ladata sen itse?</ErrorDownloadingUpdate>
+<SelectServerAtConnectionRCON>Valitse serveri ennen yhdist‰mist‰ Remote Consoleen!</SelectServerAtConnectionRCON>
+<AskDeleteServerList>Haluatko varmasti poistaa kaikki serverit, myˆs suosikit?</AskDeleteServerList>
+<DeletedServerList>Serverilista poistettu!</DeletedServerList>
+<ErrorDeletingServerList>Et voi poistaa serverilistaa kesken p‰ivityksen!</ErrorDeletingServerList>
+<ErrorRegHotkey>Game Scanner ei voinut tallentaa pikan‰pp‰int‰!</ErrorRegHotkey>
+<ConfigGeneral>Yleinen</ConfigGeneral>
+<ConfigMinimizer>Minimointi</ConfigMinimizer>
+<ConfigExtExe>TeamSpeak &amp; Ventrilo</ConfigExtExe>
+<ConfigGraphic>L‰pin‰kyvyys</ConfigGraphic>
+<ConfigNetwork>Verkkoasetukset</ConfigNetwork>
+<ConfigGames>Pelit</ConfigGames>
+<TabPlayers>Pelaajat</TabPlayers>
+<TabRules>Serverin tiedot</TabRules>
+<TabRCON>RCON</TabRCON>
+<TabNetwork>Ping &amp;&amp; Trace route</TabNetwork>
+<TabLogger>Loki</TabLogger>
+<ColumnRule>S‰‰nnˆt</ColumnRule>
+<ColumnValue>Arvo</ColumnValue>
+<ColumnBuddy>Kaveri</ColumnBuddy>
+<ColumnServerName>Serverin nimi</ColumnServerName>
+<ColumnIP>IP</ColumnIP>
+<ColumnNo>#</ColumnNo>
+<ColumnTeam>Joukkue</ColumnTeam>
+<ColumnName>Nimi</ColumnName>
+<ColumnFrag>Frag/Rate/XP</ColumnFrag>
+<ColumnPing>Ping</ColumnPing>
+<ColumnTime>Aika</ColumnTime>
+<ColumnAntiCheat>Anti Cheat</ColumnAntiCheat>
+<ColumnPrivate>Salasana</ColumnPrivate>
+<ColumnRanked>Ranked</ColumnRanked>
+<ColumnVersion>Versio</ColumnVersion>
+<ColumnGameType>Pelityyppi</ColumnGameType>
+<ColumnMap>Kartta</ColumnMap>
+<ColumnMod>Modi</ColumnMod>
+<ColumnBots>Botit</ColumnBots>
+<ColumnPlayers>Pelaajat</ColumnPlayers>
+<ColumnCountry>Maa</ColumnCountry>
+<ColumnStatus>Status</ColumnStatus>
+<MenuConnect>Yhdist‰</MenuConnect>
+<MenuLaunchGameOnly>K‰ynnist‰ vain peli.</MenuLaunchGameOnly>
+<MenuForceLaunch>Pakota k‰ynnistys</MenuForceLaunch>
+<MenuAddServerToFavorites>Lis‰‰ serveri suosikkeihin</MenuAddServerToFavorites>
+<MenuRemoveFromFavorites>Poista serveri suosikeista</MenuRemoveFromFavorites>
+<MenuSetPrivatePass>Aseta salasana</MenuSetPrivatePass>
+<MenuCopyIP>Kopioi &amp;IP                  (Ctrl+C)</MenuCopyIP>
+<MenuYAWN>Etsi serveri‰ YAWnista!</MenuYAWN>
+<MenuYAWNPlayer>Etsi pelaajaa YAWnista!</MenuYAWNPlayer>
+<MenuRCON>RCON</MenuRCON>
+<MenuRefresh>P‰ivit‰</MenuRefresh>
+<MenuCopyToClipboard>Kopioi leikepˆyd‰lle</MenuCopyToClipboard>
+<MenuNetworkTools>Verkko tyˆkalut</MenuNetworkTools>
+<MenuPing>Pingaa serveri</MenuPing>
+<MenuTraceRoute>Trace Route Serverille</MenuTraceRoute>
+<MenuKick>Potki</MenuKick>
+<MenuWarn>Varoita</MenuWarn>
+<MenuMute>Mykist‰</MenuMute>
+<MenuUnMute>Mykistys pois</MenuUnMute>
+<MenuFindInternetServers>Etsi %s servereit‰ internetist‰.</MenuFindInternetServers>
+<MenuDeleteServerList>Poista %s serverilista.</MenuDeleteServerList>
+<MenuAddNewIPToFav>Lis‰‰ uusi &amp;IP Suosikkeihin</MenuAddNewIPToFav>
+<MenuModifyMinPly>&amp;Serverin minimi pelaajam‰‰r‰.</MenuModifyMinPly>
+<MenuModifyMaxPly>&amp;Serverin maksimi pelaajam‰‰r‰.</MenuModifyMaxPly>
+<MenuSettings>Asetukset</MenuSettings>
+<MenuDeleteAllServers>Poista kaikki serverit</MenuDeleteAllServers>
+<MenuExit>Sulje</MenuExit>
+<MenuAddSelectedPlyToBuddylist>Lis‰‰ valittu pelaaja kaverilistalle</MenuAddSelectedPlyToBuddylist>
+<MenuAddPlayerToBuddyList>&amp;Lis‰‰ kaverilistalle</MenuAddPlayerToBuddyList>
+<MenuAddNewBuddy>&amp;Lis‰‰ uusi kaveri</MenuAddNewBuddy>
+<MenuRemoveBuddy>Poista kaveri</MenuRemoveBuddy>
+<MenuViewBuddy>Kaverilista</MenuViewBuddy>
+<MenuViewMap>Kartan esikatselu</MenuViewMap>
+<MenuViewTabs>Tablist</MenuViewTabs>
+<TitleAddIP>Lis‰‰ uusi serveri</TitleAddIP>
+<TitleSetMinValue>Aseta minimiarvo</TitleSetMinValue>
+<TitleSetMaxValue>Aseta maksimiarvo</TitleSetMaxValue>
+<TitleSetPrivatePass>Aseta serverin salasana</TitleSetPrivatePass>
+<MessageNoGamesActive>Sinun t‰ytyy konfiguroida v‰hint‰‰n yksi peli.
+Haluatko konfiguroida sen nyt?</MessageNoGamesActive>
+<MessageBuddyNotOnline>Valittu kaveri ei ole pelaamassa
+mill‰‰n serverill‰!</MessageBuddyNotOnline>
+<MessageErrorConnecting>Valitse serveri
+ennen yhdist‰mist‰!
+</MessageErrorConnecting>
+<MessageNoNewVersion>Ei uutta versiota saatavilla.</MessageNoNewVersion>
+<InvalidIP>IP osoite ei kelpaa!</InvalidIP>
+<StatusReceivingServers>Vastaanotetaan %s servereit‰...</StatusReceivingServers>
+<StatusReceivingServersDone>%s Servereiden vastaanotto  ...valmis!</StatusReceivingServersDone>
+<StatusReceivingServersError>Virhe vastaanottaessa %s servereit‰!</StatusReceivingServersError>
+<StatusReceivingMaster>Vastaanotettu %d new %s serverit keskusserverilt‰..</StatusReceivingMaster>
+<StatusNewVersion>*** Uusi versio %s saatavilla.***</StatusNewVersion>
+<AskRconKickPlayer>Halutko varmasti potkia pelaajan?</AskRconKickPlayer>
+<AlertRestartRequired>Game Scanner t‰ytyy k‰ynnist‰‰ uudellaan asetuksien k‰ytt‰miseksi!</AlertRestartRequired>
+<AskToUpdate>Haluatko ladata ja asentaa p‰ivityksen?</AskToUpdate>
+<Search>Etsi</Search>
+<BuddyName>Nimi</BuddyName>
+<TitleAddBuddy>Lis‰‰ kaveri...</TitleAddBuddy>
+<TitleEditBuddy>Muokkaa kaveria...</TitleEditBuddy>
+<InvalidPlayer>Ep‰kelpo pelaaja!</InvalidPlayer>
+<ColumnLaunchByVer>K‰ynnist‰ Versio</ColumnLaunchByVer>
+<ColumnLaunchByMod>K‰ynnist‰ Modi</ColumnLaunchByMod>
+<ColumnExePath>Asennuspolku</ColumnExePath>
+<ColumnCommand>Komento</ColumnCommand>
+<CFGSettingsTitle>%s Asetukset</CFGSettingsTitle>
+<CFGAddInstall>Lis‰‰ uusi asennuspolku</CFGAddInstall>
+<CFGEditInstall>Editoi asennusta</CFGEditInstall>
+<CFGDeleteInstall>Poista asennus</CFGDeleteInstall>
+</Language>

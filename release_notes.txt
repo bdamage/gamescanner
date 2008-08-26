@@ -2,6 +2,12 @@ version 1.10
 ------------
 * Fixed language code so Game Scanner can be restarted properly (thanks Kashu for finding this).
 * Updated Urban Terror filtering settings (thanks goes to Serenza).
+* Fixed a the MSI installer to remove previous versions (now Game Scanner shouldn't mess up with Add and Remove control panel).
+* Fixed a potential serverlist read bug.
+
+New languages added:
+ - French   (Thanks to Kashu)
+ - Finnish  (Thanks to Sniffer)
 
 
 version 1.09

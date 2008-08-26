@@ -232,7 +232,10 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 			memcpy(&GI_CFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
-	
+			SetDlgItemText(hDlg,IDOK,lang.GetString("Ok"));
+			SetDlgItemText(hDlg,IDC_BUTTON_DEFAULT,lang.GetString("SetDefault"));
+			SetDlgItemText(hDlg,IDCANCEL,lang.GetString("Cancel"));
+			
 			CenterWindow(hDlg);
 			CFG_OnTabbedDialogInit(hDlg) ;
 			return TRUE;			

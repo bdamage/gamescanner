@@ -18,6 +18,8 @@ v 1.0.6 (1.06) {443FDBF3-D249-4510-86A9-93FF61CC8704}
 v 1.0.7 (1.07) {CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}
 v 1.0.8        {9989D8EB-84F7-4FC8-9AE2-52CFF0A3DADB} beta
 v 1.0.9		   {6EFF1869-9A95-4293-AD16-FCB060E41D56}
+v 1.1.0		   {A4883E53-F798-41AB-8251-4B7775CEA4CA}
+
 
 Upgrade code 1.0 - 1.0.9:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -37,7 +39,7 @@ Upgrade code 1.0 - 1.0.9:
 #include "steam.h"
 #include "scanner.h"
 #include "buddy.h"
-
+#include <strsafe.h>
 #include "CountryCodes.h"
 
 
@@ -5250,7 +5252,7 @@ DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 						memset(&srv,0,sizeof(SERVER_INFO));
 						szGameType= strtok_s( buffer, seps, &next_token1);
 						if(szGameType!=NULL)
-							srv.cGAMEINDEX =(char)atoi(szGameType); 
+							srv.cGAMEINDEX =  pGI->cGAMEINDEX; //(char)atoi(szGameType); 
 						
 						szGameName = strtok_s( NULL, seps, &next_token1);
 						if(szGameName!=NULL)
@@ -9937,7 +9939,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 		return FALSE;
 	}
 	AddLogInfo(ETSV_INFO,"InitInstance...");
-
+	CleanUpFilesRegistry();
 	hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_ETSERVERVIEWER);
 	//register hot key
 	if(AppCFG.bUse_minimize)
@@ -10980,6 +10982,133 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 
 
+//*************************************************************
+//
+//  RegDelnodeRecurse()
+//
+//  Purpose:    Deletes a registry key and all it's subkeys / values.
+//
+//  Parameters: hKeyRoot    -   Root key
+//              lpSubKey    -   SubKey to delete
+//
+//  Return:     TRUE if successful.
+//              FALSE if an error occurs.
+//
+//*************************************************************
+
+BOOL RegDelnodeRecurse (HKEY hKeyRoot, LPTSTR lpSubKey)
+{
+    LPTSTR lpEnd;
+    LONG lResult;
+    DWORD dwSize;
+    TCHAR szName[MAX_PATH];
+    HKEY hKey;
+    FILETIME ftWrite;
+
+    // First, see if we can delete the key without having
+    // to recurse.
+
+    lResult = RegDeleteKey(hKeyRoot, lpSubKey);
+	AddGetLastErrorIntoLog("RegDelnodeRecurse");
+    if (lResult == ERROR_SUCCESS) 
+        return TRUE;
+
+    lResult = RegOpenKeyEx (hKeyRoot, lpSubKey, 0, KEY_READ, &hKey);
+
+    if (lResult != ERROR_SUCCESS) 
+    {
+        if (lResult == ERROR_FILE_NOT_FOUND) {
+            printf("Key not found.\n");
+            return TRUE;
+        } 
+        else {
+            printf("Error opening key.\n");
+            return FALSE;
+        }
+    }
+
+    // Check for an ending slash and add one if it is missing.
+
+    lpEnd = lpSubKey + lstrlen(lpSubKey);
+
+    if (*(lpEnd - 1) != TEXT('\\')) 
+    {
+        *lpEnd =  TEXT('\\');
+        lpEnd++;
+        *lpEnd =  TEXT('\0');
+    }
+
+    // Enumerate the keys
+
+    dwSize = MAX_PATH;
+    lResult = RegEnumKeyEx(hKey, 0, szName, &dwSize, NULL,
+                           NULL, NULL, &ftWrite);
+
+    if (lResult == ERROR_SUCCESS) 
+    {
+        do {
+
+            StringCchCopy (lpEnd, MAX_PATH*2, szName);
+
+            if (!RegDelnodeRecurse(hKeyRoot, lpSubKey)) {
+                break;
+            }
+
+            dwSize = MAX_PATH;
+
+            lResult = RegEnumKeyEx(hKey, 0, szName, &dwSize, NULL,
+                                   NULL, NULL, &ftWrite);
+
+        } while (lResult == ERROR_SUCCESS);
+    }
+
+    lpEnd--;
+    *lpEnd = TEXT('\0');
+
+    RegCloseKey (hKey);
+
+    // Try again to delete the key.
+
+    lResult = RegDeleteKey(hKeyRoot, lpSubKey);
+
+    if (lResult == ERROR_SUCCESS) 
+        return TRUE;
+
+    return FALSE;
+}
+
+//*************************************************************
+//
+//  RegDelnode()
+//
+//  Purpose:    Deletes a registry key and all it's subkeys / values.
+//
+//  Parameters: hKeyRoot    -   Root key
+//              lpSubKey    -   SubKey to delete
+//
+//  Return:     TRUE if successful.
+//              FALSE if an error occurs.
+//
+//*************************************************************
+
+BOOL RegDelnode (HKEY hKeyRoot, LPTSTR lpSubKey)
+{
+    TCHAR szDelKey[2 * MAX_PATH];
+
+    StringCchCopy (szDelKey, MAX_PATH*2, lpSubKey);
+    return RegDelnodeRecurse(hKeyRoot, szDelKey);
+
+}
+
+void CleanUpFilesRegistry()
+{
+	SetCurrentDirectory(USER_SAVE_PATH);
+	remove("ETSVsetup.msi");
+
+ //   RegDelnode(HKEY_LOCAL_MACHINE,TEXT("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{122CD6F9-B1C2-4124-B5B4-5C0B255B74D1}"));
+//	RegDelnode(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}");
+
+}
 
 int CFG_Load()
 {
@@ -10987,7 +11116,7 @@ int CFG_Load()
 	Default_GameSettings();
 	Default_Appsettings();
 
-
+	lang.loadFile("lang_en.xml");
 
 	SetCurrentDirectory(USER_SAVE_PATH);
 	TiXmlDocument doc("config.xml");
@@ -10995,8 +11124,6 @@ int CFG_Load()
 	{
 		return 1;
 	}
-
-
 	 
 	if(AppCFG.filter.dwPing == 0)
 	{
