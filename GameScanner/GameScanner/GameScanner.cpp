@@ -109,7 +109,8 @@ char TREEVIEW_VERSION[20];
 
 #define ETSV_PURGE_COUNTER 5  //Counter after X timeouts to purge (delete) the server
 
-
+#define XML_READ_OK		0
+#define XML_READ_ERROR	1
 
 
 #define COL_PB			0
@@ -5693,7 +5694,7 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 		WriteCfgInt(pElemSortIdx, "Column", "Ascending",(int)CUSTCOLUMNS[i].bSortAsc);	 
 		WriteCfgInt(pElemSortIdx, "Column", "columnIdx",(int)CUSTCOLUMNS[i].columnIdxToSave);
 		WriteCfgInt(pElemSortIdx, "Column", "cx",(int)CUSTCOLUMNS[i].lvColumn.cx);	
-		WriteCfgStr(pElemSortIdx, "Column", "strval",CUSTCOLUMNS[i].sName.c_str()) ;		
+		//WriteCfgStr(pElemSortIdx, "Column", "strval",CUSTCOLUMNS[i].sName.c_str()) ;		
 		pElemSort->LinkEndChild( pElemSortIdx ); 
 		dbg_print("col idx %d",CUSTCOLUMNS[i].columnIdxToSave);
 	}
@@ -11237,10 +11238,19 @@ int CFG_Load()
 					if(pElemSortIdx->FirstChild()!=NULL)
 					{
 						TiXmlElement * pElemSortValue = pElemSortIdx->FirstChild()->ToElement();
-						ReadCfgInt(pElemSortValue, "Active",(int&)CUSTCOLUMNS[i].bActive);
-						ReadCfgInt(pElemSortValue, "id",(int&)CUSTCOLUMNS[i].id);
-						ReadCfgInt(pElemSortValue, "Ascending",(int&)CUSTCOLUMNS[i].bSortAsc);
-						ReadCfgInt(pElemSortValue, "columnIdx",(int&)CUSTCOLUMNS[i].columnIdx);
+						int val=0;
+						if(ReadCfgInt(pElemSortValue, "Active",(int&)val)==XML_READ_OK)
+							CUSTCOLUMNS[i].bActive = val;
+
+						if(ReadCfgInt(pElemSortValue, "id",(int&)val)==XML_READ_OK)
+							CUSTCOLUMNS[i].id = val;
+
+						if(ReadCfgInt(pElemSortValue, "Ascending",(int&)val)==XML_READ_OK)
+							CUSTCOLUMNS[i].bSortAsc = val;
+
+						if(ReadCfgInt(pElemSortValue, "columnIdx",(int&)val)==XML_READ_OK)
+							CUSTCOLUMNS[i].columnIdx = val;
+
 						ReadCfgInt(pElemSortValue, "cx",(int&)CUSTCOLUMNS[i].lvColumn.cx);
 						CUSTCOLUMNS[i].columnIdxToSave = CUSTCOLUMNS[i].columnIdx;
 
@@ -11866,8 +11876,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-#define XML_READ_OK		0
-#define XML_READ_ERROR	1
+
 
 
 

@@ -1,3 +1,9 @@
+version 1.10
+------------
+* Fixed language code so Game Scanner can be restarted properly (thanks Kashu for finding this).
+* Updated Urban Terror filtering settings (thanks goes to Serenza).
+
+
 version 1.09
 ------------
 * Major fix is to add this version into auto update system (which includes fixes from v1.08).
