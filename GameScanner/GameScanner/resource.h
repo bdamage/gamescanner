@@ -254,7 +254,12 @@
 #define IDC_CHECK_USE_HTTP              1105
 #define IDC_COMBO_LANG                  1106
 #define IDC_STATIC_BUDDY_NAME           1200
-#define IDC_TAB1		                1201
+#define IDC_TAB1                        1201
+#define IDC_STATIC_EXE                  1202
+#define IDC_STATIC_COMMAND              1203
+#define IDC_STATIC_ADDNEWINSTALL        1204
+#define IDC_STATIC_VERSION              1205
+#define IDC_STATIC_MOD                  1206
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -341,7 +346,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1107
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1202
+#define _APS_NEXT_CONTROL_VALUE         1207
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

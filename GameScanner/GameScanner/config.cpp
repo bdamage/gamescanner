@@ -604,6 +604,15 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 	{
 		case WM_INITDIALOG:
 			{
+				SetWindowText(hDlg,lang.GetString("TitleNewInstall"));
+				SetDlgItemText(hDlg,IDC_BUTTON_EXE_CFG_OK,lang.GetString("Save"));
+				SetDlgItemText(hDlg,IDC_BUTTON_CFG_EXE_CANCEL,lang.GetString("Cancel"));
+				SetDlgItemText(hDlg,IDC_STATIC_ADDNEWINSTALL,lang.GetString("AddNewInstall"));
+				SetDlgItemText(hDlg,IDC_STATIC_EXE,lang.GetString("ColumnExePath"));
+				SetDlgItemText(hDlg,IDC_STATIC_COMMAND,lang.GetString("ColumnCommand"));
+				SetDlgItemText(hDlg,IDC_STATIC_VERSION,lang.GetString("CFGTextVersion"));
+				SetDlgItemText(hDlg,IDC_STATIC_MOD,lang.GetString("CFGTextMod"));
+				
 				break;
 			}
 		case WM_COMMAND:

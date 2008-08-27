@@ -1,3 +1,8 @@
+version 1.11 ( Hot fix for new installations only from v.1.10)
+------------
+* Fixed a bug with the when config.xml didn't exsist, default columns was never created.
+
+
 version 1.10
 ------------
 * Fixed language code so Game Scanner can be restarted properly (thanks Kashu for finding this).

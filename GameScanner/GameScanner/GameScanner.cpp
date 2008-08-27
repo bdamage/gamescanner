@@ -19,7 +19,7 @@ v 1.0.7 (1.07) {CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}
 v 1.0.8        {9989D8EB-84F7-4FC8-9AE2-52CFF0A3DADB} beta
 v 1.0.9		   {6EFF1869-9A95-4293-AD16-FCB060E41D56}
 v 1.1.0		   {A4883E53-F798-41AB-8251-4B7775CEA4CA}
-
+v 1.1.1        {992C8633-388B-4108-80BE-E860BEBEECE8}
 
 Upgrade code 1.0 - 1.0.9:
 {1E1FC67E-A466-4A1F-A278-286B6905C57B}
@@ -3837,6 +3837,11 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 	while(dwlevel==vTI.at(g_save_counter).dwLevel)
 	{			
 		int iSel = g_save_counter;
+		
+	//	if(vTI.at(iSel).dwType==1001) //reached to country filter
+	//		return 0;
+
+
 		TiXmlElement * elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
 
 #ifdef _DEBUG	
@@ -3862,6 +3867,61 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		pElemRoot->LinkEndChild( elem ); 
 		if(g_save_counter>=vTI.size())
 			return 0;
+
+		 
+		DWORD nextlevel = vTI.at(g_save_counter).dwLevel;
+		DWORD lvl=0;
+		if(nextlevel>dwlevel)
+		{	
+			lvl = Save_all_by_level(elem,nextlevel);
+			if(lvl!=dwlevel)
+				return lvl;
+		}		
+		if(g_save_counter>=vTI.size())
+			return 0;
+	}
+	return vTI.at(g_save_counter).dwLevel;
+}
+
+DWORD  Save_all_by_level_country(TiXmlElement *pElemRoot,DWORD dwlevel)
+{
+	if(g_save_counter>vTI.size())
+		return 0;
+	
+	while(dwlevel==vTI.at(g_save_counter).dwLevel)
+	{			
+		int iSel = g_save_counter;
+		
+		if(vTI.at(iSel).dwType==1001) //reached to country filter
+			return 0;
+
+
+		TiXmlElement * elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
+
+#ifdef _DEBUG	
+		char padding[40];
+		padding[0]=0;
+		for(int i=0;i<dwlevel;i++)
+			strcat(padding," ");
+		dbg_print("%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
+#endif
+
+		elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
+		elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
+		elem->SetAttribute("value",vTI.at(iSel).dwValue);
+		elem->SetAttribute("compare",vTI.at(iSel).dwCompare);
+		elem->SetAttribute("icon",vTI.at(iSel).iIconIndex);
+		elem->SetAttribute("expanded",(UINT)vTI.at(iSel).bExpanded);
+		elem->SetAttribute("type",vTI.at(iSel).dwType);
+		elem->SetAttribute("state",vTI.at(iSel).dwState);
+		elem->SetAttribute("game",vTI.at(iSel).cGAMEINDEX);
+		elem->SetAttribute("action",vTI.at(iSel).dwAction);
+			
+		g_save_counter++;
+		pElemRoot->LinkEndChild( elem ); 
+		if(g_save_counter>=vTI.size())
+			return 0;
+
 		 
 		DWORD nextlevel = vTI.at(g_save_counter).dwLevel;
 		DWORD lvl=0;
@@ -5439,7 +5499,8 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 	else
 		SetCurrentViewTo(FindFirstActiveGame());
 
-	OnActivate_ServerList(SCAN_FILTERED);
+	if(GI[g_currentGameIdx].pSC->vSI.size()>0)
+		OnActivate_ServerList(SCAN_FILTERED);
 		
  return 0;
 }
@@ -11122,6 +11183,7 @@ int CFG_Load()
 	TiXmlDocument doc("config.xml");
 	if (!doc.LoadFile()) 
 	{
+		ListView_SetDefaultColumns();
 		return 1;
 	}
 	 
