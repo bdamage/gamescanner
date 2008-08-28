@@ -19,12 +19,12 @@ BOOL SCANNER_bScanningInProgress=FALSE;
 
 long (*SCANNER_UpdateServerListView)(DWORD idx);
 
-DWORD (*Get_ServerStatus)(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
+DWORD (*Get_ServerStatus)(SERVER_INFO *pSI,long (*UpdatePlayerListView)(LPPLAYERDATA pPlayers),long (*UpdateRulesListView)(LPSERVER_RULES pServerRules));
 
 bool (*SCAN_FilterServerItem)(LPARAM *lp,GAME_INFO *pGI);
 
 
-void SCAN_Set_CALLBACKS(DWORD (*_Get_ServerStatus)(SERVER_INFO *pSI, long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules)),
+void SCAN_Set_CALLBACKS(DWORD (*_Get_ServerStatus)(SERVER_INFO *pSI, long (*UpdatePlayerListView)(LPPLAYERDATA pPlayers),long (*UpdateRulesListView)(LPSERVER_RULES pServerRules)),
 				   long (*_UpdateServerListView)(DWORD idx)
 				   )
 {
@@ -157,7 +157,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	//After this this the thread counter can decrease properly with a noncorrupted handle
 
 	DWORD iWaitIndex = 0;
-	int i=0;
+	DWORD i=0;
 	//Wait for all threads to finish...
 	AddLogInfo(ETSV_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
 	while(iWaitIndex<dwMaxThreads)

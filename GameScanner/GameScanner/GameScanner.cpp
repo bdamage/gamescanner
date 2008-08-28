@@ -1555,7 +1555,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	LVITEM *pLVItem;
 	NMLVDISPINFO *pLVDI;
 	SERVER_INFO *pSrvInf = NULL; 
-	
+	GAME_INFO *pGI = currCV;
 	if (ctrlid!=IDC_LIST_SERVER)
 		return FALSE;
 	
@@ -1563,30 +1563,32 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 		return FALSE;
 
 	pLVDI = (NMLVDISPINFO *)pNMHDR;
-	if(currCV->bLockServerList)
+
+	if(pGI->bLockServerList)
 		return FALSE;
 
 	pLVItem = &pLVDI->item;
-	int size = currCV->pSC->vRefListSI.size();
+	int size = pGI->pSC->vRefListSI.size();
 	if (size==0)
 		return FALSE;
 
-	if(size<pLVItem->iItem)
+	if(pLVItem->iItem<=size)
 		return FALSE;
 	SERVER_INFO pSI;
 	ZeroMemory(&pSI,sizeof(SERVER_INFO));
 	REF_SERVER_INFO refSI;
-	
+
 	__try{
-		refSI = currCV->pSC->vRefListSI.at((int)pLVItem->iItem);
-		currCV->pSC->vSI.at(refSI.dwIndex).dwLVIndex = pLVItem->iItem;
-		pSI = currCV->pSC->vSI.at(refSI.dwIndex);
+		refSI = pGI->pSC->vRefListSI.at((int)pLVItem->iItem);
+		pGI->pSC->vSI.at(refSI.dwIndex).dwLVIndex = pLVItem->iItem;
+		pSI = pGI->pSC->vSI.at(refSI.dwIndex);
 	}
 	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 	{
 		dbg_print("Access violation...@ ListView_SL_OnGetDispInfoList");
 		return FALSE;
 	}
+	//std::out_of_range
 
 	pSrvInf = &pSI;
 
@@ -6965,7 +6967,7 @@ nextGame:
 
 	SetStatusText(GI[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GI[currGameIdx].szGAME_NAME);
 
-	switch(GI[currGameIdx].cGAMEINDEX)
+/*	switch(GI[currGameIdx].cGAMEINDEX)
 	{
 		case ETQW_SERVERLIST:
 			{
@@ -7071,6 +7073,29 @@ nextGame:
 
 			break;
 	}
+
+*/
+		SCAN_Set_CALLBACKS(GI[currGameIdx].GetServerStatus,&UpdateServerItem);
+
+		if((DWORD)lpParam==SCAN_FILTERED)
+			Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+		else
+		{
+			if(GI[currGameIdx].bUseHTTPServerList)
+			{
+				HFD_SetPath(USER_SAVE_PATH);
+				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
+				if(ret!=0)
+					goto exitError;
+				Parse_FileServerList(&GI[currGameIdx],"servers.txt");
+			}else			
+				GI[currGameIdx].GetServersFromMasterServer(&GI[currGameIdx]);
+
+			Initialize_Rescan2(&GI[currGameIdx],NULL);
+		}
+
+
+
 	char szBuffer[100];
 	sprintf(szBuffer,"%s (%d)",GI[currGameIdx].szGAME_NAME,GI[currGameIdx].dwTotalServers);
 	TreeView_SetItemText(GI[currGameIdx].hTI,szBuffer);	
@@ -7657,11 +7682,11 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	refSI.dwIndex = pSI.dwIndex;	
 	pGI->pSC->vRefListSI.push_back(refSI);
 
-	return 0; //Game scanner 1.0
+	//return 0; //Game scanner 1.0
 	
 
-//	ListView_SetItemCount(g_hwndListViewServer,currCV->vSIFiltered.size());
-/*
+//	ListView_SetItemCount(g_hwndListViewServer,currCV->vRefListSI.size());
+
 	lvItem.mask = LVIF_IMAGE ;	
 	if(pSI.bPunkbuster)
 		lvItem.iImage = 1; //Punkbuster
@@ -7670,7 +7695,7 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	ListView_InsertItem( g_hwndListViewServer,&lvItem);
 
 	return 0;
-	*/
+	
 }
 
 
@@ -8236,9 +8261,8 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 							}
 
 						}
-						return  CDRF_NEWFONT; 	
-
-				} 				
+					return  CDRF_NEWFONT; 					
+				} 
 			}
 			break;
 	default:

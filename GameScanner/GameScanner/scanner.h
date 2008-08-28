@@ -10,8 +10,8 @@
 
 
 void SCAN_Set_CALLBACKS(DWORD (*Get_ServerStatus)(SERVER_INFO *pSI,
-				   long (*UpdatePlayerListView)(PLAYERDATA *Q3players),
-				   long (*UpdateRulesListView)(SERVER_RULES *pServerRules)),
+				   long (*UpdatePlayerListView)(LPPLAYERDATA pPlayers),
+				   long (*UpdateRulesListView)(LPSERVER_RULES pServerRules)),
 				   long (*SCANNER_UpdateServerListView)(DWORD idx)
 				   );
 //Functions declaration
