@@ -494,8 +494,8 @@ void Q4_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(
 
 	Q4_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
 
-	if(Q4_UpdateServerListView!=NULL)
-		Q4_UpdateServerListView(pServerInfo->dwIndex);
+	//if(Q4_UpdateServerListView!=NULL)
+ //	Q4_UpdateServerListView(pServerInfo->dwIndex);
 }
 
 

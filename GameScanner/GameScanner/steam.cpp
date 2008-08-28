@@ -767,12 +767,7 @@ void STEAM_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListVie
 {
 	if(pServerInfo==NULL)
 		return;
-
-	
 	STEAM_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
-
-	if(CALLBACK_UpdateServerListView!=NULL)
-		CALLBACK_UpdateServerListView(pServerInfo->dwIndex);
 }
 
 void STEAM_SetCallbacks(long (*UpdateServerListView)(DWORD index), 

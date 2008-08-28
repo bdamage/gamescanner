@@ -426,8 +426,8 @@ void Q3_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(
 
 	Q3_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
 
-	if(Q3_UpdateServerListView!=NULL)
-		Q3_UpdateServerListView(pServerInfo->dwIndex);
+//	if(Q3_UpdateServerListView!=NULL)
+//		Q3_UpdateServerListView(pServerInfo->dwIndex);
 }
 
 

@@ -261,7 +261,7 @@ struct APP_SETTINGS_NEW
 };
 
 
-
+struct PLAYERDATA;
 
 struct PLAYERDATA
 {
@@ -280,7 +280,7 @@ struct PLAYERDATA
 	PLAYERDATA *pNext;
 };
 
-typedef PLAYERDATA* LPPLAYERDATA;
+typedef struct PLAYERDATA* LPPLAYERDATA;
 
 struct SERVER_RULES
 {
@@ -288,7 +288,7 @@ struct SERVER_RULES
 	char *value;
 	SERVER_RULES *pNext;
 };
-typedef SERVER_RULES* LPSERVER_RULES;
+typedef struct SERVER_RULES* LPSERVER_RULES;
 struct SERVER_INFO
 {	
 	DWORD dwIndex;
@@ -379,6 +379,7 @@ typedef hash_multimap <int, int> serverhash;
 // create an empty hash_multimap hmp0 of key type integer
 typedef vector<GAME_INSTALLATIONS> vGAME_INSTALLS;
 
+
 struct SERVER_CONTAINER
 {
 	vSRV_INF vSI;
@@ -391,6 +392,9 @@ struct SERVER_CONTAINER
 	vGF	 vFilterVersion;
 	vGAME_INSTALLS vGAME_INST;
 };
+struct GAME_INFO;
+
+
 
 struct GAME_INFO
 {
@@ -429,7 +433,9 @@ struct GAME_INFO
     char *(*colorfilter)(const char *szIn, char *szOut,int length);
 	LRESULT (*Draw_ColorEncodedText)(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
 	time_t lastScanTimeStamp;
-
+	int GAME_ENGINE;
+	DWORD (*GetServersFromMasterServer)(GAME_INFO *pGI);
+	DWORD (*GetServerStatus)(SERVER_INFO *pSI,long (__cdecl*)(LPPLAYERDATA pPlayers),long (__cdecl*)(LPSERVER_RULES pServerRules));
 };
 
 
