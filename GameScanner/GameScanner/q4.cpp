@@ -335,8 +335,6 @@ retry:
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);
 
-		
-
 		//dbg_dumpbuf("dump.bin", packet, packetlen);
 		SERVER_RULES *pServRules=NULL;
 		char *end = (char*)((packet)+packetlen);
@@ -403,9 +401,7 @@ retry:
 					if(strlen(szVarValue)>11)
 						strncpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName), &szVarValue[strlen("sdGameRules")],14);	
 					else
-						strcpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName),"Unknown");
-
-					
+						strcpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName),"Unknown");					
 				}
 
 			}
@@ -442,17 +438,18 @@ retry:
 			else if(Q4_Get_RuleValue("si_needPass",pServRules)!=NULL)  //ETQW
 				pSI->bPrivate = (char)atoi(Q4_Get_RuleValue("si_needPass",pServRules));
 			
-			//si_numPrivatePlayers
+			if(Q4_Get_RuleValue("si_maxPlayers",pServRules)!=NULL)
+				pSI->nMaxPlayers = atoi(Q4_Get_RuleValue("si_maxPlayers",pServRules));
+			
+			
 			if(Q4_Get_RuleValue("si_privatePlayers",pServRules)!=NULL)
 				pSI->nPrivateClients = atoi(Q4_Get_RuleValue("si_privatePlayers",pServRules));
 			else if(Q4_Get_RuleValue("si_privateClients",pServRules)!=NULL) 			//ETQW
+			{
 				pSI->nPrivateClients = atoi(Q4_Get_RuleValue("si_privateClients",pServRules));
+				pSI->nMaxPlayers -=	pSI->nPrivateClients;
+			}
 
-			if(Q4_Get_RuleValue("si_maxPlayers",pServRules)!=NULL)
-				pSI->nMaxPlayers = atoi(Q4_Get_RuleValue("si_maxPlayers",pServRules));
-	
-
-			
 			//Debug purpose
 			if(pServRules!=pSI->pServerRules)
 			{
@@ -547,24 +544,26 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 			packet+=strlen(packet)+1;
 			
 			if(pSI->cGAMEINDEX==Q4_SERVERLIST) //Is it Quake 4
-			{				
-				player->szClanTag = _strdup(packet);
+			{	
+				if(strlen(packet)>0)
+					player->szClanTag = _strdup(packet);
 				packet+=strlen(packet)+1;
 			} 
 			else //Otherwise go for ETQW
 			{
 
 				packet++; //Skip Clan tag position info
-				player->szClanTag = _strdup(packet);						
+				if(strlen(packet)>0)
+					player->szClanTag = _strdup(packet);						
 				packet+=strlen(packet)+1;
 
 				if((char)packet[0] == 0x01)
 				{
-					player->szClanTag = _strdup("BOT");
+					player->szTeam = _strdup("BOT");
 					pSI->cBots++;
 				}
 				else
-					player->szClanTag = _strdup("PLAYER");
+					player->szTeam = _strdup("PLAYER");
 
 				packet++;			
 			}
@@ -637,8 +636,16 @@ void Q4_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 		if(pPL->pNext!=NULL)
 			Q4_CleanUp_PlayerList(pPL->pNext);
 		
-		free(pPL->szPlayerName);
-		free(pPL->szClanTag);
+		if(pPL->szPlayerName!=NULL)
+			free(pPL->szPlayerName);
+		if(pPL->szClanTag!=NULL)
+			free(pPL->szClanTag);
+		if(pPL->szTeam!=NULL)
+			free(pPL->szTeam);
+		
+		pPL->szPlayerName = NULL;
+		pPL->szClanTag = NULL;
+		pPL->szTeam = NULL;
 		pPL->pNext = NULL;
 		free(pPL);
 		pPL = NULL;

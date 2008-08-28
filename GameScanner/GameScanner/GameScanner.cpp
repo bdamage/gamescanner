@@ -109,6 +109,7 @@ char TREEVIEW_VERSION[20];
 #define SCAN_FILTERED	1
 #define SCAN_ALL_GAMES	2
 
+
 #define ETSV_PURGE_COUNTER 5  //Counter after X timeouts to purge (delete) the server
 
 #define XML_READ_OK		0
@@ -1442,9 +1443,9 @@ int CALLBACK MyComparePlayerFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSo
 		case 1:
 			{
 			if(bPlayerClanAsc)
-				return (StrSorter(ptr1->szClanTag , ptr2->szClanTag )>0);
+				return (StrSorter(ptr1->szTeam , ptr2->szTeam )>0);
 			 else
-				return (StrSorter(ptr1->szClanTag , ptr2->szClanTag )<0);
+				return (StrSorter(ptr1->szTeam , ptr2->szTeam )<0);
 			}
 		 break;
 
@@ -1572,7 +1573,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	if (size==0)
 		return FALSE;
 
-	if(pLVItem->iItem<=size)
+	if(pLVItem->iItem>=size)
 		return FALSE;
 	SERVER_INFO pSI;
 	ZeroMemory(&pSI,sizeof(SERVER_INFO));
@@ -1639,7 +1640,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 							pLVItem->iImage = 2;
 
 						else
-							pLVItem->iImage = Get_GameIcon(currCV->cGAMEINDEX);
+							pLVItem->iImage = Get_GameIcon(pGI->cGAMEINDEX);
 
 						char colFiltered[100];
 						colorfilterQ4(pSrvInf->szServerName,colFiltered,sizeof(colFiltered));
@@ -1748,9 +1749,7 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	}
 
 	if(pPlayerData==NULL)
-	{
 		return FALSE;
-	}
 
 
 	char szText[120];
@@ -1762,26 +1761,27 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				pLVItem->pszText= szText;
 				return TRUE;
 			case 1:
-				if(pPlayerData->szClanTag!=NULL)
-				{
-				
-				char colFiltered[100];
-				
-				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
-					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szClanTag,colFiltered,sizeof(colFiltered)-1); 
-				else
-					pLVItem->pszText = pPlayerData->szClanTag;
+				if(pPlayerData->szTeam!=NULL)
+				{				
+					char colFiltered[100];				
+					if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+						pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szTeam,colFiltered,sizeof(colFiltered)-1); 
+					else
+						pLVItem->pszText = pPlayerData->szTeam;
 				
 				}
 				return TRUE;
 			case 2:
 				{
-				char colFiltered[100];
-				
-				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
-					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szPlayerName,colFiltered,sizeof(colFiltered)-1); 
+				char colFiltered[120];	
+				if( pPlayerData->szClanTag!=NULL)
+					sprintf_s(szText,sizeof(szText)-1,"%s %s", pPlayerData->szClanTag,pPlayerData->szPlayerName);
 				else
-					pLVItem->pszText = pPlayerData->szPlayerName;
+					sprintf_s(szText,sizeof(szText)-1,"%s",pPlayerData->szPlayerName);
+				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(szText,colFiltered,sizeof(colFiltered)-1); 
+				else
+					pLVItem->pszText = szText;
 				return TRUE;
 				}
 
@@ -4392,6 +4392,8 @@ PLAYERDATA * Copy_PlayerToCurrentPL(LPPLAYERDATA &pStartPD, PLAYERDATA *pNewPD)
 		memcpy(player,pNewPD,sizeof(PLAYERDATA));
 		if(pNewPD->szClanTag!=NULL)
 			player->szClanTag = _strdup(pNewPD->szClanTag);
+		if(pNewPD->szTeam!=NULL)
+			player->szTeam = _strdup(pNewPD->szTeam);		
 		if(pNewPD->szPlayerName!=NULL)
 			player->szPlayerName = _strdup(pNewPD->szPlayerName);
 		player->pNext = NULL;
@@ -6924,9 +6926,27 @@ bool IsServerAlive(char *host)
 	return true;
 }
 
+BOOL g_bRunSimulation=FALSE;
 
+DWORD WINAPI Simulation(LPVOID lpParam )
+{
+	Sleep(1000);
+	while(g_bRunSimulation)
+	{
+		UINT max = TreeView_GetCount(g_hwndMainTreeCtrl);
 
+		UINT n = rand() % max;
+	
+		TreeView_SelectItem(g_hwndMainTreeCtrl,vTI.at(n).hTreeItem);
+		TreeView_SetItemState(g_hwndMainTreeCtrl,vTI.at(n).hTreeItem,TVIS_SELECTED, TVIS_SELECTED);
+		TreeView_GetSelectionV3();
+		Sleep(1000);
+	}
 
+	return 0;
+}
+
+//7Used for debug???
 
 DWORD WINAPI GetServerList(LPVOID lpParam )
 {
@@ -6957,6 +6977,23 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 
 	time(&GI[currGameIdx].lastScanTimeStamp);
 
+	HANDLE hThread=NULL; 
+	DWORD dwThreadIdBrowser;
+		
+	if(options==SCAN_ALL_GAMES)
+	{
+		g_bRunSimulation = TRUE;
+		hThread = CreateThread( NULL, 0, &Simulation, (LPVOID)0,0, &dwThreadIdBrowser);                
+		if (hThread == NULL) 
+		{
+			AddLogInfo(ETSV_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+		}
+		else 
+		{
+			SetThreadName( dwThreadIdBrowser, "GetServerListThread");
+			CloseHandle( hThread );
+		}
+	}
 
 	int iGame=0;
 nextGame:
@@ -7119,6 +7156,7 @@ nextGame:
 		AddLogInfo(ETSV_DEBUG,  "cancel GetServerList <<<<<");
 		Show_StopScanningButton(FALSE);
 		g_currentScanGameIdx = -1;
+		g_bRunSimulation = FALSE;
 		return 0xFFFF;
 	}
 	if(GI[currGameIdx].pSC->vSI.size()==0)
@@ -7151,6 +7189,7 @@ nextGame:
 exitError:
 	SetStatusText(ICO_WARNING,lang.GetString("StatusReceivingServersError"),GI[currGameIdx].szGAME_NAME);
 NoError:
+   g_bRunSimulation = FALSE;
    g_currentScanGameIdx = -1;
    Show_StopScanningButton(FALSE);
    g_bRunningQueryServerList = false;
@@ -7166,7 +7205,6 @@ NoError:
  }
 
 
-
 DWORD WINAPI GetServerListThread(LPVOID lpParam )
 {
 	DWORD options = (DWORD)lpParam;
@@ -7180,6 +7218,9 @@ DWORD WINAPI GetServerListThread(LPVOID lpParam )
        dbg_print("ResetEvent failed\n");
 
 	g_currentScanGameIdx = g_currentGameIdx;
+
+	time(&GI[currGameIdx].lastScanTimeStamp);
+
 nextGame:
 	
 	currGameIdx = iGame;
@@ -7196,7 +7237,7 @@ nextGame:
 
 	SetStatusText(GI[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GI[currGameIdx].szGAME_NAME);
 
-	switch(GI[currGameIdx].cGAMEINDEX)
+	/*switch(GI[currGameIdx].cGAMEINDEX)
 	{
 		case ETQW_SERVERLIST:
 			{
@@ -7232,6 +7273,28 @@ nextGame:
 			break;
 	}
 	
+	*/
+		SCAN_Set_CALLBACKS(GI[currGameIdx].GetServerStatus,&UpdateServerItem);
+
+		if((DWORD)lpParam==SCAN_FILTERED)
+			Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+		else
+		{
+			if(GI[currGameIdx].bUseHTTPServerList)
+			{
+				HFD_SetPath(USER_SAVE_PATH);
+				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
+				if(ret!=0)
+				{
+					bError = TRUE;
+					goto exitLoop;
+				}
+				Parse_FileServerList(&GI[currGameIdx],"servers.txt");
+			}else			
+				GI[currGameIdx].GetServersFromMasterServer(&GI[currGameIdx]);
+
+			Initialize_Rescan2(&GI[currGameIdx],NULL);
+		}
 	char szBuffer[100];
 	sprintf(szBuffer,"%s (%d)",GI[currGameIdx].szGAME_NAME,GI[currGameIdx].dwTotalServers);
 	TreeView_SetItemText(GI[currGameIdx].hTI,szBuffer);
@@ -7249,6 +7312,7 @@ nextGame:
 
 		AddLogInfo(ETSV_DEBUG,  "Cancel GetServerListThread!");
 		g_currentScanGameIdx = -1;
+		g_bRunSimulation = FALSE;
 		return 0xFFFF;
 	}
 
@@ -7260,8 +7324,10 @@ nextGame:
 	g_bCancel = false;
 
 
-
 exitLoop:
+
+	g_bRunSimulation = FALSE;
+
 	g_currentScanGameIdx = -1;
 	if(bError)
 		SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersError"),GI[currGameIdx].szGAME_NAME);
@@ -7677,9 +7743,14 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	ZeroMemory(&lvItem, sizeof(LVITEM));
 	lvItem.iItem =  ListView_GetItemCount(g_hwndListViewServer);
 	
+
 	REF_SERVER_INFO refSI;
+
+
 	refSI.cGAMEINDEX  = pSI.cGAMEINDEX;
 	refSI.dwIndex = pSI.dwIndex;	
+	if(TryEnterCriticalSection(&REDRAWLIST_CS)==FALSE)
+		return 1;
 	pGI->pSC->vRefListSI.push_back(refSI);
 
 	//return 0; //Game scanner 1.0
@@ -7688,11 +7759,8 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 //	ListView_SetItemCount(g_hwndListViewServer,currCV->vRefListSI.size());
 
 	lvItem.mask = LVIF_IMAGE ;	
-	if(pSI.bPunkbuster)
-		lvItem.iImage = 1; //Punkbuster
-	else
-		lvItem.iImage = 77; //empty
 	ListView_InsertItem( g_hwndListViewServer,&lvItem);
+	LeaveCriticalSection(&REDRAWLIST_CS);
 
 	return 0;
 	
@@ -8120,8 +8188,7 @@ void Draw_ShadedRect(HDC hDC,RECT rectFull,char *pszText,int xCurrentValue,int x
 
 //ServerList custom draw
 LRESULT ListView_SL_CustomDraw (LPARAM lParam)
-{
-	
+{	
 	LRESULT lResult = CDRF_DODEFAULT;	
 	int iRow=0;
 	LPNMLVCUSTOMDRAW pListDraw = (LPNMLVCUSTOMDRAW)lParam;
@@ -8129,8 +8196,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 	{
 	//	case CDDS_POSTPAINT:
 	//		return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW); //CDRF_NOTIFYPOSTPAINT; //lResult;
-		case CDDS_PREPAINT:
-		
+		case CDDS_PREPAINT:		
 			return (CDRF_NOTIFYPOSTPAINT | CDRF_NOTIFYITEMDRAW | CDRF_NOTIFYSUBITEMDRAW);
 		case CDDS_ITEMPREPAINT:
 			{
@@ -8171,9 +8237,8 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 															
 						//do some default stuff
 						if(pSI.dwPing==9999)
-						{
 							pListDraw->clrText   = RGB(255, 0, 0);
-						}else
+						else
 						{
 							if(pSI.bUpdated==false)
 								pListDraw->clrText   = RGB(140, 140, 140);
@@ -8189,7 +8254,6 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 
 						if(pListDraw->iSubItem==CUSTCOLUMNS[COL_PLAYERS].columnIdx)
 						{
-
 							char szText[50];
 							sprintf_s(szText,sizeof(szText),"%d/%d+(%d)",pSI.nCurrentPlayers,pSI.nMaxPlayers,pSI.nPrivateClients);
 							
@@ -8205,8 +8269,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 							if(hbrBkgnd!=NULL)
 								DeleteObject(hbrBkgnd);
 
-							return CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT  ;
-							
+							return (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);							
 						}
 						else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_COUNTRY].columnIdx)
 						{
@@ -8239,7 +8302,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 							DeleteObject(hbrBkgnd);
 							if(hbrSel!=NULL)
 								DeleteObject(hbrSel);
-							return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
+							return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
 						}
 						else if(pListDraw->iSubItem==CUSTCOLUMNS[COL_SERVERNAME].columnIdx)
 						{
@@ -8257,7 +8320,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 									ImageList_Draw(g_hImageListIcons,2,hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
 								else
 									ImageList_Draw(g_hImageListIcons,Get_GameIcon(pSI.cGAMEINDEX),hDC,rc.left+1,rc.top+2,ILD_NORMAL|ILD_TRANSPARENT);
-								return   (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
+								return  ( CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
 							}
 
 						}

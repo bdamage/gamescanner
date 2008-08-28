@@ -747,7 +747,11 @@ void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 			free(pPL->szClanTag);
 			pPL->szClanTag = NULL;
 		}
-		
+		if(pPL->szTeam!=NULL)
+		{
+			free(pPL->szTeam);
+			pPL->szTeam = NULL;
+		}		
 		free(pPL);
 		pPL = NULL;
 	}

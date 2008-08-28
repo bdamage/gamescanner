@@ -273,6 +273,7 @@ struct PLAYERDATA
 	DWORD dwServerIndex;
 	char *szPlayerName;
 	char *szClanTag;
+	char *szTeam;
 	BYTE ClanTagPos;
 	BYTE isBot;
 	char cGAMEINDEX;

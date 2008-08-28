@@ -722,6 +722,8 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 			if(player==NULL) //Out of memory
 				return pQ3Players;
 			player->pNext = NULL;							
+			player->szClanTag = NULL;	
+			player->szTeam = NULL;	
 			player->cGAMEINDEX = pSI->cGAMEINDEX;
 			player->dwServerIndex = pSI->dwIndex;
 
@@ -788,7 +790,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 								if(szP[Pindex]!='-')
 								{
 									int _idx = (szP[Pindex]-48);
-									player->szClanTag = _strdup(&szPlyType[_idx][0]);
+									player->szTeam = _strdup(&szPlyType[_idx][0]);
 									Pindex++;					
 									break;
 								}
@@ -800,11 +802,11 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 					case WARSOW_SERVERLIST:
 					{
 						if(strcmp(pointer,"0")==0)
-							player->szClanTag = _strdup("Spectator");
+							player->szTeam = _strdup("Spectator");
 						else if(strcmp(pointer,"2")==0)
-							player->szClanTag = _strdup("Red");
+							player->szTeam = _strdup("Red");
 						else if(strcmp(pointer,"3")==0)
-							player->szClanTag= _strdup("Blue");
+							player->szTeam= _strdup("Blue");
 							
 						pointer++;
 						pointer++;
