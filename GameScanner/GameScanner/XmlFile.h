@@ -10,7 +10,7 @@ class CXmlFile
 private:
 	TiXmlDocument *m_pDocument;
 	TiXmlHandle *m_pHandleDoc;  //Document handler
-	
+	const char *m_pszDirectory;
 
 public:
 	TiXmlElement *m_pRootElement;  //This will point to the first root tag <>
@@ -19,5 +19,6 @@ public:
 	int load(const char* pszFilename);	
 	TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const char *szElementName);
 	int GetText(TiXmlElement *pInElement,const char * szElementName, char *pszOut,DWORD dwBufferLen);
-	int GetInteger(TiXmlElement *pElm,long *lOut,char * pszElementName);
+	int GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut);
+	void SetPath(const char *pszDir);
 };

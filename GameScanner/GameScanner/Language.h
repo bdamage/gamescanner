@@ -12,7 +12,7 @@ typedef std::map<std::string,std::string> MessageMap;
 class CLanguage
 {
 	MessageMap DefaultLanguage;
-	MessageMap CurrentLanguage;
+
 	const char *m_pszDirectory;
 	CXmlFile xmlFile;
 	int AddFile(const char *filename);

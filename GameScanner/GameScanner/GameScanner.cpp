@@ -2062,8 +2062,123 @@ void Initialize_GameSettings()
 /***************************************************
 	Set up default settings for each game.
 ****************************************************/
+int GetNetEngine(char *szName)
+{
+	if(strcmp("Q3",szName)==0)
+		return Q3_ENGINE;
+	else if(strcmp("Q4",szName)==0)
+		return Q4_ENGINE;
+	else if(strcmp("STEAMv1",szName)==0)
+		return STEAMv1_ENGINE;
+	else if(strcmp("STEAMv2",szName)==0)
+		return STEAMv2_ENGINE;
+	
+	return Q3_ENGINE;  //Q3 as default
+}
+
+
+
+typedef std::map<int,GAME_INFO>GamesMap;
+
+GamesMap GamesInfo;
+
+
+void Default_GameSettings2()
+{
+GAME_INSTALLATIONS gi;
+/*	
+	for(int i=0; i<MAX_SERVERLIST; i++)
+	{
+		GI[i].bUseHTTPServerList = FALSE;
+		GI[i].szGAME_PATH[0]=0; //quick erase
+		GI[i].dwViewFlags = 0;
+		GI[i].pSC = &SC[i];
+		GI[i].pSC->vGAME_INST.clear();
+	}
+	*/
+	CXmlFile xml;
+	xml.SetPath(EXE_PATH);
+	if(xml.load("gamedefaults.xml")==XMLFILE_ERROR_LOADING)
+		return;
+	//TixmlElement *ptempElement = xml.GetElementSafe(xml.m_pRootElement,"Version");
+	char szVersion[10];
+	xml.GetText(xml.m_pRootElement,"Version",szVersion,sizeof(szVersion));
+
+	TiXmlElement *ptempElement = xml.GetElementSafe(xml.m_pRootElement,"Game");
+	int idx = 0;
+	char szTemp[100];
+
+	GAME_INFO gameinfo;
+
+	xml.GetInteger(ptempElement,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
+	xml.GetText(ptempElement,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
+	xml.GetText(ptempElement,"NetEngine",szTemp,sizeof(szTemp)-1);
+	gameinfo.GAME_ENGINE = GetNetEngine(szTemp);
+	xml.GetText(ptempElement,"ShortName",gameinfo.szGAME_SHORTNAME,sizeof(gameinfo.szGAME_SHORTNAME)-1);
+	xml.GetText(ptempElement,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
+	xml.GetText(ptempElement,"WebProtocol",gameinfo.szProtocolName,sizeof(gameinfo.szProtocolName)-1);
+	xml.GetInteger(ptempElement,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
+
+	xml.GetText(ptempElement,"MasterQueryString",gameinfo.szServerRequestInfo,sizeof(gameinfo.szProtocolName)-1);
+	xml.GetText(ptempElement,"MasterExtendedQueryString",gameinfo.szQueryString,sizeof(gameinfo.szQueryString)-1);
+
+
+	TiXmlElement *ptempMaster = xml.GetElementSafe(ptempElement,"MasterServers");
+	xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
+	xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
+
+	HICON hicon = (HICON) LoadImage(NULL,"",IMAGE_ICON,0,0,LR_LOADFROMFILE);
+
+	GamesInfo[gameinfo.cGAMEINDEX] = gameinfo;
+
+
+	
+	//GameEngine dependent
+
+	GI[idx].dwMasterServerPORT = 27950;
+	GI[idx].dwProtocol = 84;
+	strncpy(GI[idx].szGAME_NAME,"Wolfenstein - Enemy Territory",MAX_PATH);
+	strncpy(GI[idx].szMasterServerIP,"etmaster.idsoftware.com",MAX_PATH);
+	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"etmaps",MAX_PATH);
+	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
+	strcpy_s(GI[idx].szProtocolName,sizeof(GI[idx].szProtocolName),"et");
+	GI[idx].dwDefaultPort = 27960;
+	strcpy(GI[idx].szQueryString,"");
+	
+	DWORD dwBuffSize = sizeof(GI[idx].szGAME_PATH);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[idx].szGAME_PATH,&dwBuffSize);
+
+	if(strlen(GI[idx].szGAME_PATH)>0)
+	{
+		GI[idx].bActive = true;
+		strcat_s(GI[idx].szGAME_PATH,sizeof(GI[idx].szGAME_PATH),"\\et.exe");
+	}
+	else
+		GI[idx].bActive = false;
+	
+	gi.sName = "Default";
+	gi.szGAME_PATH = GI[idx].szGAME_PATH;
+	gi.szGAME_CMD = GI[idx].szGAME_CMD;
+	GI[idx].pSC->vGAME_INST.push_back(gi);
+
+	switch(GI[idx].GAME_ENGINE)
+	{
+		case Q3_ENGINE:
+			{
+				GI[idx].colorfilter = &colorfilter;
+				GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+				strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+				GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+				GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
+				break;
+			}
+	}
+
+
+}
 void Default_GameSettings()
 {
+	Default_GameSettings2();
 	GAME_INSTALLATIONS gi;
 
 	for(int i=0; i<MAX_SERVERLIST; i++)
@@ -2116,7 +2231,7 @@ XML prototype: gamedefaults.xml
 				</FilePath>
 			</FileSearch>
 		</Detection>
-	<Game>
+	</Game>
 </Games>
 
 */
@@ -9075,8 +9190,6 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 HBITMAP LoadIconAsBitmap(HINSTANCE hResourceDll, UINT nIDResource)
 {
 	HICON hIcon = (HICON)::LoadImage(hResourceDll, MAKEINTRESOURCE(nIDResource),IMAGE_ICON, 10, 10, LR_LOADTRANSPARENT);
-
-
 	if (hIcon)
 	{
 		ICONINFO iconInfo;

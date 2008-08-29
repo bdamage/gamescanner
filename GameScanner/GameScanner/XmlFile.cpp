@@ -13,10 +13,14 @@ CXmlFile::~CXmlFile(void)
 	delete m_pDocument;
 	delete m_pHandleDoc;
 }
-
+void CXmlFile::SetPath(const char *pszDir)
+{
+	m_pszDirectory = pszDir;
+}
 int CXmlFile::load(const char* pszFilename)
 {
 	m_pDocument->SetCondenseWhiteSpace(false);
+	SetCurrentDirectory(m_pszDirectory);
 	if (m_pDocument->LoadFile(pszFilename)==false) 
 		return XMLFILE_ERROR_LOADING;
 
@@ -46,29 +50,6 @@ TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const char *szEle
 //	OutputDebugString("Could not find tag <%S> or in pElement is NULL value.",szElementName);
 	return NULL;
 }
-
-/*
-	XML file example:
-	<IPv4>
-	  <IPAddress>10.216.140.74</IPAddress>
-	  <Subnet>255.255.248.0</Subnet>
-	  <Gateway>10.216.140.1</Gateway>
-	</IPv4>
-
-	C code usage:
-
-	char szIPV4Address[MAX_IP_ADDRESS_LENGTH];
-
-	TiXmlElement *pElmIPv4 = GetElementSafe(pElmProf,"IPv4");
-	if(pElmIPv4)
-	{
-		GetText(pElmIPv4,szIPV4Address,"IPAddress",MAX_IP_ADDRESS_LENGTH);
-	}
-
-	or
-		GetText(GetElementSafe(pElmProf,"IPv4"),szIPV4Address,"IPAddress",MAX_IP_ADDRESS_LENGTH);
-
-*/
 
 int CXmlFile::GetText(TiXmlElement *pInElement,const char * szElementName, char *pszOut,DWORD dwBufferLen)
 {
@@ -102,7 +83,7 @@ GetInteger Returns
 
 
 ****************************/
-int CXmlFile::GetInteger(TiXmlElement *pElm,long *lOut,char * pszElementName)
+int CXmlFile::GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut)
 {
 	TiXmlNode* pNode=NULL;
 	pNode = pElm->FirstChild(pszElementName);

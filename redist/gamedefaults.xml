@@ -1,0 +1,77 @@
+<Games>
+	<Version>1.0</Version>
+	<Game>
+		<GameIndex>0</GameIndex>
+		<Name>Wolfenstein - Enemy Territory</Name>
+		<ShortName>W:ET</ShortName>
+		<Filename>et.servers</Filename>
+		<WebProtocol>et</WebProtocol>
+		<NetEngine>Q3</NetEnigne>
+		<ServerDefaultPort>27960</ServerDefaultPort>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetstatus\n</MasterQueryString>
+		<MasterExtendedQueryString></MasterExtendedQueryString>
+		<ServerQuery>Q3</ServerQuery>
+		<ColorFilter>Q3</ColorFilter>
+		<ColorEncoder>Q3</ColorEncoder>
+		<MasterServers>
+			<MasterServer>etmaster.idsoftware.com:27950</MasterServer>
+			<ServerProtocol>84</ServerProtocol>
+		</MasterServers>
+		<Installs>
+				<Install name="Name" value="Day of Defeat Source" />
+				<Install name="Path" value="HL2.EXE" />
+				<Install name="Cmd" value="-applaunch 300" />
+				<Install name="LaunchByMod" value="dod" />
+				<Install name="LaunchByVer" value="" />
+		</Installs>	  
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
+				<RegKey>SOFTWARE\Activision\Wolfenstein - Enemy Territory</RegKey>
+				<RegItem>InstallPath</RegItem>
+			</Registry>
+			<FileSearch>
+				<FileName></FileName>
+				<FilePath>
+				</FilePath>
+			</FileSearch>
+		</Detection>
+	</Game>
+	<Game>
+		<GameIndex>1</GameIndex>
+		<Name>Quake 3</Name>
+		<ShortName>Q3</ShortName>
+		<Filename>q3.servers</Filename>
+		<WebProtocol>q3t</WebProtocol>
+		<MasterServers>
+			<MasterServer>etmaster.idsoftware.com:27950</MasterServer>
+			<ServerProtocol>84</ServerProtocol>
+			<MasterServerQuery>Q3</MasterServerQuery> 
+		</MasterServers>
+		<ServerDefaultPort>27960</ServerDefaultPort>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetstatus\n</MasterQueryString>
+		<MasterExtendedQueryString></MasterExtendedQueryString>
+		<ServerQuery>Q3</ServerQuery>
+		<ColorFilter>Q3</ColorFilter>
+		<ColorEncoder>Q3</ColorEncoder>
+		<Installs>
+				<Install name="Name" value="Day of Defeat Source" />
+				<Install name="Path" value="HL2.EXE" />
+				<Install name="Cmd" value="-applaunch 300" />
+				<Install name="LaunchByMod" value="dod" />
+				<Install name="LaunchByVer" value="" />
+		</Installs>	  
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
+				<RegKey>SOFTWARE\Activision\Wolfenstein - Enemy Territory</RegKey>
+				<RegItem>InstallPath</RegItem>
+			</Registry>
+			<FileSearch>
+				<FileName></FileName>
+				<FilePath>
+				</FilePath>
+			</FileSearch>
+		</Detection>
+	</Game>
+</Games>
