@@ -6,29 +6,24 @@
 		<ShortName>W:ET</ShortName>
 		<Filename>et.servers</Filename>
 		<WebProtocol>et</WebProtocol>
-		<NetEngine>Q3</NetEnigne>
+		<NetEngine>Q3</NetEngine>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetstatus\n</MasterQueryString>
 		<MasterExtendedQueryString></MasterExtendedQueryString>
 		<ServerQuery>Q3</ServerQuery>
 		<ColorFilter>Q3</ColorFilter>
 		<ColorEncoder>Q3</ColorEncoder>
+		<MapPreviewPath>etmaps</MapPreviewPath>
 		<MasterServers>
 			<MasterServer>etmaster.idsoftware.com:27950</MasterServer>
 			<ServerProtocol>84</ServerProtocol>
 		</MasterServers>
-		<Installs>
-				<Install name="Name" value="Day of Defeat Source" />
-				<Install name="Path" value="HL2.EXE" />
-				<Install name="Cmd" value="-applaunch 300" />
-				<Install name="LaunchByMod" value="dod" />
-				<Install name="LaunchByVer" value="" />
-		</Installs>	  
 		<Detection>
 			<Registry>
 				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
 				<RegKey>SOFTWARE\Activision\Wolfenstein - Enemy Territory</RegKey>
 				<RegItem>InstallPath</RegItem>
+				<InstallSuffix>\et.exe</InstallSuffix>
 			</Registry>
 			<FileSearch>
 				<FileName></FileName>
@@ -36,6 +31,13 @@
 				</FilePath>
 			</FileSearch>
 		</Detection>
+		<Installs>
+				<Install name="Name" value="Day of Defeat Source" />
+				<Install name="Path" value="HL2.EXE" />
+				<Install name="Cmd" value="-applaunch 300" />
+				<Install name="LaunchByMod" value="dod" />
+				<Install name="LaunchByVer" value="" />
+		</Installs>	  
 	</Game>
 	<Game>
 		<GameIndex>1</GameIndex>

@@ -18,7 +18,8 @@ char Q3_unkown[]={"????"};
 
 extern CLanguage lang;
 extern bool g_bCancel;
-extern GAME_INFO GI[MAX_SERVERLIST+1];
+extern GamesMap GamesInfo;
+//extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
 extern APP_SETTINGS_NEW AppCFG;
 bool Q3_bCloseApp=false;
 
@@ -109,8 +110,8 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		}
 	DWORD dwRetries=0;
 retry:
-	if(GI[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
-		packetlen = send(pSocket, GI[pSI->cGAMEINDEX].szServerRequestInfo, strlen(GI[pSI->cGAMEINDEX].szServerRequestInfo)+1, 0);
+	if(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
+		packetlen = send(pSocket, GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo, strlen(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo)+1, 0);
 	else
 		packetlen=SOCKET_ERROR;
 

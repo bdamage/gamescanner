@@ -381,6 +381,7 @@ typedef hash_multimap <int, int> serverhash;
 typedef vector<GAME_INSTALLATIONS> vGAME_INSTALLS;
 
 
+
 struct SERVER_CONTAINER
 {
 	vSRV_INF vSI;
@@ -412,7 +413,7 @@ struct GAME_INFO
 	char szMAP_SPLATTERLADDER_PATH[MAX_PATH];
 	char szMAP_OTHER_WEBPATH_PATH[MAX_PATH];   //ie ETQW stats webserver...	
 	char szMasterServerIP[MAX_PATH];	
-	char szProtocolName[5];
+	char szProtocolName[10];
 	char szGameTypeSearch[15];
 	char szQueryString[MAX_PATH];
 	BOOL bUseHTTPServerList;
@@ -439,7 +440,7 @@ struct GAME_INFO
 	DWORD (*GetServerStatus)(SERVER_INFO *pSI,long (__cdecl*)(LPPLAYERDATA pPlayers),long (__cdecl*)(LPSERVER_RULES pServerRules));
 };
 
-
+typedef std::map<int,GAME_INFO>GamesMap;
 
 
 struct BUDDY_INFO

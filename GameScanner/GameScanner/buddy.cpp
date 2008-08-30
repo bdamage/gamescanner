@@ -18,7 +18,9 @@ extern BUDDY_INFO *g_pBIStart;
 extern SERVER_INFO *g_CurrentSRV;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_tmpSRV;
-extern GAME_INFO GI[MAX_SERVERLIST+1];
+extern GamesMap GamesInfo;
+//extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
+
 extern CLanguage lang;
 extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(char *title,char *message);
@@ -37,7 +39,7 @@ void OnAddSelectedPlayerToBuddyList()
 	PLAYERDATA * pPly = Get_PlayerBySelection();
 	if(pPly!=NULL)
 	{
-		SERVER_INFO srv = Get_ServerInfoByIndex(&GI[pPly->cGAMEINDEX],pPly->dwServerIndex);
+		SERVER_INFO srv = Get_ServerInfoByIndex(&GamesInfo[pPly->cGAMEINDEX],pPly->dwServerIndex);
 		Buddy_AddToList(g_pBIStart,pPly->szPlayerName,&srv);
 		Buddy_UpdateList(g_pBIStart);
 	}													
@@ -570,10 +572,10 @@ void Buddy_UpdateList(BUDDY_INFO *pBI)
 			item.iImage = 3;
 			item.iItem = i;
 			
-			if(GI[pBI->cGAMEINDEX].colorfilter!=NULL)
+			if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
 			{
 			
-				GI[pBI->cGAMEINDEX].colorfilter(pBI->szPlayerName,cf,99);
+				GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szPlayerName,cf,99);
 				item.pszText = cf;
 				item.cchTextMax = (int)strlen(cf);
 			}

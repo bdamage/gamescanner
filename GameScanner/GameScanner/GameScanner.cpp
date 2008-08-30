@@ -366,9 +366,10 @@ _CountryFilter CountryFilter;
 
 
 
+GamesMap GamesInfo;
 
 SERVER_CONTAINER SC[MAX_SERVERLIST];
-GAME_INFO GI[MAX_SERVERLIST+1];
+//GAME_INFO GamesInfo[MAX_SERVERLIST+1];
 GAME_INFO *currCV = NULL;
 char g_szMapName[MAX_PATH];
 HWND g_hwndMainRCON=NULL;
@@ -1109,8 +1110,9 @@ int StrSorter(char *a, char *b)
 
 bool Sort_Player(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_PLAYERS].bSortAsc)
 		return (pSIa.nCurrentPlayers > pSIb.nCurrentPlayers);
@@ -1120,8 +1122,8 @@ bool Sort_Player(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Country(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_COUNTRY].bSortAsc)
 		return (strcmp(pSIa.szCountry , pSIb.szCountry )>0);
@@ -1131,8 +1133,8 @@ bool Sort_Country(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Ping(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_PING].bSortAsc)	
 		return (pSIa.dwPing > pSIb.dwPing);	
 	else
@@ -1141,8 +1143,8 @@ bool Sort_Ping(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_MAP].bSortAsc)	
 		return (StrSorter(pSIa.szMap , pSIb.szMap )>0);
@@ -1152,8 +1154,8 @@ bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_MOD].bSortAsc)	
 		return (StrSorter(pSIa.szMod , pSIb.szMod )>0);
 	else
@@ -1162,8 +1164,8 @@ bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_IP].bSortAsc)
 		return (StrSorter(pSIa.szIPaddress , pSIb.szIPaddress )>0);
@@ -1174,8 +1176,8 @@ bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Punkbuster(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_PB].bSortAsc)
 		return (pSIa.bPunkbuster > pSIb.bPunkbuster );
@@ -1186,8 +1188,8 @@ bool Sort_Punkbuster(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Private(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_PRIVATE].bSortAsc)
 		return (pSIa.bPrivate > pSIb.bPrivate );	
@@ -1197,8 +1199,8 @@ bool Sort_Private(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Ranked(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_RANKED].bSortAsc)
 		return (pSIa.cRanked > pSIb.cRanked );	
@@ -1207,8 +1209,8 @@ bool Sort_Ranked(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 }
 bool Sort_Bots(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_BOTS].bSortAsc)
 		return (pSIa.cBots > pSIb.cBots );	
@@ -1218,8 +1220,8 @@ bool Sort_Bots(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_SERVERNAME].bSortAsc)
 		return (StrSorter(pSIa.szServerName , pSIb.szServerName )>0);
@@ -1229,8 +1231,8 @@ bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 }
 bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_STATUS].bSortAsc)
 		return (StrSorter(pSIa.szSTATUS , pSIb.szSTATUS )>0);
@@ -1241,8 +1243,8 @@ bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_VERSION].bSortAsc)
 	{
@@ -1255,8 +1257,8 @@ bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GI[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GI[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_GAMETYPE].bSortAsc)
 		return (pSIa.dwGameType < pSIb.dwGameType);
 	else
@@ -1281,8 +1283,8 @@ void Do_ServerListSort(int iColumn)
 
 //	EnterCriticalSection(&SCANNER_cs);
 	BOOL sortdir = FALSE;
-	dbg_print("idx %d\nList view Size %d",gameIdx,GI[gameIdx].pSC->vRefListSI.size());
-	if(GI[gameIdx].pSC->vRefListSI.size()>0)
+	dbg_print("idx %d\nList view Size %d",gameIdx,GamesInfo[gameIdx].pSC->vRefListSI.size());
+	if(GamesInfo[gameIdx].pSC->vRefListSI.size()>0)
 	{
 		DWORD id=0;
 		for(int i=0;i<MAX_COLUMNS;i++)
@@ -1301,7 +1303,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_PB : 
 				try
 				{	
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Punkbuster); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Punkbuster); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1312,7 +1314,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_PRIVATE: 
 				try
 				{	
-				sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Private);
+				sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Private);
 							}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1323,7 +1325,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_RANKED: 
 				try
 				{	
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Ranked); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Ranked); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1333,7 +1335,7 @@ void Do_ServerListSort(int iColumn)
 			case COL_SERVERNAME: 
 				try
 				{	
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_ServerName); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_ServerName); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1342,7 +1344,7 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_GAMETYPE: 
 				try{
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_GameType); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_GameType); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1352,7 +1354,7 @@ void Do_ServerListSort(int iColumn)
 
 			case COL_MAP: 
 				try{
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Map); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Map); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1361,7 +1363,7 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_MOD: 
 				try{
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Mod); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Mod); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1371,7 +1373,7 @@ void Do_ServerListSort(int iColumn)
 
 			case COL_PLAYERS: 
 				try{
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Player);
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Player);
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1379,10 +1381,10 @@ void Do_ServerListSort(int iColumn)
 				}
 				break;
 				
-			case COL_COUNTRY: sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Country); break;
+			case COL_COUNTRY: sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Country); break;
 			case COL_PING: 
 				try{
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Ping); 
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Ping); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1391,7 +1393,7 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_IP: 
 				try{
-				sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_IP); 
+				sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_IP); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1401,7 +1403,7 @@ void Do_ServerListSort(int iColumn)
 
 			case COL_VERSION: 
 				try{
-				sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Version); 
+				sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Version); 
 								}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1410,21 +1412,21 @@ void Do_ServerListSort(int iColumn)
 				break;
 			case COL_BOTS: 
 				try{
-					sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Bots);
+					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Bots);
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
 					DebugBreak();
 				}
 				 break;
-			case COL_STATUS: sort(GI[gameIdx].pSC->vRefListSI.begin(),GI[gameIdx].pSC->vRefListSI.end(),Sort_Status); 
+			case COL_STATUS: sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Status); 
 				break;
 
 
 		}
 
 		ListView_SetHeaderSortImage(g_hwndListViewServer, iColumn,(BOOL) sortdir); //id =iColumn
-		ListView_SetItemCount(g_hwndListViewServer,GI[gameIdx].pSC->vRefListSI.size());
+		ListView_SetItemCount(g_hwndListViewServer,GamesInfo[gameIdx].pSC->vRefListSI.size());
 	//	LeaveCriticalSection(&SCANNER_cs);
 	}
 
@@ -1764,8 +1766,8 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				if(pPlayerData->szTeam!=NULL)
 				{				
 					char colFiltered[100];				
-					if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
-						pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szTeam,colFiltered,sizeof(colFiltered)-1); 
+					if(GamesInfo[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+						pLVItem->pszText = GamesInfo[pPlayerData->cGAMEINDEX].colorfilter(pPlayerData->szTeam,colFiltered,sizeof(colFiltered)-1); 
 					else
 						pLVItem->pszText = pPlayerData->szTeam;
 				
@@ -1778,8 +1780,8 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 					sprintf_s(szText,sizeof(szText)-1,"%s %s", pPlayerData->szClanTag,pPlayerData->szPlayerName);
 				else
 					sprintf_s(szText,sizeof(szText)-1,"%s",pPlayerData->szPlayerName);
-				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
-					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(szText,colFiltered,sizeof(colFiltered)-1); 
+				if(GamesInfo[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+					pLVItem->pszText = GamesInfo[pPlayerData->cGAMEINDEX].colorfilter(szText,colFiltered,sizeof(colFiltered)-1); 
 				else
 					pLVItem->pszText = szText;
 				return TRUE;
@@ -1802,9 +1804,9 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				{
 				char colFiltered[100];
 				
-				SERVER_INFO pSI = GI[pPlayerData->cGAMEINDEX].pSC->vSI.at(pPlayerData->dwServerIndex);
-				if(GI[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
-					pLVItem->pszText = GI[pPlayerData->cGAMEINDEX].colorfilter(pSI.szServerName,colFiltered,sizeof(colFiltered)-1); 
+				SERVER_INFO pSI = GamesInfo[pPlayerData->cGAMEINDEX].pSC->vSI.at(pPlayerData->dwServerIndex);
+				if(GamesInfo[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
+					pLVItem->pszText = GamesInfo[pPlayerData->cGAMEINDEX].colorfilter(pSI.szServerName,colFiltered,sizeof(colFiltered)-1); 
 				else
 					pLVItem->pszText = pSI.szServerName;
 				return TRUE;
@@ -1852,12 +1854,12 @@ SERVER_INFO * GetServerInfo(int gametype,SERVER_INFO *pSrvInf)
 	dwCurrPort = pSrvInf->dwPort;	
 	g_CurrentSRV = pSrvInf;
 	
-	if(pSrvInf->dwIndex<=GI[gametype].pSC->vSI.size())	
-		g_tmpSRV = GI[gametype].pSC->vSI.at(pSrvInf->dwIndex);
+	if(pSrvInf->dwIndex<=GamesInfo[gametype].pSC->vSI.size())	
+		g_tmpSRV = GamesInfo[gametype].pSC->vSI.at(pSrvInf->dwIndex);
 	else
 		AddLogInfo(ETSV_ERROR,"Vector request out of scope at %s %d",__FILE__,__LINE__);
 
-	GI[gametype].GetServerStatus(pSrvInf,&UpdatePlayerList,&UpdateRulesList);
+	GamesInfo[gametype].GetServerStatus(pSrvInf,&UpdatePlayerList,&UpdateRulesList);
 
 /*	switch(gametype)
 	{	
@@ -1976,7 +1978,7 @@ void OnBuddySelected()
 					try
 					{
 
-						SERVER_INFO pSI = GI[pBI->cGAMEINDEX].pSC->vSI.at((int)pBI->sIndex);
+						SERVER_INFO pSI = GamesInfo[pBI->cGAMEINDEX].pSC->vSI.at((int)pBI->sIndex);
 						GetServerInfo(pBI->cGAMEINDEX,&pSI);
 		
 					}
@@ -2020,17 +2022,17 @@ void RegisterProtocol(char *path)
 	for(int i=0; i<MAX_SERVERLIST;i++)
 	{
 		hkey=NULL;
-		sprintf(szBuffer,"%s",GI[i].szProtocolName);
+		sprintf(szBuffer,"%s",GamesInfo[i].szProtocolName);
 		ret = RegCreateKeyEx(HKEY_CLASSES_ROOT, szBuffer, 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
 		if(ret==ERROR_SUCCESS)
 		{
-			sprintf(szBuffer,"URL:%s",GI[i].szProtocolName);
+			sprintf(szBuffer,"URL:%s",GamesInfo[i].szProtocolName);
 			ret = RegSetValueEx( hkey, "", 0, REG_SZ, (const unsigned char*)szBuffer, (DWORD)strlen(szBuffer)); 
 			memset(szBuffer,0,sizeof(szBuffer));
 			ret = RegSetValueEx( hkey, "URL Protocol", 0, REG_SZ, (const unsigned char*)szBuffer, (DWORD)strlen(szBuffer)); 
 			RegCloseKey( hkey ); 
 		}
-		sprintf(szBuffer,"%s\\shell\\open\\command",GI[i].szProtocolName);
+		sprintf(szBuffer,"%s\\shell\\open\\command",GamesInfo[i].szProtocolName);
 		ret = RegCreateKeyEx(HKEY_CLASSES_ROOT, szBuffer, 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
 		if(ret==ERROR_SUCCESS)
 		{
@@ -2044,19 +2046,19 @@ void Initialize_GameSettings()
 {
 	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
-		ZeroMemory(&GI[i],sizeof(GAME_INFO));
-		GI[i].cGAMEINDEX = i;
-		GI[i].pSC = &SC[i];
-		GI[i].iIconIndex =  Get_GameIcon(i);
-		GI[i].pSC->vGAME_INST.clear();		
+		ZeroMemory(&GamesInfo[i],sizeof(GAME_INFO));
+		GamesInfo[i].cGAMEINDEX = i;
+		GamesInfo[i].pSC = &SC[i];
+		GamesInfo[i].iIconIndex =  Get_GameIcon(i);
+		GamesInfo[i].pSC->vGAME_INST.clear();		
 	}
 }
 
 #define QW_ENGINE 100
 #define Q3_ENGINE 101
 #define Q4_ENGINE 102
-#define STEAMv1_ENGINE 103
-#define STEAMv2_ENGINE 104
+#define VALVE_ENGINE 103
+
 
 
 /***************************************************
@@ -2068,32 +2070,26 @@ int GetNetEngine(char *szName)
 		return Q3_ENGINE;
 	else if(strcmp("Q4",szName)==0)
 		return Q4_ENGINE;
-	else if(strcmp("STEAMv1",szName)==0)
-		return STEAMv1_ENGINE;
-	else if(strcmp("STEAMv2",szName)==0)
-		return STEAMv2_ENGINE;
+	else if(strcmp("VALVE",szName)==0)
+		return VALVE_ENGINE;
 	
 	return Q3_ENGINE;  //Q3 as default
 }
 
 
 
-typedef std::map<int,GAME_INFO>GamesMap;
-
-GamesMap GamesInfo;
-
 
 void Default_GameSettings2()
 {
-GAME_INSTALLATIONS gi;
+	GAME_INSTALLATIONS gi;
 	
 /*	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
-		GI[i].bUseHTTPServerList = FALSE;
-		GI[i].szGAME_PATH[0]=0; //quick erase
-		GI[i].dwViewFlags = 0;
-		GI[i].pSC = &SC[i];
-		GI[i].pSC->vGAME_INST.clear();
+		GamesInfo[i].bUseHTTPServerList = FALSE;
+		GamesInfo[i].szGAME_PATH[0]=0; //quick erase
+		GamesInfo[i].dwViewFlags = 0;
+		GamesInfo[i].pSC = &SC[i];
+		GamesInfo[i].pSC->vGAME_INST.clear();
 	}
 */
 	CXmlFile xml;
@@ -2104,36 +2100,40 @@ GAME_INSTALLATIONS gi;
 	char szVersion[10];
 	xml.GetText(xml.m_pRootElement,"Version",szVersion,sizeof(szVersion));
 
-	TiXmlElement *ptempElement = xml.GetElementSafe(xml.m_pRootElement,"Game");
+	
 
-	TiXmlElement *pGame = xml.GetElementSafe(ptempElement,"Game");
+	TiXmlElement *pGame = xml.GetElementSafe(xml.m_pRootElement,"Game");
 
 	while(pGame!=NULL)
 	{
 		char szTemp[100];
 		GAME_INFO gameinfo;
-			
+		
+	
 		ZeroMemory(&gameinfo,sizeof(GAME_INFO));
 		ZeroMemory(&szTemp,sizeof(szTemp));
-
-		xml.GetInteger(ptempElement,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
-		gameinfo.pSC = &SC[gameinfo.cGAMEINDEX];
-		xml.GetText(ptempElement,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
-		xml.GetText(ptempElement,"NetEngine",szTemp,sizeof(szTemp)-1);
+		gameinfo.pSC = &SC[gameinfo.cGAMEINDEX];	 //this needs to be fixed
+		gameinfo.pSC->vGAME_INST.clear();
+		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
+	
+		gameinfo.iIconIndex = Get_GameIcon(gameinfo.cGAMEINDEX);
+		xml.GetText(pGame,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
+		xml.GetText(pGame,"NetEngine",szTemp,sizeof(szTemp)-1);
 		gameinfo.GAME_ENGINE = GetNetEngine(szTemp);
-		xml.GetText(ptempElement,"ShortName",gameinfo.szGAME_SHORTNAME,sizeof(gameinfo.szGAME_SHORTNAME)-1);
-		xml.GetText(ptempElement,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
-		xml.GetText(ptempElement,"WebProtocol",gameinfo.szProtocolName,sizeof(gameinfo.szProtocolName)-1);
-		xml.GetInteger(ptempElement,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
+		xml.GetText(pGame,"ShortName",gameinfo.szGAME_SHORTNAME,sizeof(gameinfo.szGAME_SHORTNAME)-1);
+		xml.GetText(pGame,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
+		xml.GetText(pGame,"WebProtocol",gameinfo.szProtocolName,sizeof(gameinfo.szProtocolName)-1);
+		xml.GetInteger(pGame,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
 
-		xml.GetText(ptempElement,"ServerDefaultPort",gameinfo.szMAP_MAPPREVIEW_PATH,sizeof(gameinfo.szMAP_MAPPREVIEW_PATH)-1);
+		xml.GetText(pGame,"ServerDefaultPort",gameinfo.szMAP_MAPPREVIEW_PATH,sizeof(gameinfo.szMAP_MAPPREVIEW_PATH)-1);
 
-		xml.GetText(ptempElement,"MasterQueryString",gameinfo.szServerRequestInfo,sizeof(gameinfo.szServerRequestInfo)-1);
-		xml.GetText(ptempElement,"MasterExtendedQueryString",gameinfo.szQueryString,sizeof(gameinfo.szQueryString)-1);
+		xml.GetText(pGame,"MasterQueryString",gameinfo.szServerRequestInfo,sizeof(gameinfo.szServerRequestInfo)-1);
+		xml.GetText(pGame,"MasterExtendedQueryString",gameinfo.szQueryString,sizeof(gameinfo.szQueryString)-1);
 
-		TiXmlElement *ptempMaster = xml.GetElementSafe(ptempElement,"MasterServers");
+		TiXmlElement *ptempMaster = xml.GetElementSafe(pGame,"MasterServers");
 		xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
 		xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
+		xml.GetInteger(ptempMaster,"UseHTTP",(long*)&gameinfo.bUseHTTPServerList);
 		DWORD dwPort=0;
 		SplitIPandPORT(gameinfo.szMasterServerIP,dwPort);
 		gameinfo.dwMasterServerPORT =dwPort;
@@ -2141,7 +2141,7 @@ GAME_INSTALLATIONS gi;
 		char szKey[256];
 		char szItem[100];
 		char szInstallSuffix[100];
-		TiXmlElement *ptempDetection = xml.GetElementSafe(ptempElement,"Detection");
+		TiXmlElement *ptempDetection = xml.GetElementSafe(pGame,"Detection");
 		TiXmlElement *ptempRegistry = xml.GetElementSafe(ptempDetection,"Registry");
 		xml.GetText(ptempRegistry,"RegRoot",szTemp,sizeof(szTemp)-1);
 		xml.GetText(ptempRegistry,"RegKey",szKey,sizeof(szKey)-1);
@@ -2166,8 +2166,7 @@ GAME_INSTALLATIONS gi;
 			strcat_s(gameinfo.szGAME_PATH,sizeof(gameinfo.szGAME_PATH),szInstallSuffix);
 		}
 
-
-		TiXmlElement *ptempInstalls = xml.GetElementSafe(ptempElement,"Installs");
+		TiXmlElement *ptempInstalls = xml.GetElementSafe(pGame,"Installs");
 
 		while(ptempInstalls!=NULL)
 		{
@@ -2175,8 +2174,14 @@ GAME_INSTALLATIONS gi;
 		
 			xml.GetAttribute(pInstall,"Name",szTemp,sizeof(szTemp)-1);
 			gi.sName = szTemp;
-			xml.GetAttribute(pInstall,"Path",szTemp,sizeof(szTemp)-1);
-			gi.szGAME_PATH = szTemp;
+			if(strlen(gameinfo.szGAME_PATH)>0)
+				gi.szGAME_PATH = gameinfo.szGAME_PATH;
+			else
+			{
+				xml.GetAttribute(pInstall,"Path",szTemp,sizeof(szTemp)-1);
+				gi.szGAME_PATH = szTemp;
+			}
+				
 			xml.GetAttribute(pInstall,"Cmd",szTemp,sizeof(szTemp)-1);
 			gi.szGAME_CMD = szTemp;
 			xml.GetAttribute(pInstall,"LaunchByMod",szTemp,sizeof(szTemp)-1);
@@ -2194,6 +2199,7 @@ GAME_INSTALLATIONS gi;
 
 		switch(gameinfo.GAME_ENGINE)
 		{
+			default:
 			case Q3_ENGINE:
 				{
 					gameinfo.colorfilter = &colorfilter;
@@ -2201,6 +2207,23 @@ GAME_INSTALLATIONS gi;
 					strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 					gameinfo.GetServersFromMasterServer = &Q3_ConnectToMasterServer;
 					gameinfo.GetServerStatus = &Q3_Get_ServerStatus;
+					break;
+				}
+			case Q4_ENGINE:
+				{
+					gameinfo.colorfilter = &colorfilterQ4;
+					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
+					strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+					gameinfo.GetServersFromMasterServer = &Q4_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &Q4_Get_ServerStatus;
+					break;
+				}
+			case VALVE_ENGINE:
+				{
+					gameinfo.colorfilter = NULL;
+					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
+					gameinfo.GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &STEAM_Get_ServerStatus;
 					break;
 				}
 		}
@@ -2212,25 +2235,21 @@ GAME_INSTALLATIONS gi;
 			break;		
 	}
 	//GameEngine dependent
-
-	
-
-
-
-
 }
+
 void Default_GameSettings()
 {
 	Default_GameSettings2();
+	return;
 	GAME_INSTALLATIONS gi;
 
 	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
-		GI[i].bUseHTTPServerList = FALSE;
-		GI[i].szGAME_PATH[0]=0; //quick erase
-		GI[i].dwViewFlags = 0;
-		GI[i].pSC = &SC[i];
-		GI[i].pSC->vGAME_INST.clear();
+		GamesInfo[i].bUseHTTPServerList = FALSE;
+		GamesInfo[i].szGAME_PATH[0]=0; //quick erase
+		GamesInfo[i].dwViewFlags = 0;
+		GamesInfo[i].pSC = &SC[i];
+		GamesInfo[i].pSC->vGAME_INST.clear();
 	}
 
 /*
@@ -2280,518 +2299,519 @@ XML prototype: gamedefaults.xml
 */
 	int idx = ET_SERVERLIST;
 	//GameEngine dependent
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
-	GI[idx].GAME_ENGINE = Q3_ENGINE;
-	GI[idx].cGAMEINDEX = idx;
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 84;
-	strncpy(GI[idx].szGAME_NAME,"Wolfenstein - Enemy Territory",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"etmaster.idsoftware.com",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"etmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	strcpy_s(GI[idx].szProtocolName,sizeof(GI[idx].szProtocolName),"et");
-	GI[idx].dwDefaultPort = 27960;
-	strcpy(GI[idx].szQueryString,"");
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	GamesInfo[idx].GAME_ENGINE = Q3_ENGINE;
+	GamesInfo[idx].cGAMEINDEX = idx;
+	GamesInfo[idx].dwMasterServerPORT = 27950;
+	GamesInfo[idx].dwProtocol = 84;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Wolfenstein - Enemy Territory",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"etmaster.idsoftware.com",MAX_PATH);
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"etmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	strcpy_s(GamesInfo[idx].szProtocolName,sizeof(GamesInfo[idx].szProtocolName),"et");
+	GamesInfo[idx].dwDefaultPort = 27960;
+	strcpy(GamesInfo[idx].szQueryString,"");
 	
-	DWORD dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[idx].szGAME_PATH,&dwBuffSize);
+	DWORD dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
 
-	if(strlen(GI[idx].szGAME_PATH)>0)
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
 	{
-		GI[idx].bActive = true;
-		strcat_s(GI[idx].szGAME_PATH,sizeof(GI[idx].szGAME_PATH),"\\et.exe");
+		GamesInfo[idx].bActive = true;
+		strcat_s(GamesInfo[idx].szGAME_PATH,sizeof(GamesInfo[idx].szGAME_PATH),"\\et.exe");
 	}
 	else
-		GI[idx].bActive = false;
+		GamesInfo[idx].bActive = false;
 	
 	gi.sName = "Default";
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 	idx = Q3_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-	GI[idx].cGAMEINDEX = idx;
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 68;
-	strncpy(GI[idx].szGAME_NAME,"Quake 3: Arena",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"monster.idsoftware.com",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"q3maps",MAX_PATH);
-	strncpy(GI[idx].szGAME_PATH,"Quake3.exe",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	strcpy(GI[idx].szProtocolName,"q3");
-	GI[idx].dwDefaultPort = 27960;
-	strcpy(GI[idx].szQueryString,"");
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[idx].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GamesInfo[idx].cGAMEINDEX = idx;
+	GamesInfo[idx].dwMasterServerPORT = 27950;
+	GamesInfo[idx].dwProtocol = 68;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Quake 3: Arena",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"monster.idsoftware.com",MAX_PATH);
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"q3maps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_PATH,"Quake3.exe",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	strcpy(GamesInfo[idx].szProtocolName,"q3");
+	GamesInfo[idx].dwDefaultPort = 27960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 	else
-		GI[idx].bActive = false;
+		GamesInfo[idx].bActive = false;
 
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
-	idx = GI[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;	
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 60;
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Return To Castle of Wolfenstein",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"wolfmotd.idsoftware.com",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"rtcwmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_PATH,"C:\\Program Files\\Return to Castle Wolfenstein\\WolfMP.exe",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	strcpy(GI[idx].szProtocolName,"rtcw");
-	GI[idx].bActive = false;
-	GI[idx].dwDefaultPort = 27960;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	idx = GamesInfo[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;	
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GamesInfo[idx].dwMasterServerPORT = 27950;
+	GamesInfo[idx].dwProtocol = 60;
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Return To Castle of Wolfenstein",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"wolfmotd.idsoftware.com",MAX_PATH);
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"rtcwmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_PATH,"C:\\Program Files\\Return to Castle Wolfenstein\\WolfMP.exe",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	strcpy(GamesInfo[idx].szProtocolName,"rtcw");
+	GamesInfo[idx].bActive = false;
+	GamesInfo[idx].dwDefaultPort = 27960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q4_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q4_Get_ServerStatus;
+	idx = GamesInfo[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q4_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q4_Get_ServerStatus;
 
-	GI[idx].dwMasterServerPORT = 27650;
-	GI[idx].dwProtocol = 0;
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Quake 4",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"q4master.idsoftware.com",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"q4maps",MAX_PATH);
-	strcpy(GI[idx].szProtocolName,"q4");
-	strncpy(GI[idx].szGAME_PATH,"Quake4.exe",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"+seta com_allowconsole 1",MAX_PATH);
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE\\Software\\Id\\Quake 4","InstallPath",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[Q3_SERVERLIST].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	GamesInfo[idx].dwMasterServerPORT = 27650;
+	GamesInfo[idx].dwProtocol = 0;
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Quake 4",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"q4master.idsoftware.com",MAX_PATH);
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"q4maps",MAX_PATH);
+	strcpy(GamesInfo[idx].szProtocolName,"q4");
+	strncpy(GamesInfo[idx].szGAME_PATH,"Quake4.exe",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"+seta com_allowconsole 1",MAX_PATH);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "HKEY_LOCAL_MACHINE\\Software\\Id\\Quake 4","InstallPath",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[Q3_SERVERLIST].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 	else
-		GI[idx].bActive = false;
+		GamesInfo[idx].bActive = false;
 
-	GI[idx].dwDefaultPort = 28004;
-	GI[idx].colorfilter = &colorfilterQ4;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].dwDefaultPort = 28004;
+	GamesInfo[idx].colorfilter = &colorfilterQ4;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
+ 
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
- 	GI[idx].GetServersFromMasterServer = &Q4_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q4_Get_ServerStatus;
+	idx = GamesInfo[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q4_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q4_Get_ServerStatus;
 
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Enemy Territory - Quake Wars",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"http://etqw-ipgetter.demonware.net/ipgetter/",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"etqwmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"+seta com_usefastvidrestart 1 +seta com_allowconsole 1",MAX_PATH);
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	GI[idx].bUseHTTPServerList = TRUE;
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Enemy Territory - Quake Wars",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"http://etqw-ipgetter.demonware.net/ipgetter/",MAX_PATH);
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"etqwmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"+seta com_usefastvidrestart 1 +seta com_allowconsole 1",MAX_PATH);
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	GamesInfo[idx].bUseHTTPServerList = TRUE;
 
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\ET - QUAKE Wars","EXEString",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[idx].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\ET - QUAKE Wars","EXEString",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 	else
-		GI[idx].bActive = false;
+		GamesInfo[idx].bActive = false;
 
-	strcpy(GI[idx].szProtocolName,"etqw");
-	GI[idx].dwDefaultPort = 27733;
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	strcpy(GamesInfo[idx].szProtocolName,"etqw");
+	GamesInfo[idx].dwDefaultPort = 27733;
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	idx = GamesInfo[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
 
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Call of Duty 2",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"cod2master.activision.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 20710;
-	GI[idx].dwProtocol = 0;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"cod2maps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 2\\","MultiEXEString",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[idx].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Call of Duty 2",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"cod2master.activision.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 20710;
+	GamesInfo[idx].dwProtocol = 0;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"cod2maps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 2\\","MultiEXEString",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 	else
-		GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"cod2");
-	GI[idx].dwDefaultPort = 28960;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+		GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"cod2");
+	GamesInfo[idx].dwDefaultPort = 28960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	idx = GamesInfo[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
 
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");	
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Call of Duty",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"codmaster.activision.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 20510;
-	GI[idx].dwProtocol = 5;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"codmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty","InstallPath",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[idx].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");	
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Call of Duty",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"codmaster.activision.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 20510;
+	GamesInfo[idx].dwProtocol = 5;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"codmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty","InstallPath",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 	else
-		GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"cod");
-	GI[idx].dwDefaultPort = 28960;
-	strcpy(GI[idx].szQueryString,"");
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+		GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"cod");
+	GamesInfo[idx].dwDefaultPort = 28960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[WARSOW_SERVERLIST].cGAMEINDEX = WARSOW_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	idx = GamesInfo[WARSOW_SERVERLIST].cGAMEINDEX = WARSOW_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
 
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetinfo");
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Warsow",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"dpmaster.deathmask.net",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 10;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"warsowmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetinfo");
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Warsow",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"dpmaster.deathmask.net",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 27950;
+	GamesInfo[idx].dwProtocol = 10;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"warsowmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
 
-	Registry_GetGamePath(HKEY_CLASSES_ROOT, "warsow\\DefaultIcon","",GI[idx].szGAME_PATH,&dwBuffSize);
+	Registry_GetGamePath(HKEY_CLASSES_ROOT, "warsow\\DefaultIcon","",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
 
-	if(strlen(GI[idx].szGAME_PATH)>0)
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
 	{
-		GI[idx].bActive = true;
+		GamesInfo[idx].bActive = true;
 		char sztempi[MAX_PATH*2];
-		strcpy(sztempi,GI[idx].szGAME_PATH);
+		strcpy(sztempi,GamesInfo[idx].szGAME_PATH);
 		char* pos = strrchr(sztempi,'\\');
 		if(pos!=NULL)
 		{
 			pos[1]=0;
 		}
-		sprintf(GI[idx].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"%s\"",sztempi);
+		sprintf(GamesInfo[idx].szGAME_CMD,"+set fs_usehomedir 1 +set fs_basepath \"%s\"",sztempi);
 	}else
 	{
-		GI[idx].bActive = false;
-		sprintf(GI[idx].szGAME_CMD,"");
+		GamesInfo[idx].bActive = false;
+		sprintf(GamesInfo[idx].szGAME_CMD,"");
 	}
-	strcpy(GI[idx].szQueryString,"Warsow");
-	strcpy(GI[idx].szProtocolName,"warsow");
-	GI[idx].dwDefaultPort = 28960;
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	strcpy(GamesInfo[idx].szQueryString,"Warsow");
+	strcpy(GamesInfo[idx].szProtocolName,"warsow");
+	GamesInfo[idx].dwDefaultPort = 28960;
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
-	idx = GI[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	idx = GamesInfo[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
 
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Call of Duty 4",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"cod4master.activision.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 20810;
-	GI[idx].dwProtocol = 0;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"cod4maps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"+set cl_playintro 0 +set ui_skip_titlescreen 1 +set ui_skip_legalscreen 1",MAX_PATH);
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[idx].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Call of Duty 4",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"cod4master.activision.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 20810;
+	GamesInfo[idx].dwProtocol = 0;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"cod4maps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"+set cl_playintro 0 +set ui_skip_titlescreen 1 +set ui_skip_legalscreen 1",MAX_PATH);
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 	else
-		GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"cod4");
-	GI[idx].dwDefaultPort = 28960;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+		GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"cod4");
+	GamesInfo[idx].dwDefaultPort = 28960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[CS_SERVERLIST].cGAMEINDEX = CS_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &STEAM_Get_ServerStatus;
+	idx = GamesInfo[CS_SERVERLIST].cGAMEINDEX = CS_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &STEAM_Get_ServerStatus;
 
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Counter-Strike",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"hl1master.steampowered.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 27010;
-	GI[idx].dwProtocol = 0;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"csmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GI[CSS_SERVERLIST].szGAME_PATH,&dwBuffSize);
-	GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"cs");
-	GI[idx].dwDefaultPort = 27015;
-	strcpy(GI[idx].szQueryString,"\\gamedir\\cstrike");
-	GI[idx].pSC = &SC[idx];
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
-
-
-	idx = GI[CSCZ_SERVERLIST].cGAMEINDEX = CSCZ_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &STEAM_Get_ServerStatus;
-
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Counter-Strike: Condition Zero",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"hl1master.steampowered.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 27010;
-	GI[idx].dwProtocol = 0;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"csczmaps",MAX_PATH);
-	strncpy(GI[CS_SERVERLIST].szGAME_CMD,"-game czero",MAX_PATH); 
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GI[CSS_SERVERLIST].szGAME_PATH,&dwBuffSize);
-	GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"cscz");
-	GI[idx].dwDefaultPort = 27015;
-	strcpy(GI[idx].szQueryString,"\\gamedir\\czero");
-	GI[idx].pSC = &SC[idx];
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Counter-Strike",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"hl1master.steampowered.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 27010;
+	GamesInfo[idx].dwProtocol = 0;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"csmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GamesInfo[CSS_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"cs");
+	GamesInfo[idx].dwDefaultPort = 27015;
+	strcpy(GamesInfo[idx].szQueryString,"\\gamedir\\cstrike");
+	GamesInfo[idx].pSC = &SC[idx];
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 
-	idx = GI[CSS_SERVERLIST].cGAMEINDEX = CSS_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &STEAM_Get_ServerStatus;
+	idx = GamesInfo[CSCZ_SERVERLIST].cGAMEINDEX = CSCZ_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &STEAM_Get_ServerStatus;
 
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Counter-Strike: Source",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 27011;
-	GI[idx].dwProtocol = 0;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"cssmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	strcpy(GI[idx].szGAME_PATH,"HL2.EXE");
-	GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"css");
-	GI[idx].dwDefaultPort = 28960;
-	strcpy(GI[idx].szQueryString,"\\gamedir\\cstrike");
-	GI[idx].pSC = &SC[idx];
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Counter-Strike: Condition Zero",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"hl1master.steampowered.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 27010;
+	GamesInfo[idx].dwProtocol = 0;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"csczmaps",MAX_PATH);
+	strncpy(GamesInfo[CS_SERVERLIST].szGAME_CMD,"-game czero",MAX_PATH); 
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	//Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Call of Duty 4","EXEStringM",GamesInfo[CSS_SERVERLIST].szGAME_PATH,&dwBuffSize);
+	GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"cscz");
+	GamesInfo[idx].dwDefaultPort = 27015;
+	strcpy(GamesInfo[idx].szQueryString,"\\gamedir\\czero");
+	GamesInfo[idx].pSC = &SC[idx];
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+
+
+	idx = GamesInfo[CSS_SERVERLIST].cGAMEINDEX = CSS_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &STEAM_Get_ServerStatus;
+
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Counter-Strike: Source",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 27011;
+	GamesInfo[idx].dwProtocol = 0;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"cssmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"-game cstrike",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	strcpy(GamesInfo[idx].szGAME_PATH,"HL2.EXE");
+	GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"css");
+	GamesInfo[idx].dwDefaultPort = 28960;
+	strcpy(GamesInfo[idx].szQueryString,"\\gamedir\\cstrike");
+	GamesInfo[idx].pSC = &SC[idx];
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 	
-	idx = GI[QW_SERVERLIST].cGAMEINDEX = QW_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	idx = GamesInfo[QW_SERVERLIST].cGAMEINDEX = QW_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
 
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
-	GI[idx].dwMasterServerPORT = 27000;
-	GI[idx].dwProtocol = 0;
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Quake World",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"http://www.quakeservers.net/lists/servers/global.txt",MAX_PATH);  //satan.idsoftware.com:27000
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"qwmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	GI[idx].bActive = false;
-	strcpy_s(GI[idx].szGAME_PATH,sizeof(GI[idx].szGAME_PATH),"quakeworld.exe");
-	strcpy_s(GI[idx].szProtocolName,sizeof(GI[idx].szProtocolName),"qw");
-	GI[idx].dwDefaultPort = 27960;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].bUseHTTPServerList = TRUE;
-	GI[idx].colorfilter = &colorfilterQW;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
+	GamesInfo[idx].dwMasterServerPORT = 27000;
+	GamesInfo[idx].dwProtocol = 0;
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Quake World",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"http://www.quakeservers.net/lists/servers/global.txt",MAX_PATH);  //satan.idsoftware.com:27000
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"qwmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	GamesInfo[idx].bActive = false;
+	strcpy_s(GamesInfo[idx].szGAME_PATH,sizeof(GamesInfo[idx].szGAME_PATH),"quakeworld.exe");
+	strcpy_s(GamesInfo[idx].szProtocolName,sizeof(GamesInfo[idx].szProtocolName),"qw");
+	GamesInfo[idx].dwDefaultPort = 27960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].bUseHTTPServerList = TRUE;
+	GamesInfo[idx].colorfilter = &colorfilterQW;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
-	idx = GI[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
-	GI[idx].dwMasterServerPORT = 27900;
-	GI[idx].dwProtocol = 34;
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Quake 2",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"master.q2servers.com",MAX_PATH); //master.q2servers.com:27900
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"q2maps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	GI[idx].bActive = false;
-	strcpy_s(GI[idx].szGAME_PATH,sizeof(GI[idx].szGAME_PATH),"quake2.exe");
-	strcpy_s(GI[idx].szProtocolName,sizeof(GI[idx].szProtocolName),"q2");
-	GI[idx].dwDefaultPort = 27960;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].bUseHTTPServerList = FALSE;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	idx = GamesInfo[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFstatus\n");
+	GamesInfo[idx].dwMasterServerPORT = 27900;
+	GamesInfo[idx].dwProtocol = 34;
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Quake 2",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"master.q2servers.com",MAX_PATH); //master.q2servers.com:27900
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"q2maps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	GamesInfo[idx].bActive = false;
+	strcpy_s(GamesInfo[idx].szGAME_PATH,sizeof(GamesInfo[idx].szGAME_PATH),"quake2.exe");
+	strcpy_s(GamesInfo[idx].szProtocolName,sizeof(GamesInfo[idx].szProtocolName),"q2");
+	GamesInfo[idx].dwDefaultPort = 27960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].bUseHTTPServerList = FALSE;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
-	idx = GI[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");	
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Open Arena",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"dpmaster.deathmask.net",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 69;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"openarenamaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	GI[idx].bUseHTTPServerList = FALSE;
-	strcpy(GI[idx].szQueryString,"openarena");
-	strcpy(GI[idx].szProtocolName,"openarena");
-	GI[idx].dwDefaultPort = 28960;	
-	strcpy(GI[idx].szGAME_PATH,"openarena.exe");
-	strcpy(GI[idx].szGAME_CMD,"");
-	GI[idx].bActive = false;
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	idx = GamesInfo[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");	
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Open Arena",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"dpmaster.deathmask.net",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 27950;
+	GamesInfo[idx].dwProtocol = 69;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"openarenamaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	GamesInfo[idx].bUseHTTPServerList = FALSE;
+	strcpy(GamesInfo[idx].szQueryString,"openarena");
+	strcpy(GamesInfo[idx].szProtocolName,"openarena");
+	GamesInfo[idx].dwDefaultPort = 28960;	
+	strcpy(GamesInfo[idx].szGAME_PATH,"openarena.exe");
+	strcpy(GamesInfo[idx].szGAME_CMD,"");
+	GamesInfo[idx].bActive = false;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
 //"C:\Program Files\Steam\Steam.exe" -applaunch 300
-	idx = GI[HL2_SERVERLIST].cGAMEINDEX = HL2_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &STEAM_Get_ServerStatus;
-	GI[idx].iIconIndex = Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Half-Life 2",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
-	GI[idx].dwMasterServerPORT = 27011;
-	GI[idx].dwProtocol = 0;
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"hf2maps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"-game %MODNAME%",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
-	dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	strcpy(GI[idx].szGAME_PATH,"HL2.EXE");
-	GI[idx].bActive = false;
-	strcpy(GI[idx].szProtocolName,"hf2");
-	GI[idx].dwDefaultPort = 28960;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].bUseHTTPServerList = FALSE;
-	GI[idx].pSC = &SC[idx];
+	idx = GamesInfo[HL2_SERVERLIST].cGAMEINDEX = HL2_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &STEAM_Get_ServerStatus;
+	GamesInfo[idx].iIconIndex = Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Half-Life 2",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"hl2master.steampowered.com",MAX_PATH);
+	GamesInfo[idx].dwMasterServerPORT = 27011;
+	GamesInfo[idx].dwProtocol = 0;
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"hf2maps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"-game %MODNAME%",MAX_PATH);  //http://developer.valvesoftware.com/wiki/Command_line
+	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
+	strcpy(GamesInfo[idx].szGAME_PATH,"HL2.EXE");
+	GamesInfo[idx].bActive = false;
+	strcpy(GamesInfo[idx].szProtocolName,"hf2");
+	GamesInfo[idx].dwDefaultPort = 28960;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].bUseHTTPServerList = FALSE;
+	GamesInfo[idx].pSC = &SC[idx];
 
-	Registry_GetGamePath(HKEY_CURRENT_USER, "Software\\Valve\\Steam","SteamExe",GI[idx].szGAME_PATH,&dwBuffSize);
-	if(strlen(GI[idx].szGAME_PATH)>0)
-		GI[idx].bActive = true;
+	Registry_GetGamePath(HKEY_CURRENT_USER, "Software\\Valve\\Steam","SteamExe",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
+		GamesInfo[idx].bActive = true;
 
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = "-applaunch 300";
 	gi.sMod = "dod";
 	gi.sName = "Day of Defeat Source";
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 	gi.szGAME_CMD = "-applaunch 320";
 	gi.sMod = "hl2mp";
 	gi.sName = "Half-Life 2 Deathmatch";
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 	gi.szGAME_CMD = "-applaunch 240";
 	gi.sMod = "cstrike";
 	gi.sName = "Counter-Strike Source";
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 	gi.szGAME_CMD = "-applaunch 440";
 	gi.sMod = "tf";
 	gi.sName = "Team Fortress 2";
-	GI[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
 
-	idx = GI[UTERROR_SERVERLIST].cGAMEINDEX = UTERROR_SERVERLIST;
-	GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-	GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
-	strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 68;
-	GI[idx].iIconIndex =  Get_GameIcon(idx);
-	GI[idx].dwViewFlags = 0;
-	strncpy(GI[idx].szGAME_NAME,"Urban Terror",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"master.urbanterror.net",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"urbanmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_PATH,"q3.exe",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"+fs_game %MODNAME%",MAX_PATH);
-	strcpy(GI[idx].szProtocolName,"urban");
-	GI[idx].bActive = false;
-	GI[idx].dwDefaultPort = 27960;
-	GI[idx].bUseHTTPServerList = FALSE;
-	strcpy(GI[idx].szQueryString,"");
-	GI[idx].pSC = &SC[idx];
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GI[idx].szGAME_PATH,&dwBuffSize);
-	GI[idx].colorfilter = &colorfilter;
-	GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
+	idx = GamesInfo[UTERROR_SERVERLIST].cGAMEINDEX = UTERROR_SERVERLIST;
+	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
+	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+	GamesInfo[idx].dwMasterServerPORT = 27950;
+	GamesInfo[idx].dwProtocol = 68;
+	GamesInfo[idx].iIconIndex =  Get_GameIcon(idx);
+	GamesInfo[idx].dwViewFlags = 0;
+	strncpy(GamesInfo[idx].szGAME_NAME,"Urban Terror",MAX_PATH);
+	strncpy(GamesInfo[idx].szMasterServerIP,"master.urbanterror.net",MAX_PATH);
+	strncpy(GamesInfo[idx].szMAP_MAPPREVIEW_PATH,"urbanmaps",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_PATH,"q3.exe",MAX_PATH);
+	strncpy(GamesInfo[idx].szGAME_CMD,"+fs_game %MODNAME%",MAX_PATH);
+	strcpy(GamesInfo[idx].szProtocolName,"urban");
+	GamesInfo[idx].bActive = false;
+	GamesInfo[idx].dwDefaultPort = 27960;
+	GamesInfo[idx].bUseHTTPServerList = FALSE;
+	strcpy(GamesInfo[idx].szQueryString,"");
+	GamesInfo[idx].pSC = &SC[idx];
+	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
+	GamesInfo[idx].colorfilter = &colorfilter;
+	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.sName = "Default";
 	gi.sMod = "";
 	gi.sVersion = "";
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
-	strcpy(GI[idx].szGAME_SHORTNAME,"Urban Terror");
-	strcpy(GI[idx].szFilename,"urbanterror.servers");
+	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
+	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
+	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	strcpy(GamesInfo[idx].szGAME_SHORTNAME,"Urban Terror");
+	strcpy(GamesInfo[idx].szFilename,"urbanterror.servers");
 
 
-	strcpy(GI[ET_SERVERLIST].szGAME_SHORTNAME,"W:ET");
-	strcpy(GI[ETQW_SERVERLIST].szGAME_SHORTNAME,"ETQW");
-	strcpy(GI[Q3_SERVERLIST].szGAME_SHORTNAME,"Quake 3");			
-	strcpy(GI[Q4_SERVERLIST].szGAME_SHORTNAME,"Quake 4");
-	strcpy(GI[RTCW_SERVERLIST].szGAME_SHORTNAME,"RTCW");
-	strcpy(GI[COD_SERVERLIST].szGAME_SHORTNAME,"CoD");
-	strcpy(GI[COD2_SERVERLIST].szGAME_SHORTNAME,"CoD 2");	
-	strcpy(GI[WARSOW_SERVERLIST].szGAME_SHORTNAME,"Warsow");
-	strcpy(GI[COD4_SERVERLIST].szGAME_SHORTNAME,"CoD 4");
-	strcpy(GI[CS_SERVERLIST].szGAME_SHORTNAME,"CS");
-	strcpy(GI[CSCZ_SERVERLIST].szGAME_SHORTNAME,"CS Zero");
-	strcpy(GI[CSS_SERVERLIST].szGAME_SHORTNAME,"CS Source");
-	strcpy(GI[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
-	strcpy(GI[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
-	strcpy(GI[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
-	strcpy(GI[HL2_SERVERLIST].szGAME_SHORTNAME,"HF2");
+	strcpy(GamesInfo[ET_SERVERLIST].szGAME_SHORTNAME,"W:ET");
+	strcpy(GamesInfo[ETQW_SERVERLIST].szGAME_SHORTNAME,"ETQW");
+	strcpy(GamesInfo[Q3_SERVERLIST].szGAME_SHORTNAME,"Quake 3");			
+	strcpy(GamesInfo[Q4_SERVERLIST].szGAME_SHORTNAME,"Quake 4");
+	strcpy(GamesInfo[RTCW_SERVERLIST].szGAME_SHORTNAME,"RTCW");
+	strcpy(GamesInfo[COD_SERVERLIST].szGAME_SHORTNAME,"CoD");
+	strcpy(GamesInfo[COD2_SERVERLIST].szGAME_SHORTNAME,"CoD 2");	
+	strcpy(GamesInfo[WARSOW_SERVERLIST].szGAME_SHORTNAME,"Warsow");
+	strcpy(GamesInfo[COD4_SERVERLIST].szGAME_SHORTNAME,"CoD 4");
+	strcpy(GamesInfo[CS_SERVERLIST].szGAME_SHORTNAME,"CS");
+	strcpy(GamesInfo[CSCZ_SERVERLIST].szGAME_SHORTNAME,"CS Zero");
+	strcpy(GamesInfo[CSS_SERVERLIST].szGAME_SHORTNAME,"CS Source");
+	strcpy(GamesInfo[QW_SERVERLIST].szGAME_SHORTNAME,"Quake World");
+	strcpy(GamesInfo[Q2_SERVERLIST].szGAME_SHORTNAME,"Quake 2");
+	strcpy(GamesInfo[OPENARENA_SERVERLIST].szGAME_SHORTNAME,"Open Arena");
+	strcpy(GamesInfo[HL2_SERVERLIST].szGAME_SHORTNAME,"HF2");
 
-	strcpy(GI[ET_SERVERLIST].szFilename,"et.servers");
-	strcpy(GI[ETQW_SERVERLIST].szFilename,"etqw.servers");
-	strcpy(GI[Q4_SERVERLIST].szFilename,"q4.servers");
-	strcpy(GI[Q3_SERVERLIST].szFilename,"q3.servers");
-	strcpy(GI[RTCW_SERVERLIST].szFilename,"rtcw.servers");
-	strcpy(GI[COD_SERVERLIST].szFilename,"cod.servers");
-	strcpy(GI[COD2_SERVERLIST].szFilename,"cod2.servers");
-	strcpy(GI[WARSOW_SERVERLIST].szFilename,"warsow.servers");
-	strcpy(GI[COD4_SERVERLIST].szFilename,"cod4.servers");
-	strcpy(GI[CS_SERVERLIST].szFilename,"cs.servers");
-	strcpy(GI[QW_SERVERLIST].szFilename,"qw.servers");
-	strcpy(GI[Q2_SERVERLIST].szFilename,"q2.servers");
-	strcpy(GI[CSCZ_SERVERLIST].szFilename,"cscz.servers");
-	strcpy(GI[CSS_SERVERLIST].szFilename,"css.servers");
-	strcpy(GI[OPENARENA_SERVERLIST].szFilename,"openarena.servers");
-	strcpy(GI[HL2_SERVERLIST].szFilename,"tf2.servers");
+	strcpy(GamesInfo[ET_SERVERLIST].szFilename,"et.servers");
+	strcpy(GamesInfo[ETQW_SERVERLIST].szFilename,"etqw.servers");
+	strcpy(GamesInfo[Q4_SERVERLIST].szFilename,"q4.servers");
+	strcpy(GamesInfo[Q3_SERVERLIST].szFilename,"q3.servers");
+	strcpy(GamesInfo[RTCW_SERVERLIST].szFilename,"rtcw.servers");
+	strcpy(GamesInfo[COD_SERVERLIST].szFilename,"cod.servers");
+	strcpy(GamesInfo[COD2_SERVERLIST].szFilename,"cod2.servers");
+	strcpy(GamesInfo[WARSOW_SERVERLIST].szFilename,"warsow.servers");
+	strcpy(GamesInfo[COD4_SERVERLIST].szFilename,"cod4.servers");
+	strcpy(GamesInfo[CS_SERVERLIST].szFilename,"cs.servers");
+	strcpy(GamesInfo[QW_SERVERLIST].szFilename,"qw.servers");
+	strcpy(GamesInfo[Q2_SERVERLIST].szFilename,"q2.servers");
+	strcpy(GamesInfo[CSCZ_SERVERLIST].szFilename,"cscz.servers");
+	strcpy(GamesInfo[CSS_SERVERLIST].szFilename,"css.servers");
+	strcpy(GamesInfo[OPENARENA_SERVERLIST].szFilename,"openarena.servers");
+	strcpy(GamesInfo[HL2_SERVERLIST].szFilename,"tf2.servers");
 	
 	RegisterProtocol(EXE_PATH);
 }
@@ -2911,7 +2931,7 @@ void OnServerDoubleClick()
 	{
 		SERVER_INFO pSrv;	
 		pSrv = Get_ServerInfoByListViewIndex(currCV,i);
-		LaunchGame(pSrv,&GI[g_currentGameIdx]);
+		LaunchGame(pSrv,&GamesInfo[g_currentGameIdx]);
 
 	}
 }
@@ -3152,15 +3172,15 @@ int Filter_game_specific_edit(GAME_INFO *pGI,_TREEITEM ti, TVITEM *tvi,int idx)
 		case FILTER_PURE : pGI->filter.bPure = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_RANKED : pGI->filter.bRanked = 	TreeView_SwapDWCheckState(tvi,ti.dwState); break;
 		case FILTER_MOD	: 
-			return   	vTI.at(idx).dwState = TreeView_SwapDWCheckStateOR(tvi,ti, &GI[ti.cGAMEINDEX].filter.dwMod); break;
+			return   	vTI.at(idx).dwState = TreeView_SwapDWCheckStateOR(tvi,ti, &GamesInfo[ti.cGAMEINDEX].filter.dwMod); break;
 		case FILTER_GAMETYPE:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwGameTypeFilter); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GamesInfo[ti.cGAMEINDEX].filter.dwGameTypeFilter); break;
 		case FILTER_VERSION:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwVersion); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GamesInfo[ti.cGAMEINDEX].filter.dwVersion); break;
 		case FILTER_MAP:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwMap); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GamesInfo[ti.cGAMEINDEX].filter.dwMap); break;
 		case FILTER_REGION:
-				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GI[ti.cGAMEINDEX].filter.dwRegion); break;
+				return vTI.at(idx).dwState = 	TreeView_SwapDWCheckStateOR(tvi,ti,	&GamesInfo[ti.cGAMEINDEX].filter.dwRegion); break;
 
 		case 0: break;
 		default: return 0;
@@ -3438,7 +3458,7 @@ int TreeView_GetSelectionV3()
 		case DO_FAV_PRIV : SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PRIVATE;
 		case DO_HISTORY : SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_HISTORY;
 		case DO_GAME_SPECIFIC_FILTER:		
-			vTI.at(iSel).dwState = Filter_game_specific_edit(&GI[vTI.at(iSel).cGAMEINDEX],vTI.at(iSel), &tvitem,iSel);
+			vTI.at(iSel).dwState = Filter_game_specific_edit(&GamesInfo[vTI.at(iSel).cGAMEINDEX],vTI.at(iSel), &tvitem,iSel);
 			break;
 		case DO_GLOBAL_EDIT_FILTER:
 		case DO_GLOBAL_FILTER:
@@ -3473,7 +3493,7 @@ int TreeView_GetSelectionV3()
 
 	TreeView_SelectItem(g_hwndMainTreeCtrl,NULL);	
 	SetCurrentViewTo(g_currentGameIdx);
-	//RedrawServerListThread(&GI[g_currentGameIdx]);
+	//RedrawServerListThread(&GamesInfo[g_currentGameIdx]);
 	Initialize_RedrawServerListThread();
 	return DO_NOTHING;
 }
@@ -3797,11 +3817,11 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			SplitIPandPORT(ip,dwPort);
 			
 			if(dwPort==0)
-				dwPort = GI[g_currentGameIdx].dwDefaultPort;
+				dwPort = GamesInfo[g_currentGameIdx].dwDefaultPort;
 
-			if(AddServer(&GI[g_currentGameIdx],ip, dwPort,true)!=0xFFFFFFFF)		
+			if(AddServer(&GamesInfo[g_currentGameIdx],ip, dwPort,true)!=0xFFFFFFFF)		
 			{
-				SetStatusText(ICO_INFO,"Added IP %s:%d into %s favorite serverlist.",ip,dwPort,GI[g_currentGameIdx].szGAME_NAME);
+				SetStatusText(ICO_INFO,"Added IP %s:%d into %s favorite serverlist.",ip,dwPort,GamesInfo[g_currentGameIdx].szGAME_NAME);
 				
 			}else
 			{
@@ -4046,7 +4066,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		if(ti.cGAMEINDEX!=-25)
 		{
 			if(ti.cGAMEINDEX<MAX_SERVERLIST)
-				active = GI[ti.cGAMEINDEX].bActive;
+				active = GamesInfo[ti.cGAMEINDEX].bActive;
 		}
 				
 		ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);
@@ -4057,7 +4077,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
-			GI[ti.cGAMEINDEX].pSC->vFilterGameType.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].pSC->vFilterGameType.push_back(gf);
 		}
 		if(ti.sElementName == "ModItems")
 		{
@@ -4065,7 +4085,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
-			GI[ti.cGAMEINDEX].pSC->vFilterMod.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].pSC->vFilterMod.push_back(gf);
 		}
 		if(ti.sElementName == "Version")
 		{
@@ -4073,7 +4093,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
-			GI[ti.cGAMEINDEX].pSC->vFilterVersion.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].pSC->vFilterVersion.push_back(gf);
 		}
 		if(ti.sElementName == "Map")
 		{
@@ -4082,7 +4102,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
 			gf.dwExactMatch = ti.dwCompare;
-			GI[ti.cGAMEINDEX].pSC->vFilterMap.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].pSC->vFilterMap.push_back(gf);
 		}
 		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
 
@@ -4419,7 +4439,7 @@ int TreeView_load()
 			}
 			//Clear all old filtering settings... ugly hack.
 		//	for(int i=0; i<MAX_SERVERLIST; i++)  //removed since 1.05
-		//		ZeroMemory(&GI[i].filter,sizeof(FILTER_SETTINGS));//removed since 1.05
+		//		ZeroMemory(&GamesInfo[i].filter,sizeof(FILTER_SETTINGS));//removed since 1.05
 		}
 			
 	}
@@ -4440,29 +4460,29 @@ int TreeView_load()
 	//Let's do some resync values, this will help to ensure after an upgrade of the treeview  structure to display correct
 	for(int i=0; i<MAX_SERVERLIST;i++)
 	{
-		GI[i].hTI = TreeView_GetTIByItemGame(i);
+		GamesInfo[i].hTI = TreeView_GetTIByItemGame(i);
 
-		sprintf(szBuffer,"%s (%d)",GI[i].szGAME_NAME,GI[i].dwTotalServers);
-		if(GI[i].hTI!=NULL)
+		sprintf(szBuffer,"%s (%d)",GamesInfo[i].szGAME_NAME,GamesInfo[i].dwTotalServers);
+		if(GamesInfo[i].hTI!=NULL)
 		{
-			TreeView_SetItemText(GI[i].hTI,szBuffer);
-			TreeView_SetItemState(g_hwndMainTreeCtrl,GI[i].hTI,TVIS_BOLD ,TVIS_BOLD);
-			TreeView_SetFilterCheckState(i, 1,GI[i].filter.bPunkbuster);
-			TreeView_SetFilterCheckState(i, 2,GI[i].filter.bOnlyPrivate);
-			TreeView_SetFilterCheckState(i, 128,GI[i].filter.bNoPrivate);
-			TreeView_SetFilterCheckState(i, 4,GI[i].filter.bNoFull);
-			TreeView_SetFilterCheckState(i, 8,GI[i].filter.bNoEmpty);
-			TreeView_SetFilterCheckState(i, 64,GI[i].filter.bNoBots);
-			TreeView_SetFilterCheckState(i, 26,GI[i].filter.bPure);
-			TreeView_SetFilterCheckState(i, 27,GI[i].filter.bRanked);
+			TreeView_SetItemText(GamesInfo[i].hTI,szBuffer);
+			TreeView_SetItemState(g_hwndMainTreeCtrl,GamesInfo[i].hTI,TVIS_BOLD ,TVIS_BOLD);
+			TreeView_SetFilterCheckState(i, 1,GamesInfo[i].filter.bPunkbuster);
+			TreeView_SetFilterCheckState(i, 2,GamesInfo[i].filter.bOnlyPrivate);
+			TreeView_SetFilterCheckState(i, 128,GamesInfo[i].filter.bNoPrivate);
+			TreeView_SetFilterCheckState(i, 4,GamesInfo[i].filter.bNoFull);
+			TreeView_SetFilterCheckState(i, 8,GamesInfo[i].filter.bNoEmpty);
+			TreeView_SetFilterCheckState(i, 64,GamesInfo[i].filter.bNoBots);
+			TreeView_SetFilterCheckState(i, 26,GamesInfo[i].filter.bPure);
+			TreeView_SetFilterCheckState(i, 27,GamesInfo[i].filter.bRanked);
 
 	
 	
-			TreeView_SetFilterGroupCheckState(i,FILTER_MOD,GI[i].filter.dwMod);
-			TreeView_SetFilterGroupCheckState(i,FILTER_MAP,GI[i].filter.dwMap);
-			TreeView_SetFilterGroupCheckState(i,FILTER_VERSION,GI[i].filter.dwVersion);
-			TreeView_SetFilterGroupCheckState(i,FILTER_GAMETYPE,GI[i].filter.dwGameTypeFilter);
-			TreeView_SetFilterGroupCheckState(i,FILTER_REGION,GI[i].filter.dwRegion);
+			TreeView_SetFilterGroupCheckState(i,FILTER_MOD,GamesInfo[i].filter.dwMod);
+			TreeView_SetFilterGroupCheckState(i,FILTER_MAP,GamesInfo[i].filter.dwMap);
+			TreeView_SetFilterGroupCheckState(i,FILTER_VERSION,GamesInfo[i].filter.dwVersion);
+			TreeView_SetFilterGroupCheckState(i,FILTER_GAMETYPE,GamesInfo[i].filter.dwGameTypeFilter);
+			TreeView_SetFilterGroupCheckState(i,FILTER_REGION,GamesInfo[i].filter.dwRegion);
 		}
 	}
 
@@ -4665,17 +4685,17 @@ void ClearAllServerLinkedList()
 {
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
-		OutputDebugString(GI[i].szGAME_NAME);
+		OutputDebugString(GamesInfo[i].szGAME_NAME);
 		OutputDebugString(" - Cleaning up serverlist, playerlist and hashes etc.\n");
 		
-		for(long x=0; x<GI[i].pSC->vSI.size();x++)
-			UTILZ_CleanUp_PlayerList(GI[i].pSC->vSI.at(x).pPlayerData);
+		for(long x=0; x<GamesInfo[i].pSC->vSI.size();x++)
+			UTILZ_CleanUp_PlayerList(GamesInfo[i].pSC->vSI.at(x).pPlayerData);
 
-		GI[i].dwTotalServers = 0;
-		GI[i].pSC->vSI.clear();
-		GI[i].pSC->vRefListSI.clear();
-		GI[i].pSC->vRefScanSI.clear();
-		GI[i].pSC->shash.clear();
+		GamesInfo[i].dwTotalServers = 0;
+		GamesInfo[i].pSC->vSI.clear();
+		GamesInfo[i].pSC->vRefListSI.clear();
+		GamesInfo[i].pSC->vRefScanSI.clear();
+		GamesInfo[i].pSC->shash.clear();
 	}
 }
 
@@ -4707,19 +4727,19 @@ void FastConnect()
 	strcpy(srv.szPRIVATEPASS,password);
 	srv.cGAMEINDEX = -1;
 	srv.dwIndex = 999999;
-	LaunchGame(srv,&GI[g_currentGameIdx]);
+	LaunchGame(srv,&GamesInfo[g_currentGameIdx]);
 }
 
 GAME_INFO * Get_CurrentViewByServer(SERVER_INFO* pSrv)
 {
-	return &GI[pSrv->cGAMEINDEX];	 
+	return &GamesInfo[pSrv->cGAMEINDEX];	 
 }
 
 
 int FindFirstActiveGame()
 {
 	for(int i=0;i<MAX_SERVERLIST;i++)
-		if(GI[i].bActive)
+		if(GamesInfo[i].bActive)
 			return i;
 
 		int i = MessageBox(g_hWnd,lang.GetString("MessageNoGamesActive"),"Info",MB_YESNO|MB_ICONINFORMATION|MB_TOPMOST);
@@ -5317,10 +5337,10 @@ void OnClose()
 	{
 
 
-		GI[i].pSC->vFilterGameType.clear();
-		GI[i].pSC->vFilterMap.clear();
-		GI[i].pSC->vFilterMod.clear();
-		GI[i].pSC->vFilterVersion.clear();
+		GamesInfo[i].pSC->vFilterGameType.clear();
+		GamesInfo[i].pSC->vFilterMap.clear();
+		GamesInfo[i].pSC->vFilterMod.clear();
+		GamesInfo[i].pSC->vFilterVersion.clear();
 	}
 
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
@@ -5390,7 +5410,7 @@ void OnInitialize_MainDlg(HWND hwnd)
 	TreeView_BuildList();
 
 
-	currCV = &GI[0];
+	currCV = &GamesInfo[0];
 
 	LoadAllServerList();
 
@@ -5724,7 +5744,7 @@ DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 void SaveAllServerList()
 {
 	for(int i=0;i<MAX_SERVERLIST;i++)
-		SaveServerList(&GI[i]);
+		SaveServerList(&GamesInfo[i]);
 }
 
 void LoadAllServerList()
@@ -5750,22 +5770,22 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 
 	for(int i=0;i<MAX_SERVERLIST;i++)
 	{
-		if(GI[i].pSC->vSI.size()==0) //Only try to load if no list exsists (needed for minimizing and restoring)
+		if(GamesInfo[i].pSC->vSI.size()==0) //Only try to load if no list exsists (needed for minimizing and restoring)
 		{	
-			GI[i].bLockServerList = TRUE;
-			LoadServerListV2(&GI[i]);
-			GI[i].bLockServerList = FALSE;
+			GamesInfo[i].bLockServerList = TRUE;
+			LoadServerListV2(&GamesInfo[i]);
+			GamesInfo[i].bLockServerList = FALSE;
 		}
 	}
 	
 	LeaveCriticalSection(&LOAD_SAVE_CS);
 
-	if(GI[g_currentGameIdx].bActive)
+	if(GamesInfo[g_currentGameIdx].bActive)
 		SetCurrentViewTo(g_currentGameIdx);
 	else
 		SetCurrentViewTo(FindFirstActiveGame());
 
-	if(GI[g_currentGameIdx].pSC->vSI.size()>0)
+	if(GamesInfo[g_currentGameIdx].pSC->vSI.size()>0)
 		OnActivate_ServerList(SCAN_FILTERED);
 		
  return 0;
@@ -5791,11 +5811,11 @@ void DeleteAllServerLists()
 			char szBuffer[100];
 			for(int i=0;i<MAX_SERVERLIST;i++)
 			{
-				remove(GI[i].szFilename);
-				GI[i].dwTotalServers = 0;
-				sprintf(szBuffer,"%s (%d)",GI[i].szGAME_NAME,GI[i].dwTotalServers);
-				if(GI[i].bActive)
-					TreeView_SetItemText(GI[i].hTI,szBuffer);
+				remove(GamesInfo[i].szFilename);
+				GamesInfo[i].dwTotalServers = 0;
+				sprintf(szBuffer,"%s (%d)",GamesInfo[i].szGAME_NAME,GamesInfo[i].dwTotalServers);
+				if(GamesInfo[i].bActive)
+					TreeView_SetItemText(GamesInfo[i].hTI,szBuffer);
 			}
 			MessageBox(NULL,lang.GetString("DeletedServerList"),"Info",MB_OK);
 		
@@ -5816,23 +5836,23 @@ void DeleteServerLists(char cGameIdx)
 			ListView_DeleteAllItems(g_hwndListViewServer);
 			ListView_SetItemCount(g_hwndListViewServer,0);
 		
-			OutputDebugString(GI[cGameIdx].szGAME_NAME);
+			OutputDebugString(GamesInfo[cGameIdx].szGAME_NAME);
 			OutputDebugString(" - CLEAN UP SERVERLIST\n");
 				
-			GI[cGameIdx].dwTotalServers = 0;
-			GI[cGameIdx].pSC->vSI.clear();
-			GI[cGameIdx].pSC->vRefListSI.clear();
-			GI[cGameIdx].pSC->vRefScanSI.clear();
-			GI[cGameIdx].pSC->shash.clear();
+			GamesInfo[cGameIdx].dwTotalServers = 0;
+			GamesInfo[cGameIdx].pSC->vSI.clear();
+			GamesInfo[cGameIdx].pSC->vRefListSI.clear();
+			GamesInfo[cGameIdx].pSC->vRefScanSI.clear();
+			GamesInfo[cGameIdx].pSC->shash.clear();
 
 			g_CurrentSRV=NULL;
 
 			char szBuffer[100];
-			remove(GI[cGameIdx].szFilename);
-			GI[cGameIdx].dwTotalServers = 0;
-			sprintf(szBuffer,"%s (%d)",GI[cGameIdx].szGAME_NAME,GI[cGameIdx].dwTotalServers);
-			if(GI[cGameIdx].bActive)
-				TreeView_SetItemText(GI[cGameIdx].hTI,szBuffer);
+			remove(GamesInfo[cGameIdx].szFilename);
+			GamesInfo[cGameIdx].dwTotalServers = 0;
+			sprintf(szBuffer,"%s (%d)",GamesInfo[cGameIdx].szGAME_NAME,GamesInfo[cGameIdx].dwTotalServers);
+			if(GamesInfo[cGameIdx].bActive)
+				TreeView_SetItemText(GamesInfo[cGameIdx].hTI,szBuffer);
 	
 			MessageBox(NULL,lang.GetString("DeletedServerList"),"Info",MB_OK);
 		
@@ -5967,43 +5987,43 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	for(int i=0;i<MAX_SERVERLIST; i++)
 	{
 		TiXmlElement * abc = new TiXmlElement( "Game" );  
-		WriteCfgStr(abc, "GameData", "GameName",GI[i].szGAME_NAME) ;
+		WriteCfgStr(abc, "GameData", "GameName",GamesInfo[i].szGAME_NAME) ;
 
-		WriteCfgStr(abc, "GameData", "yawn",GI[i].szMAP_YAWN_PATH);
-		WriteCfgStr(abc, "GameData", "MasterServer",GI[i].szMasterServerIP);
-		WriteCfgStr(abc, "GameData", "MapPreview",GI[i].szMAP_MAPPREVIEW_PATH);
-		WriteCfgStr(abc, "GameData", "webpath",GI[i].szMAP_OTHER_WEBPATH_PATH);
-		WriteCfgStr(abc, "GameData", "splatterladder",GI[i].szMAP_SPLATTERLADDER_PATH);
-		WriteCfgStr(abc, "GameData", "ProtcolName",GI[i].szProtocolName);
-		WriteCfgInt(abc, "GameData", "Active",GI[i].bActive);
-		WriteCfgInt(abc, "GameData", "gametype",GI[i].cGAMEINDEX);
-		WriteCfgInt(abc, "GameData", "MasterServerPort",GI[i].dwMasterServerPORT);
-		WriteCfgInt(abc, "GameData", "Protocol",GI[i].dwProtocol);
-		WriteCfgInt(abc, "GameData", "IconIndex",GI[i].iIconIndex);
-		WriteCfgInt(abc, "GameData", "FilterMod",GI[i].filter.dwMod);
-		WriteCfgInt(abc, "GameData", "FilterRegion",GI[i].filter.dwRegion);
-		WriteCfgInt(abc, "GameData", "FilterVersion",GI[i].filter.dwVersion);
-		WriteCfgInt(abc, "GameData", "FilterMap",GI[i].filter.dwMap);
-		WriteCfgInt(abc, "GameData", "FilterGameType",GI[i].filter.dwGameTypeFilter);
-		WriteCfgInt(abc, "GameData", "FilterHideFull",GI[i].filter.bNoFull);
-		WriteCfgInt(abc, "GameData", "FilterHideEmpty",GI[i].filter.bNoEmpty);
-		WriteCfgInt(abc, "GameData", "FilterPunkbuster",GI[i].filter.bPunkbuster);
-		WriteCfgInt(abc, "GameData", "FilterHideOffline",GI[i].filter.bHideOfflineServers);
-		WriteCfgInt(abc, "GameData", "FilterPure",GI[i].filter.bPure);
-		WriteCfgInt(abc, "GameData", "FilterRanked",GI[i].filter.bRanked);
-		WriteCfgInt(abc, "GameData", "FilterHideBots",GI[i].filter.bNoBots);
-		WriteCfgInt(abc, "GameData", "FilterNoPrivate",GI[i].filter.bNoPrivate);
-		WriteCfgInt(abc, "GameData", "FilterOnlyPrivate",GI[i].filter.bOnlyPrivate);
-		WriteCfgInt(abc, "GameData", "FilterDedicated",GI[i].filter.bDedicated);
+		WriteCfgStr(abc, "GameData", "yawn",GamesInfo[i].szMAP_YAWN_PATH);
+		WriteCfgStr(abc, "GameData", "MasterServer",GamesInfo[i].szMasterServerIP);
+		WriteCfgStr(abc, "GameData", "MapPreview",GamesInfo[i].szMAP_MAPPREVIEW_PATH);
+		WriteCfgStr(abc, "GameData", "webpath",GamesInfo[i].szMAP_OTHER_WEBPATH_PATH);
+		WriteCfgStr(abc, "GameData", "splatterladder",GamesInfo[i].szMAP_SPLATTERLADDER_PATH);
+		WriteCfgStr(abc, "GameData", "ProtcolName",GamesInfo[i].szProtocolName);
+		WriteCfgInt(abc, "GameData", "Active",GamesInfo[i].bActive);
+		WriteCfgInt(abc, "GameData", "gametype",GamesInfo[i].cGAMEINDEX);
+		WriteCfgInt(abc, "GameData", "MasterServerPort",GamesInfo[i].dwMasterServerPORT);
+		WriteCfgInt(abc, "GameData", "Protocol",GamesInfo[i].dwProtocol);
+		WriteCfgInt(abc, "GameData", "IconIndex",GamesInfo[i].iIconIndex);
+		WriteCfgInt(abc, "GameData", "FilterMod",GamesInfo[i].filter.dwMod);
+		WriteCfgInt(abc, "GameData", "FilterRegion",GamesInfo[i].filter.dwRegion);
+		WriteCfgInt(abc, "GameData", "FilterVersion",GamesInfo[i].filter.dwVersion);
+		WriteCfgInt(abc, "GameData", "FilterMap",GamesInfo[i].filter.dwMap);
+		WriteCfgInt(abc, "GameData", "FilterGameType",GamesInfo[i].filter.dwGameTypeFilter);
+		WriteCfgInt(abc, "GameData", "FilterHideFull",GamesInfo[i].filter.bNoFull);
+		WriteCfgInt(abc, "GameData", "FilterHideEmpty",GamesInfo[i].filter.bNoEmpty);
+		WriteCfgInt(abc, "GameData", "FilterPunkbuster",GamesInfo[i].filter.bPunkbuster);
+		WriteCfgInt(abc, "GameData", "FilterHideOffline",GamesInfo[i].filter.bHideOfflineServers);
+		WriteCfgInt(abc, "GameData", "FilterPure",GamesInfo[i].filter.bPure);
+		WriteCfgInt(abc, "GameData", "FilterRanked",GamesInfo[i].filter.bRanked);
+		WriteCfgInt(abc, "GameData", "FilterHideBots",GamesInfo[i].filter.bNoBots);
+		WriteCfgInt(abc, "GameData", "FilterNoPrivate",GamesInfo[i].filter.bNoPrivate);
+		WriteCfgInt(abc, "GameData", "FilterOnlyPrivate",GamesInfo[i].filter.bOnlyPrivate);
+		WriteCfgInt(abc, "GameData", "FilterDedicated",GamesInfo[i].filter.bDedicated);
 		
-		for(int n=0;n<GI[i].pSC->vGAME_INST.size();n++)
+		for(int n=0;n<GamesInfo[i].pSC->vGAME_INST.size();n++)
 		{
 			TiXmlElement * installs = new TiXmlElement( "Installs" ); 
-			WriteCfgStr(installs, "Install", "Name",GI[i].pSC->vGAME_INST.at(n).sName.c_str());
-			WriteCfgStr(installs, "Install", "Path",GI[i].pSC->vGAME_INST.at(n).szGAME_PATH.c_str());
-			WriteCfgStr(installs, "Install", "Cmd",GI[i].pSC->vGAME_INST.at(n).szGAME_CMD.c_str());
-			WriteCfgStr(installs, "Install", "LaunchByMod",GI[i].pSC->vGAME_INST.at(n).sMod.c_str());
-			WriteCfgStr(installs, "Install", "LaunchByVer",GI[i].pSC->vGAME_INST.at(n).sVersion.c_str());
+			WriteCfgStr(installs, "Install", "Name",GamesInfo[i].pSC->vGAME_INST.at(n).sName.c_str());
+			WriteCfgStr(installs, "Install", "Path",GamesInfo[i].pSC->vGAME_INST.at(n).szGAME_PATH.c_str());
+			WriteCfgStr(installs, "Install", "Cmd",GamesInfo[i].pSC->vGAME_INST.at(n).szGAME_CMD.c_str());
+			WriteCfgStr(installs, "Install", "LaunchByMod",GamesInfo[i].pSC->vGAME_INST.at(n).sMod.c_str());
+			WriteCfgStr(installs, "Install", "LaunchByVer",GamesInfo[i].pSC->vGAME_INST.at(n).sVersion.c_str());
 			abc->LinkEndChild( installs ); 
 		}
 	
@@ -6313,16 +6333,16 @@ int SetCurrentViewTo(int index)
 	//if(currCV!=NULL)
 	//	currCV->pSC->vRefListSI.clear();
 
-	currCV = &GI[g_currentGameIdx];
+	currCV = &GamesInfo[g_currentGameIdx];
 	if(g_hwndMainTreeCtrl==NULL)
 		return 0;
 	//Deselect
 	for(int i=0;i<MAX_SERVERLIST;i++)
-		TreeView_SetItemState(g_hwndMainTreeCtrl,GI[i].hTI,0 , TVIS_SELECTED );
+		TreeView_SetItemState(g_hwndMainTreeCtrl,GamesInfo[i].hTI,0 , TVIS_SELECTED );
 
 
-	TreeView_SetItemState(g_hwndMainTreeCtrl,GI[g_currentGameIdx].hTI,TVIS_SELECTED, TVIS_SELECTED);
-	TreeView_Expand(g_hwndMainTreeCtrl, GI[g_currentGameIdx].hTI, TVE_EXPAND);
+	TreeView_SetItemState(g_hwndMainTreeCtrl,GamesInfo[g_currentGameIdx].hTI,TVIS_SELECTED, TVIS_SELECTED);
+	TreeView_Expand(g_hwndMainTreeCtrl, GamesInfo[g_currentGameIdx].hTI, TVE_EXPAND);
 	return g_currentGameIdx;
 }
 
@@ -6359,12 +6379,12 @@ DWORD WINAPI Download_ScreenshotThread(LPVOID lpParam)
 	ZeroMemory(wcPath,sizeof(wcPath));
 	ZeroMemory(szPath,sizeof(szPath));
 	
-	sprintf(szPath,"%s\\%s\\",COMMON_SAVE_PATH,GI[gameindex].szMAP_MAPPREVIEW_PATH);
+	sprintf(szPath,"%s\\%s\\",COMMON_SAVE_PATH,GamesInfo[gameindex].szMAP_MAPPREVIEW_PATH);
 	mbstowcs(wcPath,(const char *)szPath,strlen(szPath));		
 	SHCreateDirectory(NULL,wcPath);
 	
 	sprintf(szDestPath,"%s%s.png",szPath,g_TrimmedSSFileName);
-	sprintf(szBuff,"http://www.cludden.se/braindamage/download/screenshots/%s/%s",GI[gameindex].szProtocolName,szDestPath);
+	sprintf(szBuff,"http://www.cludden.se/braindamage/download/screenshots/%s/%s",GamesInfo[gameindex].szProtocolName,szDestPath);
 
 
 	//HFD_SetPath(szPath);
@@ -6376,7 +6396,7 @@ DWORD WINAPI Download_ScreenshotThread(LPVOID lpParam)
 		remove(szDestPath);
 		
 		sprintf(szDestPath,"%s%s.jpg",szPath,g_TrimmedSSFileName);
-		sprintf(szBuff,"http://www.cludden.se/braindamage/download/screenshots/%s/%s",GI[gameindex].szProtocolName,szDestPath);
+		sprintf(szBuff,"http://www.cludden.se/braindamage/download/screenshots/%s/%s",GamesInfo[gameindex].szProtocolName,szDestPath);
 		iRet = HttpFileDownload(szBuff,szDestPath,g_DlgProgress,g_DlgProgressMsg);
 		if(iRet!=0)
 		{
@@ -6447,22 +6467,22 @@ void OnPaint(HDC hDC)
 				end[0]=0;
 
 			//Try different paths
-			sprintf(szPath,"%s%s\\%s.jpg",COMMON_SAVE_PATH,GI[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
+			sprintf(szPath,"%s%s\\%s.jpg",COMMON_SAVE_PATH,GamesInfo[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
 			dib = FreeImage_Load(FIF_JPEG, szPath, JPEG_DEFAULT);
 			if(!dib)
 			{
-				sprintf(szPath,"%s%s\\%s.png",COMMON_SAVE_PATH,GI[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
+				sprintf(szPath,"%s%s\\%s.png",COMMON_SAVE_PATH,GamesInfo[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
 				dib = FreeImage_Load(FIF_PNG, szPath, PNG_DEFAULT);
 
 				if(!dib)
 				{
 
-					sprintf(szPath,"%s\\%s\\%s.jpg",EXE_PATH,GI[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
+					sprintf(szPath,"%s\\%s\\%s.jpg",EXE_PATH,GamesInfo[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
 					dib = FreeImage_Load(FIF_JPEG, szPath, JPEG_DEFAULT);
 
 					if(!dib)
 					{
-						sprintf(szPath,"%s\\%s\\%s.png",EXE_PATH,GI[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
+						sprintf(szPath,"%s\\%s\\%s.png",EXE_PATH,GamesInfo[g_currentGameIdx].szMAP_MAPPREVIEW_PATH,start);
 						dib = FreeImage_Load(FIF_PNG, szPath, PNG_DEFAULT);
 						
 						/**********************************************
@@ -7133,7 +7153,7 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 	if (! ResetEvent(hCloseEvent) ) 
         dbg_print("ResetEvent failed\n");
 
-	time(&GI[currGameIdx].lastScanTimeStamp);
+	time(&GamesInfo[currGameIdx].lastScanTimeStamp);
 
 	HANDLE hThread=NULL; 
 	DWORD dwThreadIdBrowser;
@@ -7160,38 +7180,38 @@ nextGame:
 	if(iGame==MAX_SERVERLIST)  //reset
 		currGameIdx = iGame = 0;
 
-	SetStatusText(GI[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GI[currGameIdx].szGAME_NAME);
+	SetStatusText(GamesInfo[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GamesInfo[currGameIdx].szGAME_NAME);
 
-/*	switch(GI[currGameIdx].cGAMEINDEX)
+/*	switch(GamesInfo[currGameIdx].cGAMEINDEX)
 	{
 		case ETQW_SERVERLIST:
 			{
 			
 				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
+				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
 				if(ret!=0)
 					goto exitError;
 				
-				//SetStatusText(ICO_INFO,"Downloading %s servers... Done!",GI[currGameIdx].szGAME_NAME);
+				//SetStatusText(ICO_INFO,"Downloading %s servers... Done!",GamesInfo[currGameIdx].szGAME_NAME);
 				//ETQW_ParseServerList();				
-				Parse_FileServerList(&GI[currGameIdx],"etqwservers.txt");
+				Parse_FileServerList(&GamesInfo[currGameIdx],"etqwservers.txt");
 
 				SCAN_Set_CALLBACKS(&Q4_Get_ServerStatus,&UpdateServerItem);				
 				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GI[ETQW_SERVERLIST],&FilterServerItemV2);
+					Initialize_Rescan2(&GamesInfo[ETQW_SERVERLIST],&FilterServerItemV2);
 				else
-					Initialize_Rescan2(&GI[ETQW_SERVERLIST],NULL);
+					Initialize_Rescan2(&GamesInfo[ETQW_SERVERLIST],NULL);
 			}
 		break;
 		case Q4_SERVERLIST:
 			{
 				SCAN_Set_CALLBACKS(&Q4_Get_ServerStatus,&UpdateServerItem);				
 				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GI[Q4_SERVERLIST],&FilterServerItemV2);
+					Initialize_Rescan2(&GamesInfo[Q4_SERVERLIST],&FilterServerItemV2);
 				else
 				{
-					Q4_ConnectToMasterServer(&GI[currGameIdx]);			
-					Initialize_Rescan2(&GI[Q4_SERVERLIST],NULL);
+					Q4_ConnectToMasterServer(&GamesInfo[currGameIdx]);			
+					Initialize_Rescan2(&GamesInfo[Q4_SERVERLIST],NULL);
 				}
 			}
 			break;
@@ -7204,12 +7224,12 @@ nextGame:
 				SCAN_Set_CALLBACKS(&STEAM_Get_ServerStatus,&UpdateServerItem);
 				
 				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
 				else
 				{
 					
-					STEAM_ConnectToMasterServer(&GI[currGameIdx]);
-					Initialize_Rescan2(&GI[currGameIdx],NULL);
+					STEAM_ConnectToMasterServer(&GamesInfo[currGameIdx]);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 					
 				}
 	
@@ -7218,22 +7238,22 @@ nextGame:
 		case Q2_SERVERLIST:
 			{
 				
-				if(GI[currGameIdx].bUseHTTPServerList)
+				if(GamesInfo[currGameIdx].bUseHTTPServerList)
 				{
 					HFD_SetPath(USER_SAVE_PATH);
-					int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"q2servers.txt",NULL,NULL);
+					int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"q2servers.txt",NULL,NULL);
 					if(ret!=0)
 						goto exitError;
-					Parse_FileServerList(&GI[currGameIdx],"q2servers.txt");
+					Parse_FileServerList(&GamesInfo[currGameIdx],"q2servers.txt");
 				}
 				SCAN_Set_CALLBACKS(&Q3_Get_ServerStatus,&UpdateServerItem);
 				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
 				else
 				{
-					if(GI[currGameIdx].bUseHTTPServerList == FALSE)				
-						Q3_ConnectToMasterServer(&GI[currGameIdx]);
-					Initialize_Rescan2(&GI[currGameIdx],NULL);
+					if(GamesInfo[currGameIdx].bUseHTTPServerList == FALSE)				
+						Q3_ConnectToMasterServer(&GamesInfo[currGameIdx]);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 				}
 
 			}
@@ -7241,15 +7261,15 @@ nextGame:
 		case QW_SERVERLIST:
 			{
 				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"qwservers.txt",NULL,NULL);
+				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"qwservers.txt",NULL,NULL);
 				if(ret!=0)
 					goto exitError;
-				Parse_FileServerList(&GI[currGameIdx],"qwservers.txt");
+				Parse_FileServerList(&GamesInfo[currGameIdx],"qwservers.txt");
 				SCAN_Set_CALLBACKS(&Q3_Get_ServerStatus,&UpdateServerItem);
 				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
 				else
-					Initialize_Rescan2(&GI[currGameIdx],NULL);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 			}
 			break;
 
@@ -7257,11 +7277,11 @@ nextGame:
 			{
 				SCAN_Set_CALLBACKS(&Q3_Get_ServerStatus,&UpdateServerItem);
 				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
 				else
 				{
-					Q3_ConnectToMasterServer(&GI[currGameIdx]);
-					Initialize_Rescan2(&GI[currGameIdx],NULL);
+					Q3_ConnectToMasterServer(&GamesInfo[currGameIdx]);
+					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 				}
 
 			}
@@ -7270,30 +7290,30 @@ nextGame:
 	}
 
 */
-		SCAN_Set_CALLBACKS(GI[currGameIdx].GetServerStatus,&UpdateServerItem);
+		SCAN_Set_CALLBACKS(GamesInfo[currGameIdx].GetServerStatus,&UpdateServerItem);
 
 		if((DWORD)lpParam==SCAN_FILTERED)
-			Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+			Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
 		else
 		{
-			if(GI[currGameIdx].bUseHTTPServerList)
+			if(GamesInfo[currGameIdx].bUseHTTPServerList)
 			{
 				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
+				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
 				if(ret!=0)
 					goto exitError;
-				Parse_FileServerList(&GI[currGameIdx],"servers.txt");
+				Parse_FileServerList(&GamesInfo[currGameIdx],"servers.txt");
 			}else			
-				GI[currGameIdx].GetServersFromMasterServer(&GI[currGameIdx]);
+				GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
 
-			Initialize_Rescan2(&GI[currGameIdx],NULL);
+			Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 		}
 
 
 
 	char szBuffer[100];
-	sprintf(szBuffer,"%s (%d)",GI[currGameIdx].szGAME_NAME,GI[currGameIdx].dwTotalServers);
-	TreeView_SetItemText(GI[currGameIdx].hTI,szBuffer);	
+	sprintf(szBuffer,"%s (%d)",GamesInfo[currGameIdx].szGAME_NAME,GamesInfo[currGameIdx].dwTotalServers);
+	TreeView_SetItemText(GamesInfo[currGameIdx].hTI,szBuffer);	
 	if((options==SCAN_ALL_GAMES) && (g_bCancel==false))
 		goto nextGame;
 
@@ -7317,10 +7337,10 @@ nextGame:
 		g_bRunSimulation = FALSE;
 		return 0xFFFF;
 	}
-	if(GI[currGameIdx].pSC->vSI.size()==0)
+	if(GamesInfo[currGameIdx].pSC->vSI.size()==0)
 		goto exitError;
 
-	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GamesInfo[currGameIdx].szGAME_NAME);
 	
 	//We don't want to overdraw wrong serverlist
 	if(currGameIdx==g_currentGameIdx)
@@ -7328,7 +7348,7 @@ nextGame:
 		g_currentScanGameIdx = -1;
 		//Modified since ver 5.25		
 		Initialize_RedrawServerListThread();
-		//RedrawServerListThread(&GI[currGameIdx]);
+		//RedrawServerListThread(&GamesInfo[currGameIdx]);
 		
 	}
 
@@ -7345,7 +7365,7 @@ nextGame:
 	goto NoError;
 
 exitError:
-	SetStatusText(ICO_WARNING,lang.GetString("StatusReceivingServersError"),GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_WARNING,lang.GetString("StatusReceivingServersError"),GamesInfo[currGameIdx].szGAME_NAME);
 NoError:
    g_bRunSimulation = FALSE;
    g_currentScanGameIdx = -1;
@@ -7377,12 +7397,12 @@ DWORD WINAPI GetServerListThread(LPVOID lpParam )
 
 	g_currentScanGameIdx = g_currentGameIdx;
 
-	time(&GI[currGameIdx].lastScanTimeStamp);
+	time(&GamesInfo[currGameIdx].lastScanTimeStamp);
 
 nextGame:
 	
 	currGameIdx = iGame;
-	if(GI[currGameIdx].bActive==FALSE)
+	if(GamesInfo[currGameIdx].bActive==FALSE)
 	{		
 			iGame++;
 			Sleep(100);
@@ -7393,26 +7413,26 @@ nextGame:
 	if(iGame>MAX_SERVERLIST)  //reset
 		currGameIdx = iGame = 0;
 
-	SetStatusText(GI[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GI[currGameIdx].szGAME_NAME);
+	SetStatusText(GamesInfo[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GamesInfo[currGameIdx].szGAME_NAME);
 
-	/*switch(GI[currGameIdx].cGAMEINDEX)
+	/*switch(GamesInfo[currGameIdx].cGAMEINDEX)
 	{
 		case ETQW_SERVERLIST:
 			{
 				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
+				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
 				if(ret!=0)
 				{
 					bError = TRUE;
 					goto exitLoop;
 				}
 				
-				Parse_FileServerList(&GI[currGameIdx],"etqwservers.txt");			
+				Parse_FileServerList(&GamesInfo[currGameIdx],"etqwservers.txt");			
 			}
 			break;
 		case Q4_SERVERLIST:
 			{
-				Q4_ConnectToMasterServer(&GI[currGameIdx]);			
+				Q4_ConnectToMasterServer(&GamesInfo[currGameIdx]);			
 			}
 			break;
 		case HL2_SERVERLIST:
@@ -7420,42 +7440,42 @@ nextGame:
 		case CS_SERVERLIST:
 		case CSS_SERVERLIST:
 			{				
-				STEAM_ConnectToMasterServer(&GI[currGameIdx]);
+				STEAM_ConnectToMasterServer(&GamesInfo[currGameIdx]);
 			}
 			break;
 		default:
 			{
-				Q3_ConnectToMasterServer(&GI[currGameIdx]);
+				Q3_ConnectToMasterServer(&GamesInfo[currGameIdx]);
 
 			}
 			break;
 	}
 	
 	*/
-		SCAN_Set_CALLBACKS(GI[currGameIdx].GetServerStatus,&UpdateServerItem);
+		SCAN_Set_CALLBACKS(GamesInfo[currGameIdx].GetServerStatus,&UpdateServerItem);
 
 		if((DWORD)lpParam==SCAN_FILTERED)
-			Initialize_Rescan2(&GI[currGameIdx],&FilterServerItemV2);
+			Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
 		else
 		{
-			if(GI[currGameIdx].bUseHTTPServerList)
+			if(GamesInfo[currGameIdx].bUseHTTPServerList)
 			{
 				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GI[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
+				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
 				if(ret!=0)
 				{
 					bError = TRUE;
 					goto exitLoop;
 				}
-				Parse_FileServerList(&GI[currGameIdx],"servers.txt");
+				Parse_FileServerList(&GamesInfo[currGameIdx],"servers.txt");
 			}else			
-				GI[currGameIdx].GetServersFromMasterServer(&GI[currGameIdx]);
+				GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
 
-			Initialize_Rescan2(&GI[currGameIdx],NULL);
+			Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 		}
 	char szBuffer[100];
-	sprintf(szBuffer,"%s (%d)",GI[currGameIdx].szGAME_NAME,GI[currGameIdx].dwTotalServers);
-	TreeView_SetItemText(GI[currGameIdx].hTI,szBuffer);
+	sprintf(szBuffer,"%s (%d)",GamesInfo[currGameIdx].szGAME_NAME,GamesInfo[currGameIdx].dwTotalServers);
+	TreeView_SetItemText(GamesInfo[currGameIdx].hTI,szBuffer);
 
 
 	if((options==SCAN_ALL_GAMES) && (g_bCancel==false))
@@ -7474,10 +7494,10 @@ nextGame:
 		return 0xFFFF;
 	}
 
-	if(GI[currGameIdx].pSC->vSI.size()==0) //Well no new servers
+	if(GamesInfo[currGameIdx].pSC->vSI.size()==0) //Well no new servers
 		bError = TRUE;
 
-	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GI[currGameIdx].szGAME_NAME);
+	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GamesInfo[currGameIdx].szGAME_NAME);
 	
 	g_bCancel = false;
 
@@ -7488,7 +7508,7 @@ exitLoop:
 
 	g_currentScanGameIdx = -1;
 	if(bError)
-		SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersError"),GI[currGameIdx].szGAME_NAME);
+		SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersError"),GamesInfo[currGameIdx].szGAME_NAME);
 
    if (! SetEvent(hCloseEvent) ) 
         dbg_print("SetEvent failed!\n");      
@@ -7740,7 +7760,7 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 
 	int gameIdx = (int)pvoid;
 
-	GAME_INFO *pGI = &GI[gameIdx];//(GAME_INFO *)pvoid;
+	GAME_INFO *pGI = &GamesInfo[gameIdx];//(GAME_INFO *)pvoid;
 	
 	vSRV_INF::iterator  iLst;
 
@@ -8469,8 +8489,8 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 								HDC  hDC =  pListDraw->nmcd.hdc;
 								RECT rc;								
 								ListView_GetSubItemRect(g_hwndListViewServer,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-								if(GI[pSI.cGAMEINDEX].Draw_ColorEncodedText!=NULL)
-									GI[pSI.cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
+								if(GamesInfo[pSI.cGAMEINDEX].Draw_ColorEncodedText!=NULL)
+									GamesInfo[pSI.cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
 								else
 									Draw_ColorEncodedText(rc, pListDraw , pSI.szServerName);
 
@@ -8537,8 +8557,8 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 								if(pPlayerData!=NULL)
 								{
 									ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-									if(GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
-										return GI[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
+									if(GamesInfo[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
+										return GamesInfo[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw , pPlayerData->szPlayerName);
 								}
 							}
 						}
@@ -8624,7 +8644,7 @@ SERVER_INFO *FindServer(char *str)
 
 	_strlwr_s( copy1,sizeof(copy1));
 		
-	GAME_INFO *pGI = (GAME_INFO *)&GI[g_currentGameIdx];
+	GAME_INFO *pGI = (GAME_INFO *)&GamesInfo[g_currentGameIdx];
 	vSRV_INF::iterator  iLst;
 
 	if(pGI->pSC->vSI.size()==0)
@@ -9022,8 +9042,8 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 					if(pBI==NULL)
 						return;
 
-					SERVER_INFO pSI = GI[pBI->cGAMEINDEX].pSC->vSI.at(pBI->sIndex);
-					LaunchGame(pSI,&GI[pSI.cGAMEINDEX]);
+					SERVER_INFO pSI = GamesInfo[pBI->cGAMEINDEX].pSC->vSI.at(pBI->sIndex);
+					LaunchGame(pSI,&GamesInfo[pSI.cGAMEINDEX]);
 			
 				}
 			}else
@@ -9039,7 +9059,7 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 
 			SERVER_INFO pSrv;
 			pSrv =  Get_ServerInfoByListViewIndex(currCV,n);
-			LaunchGame(pSrv,&GI[g_currentGameIdx]);
+			LaunchGame(pSrv,&GamesInfo[g_currentGameIdx]);
 		}
 	}
 
@@ -9189,7 +9209,7 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 					ExecuteGame(currCV,"");
 				break;
 				case IDM_DELETE_SERVERLIST:
-					DeleteServerLists(GI[g_currentGameIdx].cGAMEINDEX);
+					DeleteServerLists(GamesInfo[g_currentGameIdx].cGAMEINDEX);
 					break;
 
 			}
@@ -9209,11 +9229,11 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 				//place the window/menu there if needed 						
 
 			char szText[100];
-			sprintf_s(szText,sizeof(szText),lang.GetString("MenuFindInternetServers"),GI[g_currentGameIdx].szGAME_NAME);
+			sprintf_s(szText,sizeof(szText),lang.GetString("MenuFindInternetServers"),GamesInfo[g_currentGameIdx].szGAME_NAME);
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_SCAN,szText);
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,lang.GetString("MenuLaunchGameOnly"));
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADDIP,lang.GetString("MenuAddNewIPToFav"));
-			sprintf_s(szText,sizeof(szText),lang.GetString("MenuDeleteServerList"),GI[g_currentGameIdx].szGAME_NAME);
+			sprintf_s(szText,sizeof(szText),lang.GetString("MenuDeleteServerList"),GamesInfo[g_currentGameIdx].szGAME_NAME);
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE_SERVERLIST,szText);			
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MINIMUMPLAYERS,lang.GetString("MenuModifyMinPly"));
 			InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_FOO_MAXIMUMPLAYERS,lang.GetString("MenuModifyMaxPly"));
@@ -9475,7 +9495,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						{
 							SERVER_INFO pSrv;	
 							pSrv = Get_ServerInfoByListViewIndex(currCV,i);
-							LaunchGame(pSrv,&GI[g_currentGameIdx],x);
+							LaunchGame(pSrv,&GamesInfo[g_currentGameIdx],x);
 						}
 					}
 
@@ -9761,7 +9781,7 @@ BOOL WINAPI EditCopy(char *pText)
 
 void Sync_ServerInfo(SERVER_INFO pSI)
 {
-	GAME_INFO *pGI = &GI[pSI.cGAMEINDEX];
+	GAME_INFO *pGI = &GamesInfo[pSI.cGAMEINDEX];
 	pGI->pSC->vSI.at(pSI.dwIndex) = pSI;
 }
 
@@ -10010,21 +10030,21 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								return TRUE;
 								break;
 							case SHOW_FAVORITES_PUBLIC:
-								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PUBLIC ;
+								GamesInfo[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PUBLIC ;
 								break;								
 							case SHOW_FAVORITES_PRIVATE:
-								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PRIVATE ;
+								GamesInfo[g_currentGameIdx].dwViewFlags = REDRAWLIST_FAVORITES_PRIVATE ;
 								break;	
 							case SHOW_HISTORY:
-								GI[g_currentGameIdx].dwViewFlags = REDRAWLIST_HISTORY;
+								GamesInfo[g_currentGameIdx].dwViewFlags = REDRAWLIST_HISTORY;
 								break;
 							case REDRAW_CURRENT_LIST : 
-								GI[g_currentGameIdx].dwViewFlags = 0;
+								GamesInfo[g_currentGameIdx].dwViewFlags = 0;
 								break;						
 							default:  //a game is selected
 								{
-									GI[g_currentGameIdx].dwViewFlags = 0;
-									if(GI[g_currentGameIdx].pSC->vSI.size()==0) //if empty let's download server list from master
+									GamesInfo[g_currentGameIdx].dwViewFlags = 0;
+									if(GamesInfo[g_currentGameIdx].pSC->vSI.size()==0) //if empty let's download server list from master
 									{
 										OnActivate_ServerList();
 										return TRUE;
@@ -10032,12 +10052,12 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 									{
 										time_t currTime;
 										time(&currTime);
-										double seconds = difftime(currTime,GI[g_currentGameIdx].lastScanTimeStamp);
+										double seconds = difftime(currTime,GamesInfo[g_currentGameIdx].lastScanTimeStamp);
 										dbg_print("Seconds since last scan %f",seconds);
 										if(seconds>(60*5))
 										{
 										
-											GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
+											GamesInfo[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
 											OnActivate_ServerList(SCAN_FILTERED);
 											return TRUE;
 										}
@@ -10048,7 +10068,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 						} //end switch
 						Initialize_RedrawServerListThread();
-						//RedrawServerListThread(&GI[g_currentGameIdx]);
+						//RedrawServerListThread(&GamesInfo[g_currentGameIdx]);
 						return TRUE;
 					}					
 				}
@@ -10288,14 +10308,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 				cutoff[0]=0;
 				for(char i=0;i<MAX_SERVERLIST; i++)
 				{
-					if(strcmp(proto,GI[i].szProtocolName)==0)
+					if(strcmp(proto,GamesInfo[i].szProtocolName)==0)
 					{
 						srv.cGAMEINDEX = i;	
 						srv.dwIndex = 999999;  //work around to skip sync
 						if(srv.dwPort ==0)
-							srv.dwPort = GI[i].dwDefaultPort;
+							srv.dwPort = GamesInfo[i].dwDefaultPort;
 
-						LaunchGame(srv,&GI[i]);
+						LaunchGame(srv,&GamesInfo[i]);
 					}
 				}
 				return 0;
@@ -10519,9 +10539,9 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 	for(int i=0; i<MAX_SERVERLIST;i++)
 	{
 		
-		if((GI[i].dwDefaultPort==pSI.dwPort) && GI[i].bActive)
+		if((GamesInfo[i].dwDefaultPort==pSI.dwPort) && GamesInfo[i].bActive)
 		{
-			typeRecognized=GI[i].cGAMEINDEX;
+			typeRecognized=GamesInfo[i].cGAMEINDEX;
 			break;
 		}
 	}
@@ -10533,7 +10553,7 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 		GetServerInfo(typeRecognized,&pSI);
 
 		dbg_print("Game detected: ");
-		dbg_print(GI[typeRecognized].szGAME_NAME);
+		dbg_print(GamesInfo[typeRecognized].szGAME_NAME);
 		dbg_print("\n");
 	}
 	if(pSI.bPrivate==1)
@@ -10625,7 +10645,7 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 			
 			wsprintf(szMsg,"%s:%d",pSI.szIPaddress,pSI.dwPort);	
 			ReplaceStrInStr(mircoutput,"%IP%",szMsg);		
-			ReplaceStrInStr(mircoutput,"%GAMENAME%",GI[pSI.cGAMEINDEX].szGAME_NAME);
+			ReplaceStrInStr(mircoutput,"%GAMENAME%",GamesInfo[pSI.cGAMEINDEX].szGAME_NAME);
 			
 			if(pSI.bPrivate)
 				ReplaceStrInStr(mircoutput,"%PRIVATE%","Private");
@@ -11794,24 +11814,24 @@ int CFG_Load()
 					char temp[MAX_PATH];
 					ReadCfgStr(pNode, "GameName",temp,MAX_PATH);
 					if(strlen(temp)>0)
-						strcpy(GI[i].szGAME_NAME,temp);
+						strcpy(GamesInfo[i].szGAME_NAME,temp);
 
 					
-					if(ReadCfgStr(pNode, "Path",GI[i].szGAME_PATH,MAX_PATH)!=NULL) //old changed since ver 1.08
+					if(ReadCfgStr(pNode, "Path",GamesInfo[i].szGAME_PATH,MAX_PATH)!=NULL) //old changed since ver 1.08
 					{
-						GI[i].pSC->vGAME_INST.clear();
-						ReadCfgStr(pNode, "Cmd",GI[i].szGAME_CMD,sizeof(GI[i].szGAME_CMD));
-						ReadCfgStr(pNode, "LaunchByVer",GI[i].szLaunchByVersion,MAX_PATH);
-						ReadCfgStr(pNode, "LaunchByMod",GI[i].szLaunchByMod,MAX_PATH);
+						GamesInfo[i].pSC->vGAME_INST.clear();
+						ReadCfgStr(pNode, "Cmd",GamesInfo[i].szGAME_CMD,sizeof(GamesInfo[i].szGAME_CMD));
+						ReadCfgStr(pNode, "LaunchByVer",GamesInfo[i].szLaunchByVersion,MAX_PATH);
+						ReadCfgStr(pNode, "LaunchByMod",GamesInfo[i].szLaunchByMod,MAX_PATH);
 
 						GAME_INSTALLATIONS gi;
 						gi.sName = "Default";
-						gi.szGAME_PATH = GI[i].szGAME_PATH;
-						gi.szGAME_CMD = GI[i].szGAME_CMD;
-						gi.sMod = GI[i].szLaunchByMod;		
-						gi.sVersion = GI[i].szLaunchByVersion;
+						gi.szGAME_PATH = GamesInfo[i].szGAME_PATH;
+						gi.szGAME_CMD = GamesInfo[i].szGAME_CMD;
+						gi.sMod = GamesInfo[i].szLaunchByMod;		
+						gi.sVersion = GamesInfo[i].szLaunchByVersion;
 
-						GI[i].pSC->vGAME_INST.push_back(gi);
+						GamesInfo[i].pSC->vGAME_INST.push_back(gi);
 					} else
 					{
 						TiXmlNode* pInstallTags = pElement->FirstChild("Installs");
@@ -11820,25 +11840,25 @@ int CFG_Load()
 						{
 							TiXmlElement* pInstalls = pInstallTags->ToElement();
 							if(pInstalls!=NULL)
-								GI[i].pSC->vGAME_INST.clear();
+								GamesInfo[i].pSC->vGAME_INST.clear();
 							while(pInstalls!=NULL)
 							{
 								TiXmlElement* pInstall = pInstalls->FirstChild("Install")->ToElement();
 								char szTemp[512];
 								ReadCfgStr(pInstall, "Name",szTemp,MAX_PATH); 
-								ReadCfgStr(pInstall, "Path",GI[i].szGAME_PATH,MAX_PATH); //old changed since ver 1.08
-								ReadCfgStr(pInstall, "Cmd",GI[i].szGAME_CMD,sizeof(GI[i].szGAME_CMD));
-								ReadCfgStr(pInstall, "LaunchByVer",GI[i].szLaunchByVersion,MAX_PATH);
-								ReadCfgStr(pInstall, "LaunchByMod",GI[i].szLaunchByMod,MAX_PATH);
+								ReadCfgStr(pInstall, "Path",GamesInfo[i].szGAME_PATH,MAX_PATH); //old changed since ver 1.08
+								ReadCfgStr(pInstall, "Cmd",GamesInfo[i].szGAME_CMD,sizeof(GamesInfo[i].szGAME_CMD));
+								ReadCfgStr(pInstall, "LaunchByVer",GamesInfo[i].szLaunchByVersion,MAX_PATH);
+								ReadCfgStr(pInstall, "LaunchByMod",GamesInfo[i].szLaunchByMod,MAX_PATH);
 
 								GAME_INSTALLATIONS gi;
 								gi.sName = szTemp;
-								gi.szGAME_PATH = GI[i].szGAME_PATH;
-								gi.szGAME_CMD = GI[i].szGAME_CMD;
-								gi.sMod = GI[i].szLaunchByMod;		
-								gi.sVersion = GI[i].szLaunchByVersion;
+								gi.szGAME_PATH = GamesInfo[i].szGAME_PATH;
+								gi.szGAME_CMD = GamesInfo[i].szGAME_CMD;
+								gi.sMod = GamesInfo[i].szLaunchByMod;		
+								gi.sVersion = GamesInfo[i].szLaunchByVersion;
 
-								GI[i].pSC->vGAME_INST.push_back(gi);
+								GamesInfo[i].pSC->vGAME_INST.push_back(gi);
 								pInstalls = pInstalls->NextSiblingElement();
 								if(pInstalls==NULL)
 									break;
@@ -11847,27 +11867,27 @@ int CFG_Load()
 						}
 					}
 					
-				//	ReadCfgStr( pNode, "yawn",GI[i].szMAP_YAWN_PATH,sizeof(GI[i].szMAP_YAWN_PATH));
-					ReadCfgStr( pNode, "MapPreview",GI[i].szMAP_MAPPREVIEW_PATH,sizeof(GI[i].szMAP_MAPPREVIEW_PATH));
-					ReadCfgStr( pNode, "MasterServer",GI[i].szMasterServerIP,sizeof(GI[i].szMasterServerIP));		
-					ReadCfgInt( pNode, "MasterServerPort",(int&)GI[i].dwMasterServerPORT);
-					ReadCfgInt( pNode, "Protocol",(int&)GI[i].dwProtocol);		
-					ReadCfgInt(pNode, "Active",(int&)GI[i].bActive);
-					ReadCfgInt(pNode, "FilterMod",(int&)GI[i].filter.dwMod);
-					ReadCfgInt(pNode, "FilterVersion",(int&)GI[i].filter.dwVersion);
-					ReadCfgInt(pNode, "FilterMap",(int&)GI[i].filter.dwMap);
-					ReadCfgInt(pNode, "FilterRegion",(int&)GI[i].filter.dwRegion);
-					ReadCfgInt(pNode, "FilterGameType",(int&)GI[i].filter.dwGameTypeFilter);					
-					ReadCfgInt(pNode, "FilterHideFull",(int&)GI[i].filter.bNoFull);
-					ReadCfgInt(pNode, "FilterHideEmpty",(int&)GI[i].filter.bNoEmpty);
-					ReadCfgInt(pNode, "FilterPunkbuster",(int&)GI[i].filter.bPunkbuster);
-					ReadCfgInt(pNode, "FilterHideOffline",(int&)GI[i].filter.bHideOfflineServers);
-					ReadCfgInt(pNode, "FilterPure",(int&)GI[i].filter.bPure);
-					ReadCfgInt(pNode, "FilterRanked",(int&)GI[i].filter.bRanked);
-					ReadCfgInt(pNode, "FilterHideBots",(int&)GI[i].filter.bNoBots);
-					ReadCfgInt(pNode, "FilterNoPrivate",(int&)GI[i].filter.bNoPrivate);
-					ReadCfgInt(pNode, "FilterOnlyPrivate",(int&)GI[i].filter.bOnlyPrivate);					
-					ReadCfgInt(pNode, "FilterDedicated",(int&)GI[i].filter.bDedicated);					
+				//	ReadCfgStr( pNode, "yawn",GamesInfo[i].szMAP_YAWN_PATH,sizeof(GamesInfo[i].szMAP_YAWN_PATH));
+					ReadCfgStr( pNode, "MapPreview",GamesInfo[i].szMAP_MAPPREVIEW_PATH,sizeof(GamesInfo[i].szMAP_MAPPREVIEW_PATH));
+					ReadCfgStr( pNode, "MasterServer",GamesInfo[i].szMasterServerIP,sizeof(GamesInfo[i].szMasterServerIP));		
+					ReadCfgInt( pNode, "MasterServerPort",(int&)GamesInfo[i].dwMasterServerPORT);
+					ReadCfgInt( pNode, "Protocol",(int&)GamesInfo[i].dwProtocol);		
+					ReadCfgInt(pNode, "Active",(int&)GamesInfo[i].bActive);
+					ReadCfgInt(pNode, "FilterMod",(int&)GamesInfo[i].filter.dwMod);
+					ReadCfgInt(pNode, "FilterVersion",(int&)GamesInfo[i].filter.dwVersion);
+					ReadCfgInt(pNode, "FilterMap",(int&)GamesInfo[i].filter.dwMap);
+					ReadCfgInt(pNode, "FilterRegion",(int&)GamesInfo[i].filter.dwRegion);
+					ReadCfgInt(pNode, "FilterGameType",(int&)GamesInfo[i].filter.dwGameTypeFilter);					
+					ReadCfgInt(pNode, "FilterHideFull",(int&)GamesInfo[i].filter.bNoFull);
+					ReadCfgInt(pNode, "FilterHideEmpty",(int&)GamesInfo[i].filter.bNoEmpty);
+					ReadCfgInt(pNode, "FilterPunkbuster",(int&)GamesInfo[i].filter.bPunkbuster);
+					ReadCfgInt(pNode, "FilterHideOffline",(int&)GamesInfo[i].filter.bHideOfflineServers);
+					ReadCfgInt(pNode, "FilterPure",(int&)GamesInfo[i].filter.bPure);
+					ReadCfgInt(pNode, "FilterRanked",(int&)GamesInfo[i].filter.bRanked);
+					ReadCfgInt(pNode, "FilterHideBots",(int&)GamesInfo[i].filter.bNoBots);
+					ReadCfgInt(pNode, "FilterNoPrivate",(int&)GamesInfo[i].filter.bNoPrivate);
+					ReadCfgInt(pNode, "FilterOnlyPrivate",(int&)GamesInfo[i].filter.bOnlyPrivate);					
+					ReadCfgInt(pNode, "FilterDedicated",(int&)GamesInfo[i].filter.bDedicated);					
 					pElement = pElement->NextSiblingElement();
 					if(pElement==NULL)
 						break;
@@ -12037,7 +12057,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case WM_REFRESHSERVERLIST:
 			Initialize_RedrawServerListThread();
-			//RedrawServerListThread(&GI[g_currentGameIdx]);
+			//RedrawServerListThread(&GamesInfo[g_currentGameIdx]);
 			return TRUE;
 		case WM_CREATE:
 		{
@@ -12212,11 +12232,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 				}
 				case IDM_SCAN_ALL_GAMES:
-					GI[g_currentGameIdx].dwViewFlags = 0;
+					GamesInfo[g_currentGameIdx].dwViewFlags = 0;
 					OnActivate_ServerList(SCAN_ALL_GAMES);
 					break;
 				case IDM_SCAN_FILTERED:
-					GI[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
+					GamesInfo[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
 					OnActivate_ServerList(SCAN_FILTERED);
 					break;
 				case IDM_SCAN:  //Toolbar
@@ -12224,7 +12244,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				break;
 				case IDM_REFRESH:  //Toolbar
 				case ID_OPTIONS_REFRESH: 
-					GI[g_currentGameIdx].dwViewFlags = 0;
+					GamesInfo[g_currentGameIdx].dwViewFlags = 0;
 					OnScanButton();							
 				break;
 				case IDC_DOWNLOAD:
@@ -12324,7 +12344,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						SetDlgTrans(hWnd,AppCFG.g_cTransparancy);
 						
 						//Do we need to change view after configuring?
-						if(GI[g_currentGameIdx].bActive==false)
+						if(GamesInfo[g_currentGameIdx].bActive==false)
 						{
 							ListView_DeleteAllItems(g_hwndListViewServer);
 							ListView_DeleteAllItems(g_hwndListViewPlayers);

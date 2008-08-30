@@ -19,7 +19,8 @@ HWND g_hwndRCONCmd=NULL,g_hwndRCONOut=NULL,g_hRCONDlg=NULL;
 char cGAMEINDEX=0;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_CurrentSelServer;
-extern GAME_INFO GI[MAX_SERVERLIST+1];
+extern GamesMap GamesInfo;
+//extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
 extern CLanguage lang;
 
 char szRCON_CMD_BACKLOG[MAX_BACKLOG][80];
@@ -206,7 +207,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 							if(ret == IDOK)
 							{
-								GI[g_RCONServer->cGAMEINDEX].pSC->vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
+								GamesInfo[g_RCONServer->cGAMEINDEX].pSC->vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
 								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 

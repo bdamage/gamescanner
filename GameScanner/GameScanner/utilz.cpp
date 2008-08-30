@@ -10,7 +10,8 @@ extern HWND g_hWnd;
 extern int g_statusIcon;
 extern HWND g_hwndLogger;
 extern HINSTANCE g_hInst;
-extern GAME_INFO GI[MAX_SERVERLIST+1];
+extern GamesMap GamesInfo;
+//extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
 extern RECT g_INFOIconRect;
 extern _WINDOW_CONTAINER WNDCONT[15];
 string UTILZ_sLogger;
@@ -866,9 +867,9 @@ DWORD Get_GameTypeByName(int gameIdx, char *szGameType)
 	if(szGameType==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterGameType.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterGameType.size();i++)
 	{
-		GAMEFILTER gf = GI[gameIdx].pSC->vFilterGameType.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterGameType.at(i);
 		if(gf.dwExactMatch==0)
 		{
 			if(strstr(szGameType,gf.sStrValue.c_str())!=NULL)
@@ -888,9 +889,9 @@ DWORD Get_ModByName(int gameIdx, char *szModName)
 	if(szModName==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterMod.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterMod.size();i++)
 	{
-		GAMEFILTER gf = GI[gameIdx].pSC->vFilterMod.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterMod.at(i);
 		if(strstr(szModName,gf.sStrValue.c_str())!=NULL)
 			return gf.dwValue;		
 	}
@@ -901,9 +902,9 @@ DWORD Get_MapByName(int gameIdx, char *szMapName)
 	if(szMapName==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterMap.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterMap.size();i++)
 	{
-		GAMEFILTER gf = GI[gameIdx].pSC->vFilterMap.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterMap.at(i);
 		if(gf.dwExactMatch==0)
 		{
 			if(strstr(szMapName,gf.sStrValue.c_str())!=NULL)
@@ -922,9 +923,9 @@ DWORD Get_FilterVersionByVersionString(int gameIdx, char *szVersion)
 	if(szVersion==NULL)
 		return VERSION_UNKNOWN;
 
-	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterVersion.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterVersion.size();i++)
 	{
-		GAMEFILTER gf = GI[gameIdx].pSC->vFilterVersion.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterVersion.at(i);
 
 		if(strstr(szVersion,gf.sStrValue.c_str())!=NULL)
 			return gf.dwValue;
@@ -937,12 +938,12 @@ DWORD Get_FilterVersionByVersionString(int gameIdx, char *szVersion)
 //A better readable name is returned
 const char * Get_GameTypeNameByGameType(int gameIdx, WORD cGameType)
 {
-	for(unsigned int i=0;i<GI[gameIdx].pSC->vFilterGameType.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterGameType.size();i++)
 	{
-		GAMEFILTER gf = GI[gameIdx].pSC->vFilterGameType.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterGameType.at(i);
 		
 		if(cGameType == gf.dwValue)
-			return GI[gameIdx].pSC->vFilterGameType.at(i).sFriendlyName.c_str(); //gf.sFriendlyName.c_str();		
+			return GamesInfo[gameIdx].pSC->vFilterGameType.at(i).sFriendlyName.c_str(); //gf.sFriendlyName.c_str();		
 	}
 	return szGAMETYPEUNKOWN;
 }

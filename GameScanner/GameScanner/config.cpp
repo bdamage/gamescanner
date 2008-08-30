@@ -2,7 +2,7 @@
 #include "stdafx.h"
 #include "config.h"
 #include "utilz.h"
-#include "structs_defines.h"
+
 
 #pragma warning(disable : 4995)
 #pragma warning(disable : 4996)
@@ -26,8 +26,10 @@ HWND g_hwndTree=NULL;
 DWORD g_tvIndexCFG=0;
 extern HIMAGELIST g_hImageListIcons;
 extern APP_SETTINGS_NEW AppCFG;
-extern GAME_INFO GI[MAX_SERVERLIST+1];
-GAME_INFO GI_CFG[MAX_SERVERLIST+1];
+extern GamesMap GamesInfo;
+GamesMap GamesInfoCFG;
+///extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
+//GAME_INFO GamesInfoCFG[MAX_SERVERLIST+1];
 
 extern HINSTANCE g_hInst;
 extern char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
@@ -77,21 +79,21 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 	if(gameID!=-1)
 	{
 		if(IsDlgButtonChecked(hDlg,IDC_CHECK_ACTIVE)==BST_CHECKED)
-			GI_CFG[gameID].bActive=true;
+			GamesInfoCFG[gameID].bActive=true;
 		else
-			GI_CFG[gameID].bActive=false;
+			GamesInfoCFG[gameID].bActive=false;
 
 		if(IsDlgButtonChecked(hDlg,IDC_CHECK_USE_HTTP)==BST_CHECKED)
-			GI_CFG[gameID].bUseHTTPServerList = TRUE;
+			GamesInfoCFG[gameID].bUseHTTPServerList = TRUE;
 		else
-			GI_CFG[gameID].bUseHTTPServerList = FALSE;
+			GamesInfoCFG[gameID].bUseHTTPServerList = FALSE;
 
-		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP,MAX_PATH);						
+		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GamesInfoCFG[gameID].szMasterServerIP,MAX_PATH);						
 		char szTmp[10];
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,szTmp,sizeof(szTmp));
-		GI_CFG[gameID].dwMasterServerPORT = atoi(szTmp);
+		GamesInfoCFG[gameID].dwMasterServerPORT = atoi(szTmp);
 		GetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,szTmp,sizeof(szTmp));
-		GI_CFG[gameID].dwProtocol= atoi(szTmp);
+		GamesInfoCFG[gameID].dwProtocol= atoi(szTmp);
 	}
 }
 
@@ -225,12 +227,13 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
 			for(int i=0;i<MAX_SERVERLIST;i++)
-				hNewItem = TreeView_AddItem(GI[i].iIconIndex,GI[i].szGAME_SHORTNAME);
+				hNewItem = TreeView_AddItem(GamesInfo[i].iIconIndex,GamesInfo[i].szGAME_SHORTNAME);
 
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
-					
+				
+			GamesInfoCFG = GamesInfo;
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
-			memcpy(&GI_CFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
+		//	memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
 			SetDlgItemText(hDlg,IDOK,lang.GetString("Ok"));
 			SetDlgItemText(hDlg,IDC_BUTTON_DEFAULT,lang.GetString("SetDefault"));
@@ -328,9 +331,11 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					{
 						UnregisterHotKey(NULL, HOTKEY_ID);
 					}
+						
+					GamesInfo = GamesInfoCFG;
 					memcpy(&AppCFG,&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
-					memcpy(&GI,&GI_CFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
-					ZeroMemory(&GI_CFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
+					//memcpy(&GI,&GamesInfoCFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
+				//	ZeroMemory(&GamesInfoCFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
 					ZeroMemory(&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
 					/*HANDLE hThread=NULL; 
 					DWORD dwThreadIdBrowser=0;				
@@ -353,7 +358,8 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					Default_Appsettings();
 					Default_GameSettings();
 					memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
-					memcpy(&GI_CFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
+					//memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
+					GamesInfoCFG = GamesInfo;
 					g_currSelCfg=-1;
 					CFG_OnSelChanged(hDlg); 
 					return TRUE;
@@ -511,7 +517,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				CFG_editexeIdx = lParam;
 				int gameID = CFG_GetGameID(g_currSelCfg);	
 				GAME_INSTALLATIONS gi;
-				gi = GI_CFG[gameID].pSC->vGAME_INST.at(lParam);
+				gi = GamesInfoCFG[gameID].pSC->vGAME_INST.at(lParam);
 
 				SetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,gi.sName.c_str());
 				SetDlgItemText(hDlg,IDC_EDIT_PATH,gi.szGAME_PATH.c_str());
@@ -548,7 +554,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 							gi.sVersion = szTemp;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,szTemp,MAX_PATH*2);
 							gi.sMod = szTemp;
-							GI_CFG[gameID].pSC->vGAME_INST.at(CFG_editexeIdx) = gi;
+							GamesInfoCFG[gameID].pSC->vGAME_INST.at(CFG_editexeIdx) = gi;
 							EndDialog(hDlg,0);
 						}
 						break;
@@ -579,7 +585,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 						if(gameID!=-1)
 						{
 
-							ofn.lpstrInitialDir = GI_CFG[gameID].szGAME_PATH;
+							ofn.lpstrInitialDir = GamesInfoCFG[gameID].szGAME_PATH;
 						}
 						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
@@ -642,7 +648,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 							gi.sVersion = szTemp;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,szTemp,MAX_PATH*2);
 							gi.sMod = szTemp;
-							GI_CFG[gameID].pSC->vGAME_INST.push_back(gi);
+							GamesInfoCFG[gameID].pSC->vGAME_INST.push_back(gi);
 
 							EndDialog(hDlg,0);
 						}
@@ -674,7 +680,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 						if(gameID!=-1)
 						{
 
-							ofn.lpstrInitialDir = GI_CFG[gameID].szGAME_PATH;
+							ofn.lpstrInitialDir = GamesInfoCFG[gameID].szGAME_PATH;
 						}
 						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
@@ -706,7 +712,7 @@ void CFG_Enumerate_installations(HWND hDlg,int GameId)
 
 	ListView_DeleteAllItems(hwndLVexes);
 
-	for ( iLst = GI_CFG[GameId].pSC->vGAME_INST.rbegin(); iLst != GI_CFG[GameId].pSC->vGAME_INST.rend( ); iLst++ )
+	for ( iLst = GamesInfoCFG[GameId].pSC->vGAME_INST.rbegin(); iLst != GamesInfoCFG[GameId].pSC->vGAME_INST.rend( ); iLst++ )
 	{
 	
 		GAME_INSTALLATIONS gi = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
@@ -838,19 +844,19 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			gameID = CFG_GetGameID(g_currSelCfg);
 			if(gameID!=-1)
 			{
-				sprintf(szText,lang.GetString("CFGSettingsTitle"),GI_CFG[gameID].szGAME_NAME);
+				sprintf(szText,lang.GetString("CFGSettingsTitle"),GamesInfoCFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
 
-				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GI_CFG[gameID].szMasterServerIP);
-				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GI_CFG[gameID].dwMasterServerPORT,szTmp,10));
-				SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GI_CFG[gameID].dwProtocol,szTmp,10));
+				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GamesInfoCFG[gameID].szMasterServerIP);
+				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GamesInfoCFG[gameID].dwMasterServerPORT,szTmp,10));
+				SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GamesInfoCFG[gameID].dwProtocol,szTmp,10));
 
-				if(GI_CFG[gameID].bUseHTTPServerList)
+				if(GamesInfoCFG[gameID].bUseHTTPServerList)
 					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
 				else
 					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_UNCHECKED);
 				
-				if(GI_CFG[gameID].bActive)
+				if(GamesInfoCFG[gameID].bActive)
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_CHECKED);
 				else
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_UNCHECKED);
@@ -974,7 +980,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 							int gameID = CFG_GetGameID(g_currSelCfg);	
 							if(gameID!=-1)
 							{
-								GI_CFG[gameID].pSC->vGAME_INST.erase(GI_CFG[gameID].pSC->vGAME_INST.begin()+n);
+								GamesInfoCFG[gameID].pSC->vGAME_INST.erase(GamesInfoCFG[gameID].pSC->vGAME_INST.begin()+n);
 								CFG_Enumerate_installations(hDlg,gameID);
 							}
 						}
@@ -1006,7 +1012,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					if(gameID!=-1)
 					{
 
-						ofn.lpstrInitialDir = GI_CFG[gameID].szGAME_PATH;
+						ofn.lpstrInitialDir = GamesInfoCFG[gameID].szGAME_PATH;
 					}
 					ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
