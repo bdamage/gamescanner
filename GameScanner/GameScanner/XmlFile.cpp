@@ -63,8 +63,8 @@ int CXmlFile::GetText(TiXmlElement *pInElement,const char * szElementName, char 
 			const char *szTxt = pElement->GetText();
 			if(szTxt!=NULL)
 			{
-				if(strlen(szTxt)+1 <= dwBufferLen)
-					dwBufferLen = strlen(szTxt)+1;
+				//if(strlen(szTxt)+1 <= dwBufferLen)
+				//	dwBufferLen = strlen(szTxt)+1;
 	//			else
 	//				OutputDebugString("Tag <%S> value length is overrided, max length is %d - <br>Part of the value will only be readed.",szElementName,dwBufferLen);
 				strcpy_s(pszOut, dwBufferLen,szTxt);	
@@ -100,4 +100,30 @@ int CXmlFile::GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut)
 	}
 	//OutputDebugString("Could not find tag %S",elementname);
 	return -1;
+}
+
+
+char * CXmlFile::GetAttribute(TiXmlElement* pNode, char *szParamName,char *szOutputBuffer,int iBuffSize)
+{
+	if(szOutputBuffer==NULL)
+		return NULL;
+	ZeroMemory(szOutputBuffer,iBuffSize);
+	for( pNode; pNode; pNode=pNode->NextSiblingElement())
+	{
+		
+		const char *pName=pNode->Attribute("name");
+		if(pName==NULL)
+			continue;
+		
+		if(strcmp(szParamName,pName)==0)
+		{
+			const char *pValue = pNode->Attribute("value"); // If this fails, original value is left as-is
+			//int len = strlen(pValue);
+			//strcpy(szOutputBuffer,pValue);
+			strncpy(szOutputBuffer,pValue,iBuffSize);
+			return szOutputBuffer;					
+		}
+	}
+	//AddLogInfo(0,"Error reading XML tag %s",szParamName);
+	return NULL;
 }

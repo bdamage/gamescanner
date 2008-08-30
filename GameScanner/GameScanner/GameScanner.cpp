@@ -2086,8 +2086,8 @@ GamesMap GamesInfo;
 void Default_GameSettings2()
 {
 GAME_INSTALLATIONS gi;
-/*	
-	for(int i=0; i<MAX_SERVERLIST; i++)
+	
+/*	for(int i=0; i<MAX_SERVERLIST; i++)
 	{
 		GI[i].bUseHTTPServerList = FALSE;
 		GI[i].szGAME_PATH[0]=0; //quick erase
@@ -2095,7 +2095,7 @@ GAME_INSTALLATIONS gi;
 		GI[i].pSC = &SC[i];
 		GI[i].pSC->vGAME_INST.clear();
 	}
-	*/
+*/
 	CXmlFile xml;
 	xml.SetPath(EXE_PATH);
 	if(xml.load("gamedefaults.xml")==XMLFILE_ERROR_LOADING)
@@ -2105,74 +2105,117 @@ GAME_INSTALLATIONS gi;
 	xml.GetText(xml.m_pRootElement,"Version",szVersion,sizeof(szVersion));
 
 	TiXmlElement *ptempElement = xml.GetElementSafe(xml.m_pRootElement,"Game");
-	int idx = 0;
-	char szTemp[100];
 
-	GAME_INFO gameinfo;
+	TiXmlElement *pGame = xml.GetElementSafe(ptempElement,"Game");
 
-	xml.GetInteger(ptempElement,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
-	xml.GetText(ptempElement,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
-	xml.GetText(ptempElement,"NetEngine",szTemp,sizeof(szTemp)-1);
-	gameinfo.GAME_ENGINE = GetNetEngine(szTemp);
-	xml.GetText(ptempElement,"ShortName",gameinfo.szGAME_SHORTNAME,sizeof(gameinfo.szGAME_SHORTNAME)-1);
-	xml.GetText(ptempElement,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
-	xml.GetText(ptempElement,"WebProtocol",gameinfo.szProtocolName,sizeof(gameinfo.szProtocolName)-1);
-	xml.GetInteger(ptempElement,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
+	while(pGame!=NULL)
+	{
+		char szTemp[100];
+		GAME_INFO gameinfo;
+			
+		ZeroMemory(&gameinfo,sizeof(GAME_INFO));
+		ZeroMemory(&szTemp,sizeof(szTemp));
 
-	xml.GetText(ptempElement,"MasterQueryString",gameinfo.szServerRequestInfo,sizeof(gameinfo.szProtocolName)-1);
-	xml.GetText(ptempElement,"MasterExtendedQueryString",gameinfo.szQueryString,sizeof(gameinfo.szQueryString)-1);
+		xml.GetInteger(ptempElement,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
+		gameinfo.pSC = &SC[gameinfo.cGAMEINDEX];
+		xml.GetText(ptempElement,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
+		xml.GetText(ptempElement,"NetEngine",szTemp,sizeof(szTemp)-1);
+		gameinfo.GAME_ENGINE = GetNetEngine(szTemp);
+		xml.GetText(ptempElement,"ShortName",gameinfo.szGAME_SHORTNAME,sizeof(gameinfo.szGAME_SHORTNAME)-1);
+		xml.GetText(ptempElement,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
+		xml.GetText(ptempElement,"WebProtocol",gameinfo.szProtocolName,sizeof(gameinfo.szProtocolName)-1);
+		xml.GetInteger(ptempElement,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
+
+		xml.GetText(ptempElement,"ServerDefaultPort",gameinfo.szMAP_MAPPREVIEW_PATH,sizeof(gameinfo.szMAP_MAPPREVIEW_PATH)-1);
+
+		xml.GetText(ptempElement,"MasterQueryString",gameinfo.szServerRequestInfo,sizeof(gameinfo.szServerRequestInfo)-1);
+		xml.GetText(ptempElement,"MasterExtendedQueryString",gameinfo.szQueryString,sizeof(gameinfo.szQueryString)-1);
+
+		TiXmlElement *ptempMaster = xml.GetElementSafe(ptempElement,"MasterServers");
+		xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
+		xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
+		DWORD dwPort=0;
+		SplitIPandPORT(gameinfo.szMasterServerIP,dwPort);
+		gameinfo.dwMasterServerPORT =dwPort;
+
+		char szKey[256];
+		char szItem[100];
+		char szInstallSuffix[100];
+		TiXmlElement *ptempDetection = xml.GetElementSafe(ptempElement,"Detection");
+		TiXmlElement *ptempRegistry = xml.GetElementSafe(ptempDetection,"Registry");
+		xml.GetText(ptempRegistry,"RegRoot",szTemp,sizeof(szTemp)-1);
+		xml.GetText(ptempRegistry,"RegKey",szKey,sizeof(szKey)-1);
+		xml.GetText(ptempRegistry,"RegItem",szItem,sizeof(szItem)-1);
+		xml.GetText(ptempRegistry,"InstallSuffix",szInstallSuffix,sizeof(szInstallSuffix)-1);
+
+		DWORD dwBuffSize = sizeof(gameinfo.szGAME_PATH);
+
+		HKEY hkey = HKEY_LOCAL_MACHINE;
+		if(strcmp(szTemp,"HKEY_LOCAL_MACHINE")==0)
+			hkey = HKEY_LOCAL_MACHINE;
+		else if (strcmp(szTemp,"HKEY_CURRENT_USER")==0)
+			hkey = HKEY_CURRENT_USER;
+		else if (strcmp(szTemp,"HKEY_CLASSES_ROOT")==0)
+			hkey = HKEY_CLASSES_ROOT;
+
+		Registry_GetGamePath(hkey, szKey,szItem,gameinfo.szGAME_PATH,&dwBuffSize);
+		gameinfo.bActive = false;
+		if(strlen(gameinfo.szGAME_PATH)>0)
+		{
+			gameinfo.bActive = true;
+			strcat_s(gameinfo.szGAME_PATH,sizeof(gameinfo.szGAME_PATH),szInstallSuffix);
+		}
 
 
-	TiXmlElement *ptempMaster = xml.GetElementSafe(ptempElement,"MasterServers");
-	xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
-	xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
+		TiXmlElement *ptempInstalls = xml.GetElementSafe(ptempElement,"Installs");
 
-	HICON hicon = (HICON) LoadImage(NULL,"",IMAGE_ICON,0,0,LR_LOADFROMFILE);
+		while(ptempInstalls!=NULL)
+		{
+			TiXmlElement* pInstall = ptempInstalls->FirstChild("Install")->ToElement();
+		
+			xml.GetAttribute(pInstall,"Name",szTemp,sizeof(szTemp)-1);
+			gi.sName = szTemp;
+			xml.GetAttribute(pInstall,"Path",szTemp,sizeof(szTemp)-1);
+			gi.szGAME_PATH = szTemp;
+			xml.GetAttribute(pInstall,"Cmd",szTemp,sizeof(szTemp)-1);
+			gi.szGAME_CMD = szTemp;
+			xml.GetAttribute(pInstall,"LaunchByMod",szTemp,sizeof(szTemp)-1);
+			gi.sMod = szTemp;
+			xml.GetAttribute(pInstall,"LaunchByVer",szTemp,sizeof(szTemp)-1);
+			gi.sVersion = szTemp;
+			gameinfo.pSC->vGAME_INST.push_back(gi);
 
-	GamesInfo[gameinfo.cGAMEINDEX] = gameinfo;
+			ptempInstalls = ptempInstalls->NextSiblingElement();
+			if(ptempInstalls==NULL)
+				break;		
+		}
+
+	//	HICON hicon = (HICON) LoadImage(NULL,"",IMAGE_ICON,0,0,LR_LOADFROMFILE);
+
+		switch(gameinfo.GAME_ENGINE)
+		{
+			case Q3_ENGINE:
+				{
+					gameinfo.colorfilter = &colorfilter;
+					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
+					strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+					gameinfo.GetServersFromMasterServer = &Q3_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &Q3_Get_ServerStatus;
+					break;
+				}
+		}
 
 
-	
+		GamesInfo[gameinfo.cGAMEINDEX] = gameinfo;
+		pGame = pGame->NextSiblingElement();
+		if(pGame==NULL)
+			break;		
+	}
 	//GameEngine dependent
 
-	GI[idx].dwMasterServerPORT = 27950;
-	GI[idx].dwProtocol = 84;
-	strncpy(GI[idx].szGAME_NAME,"Wolfenstein - Enemy Territory",MAX_PATH);
-	strncpy(GI[idx].szMasterServerIP,"etmaster.idsoftware.com",MAX_PATH);
-	strncpy(GI[idx].szMAP_MAPPREVIEW_PATH,"etmaps",MAX_PATH);
-	strncpy(GI[idx].szGAME_CMD,"",MAX_PATH);
-	strcpy_s(GI[idx].szProtocolName,sizeof(GI[idx].szProtocolName),"et");
-	GI[idx].dwDefaultPort = 27960;
-	strcpy(GI[idx].szQueryString,"");
 	
-	DWORD dwBuffSize = sizeof(GI[idx].szGAME_PATH);
-	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GI[idx].szGAME_PATH,&dwBuffSize);
 
-	if(strlen(GI[idx].szGAME_PATH)>0)
-	{
-		GI[idx].bActive = true;
-		strcat_s(GI[idx].szGAME_PATH,sizeof(GI[idx].szGAME_PATH),"\\et.exe");
-	}
-	else
-		GI[idx].bActive = false;
-	
-	gi.sName = "Default";
-	gi.szGAME_PATH = GI[idx].szGAME_PATH;
-	gi.szGAME_CMD = GI[idx].szGAME_CMD;
-	GI[idx].pSC->vGAME_INST.push_back(gi);
 
-	switch(GI[idx].GAME_ENGINE)
-	{
-		case Q3_ENGINE:
-			{
-				GI[idx].colorfilter = &colorfilter;
-				GI[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
-				strcpy(GI[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
-				GI[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
-				GI[idx].GetServerStatus = &Q3_Get_ServerStatus;
-				break;
-			}
-	}
 
 
 }
