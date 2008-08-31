@@ -332,9 +332,9 @@ nextRegion:
 				ZeroMemory(sendbuf,sizeof(sendbuf));
 				sprintf_s(sendbuf,sizeof(sendbuf), "1%c0.0.0.0:0\x00\x00",REGIONS[cRegionCodeIndex].cCode);
 
-				memcpy(&sendbuf[12],pGI->szQueryString,strlen(pGI->szQueryString));
+				memcpy(&sendbuf[12],pGI->szMasterQueryString,strlen(pGI->szMasterQueryString));
 				int len = 12;
-				int len2 = (int)strlen(pGI->szQueryString)+1;
+				int len2 = (int)strlen(pGI->szMasterQueryString)+1;
 				len +=len2;
 				sendbuf[len-1]=0; //for debug purpose ensure to fill out with zeros
 				sendbuf[len]=0;
@@ -387,9 +387,9 @@ nextRegion3:
 					}
 			}
 			sprintf_s(sendbuf,sizeof(sendbuf), "1%c0.0.0.0:0\x00\x00",REGIONS[cRegionCodeIndex].cCode);
-			memcpy(&sendbuf[12],pGI->szQueryString,strlen(pGI->szQueryString));
+			memcpy(&sendbuf[12],pGI->szMasterQueryString,strlen(pGI->szMasterQueryString));
 			int len = 12;
-			int len2 = (int)strlen(pGI->szQueryString)+1;
+			int len2 = (int)strlen(pGI->szMasterQueryString)+1;
 			len +=len2;
 			sendbuf[len-1]=0;  //for debug purpose ensure to fill out with zeros
 			sendbuf[len]=0;
@@ -460,9 +460,9 @@ nextRegion2:
 			int len = 2;
 			len += strlen(szLastIP);
 			len += strlen(szPort)+2;
-			int len2 = (int)strlen(pGI->szQueryString)+1;
+			int len2 = (int)strlen(pGI->szMasterQueryString)+1;
 			
-			memcpy(&sendbuf[len],pGI->szQueryString,strlen(pGI->szQueryString));
+			memcpy(&sendbuf[len],pGI->szMasterQueryString,strlen(pGI->szMasterQueryString));
 			len +=len2;
 			sendbuf[len-1]=0;  //for debug purpose ensure to fill out with zeros
 			sendbuf[len]=0;			

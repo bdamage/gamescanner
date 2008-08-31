@@ -413,9 +413,9 @@ struct GAME_INFO
 	char szMAP_SPLATTERLADDER_PATH[MAX_PATH];
 	char szMAP_OTHER_WEBPATH_PATH[MAX_PATH];   //ie ETQW stats webserver...	
 	char szMasterServerIP[MAX_PATH];	
-	char szProtocolName[10];
+	char szProtocolName[20];
 	char szGameTypeSearch[15];
-	char szQueryString[MAX_PATH];
+	char szMasterQueryString[MAX_PATH];
 	BOOL bUseHTTPServerList;
 	int bActive;
 	DWORD dwViewFlags;

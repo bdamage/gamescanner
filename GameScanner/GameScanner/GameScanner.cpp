@@ -2112,9 +2112,9 @@ void Default_GameSettings2()
 	
 		ZeroMemory(&gameinfo,sizeof(GAME_INFO));
 		ZeroMemory(&szTemp,sizeof(szTemp));
+		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
 		gameinfo.pSC = &SC[gameinfo.cGAMEINDEX];	 //this needs to be fixed
 		gameinfo.pSC->vGAME_INST.clear();
-		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
 	
 		gameinfo.iIconIndex = Get_GameIcon(gameinfo.cGAMEINDEX);
 		xml.GetText(pGame,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
@@ -2124,11 +2124,26 @@ void Default_GameSettings2()
 		xml.GetText(pGame,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
 		xml.GetText(pGame,"WebProtocol",gameinfo.szProtocolName,sizeof(gameinfo.szProtocolName)-1);
 		xml.GetInteger(pGame,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
+		char szColorEnc[10];
+		xml.GetText(pGame,"ColorEncoding",szColorEnc,sizeof(szColorEnc)-1);
+
+		gameinfo.colorfilter = &colorfilter;
+		gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
+		if(strcmp(szColorEnc,"QW")==0)
+		{
+			gameinfo.colorfilter = &colorfilterQW;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
+		} else if(strcmp(szColorEnc,"Q4")==0)
+		{
+			gameinfo.colorfilter = &colorfilterQ4;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
+		}
 
 		xml.GetText(pGame,"ServerDefaultPort",gameinfo.szMAP_MAPPREVIEW_PATH,sizeof(gameinfo.szMAP_MAPPREVIEW_PATH)-1);
 
-		xml.GetText(pGame,"MasterQueryString",gameinfo.szServerRequestInfo,sizeof(gameinfo.szServerRequestInfo)-1);
-		xml.GetText(pGame,"MasterExtendedQueryString",gameinfo.szQueryString,sizeof(gameinfo.szQueryString)-1);
+		xml.GetText(pGame,"ServerInfoQuery",gameinfo.szServerRequestInfo,sizeof(gameinfo.szServerRequestInfo)-1);
+		
+		xml.GetText(pGame,"MasterQueryString",gameinfo.szMasterQueryString,sizeof(gameinfo.szMasterQueryString)-1);
 
 		TiXmlElement *ptempMaster = xml.GetElementSafe(pGame,"MasterServers");
 		xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
@@ -2196,24 +2211,22 @@ void Default_GameSettings2()
 		}
 
 	//	HICON hicon = (HICON) LoadImage(NULL,"",IMAGE_ICON,0,0,LR_LOADFROMFILE);
-
 		switch(gameinfo.GAME_ENGINE)
 		{
 			default:
 			case Q3_ENGINE:
 				{
-					gameinfo.colorfilter = &colorfilter;
-					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
-					strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+
+					//strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 					gameinfo.GetServersFromMasterServer = &Q3_ConnectToMasterServer;
 					gameinfo.GetServerStatus = &Q3_Get_ServerStatus;
 					break;
 				}
 			case Q4_ENGINE:
 				{
-					gameinfo.colorfilter = &colorfilterQ4;
-					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
-					strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
+				//	gameinfo.colorfilter = &colorfilterQ4;
+				//	gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
+					//strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 					gameinfo.GetServersFromMasterServer = &Q4_ConnectToMasterServer;
 					gameinfo.GetServerStatus = &Q4_Get_ServerStatus;
 					break;
@@ -2314,7 +2327,7 @@ XML prototype: gamedefaults.xml
 	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
 	strcpy_s(GamesInfo[idx].szProtocolName,sizeof(GamesInfo[idx].szProtocolName),"et");
 	GamesInfo[idx].dwDefaultPort = 27960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	
 	DWORD dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Activision\\Wolfenstein - Enemy Territory","InstallPath",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
@@ -2346,7 +2359,7 @@ XML prototype: gamedefaults.xml
 	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
 	strcpy(GamesInfo[idx].szProtocolName,"q3");
 	GamesInfo[idx].dwDefaultPort = 27960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
 	if(strlen(GamesInfo[idx].szGAME_PATH)>0)
 		GamesInfo[idx].bActive = true;
@@ -2375,7 +2388,7 @@ XML prototype: gamedefaults.xml
 	strcpy(GamesInfo[idx].szProtocolName,"rtcw");
 	GamesInfo[idx].bActive = false;
 	GamesInfo[idx].dwDefaultPort = 27960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].colorfilter = &colorfilter;
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
@@ -2458,7 +2471,7 @@ XML prototype: gamedefaults.xml
 		GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"cod2");
 	GamesInfo[idx].dwDefaultPort = 28960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].colorfilter = &colorfilter;
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
@@ -2486,7 +2499,7 @@ XML prototype: gamedefaults.xml
 		GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"cod");
 	GamesInfo[idx].dwDefaultPort = 28960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
 	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
@@ -2525,7 +2538,7 @@ XML prototype: gamedefaults.xml
 		GamesInfo[idx].bActive = false;
 		sprintf(GamesInfo[idx].szGAME_CMD,"");
 	}
-	strcpy(GamesInfo[idx].szQueryString,"Warsow");
+	strcpy(GamesInfo[idx].szMasterQueryString,"Warsow");
 	strcpy(GamesInfo[idx].szProtocolName,"warsow");
 	GamesInfo[idx].dwDefaultPort = 28960;
 	GamesInfo[idx].colorfilter = &colorfilter;
@@ -2555,7 +2568,7 @@ XML prototype: gamedefaults.xml
 		GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"cod4");
 	GamesInfo[idx].dwDefaultPort = 28960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].colorfilter = &colorfilter;
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
@@ -2580,7 +2593,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"cs");
 	GamesInfo[idx].dwDefaultPort = 27015;
-	strcpy(GamesInfo[idx].szQueryString,"\\gamedir\\cstrike");
+	strcpy(GamesInfo[idx].szMasterQueryString,"\\gamedir\\cstrike");
 	GamesInfo[idx].pSC = &SC[idx];
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
@@ -2604,7 +2617,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"cscz");
 	GamesInfo[idx].dwDefaultPort = 27015;
-	strcpy(GamesInfo[idx].szQueryString,"\\gamedir\\czero");
+	strcpy(GamesInfo[idx].szMasterQueryString,"\\gamedir\\czero");
 	GamesInfo[idx].pSC = &SC[idx];
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
@@ -2628,7 +2641,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"css");
 	GamesInfo[idx].dwDefaultPort = 28960;
-	strcpy(GamesInfo[idx].szQueryString,"\\gamedir\\cstrike");
+	strcpy(GamesInfo[idx].szMasterQueryString,"\\gamedir\\cstrike");
 	GamesInfo[idx].pSC = &SC[idx];
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
@@ -2651,7 +2664,7 @@ XML prototype: gamedefaults.xml
 	strcpy_s(GamesInfo[idx].szGAME_PATH,sizeof(GamesInfo[idx].szGAME_PATH),"quakeworld.exe");
 	strcpy_s(GamesInfo[idx].szProtocolName,sizeof(GamesInfo[idx].szProtocolName),"qw");
 	GamesInfo[idx].dwDefaultPort = 27960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].bUseHTTPServerList = TRUE;
 	GamesInfo[idx].colorfilter = &colorfilterQW;
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
@@ -2674,7 +2687,7 @@ XML prototype: gamedefaults.xml
 	strcpy_s(GamesInfo[idx].szGAME_PATH,sizeof(GamesInfo[idx].szGAME_PATH),"quake2.exe");
 	strcpy_s(GamesInfo[idx].szProtocolName,sizeof(GamesInfo[idx].szProtocolName),"q2");
 	GamesInfo[idx].dwDefaultPort = 27960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].bUseHTTPServerList = FALSE;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
@@ -2694,7 +2707,7 @@ XML prototype: gamedefaults.xml
 	strncpy(GamesInfo[idx].szGAME_CMD,"",MAX_PATH);
 	dwBuffSize = sizeof(GamesInfo[idx].szGAME_PATH);
 	GamesInfo[idx].bUseHTTPServerList = FALSE;
-	strcpy(GamesInfo[idx].szQueryString,"openarena");
+	strcpy(GamesInfo[idx].szMasterQueryString,"openarena");
 	strcpy(GamesInfo[idx].szProtocolName,"openarena");
 	GamesInfo[idx].dwDefaultPort = 28960;	
 	strcpy(GamesInfo[idx].szGAME_PATH,"openarena.exe");
@@ -2721,7 +2734,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bActive = false;
 	strcpy(GamesInfo[idx].szProtocolName,"hf2");
 	GamesInfo[idx].dwDefaultPort = 28960;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].bUseHTTPServerList = FALSE;
 	GamesInfo[idx].pSC = &SC[idx];
 
@@ -2764,7 +2777,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bActive = false;
 	GamesInfo[idx].dwDefaultPort = 27960;
 	GamesInfo[idx].bUseHTTPServerList = FALSE;
-	strcpy(GamesInfo[idx].szQueryString,"");
+	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	GamesInfo[idx].pSC = &SC[idx];
 	Registry_GetGamePath(HKEY_LOCAL_MACHINE, "SOFTWARE\\Id\\Quake III Arena","INSTALLPATH",GamesInfo[idx].szGAME_PATH,&dwBuffSize);
 	GamesInfo[idx].colorfilter = &colorfilter;
@@ -4509,27 +4522,6 @@ int TreeView_load()
 	SetFocus(g_hwndMainTreeCtrl);
 	return 0;
 }
-
-
-
-void Initialize_GetServerListThread(DWORD options)
-{
-
-	HANDLE hThread=NULL; 
-	DWORD dwThreadIdBrowser;
-	hThread = NULL;					
-	hThread = CreateThread( NULL, 0, &GetServerListThread, (LPVOID)options,0, &dwThreadIdBrowser);                
-	if (hThread == NULL) 
-	{
-		AddLogInfo(ETSV_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
-	}
-	else 
-	{
-		SetThreadName( dwThreadIdBrowser, "GetServerListThread");
-		CloseHandle( hThread );
-	}
-}
-
 
 void OnActivate_ServerList(DWORD options)
 {
@@ -7303,8 +7295,17 @@ nextGame:
 				if(ret!=0)
 					goto exitError;
 				Parse_FileServerList(&GamesInfo[currGameIdx],"servers.txt");
-			}else			
-				GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
+			}else	
+			{	
+				if(GamesInfo[currGameIdx].GetServersFromMasterServer!=NULL)
+					GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
+				else
+				{
+					AddLogInfo(ETSV_ERROR,"%s didn't have a valid funtion to recieve servers.",GamesInfo[currGameIdx].szGAME_NAME);
+					goto exitError;
+				}
+
+			}
 
 			Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 		}
@@ -7383,139 +7384,6 @@ NoError:
  }
 
 
-DWORD WINAPI GetServerListThread(LPVOID lpParam )
-{
-	DWORD options = (DWORD)lpParam;
-	BOOL bError=FALSE;
-	int currGameIdx = g_currentGameIdx;
-	int iGame=0;
-
-	AddLogInfo(ETSV_DEBUG,  "Entering GetServerListThread(..)");
-
-	if (! ResetEvent(hCloseEvent) ) 
-       dbg_print("ResetEvent failed\n");
-
-	g_currentScanGameIdx = g_currentGameIdx;
-
-	time(&GamesInfo[currGameIdx].lastScanTimeStamp);
-
-nextGame:
-	
-	currGameIdx = iGame;
-	if(GamesInfo[currGameIdx].bActive==FALSE)
-	{		
-			iGame++;
-			Sleep(100);
-			goto nextGame;
-	}
-	iGame++;
-
-	if(iGame>MAX_SERVERLIST)  //reset
-		currGameIdx = iGame = 0;
-
-	SetStatusText(GamesInfo[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GamesInfo[currGameIdx].szGAME_NAME);
-
-	/*switch(GamesInfo[currGameIdx].cGAMEINDEX)
-	{
-		case ETQW_SERVERLIST:
-			{
-				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
-				if(ret!=0)
-				{
-					bError = TRUE;
-					goto exitLoop;
-				}
-				
-				Parse_FileServerList(&GamesInfo[currGameIdx],"etqwservers.txt");			
-			}
-			break;
-		case Q4_SERVERLIST:
-			{
-				Q4_ConnectToMasterServer(&GamesInfo[currGameIdx]);			
-			}
-			break;
-		case HL2_SERVERLIST:
-		case CSCZ_SERVERLIST:
-		case CS_SERVERLIST:
-		case CSS_SERVERLIST:
-			{				
-				STEAM_ConnectToMasterServer(&GamesInfo[currGameIdx]);
-			}
-			break;
-		default:
-			{
-				Q3_ConnectToMasterServer(&GamesInfo[currGameIdx]);
-
-			}
-			break;
-	}
-	
-	*/
-		SCAN_Set_CALLBACKS(GamesInfo[currGameIdx].GetServerStatus,&UpdateServerItem);
-
-		if((DWORD)lpParam==SCAN_FILTERED)
-			Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
-		else
-		{
-			if(GamesInfo[currGameIdx].bUseHTTPServerList)
-			{
-				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
-				if(ret!=0)
-				{
-					bError = TRUE;
-					goto exitLoop;
-				}
-				Parse_FileServerList(&GamesInfo[currGameIdx],"servers.txt");
-			}else			
-				GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
-
-			Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
-		}
-	char szBuffer[100];
-	sprintf(szBuffer,"%s (%d)",GamesInfo[currGameIdx].szGAME_NAME,GamesInfo[currGameIdx].dwTotalServers);
-	TreeView_SetItemText(GamesInfo[currGameIdx].hTI,szBuffer);
-
-
-	if((options==SCAN_ALL_GAMES) && (g_bCancel==false))
-		goto nextGame;
-
-	if(g_bCancel)
-	{
-		g_bCancel = false;
-
-		if (! SetEvent(hCloseEvent) ) 
-			dbg_print("SetEvent failed!\n");
-
-		AddLogInfo(ETSV_DEBUG,  "Cancel GetServerListThread!");
-		g_currentScanGameIdx = -1;
-		g_bRunSimulation = FALSE;
-		return 0xFFFF;
-	}
-
-	if(GamesInfo[currGameIdx].pSC->vSI.size()==0) //Well no new servers
-		bError = TRUE;
-
-	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GamesInfo[currGameIdx].szGAME_NAME);
-	
-	g_bCancel = false;
-
-
-exitLoop:
-
-	g_bRunSimulation = FALSE;
-
-	g_currentScanGameIdx = -1;
-	if(bError)
-		SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersError"),GamesInfo[currGameIdx].szGAME_NAME);
-
-   if (! SetEvent(hCloseEvent) ) 
-        dbg_print("SetEvent failed!\n");      
-
-   AddLogInfo(ETSV_DEBUG,  "GetServerList DONE!");
-  return 0x00FF00FF;
- }
 
 bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 {

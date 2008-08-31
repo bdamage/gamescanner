@@ -109,9 +109,13 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 		}
 	DWORD dwRetries=0;
+	int len = 0; //(int)strlen(sendbuf);
+	char sendbuf[80];
+	ZeroMemory(sendbuf,sizeof(sendbuf));
+	len = UTILZ_ConvertEscapeCodes(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
 retry:
 	if(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
-		packetlen = send(pSocket, GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo, strlen(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo)+1, 0);
+		packetlen = send(pSocket, sendbuf, len+1, 0);
 	else
 		packetlen=SOCKET_ERROR;
 
@@ -968,6 +972,7 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 	return pointer;
 }
 
+
 DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 {
 	size_t packetlen=0;
@@ -976,7 +981,10 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	//WSADATA wsaData;
 	SOCKET ConnectSocket;
 
-	if(strlen(pGI->szQueryString)==0)
+	
+	//sprintf(sendbuf,"%s",pGI->szMasterQueryString); // "\xFF\xFF\xFF\xFFgetservers empty full");
+/*
+	if(strlen(pGI->szMasterQueryString)==0)
 	{
 		if(pGI->dwProtocol==0)
 			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers empty full");
@@ -986,23 +994,24 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	else
 	{
 		if(pGI->dwProtocol==0)
-			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s empty full",pGI->szQueryString);
+			sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s empty full",pGI->szMasterQueryString);
 		else
 		{
 			if(pGI->cGAMEINDEX == WARSOW_SERVERLIST)
-				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szQueryString,pGI->dwProtocol);
+
+				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %s %hu empty full",pGI->szMasterQueryString,pGI->dwProtocol);
 			else
-				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %hu %s empty full",pGI->dwProtocol,pGI->szQueryString);  //open arena needs another order
+				sprintf(sendbuf, "\xFF\xFF\xFF\xFFgetservers %hu %s empty full",pGI->dwProtocol,pGI->szMasterQueryString);  //open arena needs another order
 		}
 	}
-
-	int len = (int)strlen(sendbuf);
-
-	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
-	{
-		sprintf(sendbuf, "query\x0a\x00");
-		len = (int)strlen(sendbuf)+1;
-	}
+*/
+	int len = 0; //(int)strlen(sendbuf);
+	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
+//	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
+//	{
+//		sprintf(sendbuf, "query\x0a\x00");
+//		len = (int)strlen(sendbuf)+1;
+//	}
 
 
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); // etmaster.idsoftware.com"27950 master server
@@ -1086,6 +1095,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		if (events.lNetworkEvents & FD_CONNECT)
 		{
 			//AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
+			dbg_print("Master server %s:%d",pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
 			dbg_print("Sending command %s Len: %d",sendbuf,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{

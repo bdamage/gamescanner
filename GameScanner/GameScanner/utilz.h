@@ -23,7 +23,7 @@ void dbg_print(char *szMsg, ...);
 #define ETSV_INFO 20
 #define ETSV_DEBUG 30
 #define ETSV_ERROR 40
-
+int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer);
 void LOGGER_DeInit();
 void LOGGER_Init();
 BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort);

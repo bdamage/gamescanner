@@ -4,7 +4,6 @@
 #include "structs_defines.h"
 #include "..\..\tinyxml\tinyxml.h"
 void CleanUpFilesRegistry();
-DWORD WINAPI GetServerListThread(LPVOID lpParam );
 DWORD WINAPI  RCONDlgThread(LPVOID lpParam);
 void ChangeFont(HWND hWnd,HFONT hf);
 LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);

@@ -728,6 +728,57 @@ void UTILZ_CleanUp_ServerRules(LPSERVER_RULES &pSR)
 	}
 }
 
+int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
+{
+	int i=0;
+	int len=0;
+	char xFF=255;
+	char x0A=10;
+	char x00=0;
+	char n = 13;
+	char backslash='\\';
+	while(pszInput[i]!=0)
+	{
+		char *c = &pszInput[i];
+		if(c[0]=='\\')
+		{
+			if((c[1]=='x') && (c[2]=='F')&& (c[3]=='F'))
+			{
+				c = &xFF;			
+				i+=3;
+			}
+			if((c[1]=='x') && (c[2]=='0')&& (c[3]=='A'))
+			{
+				c = &x0A;			
+				i+=3;
+			}
+			if((c[1]=='x') && (c[2]=='0') || (c[3]=='0'))
+			{
+				c = &x00;			
+				i+=3;
+			}
+			else if((c[1]=='n'))
+			{
+				i++;
+				c = &n;
+			}
+
+			else if((c[1]=='\\'))
+			{
+				i++;
+				c = &backslash;
+			}
+		}
+
+		pszOutput[len] = c[0];
+		i++;
+		len++;
+		if(len==dwMaxBuffer)
+			break;
+	}
+	pszOutput[dwMaxBuffer-1]=0;
+	return len;
+}
 void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 {
 //	dbg_print("Enter Q3_CleanUp_PlayerList(...)\n");
