@@ -2147,7 +2147,7 @@ void Default_GameSettings2()
 
 		TiXmlElement *ptempMaster = xml.GetElementSafe(pGame,"MasterServers");
 		xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
-		xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
+	//	xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
 		xml.GetInteger(ptempMaster,"UseHTTP",(long*)&gameinfo.bUseHTTPServerList);
 		DWORD dwPort=0;
 		SplitIPandPORT(gameinfo.szMasterServerIP,dwPort);
@@ -2216,17 +2216,12 @@ void Default_GameSettings2()
 			default:
 			case Q3_ENGINE:
 				{
-
-					//strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 					gameinfo.GetServersFromMasterServer = &Q3_ConnectToMasterServer;
 					gameinfo.GetServerStatus = &Q3_Get_ServerStatus;
 					break;
 				}
 			case Q4_ENGINE:
 				{
-				//	gameinfo.colorfilter = &colorfilterQ4;
-				//	gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
-					//strcpy(gameinfo.szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
 					gameinfo.GetServersFromMasterServer = &Q4_ConnectToMasterServer;
 					gameinfo.GetServerStatus = &Q4_Get_ServerStatus;
 					break;

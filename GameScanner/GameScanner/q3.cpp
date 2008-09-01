@@ -1005,7 +1005,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	}
 */
 	int len = 0;//(int)strlen(sendbuf);
-	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf))+1;
+	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
 //	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
 //	{
 //		sprintf(sendbuf, "query\x0a\x00");
@@ -1071,7 +1071,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		dwRet = WSAWaitForMultipleEvents(1, &hEvent, FALSE,4000,FALSE);
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
-			dbg_print("\nWait timed out");
+			dbg_print("Connection timed out!");
 			break;
 		}
 
@@ -1120,12 +1120,12 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		}
 
 		// Close event?
-/*		if (events.lNetworkEvents & FD_CLOSE)
+		if (events.lNetworkEvents & FD_CLOSE)
 		{
 			AddLogInfo(0,"\nFD_CLOSE: %d",events.iErrorCode[FD_CLOSE_BIT]);
 			break;
 		}
-
+/*
 		// Write event?
 		if (events.lNetworkEvents & FD_WRITE)
 		{
