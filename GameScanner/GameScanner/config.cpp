@@ -331,8 +331,16 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					{
 						UnregisterHotKey(NULL, HOTKEY_ID);
 					}
-						
-					GamesInfo = GamesInfoCFG;
+					
+					
+					for(int i=0; i<GamesInfo.size();i++)
+					{
+						GamesInfo[i].bActive = GamesInfoCFG[i].bActive;
+						GamesInfo[i].bUseHTTPServerList = GamesInfoCFG[i].bUseHTTPServerList;
+						GamesInfo[i].dwMasterServerPORT = GamesInfoCFG[i].dwMasterServerPORT;
+			
+					}
+
 					memcpy(&AppCFG,&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
 					//memcpy(&GI,&GamesInfoCFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
 				//	ZeroMemory(&GamesInfoCFG,sizeof(GAME_INFO)*MAX_SERVERLIST);

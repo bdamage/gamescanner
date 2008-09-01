@@ -105,20 +105,7 @@ public:
 
 
 
-template <typename T>
-class MyCompare
-{
-private:
-    T m_tValue;
-    T m_iCount;
 
-public:
-    MyCompare(T p_tValue) : m_tValue(p_tValue), m_iCount(0) { }
-    bool operator () (T)
-    {
-        return ++m_iCount == m_tValue;
-    }
-};
 IPTOCOUNTRY_API bool IPC_SetPath(char *szPath)
 {
 	memset(IPC_g_szPath,0,sizeof(IPC_g_szPath));

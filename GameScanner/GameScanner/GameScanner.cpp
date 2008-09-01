@@ -1264,24 +1264,45 @@ bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	else
 		return (pSIa.dwGameType > pSIb.dwGameType );
 }
+void Do_ServerListSortThread(int iColumn)
+{
+		HANDLE hThread=NULL; 
+		DWORD dwThreadIdBrowser=0;				
+		hThread = CreateThread( NULL, 0, &Do_ServerListSort, (LPVOID)iColumn,0, &dwThreadIdBrowser);                
+		if (hThread == NULL) 
+		{
+			AddLogInfo(ETSV_WARNING, "CreateThread failed (%d) @ Do_ServerListSortThread\n", GetLastError() ); 
+		}
+		else 
+		{			
+			CloseHandle( hThread );
+		}
+}
 
-void Do_ServerListSort(int iColumn)
+
+DWORD WINAPI Do_ServerListSort(LPVOID column)
 {
 	if(currCV==NULL)
-		return;
-
+		return 0;
+	int iColumn = (int)column;
 	int gameIdx = currCV->cGAMEINDEX;
 	
-	
+	if(TryEnterCriticalSection(&REDRAWLIST_CS)==FALSE)
+	{
+		dbg_print("busy RefList");
+		return 0;
+	}
+
+
 	//We don't want to do sorting on the current scanning game index due to it is not thread safe.
-	if((gameIdx==g_currentScanGameIdx) && g_bRunningQueryServerList)
+/*	if((gameIdx==g_currentScanGameIdx) && g_bRunningQueryServerList)
 	{
 		dbg_print("Skipping sorting during scan.");	
 		return ;
 	}
+*/
 
 
-//	EnterCriticalSection(&SCANNER_cs);
 	BOOL sortdir = FALSE;
 	dbg_print("idx %d\nList view Size %d",gameIdx,GamesInfo[gameIdx].pSC->vRefListSI.size());
 	if(GamesInfo[gameIdx].pSC->vRefListSI.size()>0)
@@ -1427,9 +1448,11 @@ void Do_ServerListSort(int iColumn)
 
 		ListView_SetHeaderSortImage(g_hwndListViewServer, iColumn,(BOOL) sortdir); //id =iColumn
 		ListView_SetItemCount(g_hwndListViewServer,GamesInfo[gameIdx].pSC->vRefListSI.size());
-	//	LeaveCriticalSection(&SCANNER_cs);
-	}
 
+	}
+	LeaveCriticalSection(&REDRAWLIST_CS);
+
+	return 1;
 }
 
 int CALLBACK MyComparePlayerFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort)
@@ -7654,8 +7677,10 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 			AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
 			DebugBreak();
 		}
-		Do_ServerListSort(iLastColumnSortIndex);
 	}
+	LeaveCriticalSection(&REDRAWLIST_CS);
+	Do_ServerListSort((LPVOID)iLastColumnSortIndex);
+
 	if(pGI->dwViewFlags & REDRAW_SERVERLIST)
 		pGI->dwViewFlags ^= REDRAW_SERVERLIST;
 
@@ -7666,8 +7691,8 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 
 	dbg_print("Created filtered serverlist! View flags %d\n Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
 
-	ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());
-	LeaveCriticalSection(&REDRAWLIST_CS);
+	//ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());
+
 	
 	return 0;
 }
@@ -7782,6 +7807,13 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 {
 	LVITEM lvItem;
 	ZeroMemory(&lvItem, sizeof(LVITEM));
+
+	if(pSI.cGAMEINDEX != g_currentGameIdx)
+	{
+		//dbg_print("wrong RefList");
+		return 2;
+	}
+
 	lvItem.iItem =  ListView_GetItemCount(g_hwndListViewServer);
 	
 
@@ -7791,8 +7823,12 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 	refSI.cGAMEINDEX  = pSI.cGAMEINDEX;
 	refSI.dwIndex = pSI.dwIndex;	
 	if(TryEnterCriticalSection(&REDRAWLIST_CS)==FALSE)
+	{
+		dbg_print("busy RefList");
 		return 1;
+	}
 	pGI->pSC->vRefListSI.push_back(refSI);
+	LeaveCriticalSection(&REDRAWLIST_CS);
 
 	//return 0; //Game scanner 1.0
 	
@@ -7801,7 +7837,7 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 
 	lvItem.mask = LVIF_IMAGE ;	
 	ListView_InsertItem( g_hwndListViewServer,&lvItem);
-	LeaveCriticalSection(&REDRAWLIST_CS);
+
 
 	return 0;
 	
@@ -8591,8 +8627,9 @@ SERVER_INFO *FindServer(char *str)
 	if(count>0)
 		SendDlgItemMessage(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_SHOWDROPDOWN, TRUE, 0); 
 
-	Do_ServerListSort(iLastColumnSortIndex);	
-	ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());		
+	Do_ServerListSortThread(iLastColumnSortIndex);
+	//Do_ServerListSort((LPVOID)iLastColumnSortIndex);	
+	//ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());		
 
 
 	return NULL;
@@ -9053,11 +9090,8 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 				case IDM_SCAN:
 					OnActivate_ServerList();
 				break;
-				case IDM_REFRESH:
-					{
-					int gameIdx = g_currentGameIdx;
-					RedrawServerListThread((LPVOID)gameIdx);
-					}
+				case IDM_REFRESH:							
+					RedrawServerListThread((LPVOID)g_currentGameIdx);
 				break;
 				case IDM_ADDIP:
 					Favorite_Add(true);
@@ -10002,7 +10036,8 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 					}
 					//bSortColumnAscading[lstvw->iSubItem] = ! bSortColumnAscading[lstvw->iSubItem];
-					Do_ServerListSort(lstvw->iSubItem);
+					
+					Do_ServerListSortThread(lstvw->iSubItem);
 
 
 					return TRUE;
@@ -12202,18 +12237,21 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					{
 						DialogBox(g_hInst, (LPCTSTR)IDD_DIALOG_CONFIG, g_hWnd, (DLGPROC)CFG_MainProc);
 						
+						currCV = &GamesInfo[g_currentGameIdx];		//restore currCV pointer			
+
 						OnSize(g_hWnd);
 						TreeView_BuildList();
 						SetDlgTrans(hWnd,AppCFG.g_cTransparancy);
 						
+							
+
 						//Do we need to change view after configuring?
 						if(GamesInfo[g_currentGameIdx].bActive==false)
 						{
 							ListView_DeleteAllItems(g_hwndListViewServer);
 							ListView_DeleteAllItems(g_hwndListViewPlayers);
 							SetCurrentViewTo(FindFirstActiveGame());
-						}
-
+						} 
 						return TRUE;
 					}
 				break;

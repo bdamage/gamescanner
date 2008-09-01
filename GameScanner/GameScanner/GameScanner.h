@@ -3,7 +3,13 @@
 #include "resource.h"
 #include "structs_defines.h"
 #include "..\..\tinyxml\tinyxml.h"
+
+
+
+
 void CleanUpFilesRegistry();
+DWORD WINAPI Do_ServerListSort(LPVOID column);
+void Do_ServerListSortThread(int iColumn);
 DWORD WINAPI  RCONDlgThread(LPVOID lpParam);
 void ChangeFont(HWND hWnd,HFONT hf);
 LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
