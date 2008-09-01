@@ -978,7 +978,6 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	size_t packetlen=0;
 	char sendbuf[80];
 	ZeroMemory(sendbuf,sizeof(sendbuf));
-	//WSADATA wsaData;
 	SOCKET ConnectSocket;
 
 	
@@ -1005,8 +1004,8 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		}
 	}
 */
-	int len = 0; //(int)strlen(sendbuf);
-	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
+	int len = 0;//(int)strlen(sendbuf);
+	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf))+1;
 //	if(pGI->cGAMEINDEX==Q2_SERVERLIST)
 //	{
 //		sprintf(sendbuf, "query\x0a\x00");
