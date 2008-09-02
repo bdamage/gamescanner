@@ -28,8 +28,8 @@ extern HIMAGELIST g_hImageListIcons;
 extern APP_SETTINGS_NEW AppCFG;
 extern GamesMap GamesInfo;
 GamesMap GamesInfoCFG;
-///extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
-//GAME_INFO GamesInfoCFG[MAX_SERVERLIST+1];
+///extern GAME_INFO GamesInfo[GamesInfo.size()+1];
+//GAME_INFO GamesInfoCFG[GamesInfo.size()+1];
 
 extern HINSTANCE g_hInst;
 extern char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
@@ -42,7 +42,7 @@ typedef struct tag_dlghdr {
     HWND hwndTab;       // tab control 
     HWND hwndDisplay;   // current child dialog box 
     RECT rcDisplay;     // display rectangle for the tab control 
-    DLGTEMPLATE *apRes[GAME_CFG_INDEX+MAX_SERVERLIST]; 
+    DLGTEMPLATE *apRes[GAME_CFG_INDEX+50];  //need to be fixed 50 = GamesInfo().size
 } DLGHDR; 
 
 DLGHDR *g_pHdr = NULL;
@@ -226,14 +226,14 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			if (hNewItem)
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
-			for(int i=0;i<MAX_SERVERLIST;i++)
+			for(int i=0;i<GamesInfo.size();i++)
 				hNewItem = TreeView_AddItem(GamesInfo[i].iIconIndex,GamesInfo[i].szGAME_SHORTNAME);
 
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
 				
 			GamesInfoCFG = GamesInfo;
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
-		//	memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
+		//	memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*GamesInfo.size());
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
 			SetDlgItemText(hDlg,IDOK,lang.GetString("Ok"));
 			SetDlgItemText(hDlg,IDC_BUTTON_DEFAULT,lang.GetString("SetDefault"));
@@ -342,8 +342,8 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					}
 
 					memcpy(&AppCFG,&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
-					//memcpy(&GI,&GamesInfoCFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
-				//	ZeroMemory(&GamesInfoCFG,sizeof(GAME_INFO)*MAX_SERVERLIST);
+					//memcpy(&GI,&GamesInfoCFG,sizeof(GAME_INFO)*GamesInfo.size());
+				//	ZeroMemory(&GamesInfoCFG,sizeof(GAME_INFO)*GamesInfo.size());
 					ZeroMemory(&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
 					/*HANDLE hThread=NULL; 
 					DWORD dwThreadIdBrowser=0;				
@@ -366,7 +366,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					Default_Appsettings();
 					Default_GameSettings();
 					memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
-					//memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*MAX_SERVERLIST);
+					//memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*GamesInfo.size());
 					GamesInfoCFG = GamesInfo;
 					g_currSelCfg=-1;
 					CFG_OnSelChanged(hDlg); 
@@ -441,7 +441,7 @@ VOID WINAPI CFG_OnSelChanged(HWND hwndDlg)
     if (pHdr->hwndDisplay != NULL) 
         DestroyWindow(pHdr->hwndDisplay); 
  
-	if(iSel>=GAME_CFG_INDEX+MAX_SERVERLIST) //C_PAGES
+	if(iSel>=GAME_CFG_INDEX+GamesInfo.size()) //C_PAGES
 		return;
 	else if(iSel>GAME_CFG_INDEX)
 		iSel = GAME_CFG_INDEX;
@@ -525,7 +525,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 				CFG_editexeIdx = lParam;
 				int gameID = CFG_GetGameID(g_currSelCfg);	
 				GAME_INSTALLATIONS gi;
-				gi = GamesInfoCFG[gameID].pSC->vGAME_INST.at(lParam);
+				gi = GamesInfoCFG[gameID].vGAME_INST.at(lParam);
 
 				SetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,gi.sName.c_str());
 				SetDlgItemText(hDlg,IDC_EDIT_PATH,gi.szGAME_PATH.c_str());
@@ -562,7 +562,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 							gi.sVersion = szTemp;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,szTemp,MAX_PATH*2);
 							gi.sMod = szTemp;
-							GamesInfoCFG[gameID].pSC->vGAME_INST.at(CFG_editexeIdx) = gi;
+							GamesInfoCFG[gameID].vGAME_INST.at(CFG_editexeIdx) = gi;
 							EndDialog(hDlg,0);
 						}
 						break;
@@ -656,7 +656,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 							gi.sVersion = szTemp;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_MOD,szTemp,MAX_PATH*2);
 							gi.sMod = szTemp;
-							GamesInfoCFG[gameID].pSC->vGAME_INST.push_back(gi);
+							GamesInfoCFG[gameID].vGAME_INST.push_back(gi);
 
 							EndDialog(hDlg,0);
 						}
@@ -720,7 +720,7 @@ void CFG_Enumerate_installations(HWND hDlg,int GameId)
 
 	ListView_DeleteAllItems(hwndLVexes);
 
-	for ( iLst = GamesInfoCFG[GameId].pSC->vGAME_INST.rbegin(); iLst != GamesInfoCFG[GameId].pSC->vGAME_INST.rend( ); iLst++ )
+	for ( iLst = GamesInfoCFG[GameId].vGAME_INST.rbegin(); iLst != GamesInfoCFG[GameId].vGAME_INST.rend( ); iLst++ )
 	{
 	
 		GAME_INSTALLATIONS gi = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
@@ -988,7 +988,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 							int gameID = CFG_GetGameID(g_currSelCfg);	
 							if(gameID!=-1)
 							{
-								GamesInfoCFG[gameID].pSC->vGAME_INST.erase(GamesInfoCFG[gameID].pSC->vGAME_INST.begin()+n);
+								GamesInfoCFG[gameID].vGAME_INST.erase(GamesInfoCFG[gameID].vGAME_INST.begin()+n);
 								CFG_Enumerate_installations(hDlg,gameID);
 							}
 						}

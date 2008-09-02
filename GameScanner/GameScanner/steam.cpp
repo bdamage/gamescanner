@@ -515,7 +515,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 
 	leaddata = (STEAM_MASTER_LEADDATA*)packet;
 
-	DWORD idx = pGI->pSC->vSI.size();
+	DWORD idx = pGI->vSI.size();
 
 	char *endAddress;
 	char *p = leaddata->data;
@@ -557,9 +557,9 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 			ptempSI.bNeedToUpdateServerInfo = true;			
 			ptempSI.dwIndex = idx++;
 			strcpy(ptempSI.szShortCountryName,"zz");
-			pGI->pSC->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
+			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 		
-			pGI->pSC->vSI.push_back(ptempSI);
+			pGI->vSI.push_back(ptempSI);
 
 			if(CALLBACK_InsertServerItem!=NULL)
 				CALLBACK_InsertServerItem(pGI,ptempSI);

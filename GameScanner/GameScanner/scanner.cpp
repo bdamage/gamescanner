@@ -36,9 +36,9 @@ GAME_INFO *ppGI;
 void PollForNewServers()
 {
 	vSRV_INF::iterator  iLst;
-	DWORD dwSize = ppGI->pSC->vRefScanSI.size();
+	DWORD dwSize = ppGI->vRefScanSI.size();
 
-	for ( iLst = ppGI->pSC->vSI.begin()+dwSize; iLst != ppGI->pSC->vSI.end( ); iLst++ )
+	for ( iLst = ppGI->vSI.begin()+dwSize; iLst != ppGI->vSI.end( ); iLst++ )
 	{
 	
 		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
@@ -53,11 +53,11 @@ void PollForNewServers()
 			{
 
 
-				ppGI->pSC->vRefScanSI.push_back(refSI);
+				ppGI->vRefScanSI.push_back(refSI);
 			}
 		}
 		else
-			ppGI->pSC->vRefScanSI.push_back(refSI);  
+			ppGI->vRefScanSI.push_back(refSI);  
 
 	}
 	dbg_print("Created scan serverlist!\n");
@@ -65,7 +65,7 @@ void PollForNewServers()
 	if(g_hwndProgressBar!=NULL)
 	{
 		//ReInitililze Progressbar
-		SendMessage(g_hwndProgressBar, PBM_SETRANGE, (WPARAM) 0,MAKELPARAM(0,ppGI->pSC->vRefScanSI.size())); 
+		SendMessage(g_hwndProgressBar, PBM_SETRANGE, (WPARAM) 0,MAKELPARAM(0,ppGI->vRefScanSI.size())); 
 	}
 	
 }
@@ -77,9 +77,9 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	SCAN_FilterServerItem = filterServerItem;
 
 	vSRV_INF::iterator  iLst;
-	pGI->pSC->vRefScanSI.clear();
+	pGI->vRefScanSI.clear();
 
-	for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
+	for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 	{	
 		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
 		REF_SERVER_INFO refSI;
@@ -89,15 +89,15 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 		{
 			if(filterServerItem((LPARAM*)&pSI,pGI))
 			{
-				pGI->pSC->vRefScanSI.push_back(refSI);		
+				pGI->vRefScanSI.push_back(refSI);		
 			}
 		}
 		else
 		{
-			pGI->pSC->vRefScanSI.push_back(refSI);  		
+			pGI->vRefScanSI.push_back(refSI);  		
 		}
 	}
-	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->pSC->vRefScanSI.size(),pGI->pSC->vSI.size());
+	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->vRefScanSI.size(),pGI->vSI.size());
 
 	if(pGI->dwViewFlags & FORCE_SCAN_FILTERED)
 		pGI->dwViewFlags = 0;
@@ -106,7 +106,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	{
 		//Initililze Progressbar
 		SendMessage(g_hwndProgressBar, PBM_SETSTEP, (WPARAM) 1, 0); 
-		SendMessage(g_hwndProgressBar, PBM_SETRANGE, (WPARAM) 0,MAKELPARAM(0,pGI->pSC->vRefScanSI.size())); 
+		SendMessage(g_hwndProgressBar, PBM_SETRANGE, (WPARAM) 0,MAKELPARAM(0,pGI->vRefScanSI.size())); 
 		SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 
 	}
 
@@ -127,7 +127,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	if (! ResetEvent(SCAN_hContinueEvent) ) 
         AddLogInfo(ETSV_DEBUG,"ResetEvent failed (%d)\n", GetLastError());
 
-	DWORD dwMaxThreads = (AppCFG.dwThreads>pGI->pSC->vRefScanSI.size())?pGI->pSC->vRefScanSI.size():AppCFG.dwThreads;
+	DWORD dwMaxThreads = (AppCFG.dwThreads>pGI->vRefScanSI.size())?pGI->vRefScanSI.size():AppCFG.dwThreads;
 
 	//---------------------------------
 	//Multi thread scanning code
@@ -201,7 +201,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 
 	AddLogInfo(0,"All servers is now scanned...");
 	
-	pGI->pSC->vRefScanSI.clear();
+	pGI->vRefScanSI.clear();
 
 
 	CloseHandle(SCAN_hContinueEvent);
@@ -219,7 +219,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 	memset(&pSI,0,sizeof(SERVER_INFO));
 	
 	DWORD idx=0;
-	DWORD size = pGI->pSC->vRefScanSI.size();
+	DWORD size = pGI->vRefScanSI.size();
 //	char szText[100];
 
 	while(pGI->dwScanIdx<size)
@@ -239,10 +239,10 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 			SetStatusText(pGI->iIconIndex, "Scanning server %d of %d",pGI->dwScanIdx,size);
 			idx = pGI->dwScanIdx;
 			REF_SERVER_INFO refSI;
-			refSI = pGI->pSC->vRefScanSI.at(idx);
+			refSI = pGI->vRefScanSI.at(idx);
 			refSI.cGAMEINDEX = pSI.cGAMEINDEX;
 			
-			pSI = pGI->pSC->vSI.at(refSI.dwIndex);
+			pSI = pGI->vSI.at(refSI.dwIndex);
 			
 			//sprintf(szText,"idx: %d scanid %d %d\n",pSI.dwIndex,pGI->dwScanIdx,pSI.dwPing);
 		//	dbg_print(szText);		
@@ -263,14 +263,14 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 			 if(SCAN_FilterServerItem((LPARAM *)&pSI,pGI))
 			 {
 				 Get_ServerStatus(&pSI,NULL,NULL);	
-				 pGI->pSC->vSI.at((int)pSI.dwIndex) = pSI;
+				 pGI->vSI.at((int)pSI.dwIndex) = pSI;
 			 }
 		}
 		else
 		{
 			//Do non-filtered scan of all servers
 			Get_ServerStatus(&pSI,NULL,NULL);			
-			pGI->pSC->vSI.at((int)pSI.dwIndex) = pSI;
+			pGI->vSI.at((int)pSI.dwIndex) = pSI;
 		}
 			
 		if(SCANNER_UpdateServerListView!=NULL)
@@ -282,7 +282,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 	
 		Sleep(25);		
 	//	PollForNewServers();
-	//	size = pGI->pSC->vRefScanSI.size();
+	//	size = pGI->vRefScanSI.size();
 		
 	}
 

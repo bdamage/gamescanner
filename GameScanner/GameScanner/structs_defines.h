@@ -84,7 +84,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FORCE_SCAN_FILTERED				0x00000008
 #define REDRAW_SERVERLIST				16
 
-#define MAX_SERVERLIST		17  //This value should be as the last one +1
+//#define MAX_SERVERLIST		17  //This value should be as the last one +1
 #define ET_SERVERLIST		0
 #define ETQW_SERVERLIST		1
 #define Q3_SERVERLIST		2
@@ -248,10 +248,6 @@ struct APP_SETTINGS_NEW
    char cBuddyColumnSort;
    char cServerColumnSort;
    char szNotifySoundWAVfile[MAX_PATH];
-   char szQ4_PATH[MAX_PATH];
-   char szQ4_CMD[MAX_PATH];
-   char szETQW_PATH[MAX_PATH];
-   char szETQW_CMD[MAX_PATH];
    BOOL bUseCountryFilter;
    BOOL bUseMIRC;
    DWORD dwRetries;
@@ -416,6 +412,7 @@ struct GAME_INFO
 	char szProtocolName[20];
 	char szGameTypeSearch[15];
 	char szMasterQueryString[MAX_PATH];
+	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo
 	BOOL bUseHTTPServerList;
 	int bActive;
 	DWORD dwViewFlags;
@@ -428,9 +425,18 @@ struct GAME_INFO
 	char szFilename[MAX_PATH];
 	DWORD dwGameTypeFilter;
 	BOOL bLockServerList;
-	SERVER_CONTAINER *pSC;
+	//SERVER_CONTAINER *pSC;
+	vSRV_INF vSI;
+	vREF_SRV_INF vRefListSI;
+	vREF_SRV_INF vRefScanSI;
+	serverhash shash;
+	vGF	 vFilterMod;
+	vGF	 vFilterGameType;
+	vGF	 vFilterMap;
+	vGF	 vFilterVersion;
+	vGAME_INSTALLS vGAME_INST;
 	DWORD dwScanIdx;
-	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo
+	
 	FILTER_SETTINGS filter;
     char *(*colorfilter)(const char *szIn, char *szOut,int length);
 	LRESULT (*Draw_ColorEncodedText)(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);

@@ -11,7 +11,7 @@ extern int g_statusIcon;
 extern HWND g_hwndLogger;
 extern HINSTANCE g_hInst;
 extern GamesMap GamesInfo;
-//extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
+//extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 extern RECT g_INFOIconRect;
 extern _WINDOW_CONTAINER WNDCONT[15];
 string UTILZ_sLogger;
@@ -636,15 +636,15 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 {
 	hash_multimap <int, int>::iterator hmp_Iter;
-	hmp_Iter = pGI->pSC->shash.find(hash);
-	if(hmp_Iter!= pGI->pSC->shash.end())
+	hmp_Iter = pGI->shash.find(hash);
+	if(hmp_Iter!= pGI->shash.end())
 	{
-		while(hmp_Iter!= pGI->pSC->shash.end())
+		while(hmp_Iter!= pGI->shash.end())
 		{
 			Int_Pair idx = *hmp_Iter;		
-		//	if( pGI->pSC->vSI.size()>0)  //commented for optimization
+		//	if( pGI->vSI.size()>0)  //commented for optimization
 			{
-				SERVER_INFO  pSI = (SERVER_INFO) pGI->pSC->vSI.at(idx.second);
+				SERVER_INFO  pSI = (SERVER_INFO) pGI->vSI.at(idx.second);
 				if((dwIP == pSI.dwIP) && (dwPort == pSI.dwPort))
 					return TRUE;
 				
@@ -663,9 +663,9 @@ BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)
 {
 	vSRV_INF::iterator  iResult;	
-	iResult = find(pGI->pSC->vSI.begin(), pGI->pSC->vSI.end(),pSI);
+	iResult = find(pGI->vSI.begin(), pGI->vSI.end(),pSI);
 	
-	if(iResult == pGI->pSC->vSI.end())
+	if(iResult == pGI->vSI.end())
 		 return false;
 
 	 return true;
@@ -918,9 +918,9 @@ DWORD Get_GameTypeByName(int gameIdx, char *szGameType)
 	if(szGameType==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterGameType.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].vFilterGameType.size();i++)
 	{
-		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterGameType.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].vFilterGameType.at(i);
 		if(gf.dwExactMatch==0)
 		{
 			if(strstr(szGameType,gf.sStrValue.c_str())!=NULL)
@@ -940,9 +940,9 @@ DWORD Get_ModByName(int gameIdx, char *szModName)
 	if(szModName==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterMod.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].vFilterMod.size();i++)
 	{
-		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterMod.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].vFilterMod.at(i);
 		if(strstr(szModName,gf.sStrValue.c_str())!=NULL)
 			return gf.dwValue;		
 	}
@@ -953,9 +953,9 @@ DWORD Get_MapByName(int gameIdx, char *szMapName)
 	if(szMapName==NULL)
 		return GAMETYPE_UNKNOWN;
 
-	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterMap.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].vFilterMap.size();i++)
 	{
-		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterMap.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].vFilterMap.at(i);
 		if(gf.dwExactMatch==0)
 		{
 			if(strstr(szMapName,gf.sStrValue.c_str())!=NULL)
@@ -974,9 +974,9 @@ DWORD Get_FilterVersionByVersionString(int gameIdx, char *szVersion)
 	if(szVersion==NULL)
 		return VERSION_UNKNOWN;
 
-	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterVersion.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].vFilterVersion.size();i++)
 	{
-		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterVersion.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].vFilterVersion.at(i);
 
 		if(strstr(szVersion,gf.sStrValue.c_str())!=NULL)
 			return gf.dwValue;
@@ -989,12 +989,12 @@ DWORD Get_FilterVersionByVersionString(int gameIdx, char *szVersion)
 //A better readable name is returned
 const char * Get_GameTypeNameByGameType(int gameIdx, WORD cGameType)
 {
-	for(unsigned int i=0;i<GamesInfo[gameIdx].pSC->vFilterGameType.size();i++)
+	for(unsigned int i=0;i<GamesInfo[gameIdx].vFilterGameType.size();i++)
 	{
-		GAMEFILTER gf = GamesInfo[gameIdx].pSC->vFilterGameType.at(i);
+		GAMEFILTER gf = GamesInfo[gameIdx].vFilterGameType.at(i);
 		
 		if(cGameType == gf.dwValue)
-			return GamesInfo[gameIdx].pSC->vFilterGameType.at(i).sFriendlyName.c_str(); //gf.sFriendlyName.c_str();		
+			return GamesInfo[gameIdx].vFilterGameType.at(i).sFriendlyName.c_str(); //gf.sFriendlyName.c_str();		
 	}
 	return szGAMETYPEUNKOWN;
 }

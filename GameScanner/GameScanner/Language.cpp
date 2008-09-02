@@ -13,6 +13,7 @@ CLanguage::CLanguage(void)
 
 CLanguage::~CLanguage(void)
 {
+	DefaultLanguage.clear();
 }
 void CLanguage::SetPath(const char *pszDir)
 {

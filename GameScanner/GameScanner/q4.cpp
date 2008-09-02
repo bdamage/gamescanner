@@ -161,7 +161,7 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 	//Global Q4 serverlist to start
 	//Q4_pSI = pSI = Q4_pSIServerListStart;	
 
-	pGI->dwTotalServers = pGI->pSC->vSI.size();
+	pGI->dwTotalServers = pGI->vSI.size();
 
 	//Q4_InitilizeRescan(pGI);
 		
@@ -188,7 +188,7 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 
 	int i=0;
 	SERVER_INFO tempSI;
-	DWORD idx = pGI->pSC->vSI.size();
+	DWORD idx = pGI->vSI.size();
 
 	DWORD *dwIP=NULL;
 	DWORD dwResult=0;
@@ -229,7 +229,7 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 			tempSI.pPlayerData = NULL;
 			strcpy(tempSI.szShortCountryName,"zz");
 			tempSI.pServerRules = NULL;
-			pGI->pSC->vSI.push_back(tempSI);
+			pGI->vSI.push_back(tempSI);
 
 			if(InsertServerListView!=NULL)
 				InsertServerListView(pGI,tempSI);

@@ -368,8 +368,8 @@ _CountryFilter CountryFilter;
 
 GamesMap GamesInfo;
 
-SERVER_CONTAINER SC[MAX_SERVERLIST];
-//GAME_INFO GamesInfo[MAX_SERVERLIST+1];
+SERVER_CONTAINER SC[17];
+//GAME_INFO GamesInfo[GamesInfo.size()+1];
 GAME_INFO *currCV = NULL;
 char g_szMapName[MAX_PATH];
 HWND g_hwndMainRCON=NULL;
@@ -1111,8 +1111,8 @@ int StrSorter(char *a, char *b)
 bool Sort_Player(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
 	
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_PLAYERS].bSortAsc)
 		return (pSIa.nCurrentPlayers > pSIb.nCurrentPlayers);
@@ -1122,8 +1122,8 @@ bool Sort_Player(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Country(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_COUNTRY].bSortAsc)
 		return (strcmp(pSIa.szCountry , pSIb.szCountry )>0);
@@ -1133,8 +1133,8 @@ bool Sort_Country(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Ping(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_PING].bSortAsc)	
 		return (pSIa.dwPing > pSIb.dwPing);	
 	else
@@ -1143,8 +1143,8 @@ bool Sort_Ping(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_MAP].bSortAsc)	
 		return (StrSorter(pSIa.szMap , pSIb.szMap )>0);
@@ -1154,8 +1154,8 @@ bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_MOD].bSortAsc)	
 		return (StrSorter(pSIa.szMod , pSIb.szMod )>0);
 	else
@@ -1164,8 +1164,8 @@ bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_IP].bSortAsc)
 		return (StrSorter(pSIa.szIPaddress , pSIb.szIPaddress )>0);
@@ -1176,8 +1176,8 @@ bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Punkbuster(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_PB].bSortAsc)
 		return (pSIa.bPunkbuster > pSIb.bPunkbuster );
@@ -1188,8 +1188,8 @@ bool Sort_Punkbuster(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Private(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_PRIVATE].bSortAsc)
 		return (pSIa.bPrivate > pSIb.bPrivate );	
@@ -1199,8 +1199,8 @@ bool Sort_Private(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Ranked(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_RANKED].bSortAsc)
 		return (pSIa.cRanked > pSIb.cRanked );	
@@ -1209,8 +1209,8 @@ bool Sort_Ranked(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 }
 bool Sort_Bots(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	
 	if(CUSTCOLUMNS[COL_BOTS].bSortAsc)
 		return (pSIa.cBots > pSIb.cBots );	
@@ -1220,8 +1220,8 @@ bool Sort_Bots(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_SERVERNAME].bSortAsc)
 		return (StrSorter(pSIa.szServerName , pSIb.szServerName )>0);
@@ -1231,8 +1231,8 @@ bool Sort_ServerName(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 }
 bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_STATUS].bSortAsc)
 		return (StrSorter(pSIa.szSTATUS , pSIb.szSTATUS )>0);
@@ -1243,8 +1243,8 @@ bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 
 	if(CUSTCOLUMNS[COL_VERSION].bSortAsc)
 	{
@@ -1257,8 +1257,8 @@ bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 
 bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
-	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].pSC->vSI.at(rSIa.dwIndex);
-	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].pSC->vSI.at(rSIb.dwIndex);
+	SERVER_INFO pSIa =  GamesInfo[rSIa.cGAMEINDEX].vSI.at(rSIa.dwIndex);
+	SERVER_INFO pSIb =  GamesInfo[rSIb.cGAMEINDEX].vSI.at(rSIb.dwIndex);
 	if(CUSTCOLUMNS[COL_GAMETYPE].bSortAsc)
 		return (pSIa.dwGameType < pSIb.dwGameType);
 	else
@@ -1304,8 +1304,8 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 
 
 	BOOL sortdir = FALSE;
-	dbg_print("idx %d\nList view Size %d",gameIdx,GamesInfo[gameIdx].pSC->vRefListSI.size());
-	if(GamesInfo[gameIdx].pSC->vRefListSI.size()>0)
+	dbg_print("idx %d\nList view Size %d",gameIdx,GamesInfo[gameIdx].vRefListSI.size());
+	if(GamesInfo[gameIdx].vRefListSI.size()>0)
 	{
 		DWORD id=0;
 		for(int i=0;i<MAX_COLUMNS;i++)
@@ -1324,7 +1324,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 			case COL_PB : 
 				try
 				{	
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Punkbuster); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Punkbuster); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1335,7 +1335,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 			case COL_PRIVATE: 
 				try
 				{	
-				sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Private);
+				sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Private);
 							}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1346,7 +1346,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 			case COL_RANKED: 
 				try
 				{	
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Ranked); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Ranked); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1356,7 +1356,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 			case COL_SERVERNAME: 
 				try
 				{	
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_ServerName); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_ServerName); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1365,7 +1365,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 				break;
 			case COL_GAMETYPE: 
 				try{
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_GameType); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_GameType); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1375,7 +1375,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 
 			case COL_MAP: 
 				try{
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Map); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Map); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1384,7 +1384,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 				break;
 			case COL_MOD: 
 				try{
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Mod); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Mod); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1394,7 +1394,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 
 			case COL_PLAYERS: 
 				try{
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Player);
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Player);
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1402,10 +1402,10 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 				}
 				break;
 				
-			case COL_COUNTRY: sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Country); break;
+			case COL_COUNTRY: sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Country); break;
 			case COL_PING: 
 				try{
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Ping); 
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Ping); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1414,7 +1414,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 				break;
 			case COL_IP: 
 				try{
-				sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_IP); 
+				sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_IP); 
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1424,7 +1424,7 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 
 			case COL_VERSION: 
 				try{
-				sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Version); 
+				sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Version); 
 								}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
@@ -1433,21 +1433,21 @@ DWORD WINAPI Do_ServerListSort(LPVOID column)
 				break;
 			case COL_BOTS: 
 				try{
-					sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Bots);
+					sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Bots);
 				}catch (const exception& e)
 				{
 					AddLogInfo(ETSV_ERROR,"Vector err exception Details: %s",e.what());
 					DebugBreak();
 				}
 				 break;
-			case COL_STATUS: sort(GamesInfo[gameIdx].pSC->vRefListSI.begin(),GamesInfo[gameIdx].pSC->vRefListSI.end(),Sort_Status); 
+			case COL_STATUS: sort(GamesInfo[gameIdx].vRefListSI.begin(),GamesInfo[gameIdx].vRefListSI.end(),Sort_Status); 
 				break;
 
 
 		}
 
 		ListView_SetHeaderSortImage(g_hwndListViewServer, iColumn,(BOOL) sortdir); //id =iColumn
-		ListView_SetItemCount(g_hwndListViewServer,GamesInfo[gameIdx].pSC->vRefListSI.size());
+		ListView_SetItemCount(g_hwndListViewServer,GamesInfo[gameIdx].vRefListSI.size());
 
 	}
 	LeaveCriticalSection(&REDRAWLIST_CS);
@@ -1594,7 +1594,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 		return FALSE;
 
 	pLVItem = &pLVDI->item;
-	int size = pGI->pSC->vRefListSI.size();
+	int size = pGI->vRefListSI.size();
 	if (size==0)
 		return FALSE;
 
@@ -1605,9 +1605,9 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 	REF_SERVER_INFO refSI;
 
 	__try{
-		refSI = pGI->pSC->vRefListSI.at((int)pLVItem->iItem);
-		pGI->pSC->vSI.at(refSI.dwIndex).dwLVIndex = pLVItem->iItem;
-		pSI = pGI->pSC->vSI.at(refSI.dwIndex);
+		refSI = pGI->vRefListSI.at((int)pLVItem->iItem);
+		pGI->vSI.at(refSI.dwIndex).dwLVIndex = pLVItem->iItem;
+		pSI = pGI->vSI.at(refSI.dwIndex);
 	}
 	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 	{
@@ -1827,7 +1827,7 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 				{
 				char colFiltered[100];
 				
-				SERVER_INFO pSI = GamesInfo[pPlayerData->cGAMEINDEX].pSC->vSI.at(pPlayerData->dwServerIndex);
+				SERVER_INFO pSI = GamesInfo[pPlayerData->cGAMEINDEX].vSI.at(pPlayerData->dwServerIndex);
 				if(GamesInfo[pPlayerData->cGAMEINDEX].colorfilter!=NULL)
 					pLVItem->pszText = GamesInfo[pPlayerData->cGAMEINDEX].colorfilter(pSI.szServerName,colFiltered,sizeof(colFiltered)-1); 
 				else
@@ -1877,8 +1877,8 @@ SERVER_INFO * GetServerInfo(int gametype,SERVER_INFO *pSrvInf)
 	dwCurrPort = pSrvInf->dwPort;	
 	g_CurrentSRV = pSrvInf;
 	
-	if(pSrvInf->dwIndex<=GamesInfo[gametype].pSC->vSI.size())	
-		g_tmpSRV = GamesInfo[gametype].pSC->vSI.at(pSrvInf->dwIndex);
+	if(pSrvInf->dwIndex<=GamesInfo[gametype].vSI.size())	
+		g_tmpSRV = GamesInfo[gametype].vSI.at(pSrvInf->dwIndex);
 	else
 		AddLogInfo(ETSV_ERROR,"Vector request out of scope at %s %d",__FILE__,__LINE__);
 
@@ -1952,8 +1952,8 @@ void OnServerSelection(GAME_INFO *pGI)
 		{
 			GetServerInfo(g_currentGameIdx,pSrvInf);
 			UpdateServerItem(g_iCurrentSelectedServer);
-			pGI->pSC->vSI.at(g_CurrentSelServer.dwIndex) = g_CurrentSelServer;
-			//AddLogInfo(ETSV_DEBUG,"Num visible servers %d of %d\n",pGI->pSC->vRefListSI.size(), pGI->pSC->vSI.size());
+			pGI->vSI.at(g_CurrentSelServer.dwIndex) = g_CurrentSelServer;
+			//AddLogInfo(ETSV_DEBUG,"Num visible servers %d of %d\n",pGI->vRefListSI.size(), pGI->vSI.size());
 			UpdateCurrentServerUI();
 			
 		}//if pSrv
@@ -2001,7 +2001,7 @@ void OnBuddySelected()
 					try
 					{
 
-						SERVER_INFO pSI = GamesInfo[pBI->cGAMEINDEX].pSC->vSI.at((int)pBI->sIndex);
+						SERVER_INFO pSI = GamesInfo[pBI->cGAMEINDEX].vSI.at((int)pBI->sIndex);
 						GetServerInfo(pBI->cGAMEINDEX,&pSI);
 		
 					}
@@ -2042,7 +2042,7 @@ void RegisterProtocol(char *path)
 	//Register protocol
 	//--------------------------------------
 
-	for(int i=0; i<MAX_SERVERLIST;i++)
+	for(int i=0; i<GamesInfo.size();i++)
 	{
 		hkey=NULL;
 		sprintf(szBuffer,"%s",GamesInfo[i].szProtocolName);
@@ -2067,13 +2067,12 @@ void RegisterProtocol(char *path)
 
 void Initialize_GameSettings()
 {
-	for(int i=0; i<MAX_SERVERLIST; i++)
+	for(int i=0; i<GamesInfo.size(); i++)
 	{
 		ZeroMemory(&GamesInfo[i],sizeof(GAME_INFO));
 		GamesInfo[i].cGAMEINDEX = i;
-		GamesInfo[i].pSC = &SC[i];
 		GamesInfo[i].iIconIndex =  Get_GameIcon(i);
-		GamesInfo[i].pSC->vGAME_INST.clear();		
+		GamesInfo[i].vGAME_INST.clear();		
 	}
 }
 
@@ -2106,13 +2105,13 @@ void Default_GameSettings2()
 {
 	GAME_INSTALLATIONS gi;
 	
-/*	for(int i=0; i<MAX_SERVERLIST; i++)
+/*	for(int i=0; i<GamesInfo.size(); i++)
 	{
 		GamesInfo[i].bUseHTTPServerList = FALSE;
 		GamesInfo[i].szGAME_PATH[0]=0; //quick erase
 		GamesInfo[i].dwViewFlags = 0;
 		GamesInfo[i].pSC = &SC[i];
-		GamesInfo[i].pSC->vGAME_INST.clear();
+		GamesInfo[i].vGAME_INST.clear();
 	}
 */
 	CXmlFile xml;
@@ -2132,12 +2131,22 @@ void Default_GameSettings2()
 		char szTemp[100];
 		GAME_INFO gameinfo;
 		
-	
-		ZeroMemory(&gameinfo,sizeof(GAME_INFO));
+		gameinfo.bActive=0;
+		gameinfo.dwTotalServers=0;
+		gameinfo.dwScanIdx = 0;
+		gameinfo.dwViewFlags = 0;
+		
+		ZeroMemory(&gameinfo.filter,sizeof(gameinfo.filter));
+		ZeroMemory(&gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME));
+		ZeroMemory(&gameinfo.szGAME_PATH,sizeof(gameinfo.szGAME_PATH));
+		ZeroMemory(&gameinfo.szMasterQueryString,sizeof(gameinfo.szMasterQueryString));
+		ZeroMemory(&gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP));
+		ZeroMemory(&gameinfo.szLaunchByMod,sizeof(gameinfo.szLaunchByMod));
+		ZeroMemory(&gameinfo.szLaunchByVersion,sizeof(gameinfo.szLaunchByVersion));
+
 		ZeroMemory(&szTemp,sizeof(szTemp));
-		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);
-		gameinfo.pSC = &SC[gameinfo.cGAMEINDEX];	 //this needs to be fixed
-		gameinfo.pSC->vGAME_INST.clear();
+		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);		
+		gameinfo.vGAME_INST.clear();
 	
 		gameinfo.iIconIndex = Get_GameIcon(gameinfo.cGAMEINDEX);
 		xml.GetText(pGame,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
@@ -2198,7 +2207,8 @@ void Default_GameSettings2()
 
 		Registry_GetGamePath(hkey, szKey,szItem,gameinfo.szGAME_PATH,&dwBuffSize);
 		gameinfo.bActive = false;
-		if(strlen(gameinfo.szGAME_PATH)>0)
+		int len = strlen(gameinfo.szGAME_PATH);
+		if(len>0)
 		{
 			gameinfo.bActive = true;
 			strcat_s(gameinfo.szGAME_PATH,sizeof(gameinfo.szGAME_PATH),szInstallSuffix);
@@ -2226,7 +2236,7 @@ void Default_GameSettings2()
 			gi.sMod = szTemp;
 			xml.GetAttribute(pInstall,"LaunchByVer",szTemp,sizeof(szTemp)-1);
 			gi.sVersion = szTemp;
-			gameinfo.pSC->vGAME_INST.push_back(gi);
+			gameinfo.vGAME_INST.push_back(gi);
 
 			ptempInstalls = ptempInstalls->NextSiblingElement();
 			if(ptempInstalls==NULL)
@@ -2272,17 +2282,16 @@ void Default_GameSettings()
 {
 	Default_GameSettings2();
 	return;
-	GAME_INSTALLATIONS gi;
+/*	GAME_INSTALLATIONS gi;
 
-	for(int i=0; i<MAX_SERVERLIST; i++)
+	for(int i=0; i<GamesInfo.size(); i++)
 	{
 		GamesInfo[i].bUseHTTPServerList = FALSE;
 		GamesInfo[i].szGAME_PATH[0]=0; //quick erase
-		GamesInfo[i].dwViewFlags = 0;
-		GamesInfo[i].pSC = &SC[i];
-		GamesInfo[i].pSC->vGAME_INST.clear();
+		GamesInfo[i].dwViewFlags = 0;	
+		GamesInfo[i].vGAME_INST.clear();
 	}
-
+*/
 /*
 XML prototype: gamedefaults.xml
 
@@ -2328,7 +2337,7 @@ XML prototype: gamedefaults.xml
 </Games>
 
 */
-	int idx = ET_SERVERLIST;
+/*	int idx = ET_SERVERLIST;
 	//GameEngine dependent
 	GamesInfo[idx].colorfilter = &colorfilter;
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
@@ -2361,9 +2370,9 @@ XML prototype: gamedefaults.xml
 	gi.sName = "Default";
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
-
-	idx = Q3_SERVERLIST;
+	GamesInfo[idx].vGAME_INST.push_back(gi);
+*/
+/*	idx = Q3_SERVERLIST;
 	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
 	GamesInfo[idx].GetServerStatus = &Q3_Get_ServerStatus;
 	strcpy(GamesInfo[idx].szServerRequestInfo,"\xFF\xFF\xFF\xFFgetstatus\n");
@@ -2389,7 +2398,7 @@ XML prototype: gamedefaults.xml
 
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 	idx = GamesInfo[RTCW_SERVERLIST].cGAMEINDEX = RTCW_SERVERLIST;
 	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
@@ -2411,7 +2420,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[Q4_SERVERLIST].cGAMEINDEX = Q4_SERVERLIST;
@@ -2439,7 +2448,7 @@ XML prototype: gamedefaults.xml
  
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[ETQW_SERVERLIST].cGAMEINDEX = ETQW_SERVERLIST;
@@ -2466,7 +2475,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[COD2_SERVERLIST].cGAMEINDEX = COD2_SERVERLIST;
@@ -2494,7 +2503,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[COD_SERVERLIST].cGAMEINDEX = COD_SERVERLIST;
@@ -2520,7 +2529,7 @@ XML prototype: gamedefaults.xml
 	strcpy(GamesInfo[idx].szMasterQueryString,"");
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[WARSOW_SERVERLIST].cGAMEINDEX = WARSOW_SERVERLIST;
@@ -2563,7 +2572,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 	idx = GamesInfo[COD4_SERVERLIST].cGAMEINDEX = COD4_SERVERLIST;
 	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
@@ -2591,7 +2600,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedText;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[CS_SERVERLIST].cGAMEINDEX = CS_SERVERLIST;
@@ -2615,7 +2624,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].pSC = &SC[idx];
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[CSCZ_SERVERLIST].cGAMEINDEX = CSCZ_SERVERLIST;
@@ -2639,7 +2648,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].pSC = &SC[idx];
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 
 	idx = GamesInfo[CSS_SERVERLIST].cGAMEINDEX = CSS_SERVERLIST;
@@ -2663,7 +2672,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].pSC = &SC[idx];
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 	
 	idx = GamesInfo[QW_SERVERLIST].cGAMEINDEX = QW_SERVERLIST;
@@ -2688,7 +2697,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 	idx = GamesInfo[Q2_SERVERLIST].cGAMEINDEX = Q2_SERVERLIST;
 	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
@@ -2709,7 +2718,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bUseHTTPServerList = FALSE;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 	idx = GamesInfo[OPENARENA_SERVERLIST].cGAMEINDEX = OPENARENA_SERVERLIST;
 	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
@@ -2733,7 +2742,7 @@ XML prototype: gamedefaults.xml
 	GamesInfo[idx].bActive = false;
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 //"C:\Program Files\Steam\Steam.exe" -applaunch 300
 	idx = GamesInfo[HL2_SERVERLIST].cGAMEINDEX = HL2_SERVERLIST;
@@ -2764,19 +2773,19 @@ XML prototype: gamedefaults.xml
 	gi.szGAME_CMD = "-applaunch 300";
 	gi.sMod = "dod";
 	gi.sName = "Day of Defeat Source";
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 	gi.szGAME_CMD = "-applaunch 320";
 	gi.sMod = "hl2mp";
 	gi.sName = "Half-Life 2 Deathmatch";
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 	gi.szGAME_CMD = "-applaunch 240";
 	gi.sMod = "cstrike";
 	gi.sName = "Counter-Strike Source";
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 	gi.szGAME_CMD = "-applaunch 440";
 	gi.sMod = "tf";
 	gi.sName = "Team Fortress 2";
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 
 	idx = GamesInfo[UTERROR_SERVERLIST].cGAMEINDEX = UTERROR_SERVERLIST;
 	GamesInfo[idx].GetServersFromMasterServer = &Q3_ConnectToMasterServer;
@@ -2805,7 +2814,7 @@ XML prototype: gamedefaults.xml
 	gi.sVersion = "";
 	gi.szGAME_PATH = GamesInfo[idx].szGAME_PATH;
 	gi.szGAME_CMD = GamesInfo[idx].szGAME_CMD;
-	GamesInfo[idx].pSC->vGAME_INST.push_back(gi);
+	GamesInfo[idx].vGAME_INST.push_back(gi);
 	strcpy(GamesInfo[idx].szGAME_SHORTNAME,"Urban Terror");
 	strcpy(GamesInfo[idx].szFilename,"urbanterror.servers");
 
@@ -2845,6 +2854,7 @@ XML prototype: gamedefaults.xml
 	strcpy(GamesInfo[HL2_SERVERLIST].szFilename,"tf2.servers");
 	
 	RegisterProtocol(EXE_PATH);
+	*/
 }
 
 void Default_Appsettings()
@@ -2972,9 +2982,9 @@ SERVER_INFO *FindServerByIPandPort(char *szIP, DWORD dwPort)
 	vSRV_INF::iterator  iLst;
 	char destPort[10];
 	DWORD dwIP = NetworkNameToIP(szIP,_itoa(dwPort,destPort,10));
-	if(currCV->pSC->vSI.size()>0)
+	if(currCV->vSI.size()>0)
 	{
-		for ( iLst = currCV->pSC->vSI.begin( ); iLst != currCV->pSC->vSI.end( ); iLst++ )
+		for ( iLst = currCV->vSI.begin( ); iLst != currCV->vSI.end( ); iLst++ )
 		{
 			g_tmpSRV = *iLst;
 			if((g_tmpSRV.dwIP == dwIP) && (g_tmpSRV.dwPort == dwPort))
@@ -3006,9 +3016,9 @@ int CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)
 
 	memcpy(&g_pSIduplicate,&pSI,sizeof(SERVER_INFO));
 
-	 iResult = find_if(pGI->pSC->vSI.begin(), pGI->pSC->vSI.end(),duplicate_func);
+	 iResult = find_if(pGI->vSI.begin(), pGI->vSI.end(),duplicate_func);
 
-	 if(iResult == pGI->pSC->vSI.end())
+	 if(iResult == pGI->vSI.end())
 		 return -1;
 
 	 return iResult->dwIndex;
@@ -3034,9 +3044,9 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 	{
 		 //If yes then set that server to a favorite
 		if(bFavorite)
-			pGI->pSC->vSI[iResult].cFavorite = 1;
+			pGI->vSI[iResult].cFavorite = 1;
 		
-		return pGI->pSC->vSI[iResult].dwIndex;
+		return pGI->vSI[iResult].dwIndex;
 	}
 		
 	//Add a new server into current list!
@@ -3046,13 +3056,13 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 	pSI.cCountryFlag = 0;
 	pSI.bNeedToUpdateServerInfo = true;
 	
-	pSI.dwIndex = pGI->pSC->vSI.size();
+	pSI.dwIndex = pGI->vSI.size();
 	if(bFavorite)
 		pSI.cFavorite = 1;
 	
 	int hash = pSI.dwIP + pSI.dwPort;
-	pGI->pSC->shash.insert(Int_Pair(hash,pSI.dwIndex));
-	pGI->pSC->vSI.push_back(pSI);
+	pGI->shash.insert(Int_Pair(hash,pSI.dwIndex));
+	pGI->vSI.push_back(pSI);
 	InsertServerItem(pGI,pSI);
 		
 	return pSI.dwIndex;
@@ -4096,7 +4106,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		bool active=true;
 		if(ti.cGAMEINDEX!=-25)
 		{
-			if(ti.cGAMEINDEX<MAX_SERVERLIST)
+			if(ti.cGAMEINDEX<GamesInfo.size())
 				active = GamesInfo[ti.cGAMEINDEX].bActive;
 		}
 				
@@ -4108,7 +4118,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
-			GamesInfo[ti.cGAMEINDEX].pSC->vFilterGameType.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].vFilterGameType.push_back(gf);
 		}
 		if(ti.sElementName == "ModItems")
 		{
@@ -4116,7 +4126,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
-			GamesInfo[ti.cGAMEINDEX].pSC->vFilterMod.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].vFilterMod.push_back(gf);
 		}
 		if(ti.sElementName == "Version")
 		{
@@ -4124,7 +4134,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sFriendlyName = ti.sName;
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
-			GamesInfo[ti.cGAMEINDEX].pSC->vFilterVersion.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].vFilterVersion.push_back(gf);
 		}
 		if(ti.sElementName == "Map")
 		{
@@ -4133,7 +4143,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			gf.sStrValue = ti.strValue;
 			gf.dwValue = ti.dwValue;
 			gf.dwExactMatch = ti.dwCompare;
-			GamesInfo[ti.cGAMEINDEX].pSC->vFilterMap.push_back(gf);
+			GamesInfo[ti.cGAMEINDEX].vFilterMap.push_back(gf);
 		}
 		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
 
@@ -4469,7 +4479,7 @@ int TreeView_load()
 		
 			}
 			//Clear all old filtering settings... ugly hack.
-		//	for(int i=0; i<MAX_SERVERLIST; i++)  //removed since 1.05
+		//	for(int i=0; i<GamesInfo.size(); i++)  //removed since 1.05
 		//		ZeroMemory(&GamesInfo[i].filter,sizeof(FILTER_SETTINGS));//removed since 1.05
 		}
 			
@@ -4489,7 +4499,7 @@ int TreeView_load()
 	char szBuffer[200];
 
 	//Let's do some resync values, this will help to ensure after an upgrade of the treeview  structure to display correct
-	for(int i=0; i<MAX_SERVERLIST;i++)
+	for(int i=0; i<GamesInfo.size();i++)
 	{
 		GamesInfo[i].hTI = TreeView_GetTIByItemGame(i);
 
@@ -4693,19 +4703,19 @@ long UpdateRulesList(LPSERVER_RULES pServerRules)
 
 void ClearAllServerLinkedList()
 {
-	for(int i=0;i<MAX_SERVERLIST;i++)
+	for(int i=0;i<GamesInfo.size();i++)
 	{
 		OutputDebugString(GamesInfo[i].szGAME_NAME);
 		OutputDebugString(" - Cleaning up serverlist, playerlist and hashes etc.\n");
 		
-		for(long x=0; x<GamesInfo[i].pSC->vSI.size();x++)
-			UTILZ_CleanUp_PlayerList(GamesInfo[i].pSC->vSI.at(x).pPlayerData);
+		for(long x=0; x<GamesInfo[i].vSI.size();x++)
+			UTILZ_CleanUp_PlayerList(GamesInfo[i].vSI.at(x).pPlayerData);
 
 		GamesInfo[i].dwTotalServers = 0;
-		GamesInfo[i].pSC->vSI.clear();
-		GamesInfo[i].pSC->vRefListSI.clear();
-		GamesInfo[i].pSC->vRefScanSI.clear();
-		GamesInfo[i].pSC->shash.clear();
+		GamesInfo[i].vSI.clear();
+		GamesInfo[i].vRefListSI.clear();
+		GamesInfo[i].vRefScanSI.clear();
+		GamesInfo[i].shash.clear();
 	}
 }
 
@@ -4748,7 +4758,7 @@ GAME_INFO * Get_CurrentViewByServer(SERVER_INFO* pSrv)
 
 int FindFirstActiveGame()
 {
-	for(int i=0;i<MAX_SERVERLIST;i++)
+	for(int i=0;i<GamesInfo.size();i++)
 		if(GamesInfo[i].bActive)
 			return i;
 
@@ -5343,14 +5353,12 @@ void OnClose()
 	g_hf2=NULL;
 
 	OutputDebugString("Cleaning up filter Gametypes, Map, Mod and Versions.\n");
-	for(int i=0;i<MAX_SERVERLIST;i++)
+	for(int i=0;i<GamesInfo.size();i++)
 	{
-
-
-		GamesInfo[i].pSC->vFilterGameType.clear();
-		GamesInfo[i].pSC->vFilterMap.clear();
-		GamesInfo[i].pSC->vFilterMod.clear();
-		GamesInfo[i].pSC->vFilterVersion.clear();
+		GamesInfo[i].vFilterGameType.clear();
+		GamesInfo[i].vFilterMap.clear();
+		GamesInfo[i].vFilterMod.clear();
+		GamesInfo[i].vFilterVersion.clear();
 	}
 
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
@@ -5494,10 +5502,10 @@ void SaveServerList(GAME_INFO *pGI)
 			
 		vSRV_INF::iterator  iLst;
 
-		if(pGI->pSC->vSI.size()>0)
+		if(pGI->vSI.size()>0)
 		{
 			bool bWrite=false;
-			for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
+			for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 			{
 		
 				SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
@@ -5549,7 +5557,7 @@ DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 {
 	GAME_INFO *pGI = (GAME_INFO*)lpVoid;
 	SetCurrentDirectory(USER_SAVE_PATH);
-	pGI->pSC->vSI.clear();
+	pGI->vSI.clear();
 	char szBuffer[100];
 	if(pGI->hTI!=NULL)
 	{
@@ -5591,7 +5599,7 @@ DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 	char buffer[1024];
 	if(fp!=NULL)
 	{
-		pGI->pSC->vSI.clear();
+		pGI->vSI.clear();
 		while( !feof( fp ) )
 		{
 			memset(&buffer,0,sizeof(buffer));
@@ -5729,8 +5737,8 @@ DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 						srv.bUpdated = 0;
 						srv.bNeedToUpdateServerInfo = true;
 						int hash = srv.dwIP + srv.dwPort;
-						pGI->pSC->shash.insert(Int_Pair(hash,srv.dwIndex));
-						pGI->pSC->vSI.push_back(srv);			
+						pGI->shash.insert(Int_Pair(hash,srv.dwIndex));
+						pGI->vSI.push_back(srv);			
 						pGI->dwTotalServers++;
 	
 		
@@ -5753,7 +5761,7 @@ DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
 
 void SaveAllServerList()
 {
-	for(int i=0;i<MAX_SERVERLIST;i++)
+	for(int i=0;i<GamesInfo.size();i++)
 		SaveServerList(&GamesInfo[i]);
 }
 
@@ -5778,9 +5786,9 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 {
 	EnterCriticalSection(&LOAD_SAVE_CS);
 
-	for(int i=0;i<MAX_SERVERLIST;i++)
+	for(int i=0;i<GamesInfo.size();i++)
 	{
-		if(GamesInfo[i].pSC->vSI.size()==0) //Only try to load if no list exsists (needed for minimizing and restoring)
+		if(GamesInfo[i].vSI.size()==0) //Only try to load if no list exsists (needed for minimizing and restoring)
 		{	
 			GamesInfo[i].bLockServerList = TRUE;
 			LoadServerListV2(&GamesInfo[i]);
@@ -5795,7 +5803,7 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 	else
 		SetCurrentViewTo(FindFirstActiveGame());
 
-	if(GamesInfo[g_currentGameIdx].pSC->vSI.size()>0)
+	if(GamesInfo[g_currentGameIdx].vSI.size()>0)
 		OnActivate_ServerList(SCAN_FILTERED);
 		
  return 0;
@@ -5819,7 +5827,7 @@ void DeleteAllServerLists()
 			ListView_SetItemCount(g_hwndListViewServer,0);
 		
 			char szBuffer[100];
-			for(int i=0;i<MAX_SERVERLIST;i++)
+			for(int i=0;i<GamesInfo.size();i++)
 			{
 				remove(GamesInfo[i].szFilename);
 				GamesInfo[i].dwTotalServers = 0;
@@ -5850,10 +5858,10 @@ void DeleteServerLists(char cGameIdx)
 			OutputDebugString(" - CLEAN UP SERVERLIST\n");
 				
 			GamesInfo[cGameIdx].dwTotalServers = 0;
-			GamesInfo[cGameIdx].pSC->vSI.clear();
-			GamesInfo[cGameIdx].pSC->vRefListSI.clear();
-			GamesInfo[cGameIdx].pSC->vRefScanSI.clear();
-			GamesInfo[cGameIdx].pSC->shash.clear();
+			GamesInfo[cGameIdx].vSI.clear();
+			GamesInfo[cGameIdx].vRefListSI.clear();
+			GamesInfo[cGameIdx].vRefScanSI.clear();
+			GamesInfo[cGameIdx].shash.clear();
 
 			g_CurrentSRV=NULL;
 
@@ -5994,7 +6002,7 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	TiXmlElement * abcd = new TiXmlElement( "Games" );  
 	root->LinkEndChild( abcd );  
 	
-	for(int i=0;i<MAX_SERVERLIST; i++)
+	for(int i=0;i<GamesInfo.size(); i++)
 	{
 		TiXmlElement * abc = new TiXmlElement( "Game" );  
 		WriteCfgStr(abc, "GameData", "GameName",GamesInfo[i].szGAME_NAME) ;
@@ -6026,14 +6034,14 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 		WriteCfgInt(abc, "GameData", "FilterOnlyPrivate",GamesInfo[i].filter.bOnlyPrivate);
 		WriteCfgInt(abc, "GameData", "FilterDedicated",GamesInfo[i].filter.bDedicated);
 		
-		for(int n=0;n<GamesInfo[i].pSC->vGAME_INST.size();n++)
+		for(int n=0;n<GamesInfo[i].vGAME_INST.size();n++)
 		{
 			TiXmlElement * installs = new TiXmlElement( "Installs" ); 
-			WriteCfgStr(installs, "Install", "Name",GamesInfo[i].pSC->vGAME_INST.at(n).sName.c_str());
-			WriteCfgStr(installs, "Install", "Path",GamesInfo[i].pSC->vGAME_INST.at(n).szGAME_PATH.c_str());
-			WriteCfgStr(installs, "Install", "Cmd",GamesInfo[i].pSC->vGAME_INST.at(n).szGAME_CMD.c_str());
-			WriteCfgStr(installs, "Install", "LaunchByMod",GamesInfo[i].pSC->vGAME_INST.at(n).sMod.c_str());
-			WriteCfgStr(installs, "Install", "LaunchByVer",GamesInfo[i].pSC->vGAME_INST.at(n).sVersion.c_str());
+			WriteCfgStr(installs, "Install", "Name",GamesInfo[i].vGAME_INST.at(n).sName.c_str());
+			WriteCfgStr(installs, "Install", "Path",GamesInfo[i].vGAME_INST.at(n).szGAME_PATH.c_str());
+			WriteCfgStr(installs, "Install", "Cmd",GamesInfo[i].vGAME_INST.at(n).szGAME_CMD.c_str());
+			WriteCfgStr(installs, "Install", "LaunchByMod",GamesInfo[i].vGAME_INST.at(n).sMod.c_str());
+			WriteCfgStr(installs, "Install", "LaunchByVer",GamesInfo[i].vGAME_INST.at(n).sVersion.c_str());
 			abc->LinkEndChild( installs ); 
 		}
 	
@@ -6341,13 +6349,13 @@ int SetCurrentViewTo(int index)
 	g_currentGameIdx = index;
 	//Clear old
 	//if(currCV!=NULL)
-	//	currCV->pSC->vRefListSI.clear();
+	//	currCV->vRefListSI.clear();
 
 	currCV = &GamesInfo[g_currentGameIdx];
 	if(g_hwndMainTreeCtrl==NULL)
 		return 0;
 	//Deselect
-	for(int i=0;i<MAX_SERVERLIST;i++)
+	for(int i=0;i<GamesInfo.size();i++)
 		TreeView_SetItemState(g_hwndMainTreeCtrl,GamesInfo[i].hTI,0 , TVIS_SELECTED );
 
 
@@ -7187,7 +7195,7 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 nextGame:
 	if(options==SCAN_ALL_GAMES)
 		currGameIdx = iGame++;
-	if(iGame==MAX_SERVERLIST)  //reset
+	if(iGame==GamesInfo.size())  //reset
 		currGameIdx = iGame = 0;
 
 	SetStatusText(GamesInfo[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GamesInfo[currGameIdx].szGAME_NAME);
@@ -7356,7 +7364,7 @@ nextGame:
 		g_bRunSimulation = FALSE;
 		return 0xFFFF;
 	}
-	if(GamesInfo[currGameIdx].pSC->vSI.size()==0)
+	if(GamesInfo[currGameIdx].vSI.size()==0)
 		goto exitError;
 
 	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GamesInfo[currGameIdx].szGAME_NAME);
@@ -7481,7 +7489,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			{
 				returnVal=false;
 				DWORD val = 1;
-				for(int i=0;i<pGI->pSC->vFilterMap.size();i++)
+				for(int i=0;i<pGI->vFilterMap.size();i++)
 				{
 					if(pGI->filter.dwMap & val)
 					{
@@ -7504,7 +7512,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			{
 				returnVal=false;
 				DWORD val = 1;
-				for(int i=0;i<pGI->pSC->vFilterVersion.size();i++)
+				for(int i=0;i<pGI->vFilterVersion.size();i++)
 				{
 					if(pGI->filter.dwVersion & val)
 					{
@@ -7562,7 +7570,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 	{
 		returnVal=false;
 		DWORD val = 1;
-		for(int i=0;i<pGI->pSC->vFilterGameType.size();i++)
+		for(int i=0;i<pGI->vFilterGameType.size();i++)
 		{
 			if(pGI->filter.dwGameTypeFilter & val)
 			{
@@ -7586,7 +7594,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 	{
 		returnVal=false;
 		DWORD val = 1;
-		for(int i=0;i<pGI->pSC->vFilterMod.size();i++)
+		for(int i=0;i<pGI->vFilterMod.size();i++)
 		{
 			if(pGI->filter.dwMod & val)
 			{
@@ -7653,13 +7661,13 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 	pGI->dwViewFlags |= REDRAW_SERVERLIST;
 	
 //	SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
-	dbg_print("View flags: %d \n idx %d \nList Size %d",pGI->dwViewFlags,gameIdx,pGI->pSC->vSI.size());
+	dbg_print("View flags: %d \n idx %d \nList Size %d",pGI->dwViewFlags,gameIdx,pGI->vSI.size());
 	ListView_DeleteAllItems(g_hwndListViewServer);
-	pGI->pSC->vRefListSI.clear();
-	if(pGI->pSC->vSI.size()>0)
+	pGI->vRefListSI.clear();
+	if(pGI->vSI.size()>0)
 	{
 		try{
-			for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
+			for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 			{
 				SERVER_INFO pSI = *iLst;
 			
@@ -7669,7 +7677,7 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 
 				if(FilterServerItemV2((LPARAM*)&pSI,pGI))
 				{
-					pGI->pSC->vRefListSI.push_back(refSI);
+					pGI->vRefListSI.push_back(refSI);
 				}
 			}			
 		}catch (const exception& e)
@@ -7689,9 +7697,9 @@ DWORD WINAPI  RedrawServerListThread(LPVOID pvoid )
 		pGI->dwViewFlags ^= FORCE_SCAN_FILTERED;
 
 
-	dbg_print("Created filtered serverlist! View flags %d\n Number of servers in list %d \n",pGI->dwViewFlags,pGI->pSC->vRefListSI.size());
+	dbg_print("Created filtered serverlist! View flags %d\n Number of servers in list %d \n",pGI->dwViewFlags,pGI->vRefListSI.size());
 
-	//ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());
+	//ListView_SetItemCount(g_hwndListViewServer,pGI->vRefListSI.size());
 
 	
 	return 0;
@@ -7748,7 +7756,7 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 		}
 		fclose(fp);
 	} 	
-	pGI->dwTotalServers = pGI->pSC->vSI.size();
+	pGI->dwTotalServers = pGI->vSI.size();
 }
 
 
@@ -7827,7 +7835,7 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
 		dbg_print("busy RefList");
 		return 1;
 	}
-	pGI->pSC->vRefListSI.push_back(refSI);
+	pGI->vRefListSI.push_back(refSI);
 	LeaveCriticalSection(&REDRAWLIST_CS);
 
 	//return 0; //Game scanner 1.0
@@ -8307,7 +8315,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 
 				if(pListDraw->nmcd.hdr.idFrom == IDC_LIST_SERVER)
 				{
-					pSI = Get_ServerInfoByListViewIndex(currCV,nItem); //currCV->pSC->vSIFiltered.at((int)nItem);
+					pSI = Get_ServerInfoByListViewIndex(currCV,nItem); //currCV->vSIFiltered.at((int)nItem);
 					
 					if(pSI.dwIP == 0) //Quick and dirty fix if server index is out of range
 						return CDRF_DODEFAULT;
@@ -8546,15 +8554,15 @@ SERVER_INFO *FindServer(char *str)
 	GAME_INFO *pGI = (GAME_INFO *)&GamesInfo[g_currentGameIdx];
 	vSRV_INF::iterator  iLst;
 
-	if(pGI->pSC->vSI.size()==0)
+	if(pGI->vSI.size()==0)
 		return NULL;
 
 	ListView_DeleteAllItems(g_hwndListViewServer); //5.44
-	pGI->pSC->vRefListSI.clear();
+	pGI->vRefListSI.clear();
 
 	if(str[0]>='A' &&  str[0]<='z')
 	{
-		for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
+		for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 		{
 		
 			SERVER_INFO pSI = *iLst;
@@ -8576,7 +8584,7 @@ SERVER_INFO *FindServer(char *str)
 					REF_SERVER_INFO refSI;
 					refSI.dwIndex = pSI.dwIndex;
 					refSI.cGAMEINDEX = pSI.cGAMEINDEX;
-					pGI->pSC->vRefListSI.push_back(refSI);
+					pGI->vRefListSI.push_back(refSI);
 
 				
 					counter++;
@@ -8588,7 +8596,7 @@ SERVER_INFO *FindServer(char *str)
 	{
 		char szIPPORT[50];
 		
-		for ( iLst = pGI->pSC->vSI.begin( ); iLst != pGI->pSC->vSI.end( ); iLst++ )
+		for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 		{
 			SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
 			
@@ -8602,7 +8610,7 @@ SERVER_INFO *FindServer(char *str)
 				REF_SERVER_INFO refSI;
 				refSI.dwIndex = pSI.dwIndex;
 				refSI.cGAMEINDEX = pSI.cGAMEINDEX;
-				pGI->pSC->vRefListSI.push_back(refSI);
+				pGI->vRefListSI.push_back(refSI);
 
 				counter++;
 			}else 
@@ -8613,7 +8621,7 @@ SERVER_INFO *FindServer(char *str)
 					REF_SERVER_INFO refSI;
 					refSI.dwIndex = pSI.dwIndex;
 					refSI.cGAMEINDEX = pSI.cGAMEINDEX;
-					pGI->pSC->vRefListSI.push_back(refSI);
+					pGI->vRefListSI.push_back(refSI);
 
 					counter++;
 
@@ -8629,7 +8637,7 @@ SERVER_INFO *FindServer(char *str)
 
 	Do_ServerListSortThread(iLastColumnSortIndex);
 	//Do_ServerListSort((LPVOID)iLastColumnSortIndex);	
-	//ListView_SetItemCount(g_hwndListViewServer,pGI->pSC->vRefListSI.size());		
+	//ListView_SetItemCount(g_hwndListViewServer,pGI->vRefListSI.size());		
 
 
 	return NULL;
@@ -8942,7 +8950,7 @@ void StartGame_ConnectToServer(bool connectFromBuddyList)
 					if(pBI==NULL)
 						return;
 
-					SERVER_INFO pSI = GamesInfo[pBI->cGAMEINDEX].pSC->vSI.at(pBI->sIndex);
+					SERVER_INFO pSI = GamesInfo[pBI->cGAMEINDEX].vSI.at(pBI->sIndex);
 					LaunchGame(pSI,&GamesInfo[pSI.cGAMEINDEX]);
 			
 				}
@@ -8979,11 +8987,11 @@ SERVER_INFO Get_ServerInfoByListViewIndex(GAME_INFO *pGI,int index)
 	if(pGI==NULL)
 		return srv; //return NULL srv
 
-	if(index<pGI->pSC->vRefListSI.size())
+	if(index<pGI->vRefListSI.size())
 	{
 		__try
 		{				
-			refSI = pGI->pSC->vRefListSI.at(index);
+			refSI = pGI->vRefListSI.at(index);
 		}
 		__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 		{
@@ -8995,7 +9003,7 @@ SERVER_INFO Get_ServerInfoByListViewIndex(GAME_INFO *pGI,int index)
 	//continue if successfull
 	__try
 	{
-		srv = pGI->pSC->vSI.at(refSI.dwIndex);
+		srv = pGI->vSI.at(refSI.dwIndex);
 	}
 	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 	{
@@ -9011,7 +9019,7 @@ SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index)
 	srv.cGAMEINDEX = 0;
 	__try{
 
-		srv = pGI->pSC->vSI.at(index);
+		srv = pGI->vSI.at(index);
 	}
 	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 	{
@@ -9384,7 +9392,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			wmEvent = HIWORD(wParam); 
 
 		
-				for(int x=0; x<currCV->pSC->vGAME_INST.size();x++)
+				for(int x=0; x<currCV->vGAME_INST.size();x++)
 					if(wmId == 36000+x)
 					{
 						int i = ListView_GetSelectionMark(g_hwndListViewServer);
@@ -9420,7 +9428,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 
 						DialogBox(g_hInst, (LPCTSTR)IDD_DLG_SETPRIVPASS, g_hWnd, (DLGPROC)PRIVPASS_Proc);	
 			
-						currCV->pSC->vSI.at((int)pSI.dwIndex) = pSI;
+						currCV->vSI.at((int)pSI.dwIndex) = pSI;
 
 					}
 				break;
@@ -9465,7 +9473,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 						{
 							SERVER_INFO pSI = Get_ServerInfoByListViewIndex(currCV,n); 						
 							pSI.cFavorite =! pSI.cFavorite;							
-							currCV->pSC->vSI.at((int)pSI.dwIndex) = pSI;
+							currCV->vSI.at((int)pSI.dwIndex) = pSI;
 							UpdateServerItem(n);
 						}
 					}
@@ -9575,8 +9583,8 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,lang.GetString("MenuLaunchGameOnly"));
 				
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubForceLaunchPopMenu,lang.GetString("MenuForceLaunch"));
-				for(int x=0; x<currCV->pSC->vGAME_INST.size();x++)
-					InsertMenu(hSubForceLaunchPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,36000+x,currCV->pSC->vGAME_INST.at(x).sName.c_str());
+				for(int x=0; x<currCV->vGAME_INST.size();x++)
+					InsertMenu(hSubForceLaunchPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,36000+x,currCV->vGAME_INST.at(x).sName.c_str());
 
 			
 			
@@ -9679,22 +9687,22 @@ BOOL WINAPI EditCopy(char *pText)
 void Sync_ServerInfo(SERVER_INFO pSI)
 {
 	GAME_INFO *pGI = &GamesInfo[pSI.cGAMEINDEX];
-	pGI->pSC->vSI.at(pSI.dwIndex) = pSI;
+	pGI->vSI.at(pSI.dwIndex) = pSI;
 }
 
 BOOL ExecuteGame(GAME_INFO *pGI,char *szCmd,int GameInstallIdx)
 {
 	char LoadLocation[512],  WETFolder[512];
 	HINSTANCE hret=NULL;
-	if(pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_PATH.length()>0)
+	if(pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.length()>0)
 	{			
-		strcpy(WETFolder,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
+		strcpy(WETFolder,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
 		char* pos = strrchr(WETFolder,'\\');
 		if(pos!=NULL)
 		{
 			pos[1]=0;
 		}
-		strcpy(LoadLocation,pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
+		strcpy(LoadLocation,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
 		AddLogInfo(ETSV_DEBUG,WETFolder);
 		AddLogInfo(ETSV_DEBUG,LoadLocation);
 		hret = ShellExecute(NULL, "open", LoadLocation, szCmd,WETFolder, 1);
@@ -9941,7 +9949,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							default:  //a game is selected
 								{
 									GamesInfo[g_currentGameIdx].dwViewFlags = 0;
-									if(GamesInfo[g_currentGameIdx].pSC->vSI.size()==0) //if empty let's download server list from master
+									if(GamesInfo[g_currentGameIdx].vSI.size()==0) //if empty let's download server list from master
 									{
 										OnActivate_ServerList();
 										return TRUE;
@@ -10204,7 +10212,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 			{
 			//	Setup_Appsettings();
 				cutoff[0]=0;
-				for(char i=0;i<MAX_SERVERLIST; i++)
+				for(char i=0;i<GamesInfo.size(); i++)
 				{
 					if(strcmp(proto,GamesInfo[i].szProtocolName)==0)
 					{
@@ -10434,7 +10442,7 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 	int typeRecognized = -1;
 
 	//simple autodetect to try to recognize which game to launch (used for quick launch)
-	for(int i=0; i<MAX_SERVERLIST;i++)
+	for(int i=0; i<GamesInfo.size();i++)
 	{
 		
 		if((GamesInfo[i].dwDefaultPort==pSI.dwPort) && GamesInfo[i].bActive)
@@ -10478,22 +10486,22 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 		}
 	}
 
-	for(int x=0; x<pGI->pSC->vGAME_INST.size();x++)
+	for(int x=0; x<pGI->vGAME_INST.size();x++)
 	{
 		if(pSI.szMod!=NULL)
 		{
-			if(pGI->pSC->vGAME_INST.at(x).sMod.length()>0)
+			if(pGI->vGAME_INST.at(x).sMod.length()>0)
 			{
-				if(strcmp(pSI.szMod,pGI->pSC->vGAME_INST.at(x).sMod.c_str())==0)
+				if(strcmp(pSI.szMod,pGI->vGAME_INST.at(x).sMod.c_str())==0)
 				{
 					GameInstallIdx = x;
 					break;
 				}
 			}
 		}
-		else if((pSI.szVersion!=NULL) && (pGI->pSC->vGAME_INST.at(x).sVersion.length()>0)) 
+		else if((pSI.szVersion!=NULL) && (pGI->vGAME_INST.at(x).sVersion.length()>0)) 
 		{
-			if(strcmp(pSI.szVersion,pGI->pSC->vGAME_INST.at(x).sVersion.c_str())==0)
+			if(strcmp(pSI.szVersion,pGI->vGAME_INST.at(x).sVersion.c_str())==0)
 			{
 				GameInstallIdx = x;
 				break;
@@ -10501,7 +10509,7 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 		}
 	}
 	string cmd;
-	cmd = pGI->pSC->vGAME_INST.at(GameInstallIdx).szGAME_CMD;
+	cmd = pGI->vGAME_INST.at(GameInstallIdx).szGAME_CMD;
 
 	ReplaceStrInStr(cmd,"%MODNAME%",pSI.szMod);
 
@@ -11704,7 +11712,7 @@ int CFG_Load()
 		pElement = pElement->FirstChild()->ToElement();
 		if(pElement!=NULL)
 		{
-			for(int i=0;i<MAX_SERVERLIST;i++)
+			for(int i=0;i<GamesInfo.size();i++)
 			{
 				TiXmlElement* pNode = pElement->FirstChild()->ToElement();
 				if(pNode!=NULL)
@@ -11717,7 +11725,7 @@ int CFG_Load()
 					
 					if(ReadCfgStr(pNode, "Path",GamesInfo[i].szGAME_PATH,MAX_PATH)!=NULL) //old changed since ver 1.08
 					{
-						GamesInfo[i].pSC->vGAME_INST.clear();
+						GamesInfo[i].vGAME_INST.clear();
 						ReadCfgStr(pNode, "Cmd",GamesInfo[i].szGAME_CMD,sizeof(GamesInfo[i].szGAME_CMD));
 						ReadCfgStr(pNode, "LaunchByVer",GamesInfo[i].szLaunchByVersion,MAX_PATH);
 						ReadCfgStr(pNode, "LaunchByMod",GamesInfo[i].szLaunchByMod,MAX_PATH);
@@ -11729,7 +11737,7 @@ int CFG_Load()
 						gi.sMod = GamesInfo[i].szLaunchByMod;		
 						gi.sVersion = GamesInfo[i].szLaunchByVersion;
 
-						GamesInfo[i].pSC->vGAME_INST.push_back(gi);
+						GamesInfo[i].vGAME_INST.push_back(gi);
 					} else
 					{
 						TiXmlNode* pInstallTags = pElement->FirstChild("Installs");
@@ -11738,7 +11746,7 @@ int CFG_Load()
 						{
 							TiXmlElement* pInstalls = pInstallTags->ToElement();
 							if(pInstalls!=NULL)
-								GamesInfo[i].pSC->vGAME_INST.clear();
+								GamesInfo[i].vGAME_INST.clear();
 							while(pInstalls!=NULL)
 							{
 								TiXmlElement* pInstall = pInstalls->FirstChild("Install")->ToElement();
@@ -11756,7 +11764,7 @@ int CFG_Load()
 								gi.sMod = GamesInfo[i].szLaunchByMod;		
 								gi.sVersion = GamesInfo[i].szLaunchByVersion;
 
-								GamesInfo[i].pSC->vGAME_INST.push_back(gi);
+								GamesInfo[i].vGAME_INST.push_back(gi);
 								pInstalls = pInstalls->NextSiblingElement();
 								if(pInstalls==NULL)
 									break;

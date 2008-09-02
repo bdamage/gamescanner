@@ -19,7 +19,7 @@ char Q3_unkown[]={"????"};
 extern CLanguage lang;
 extern bool g_bCancel;
 extern GamesMap GamesInfo;
-//extern GAME_INFO GamesInfo[MAX_SERVERLIST+1];
+//extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 extern APP_SETTINGS_NEW AppCFG;
 bool Q3_bCloseApp=false;
 
@@ -444,7 +444,7 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 
 	int i=0;
 	SERVER_INFO ptempSI;
-	DWORD idx = pGI->pSC->vSI.size();	
+	DWORD idx = pGI->vSI.size();	
 	DWORD *dwIP=NULL;
 	DWORD dwResult=0;
 	if (p==NULL)
@@ -519,8 +519,8 @@ CoD 4                                                                           
 			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;
 			strcpy(ptempSI.szShortCountryName,"zz");
-			pGI->pSC->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
-			pGI->pSC->vSI.push_back(ptempSI);
+			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
+			pGI->vSI.push_back(ptempSI);
 
 			if(Q3_InsertServerItem!=NULL)
 				Q3_InsertServerItem(pGI,ptempSI);
