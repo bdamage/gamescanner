@@ -11,6 +11,7 @@
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 84 empty full</MasterQueryString>
 		<MapPreviewPath>etmaps</MapPreviewPath>
+		<Icon>et.ico</Icon>
 		<MasterServers>
 			<MasterServer>etmaster.idsoftware.com:27950</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -28,13 +29,6 @@
 				</FilePath>
 			</FileSearch>
 		</Detection>
-		<Installs>
-				<Install name="Name" value="" />
-				<Install name="Path" value="" />
-				<Install name="Cmd" value="" />
-				<Install name="LaunchByMod" value="" />
-				<Install name="LaunchByVer" value="" />
-		</Installs>	  
 	</Game>
 	<Game>
 		<GameIndex>1</GameIndex>
@@ -43,6 +37,7 @@
 		<Filename>etqw.servers</Filename>
 		<WebProtocol>etqw</WebProtocol>
 		<NetEngine>Q4</NetEngine>
+		<Icon>etqw.ico</Icon>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
 		<MasterQueryString></MasterQueryString>
@@ -74,6 +69,7 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>q3</WebProtocol>
 		<MapPreviewPath>q3maps</MapPreviewPath>
+		<Icon>q3.ico</Icon>
 		<MasterServers>
 			<MasterServer>monster.idsoftware.com:27950</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -106,6 +102,7 @@
 		<ColorEncoding>Q4</ColorEncoding>
 		<WebProtocol>q4</WebProtocol>
 		<MapPreviewPath>q4maps</MapPreviewPath>
+		<Icon>q4.ico</Icon>
 		<MasterServers>
 			<MasterServer>q4master.idsoftware.com:27650</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -137,6 +134,7 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>rtcw</WebProtocol>
 		<MapPreviewPath>rtcwmaps</MapPreviewPath>
+		<Icon>rtcw.ico</Icon>
 		<MasterServers>
 			<MasterServer>wolfmotd.idsoftware.com:27950</MasterServer>
 			<ServerProtocol>60</ServerProtocol>
@@ -169,13 +167,13 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>cod</WebProtocol>
 		<MapPreviewPath>codmaps</MapPreviewPath>
+		<Icon>cod.ico</Icon>
 		<MasterServers>
 			<MasterServer>codmaster.activision.com:20510</MasterServer>
-			<ServerProtocol>5</ServerProtocol>
 			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
-		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n\x00</ServerInfoQuery>
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 5 empty full</MasterQueryString>
 		<Detection>
 			<Registry>
@@ -201,9 +199,9 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>cod2</WebProtocol>
 		<MapPreviewPath>cod2maps</MapPreviewPath>
+		<Icon>callofduty2.ico</Icon>
 		<MasterServers>
 			<MasterServer>cod2master.activision.com:20710</MasterServer>
-			<ServerProtocol>0</ServerProtocol>
 			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
@@ -233,9 +231,9 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>cod4</WebProtocol>
 		<MapPreviewPath>cod4maps</MapPreviewPath>
+		<Icon>cod4.ico</Icon>
 		<MasterServers>
 			<MasterServer>cod4master.activision.com:20810</MasterServer>
-			<ServerProtocol>0</ServerProtocol>
 			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
@@ -265,6 +263,7 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>warsow</WebProtocol>
 		<MapPreviewPath>warsowmaps</MapPreviewPath>
+		<Icon>warsow.ico</Icon>
 		<MasterServers>
 			<MasterServer>dpmaster.deathmask.net:27950</MasterServer>
 			<ServerProtocol>10</ServerProtocol>
@@ -284,7 +283,7 @@
 		<Installs>
 				<Install name="Name" value="Default" />
 				<Install name="Path" value="" />
-				<Install name="Cmd" value="+set fs_usehomedir 1 +set fs_basepath %GAMEPATH%" />
+				<Install name="Cmd" value="+set fs_usehomedir 1 +set fs_basepath &quot;%GAMEPATH%&quot;" />
 				<Install name="LaunchByMod" value="" />
 				<Install name="LaunchByVer" value="" />
 		</Installs>	
@@ -297,6 +296,7 @@
 		<NetEngine>VALVE</NetEngine>
 		<WebProtocol>cs</WebProtocol>
 		<MapPreviewPath>csmaps</MapPreviewPath>
+		<Icon>cstrike.ico</Icon>
 		<MasterServers>
 			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -328,6 +328,7 @@
 		<NetEngine>VALVE</NetEngine>
 		<WebProtocol>cscz</WebProtocol>
 		<MapPreviewPath>csczmaps</MapPreviewPath>
+		<Icon>cstrike.ico</Icon>
 		<MasterServers>
 			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -359,6 +360,7 @@
 		<NetEngine>VALVE</NetEngine>
 		<WebProtocol>css</WebProtocol>
 		<MapPreviewPath>cssmaps</MapPreviewPath>
+		<Icon>css.ico</Icon>
 		<MasterServers>
 			<MasterServer>hl2master.steampowered.com:27011</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -391,6 +393,7 @@
 		<WebProtocol>qw</WebProtocol>
 		<MapPreviewPath>qwmaps</MapPreviewPath>
 		<ColorEncoding>QW</ColorEncoding>
+		<Icon>qw.ico</Icon>
 		<MasterServers>
 			<MasterServer>http://www.quakeservers.net/lists/servers/global.txt</MasterServer>
 		
@@ -423,6 +426,7 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>q2</WebProtocol>
 		<MapPreviewPath>quake2maps</MapPreviewPath>
+		<Icon>q2.ico</Icon>
 		<MasterServers>
 			<MasterServer>master.q2servers.com:27900</MasterServer>
 			<ServerProtocol>34</ServerProtocol>
@@ -455,6 +459,7 @@
 		<NetEngine>Q3</NetEngine>
 		<WebProtocol>openarena</WebProtocol>
 		<MapPreviewPath>openarenawmaps</MapPreviewPath>
+		<Icon>openarena.ico</Icon>
 		<MasterServers>
 			<MasterServer>dpmaster.deathmask.net:27950</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -486,6 +491,7 @@
 		<NetEngine>VALVE</NetEngine>
 		<WebProtocol>hf2</WebProtocol>
 		<MapPreviewPath>hf2maps</MapPreviewPath>
+		<Icon>hf2.ico</Icon>
 		<MasterServers>
 			<MasterServer>hl2master.steampowered.com:27011</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -539,6 +545,7 @@
 		<ColorEncoding>Q3</ColorEncoding>
 		<WebProtocol>urbant</WebProtocol>
 		<MapPreviewPath>urbantmaps</MapPreviewPath>
+		<Icon>urbanterror.ico</Icon>
 		<MasterServers>
 			<MasterServer>master.urbanterror.net:27950</MasterServer>
 			<UseHTTP>0</UseHTTP>

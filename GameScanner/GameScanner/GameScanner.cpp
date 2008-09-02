@@ -2143,7 +2143,7 @@ void Default_GameSettings2()
 		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);		
 		gameinfo.vGAME_INST.clear();
 	
-		gameinfo.iIconIndex = Get_GameIcon(gameinfo.cGAMEINDEX);
+		//gameinfo.iIconIndex = Get_GameIcon(gameinfo.cGAMEINDEX);
 		xml.GetText(pGame,"Icon",szTemp,sizeof(szTemp)-1);
 		gameinfo.iIconIndex  = LoadIconIntoImageList(szTemp);
 
@@ -6969,9 +6969,12 @@ void Load_CountryFlags()
 
 int LoadIconIntoImageList(char*szFilename)
 {
-	int index=0;
-	HICON hIcon = (HICON) LoadImage(NULL,szFilename,IMAGE_ICON,0,0,LR_LOADFROMFILE);
-	//hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_HALFLIFE2)); //42
+	int index=7;
+	char szTemp[100];
+	strcpy(szTemp,".\\GameIcons\\");
+	strcat(szTemp,szFilename);
+
+	HICON hIcon = (HICON) LoadImage(NULL,szTemp,IMAGE_ICON, GetSystemMetrics(SM_CXSMICON), GetSystemMetrics(SM_CYSMICON),LR_LOADFROMFILE);
 	if(hIcon!=NULL)
 	{	
 		index = ImageList_AddIcon(g_hImageListIcons, hIcon);
@@ -6992,9 +6995,9 @@ void LoadImageList()
 	g_hImageListIcons = ImageList_Create(16, 16, ILC_COLOR32|ILC_MASK,35, 1);
 
 	HICON hIcon;
-
+	int i=0;
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ET));		    //0 ET
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	i = ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_PB));			//1
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FAVORITES));   //2
@@ -7035,27 +7038,27 @@ void LoadImageList()
 	ImageList_AddIcon(g_hImageListIcons, hIcon);		
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_BLANK)); //20 77
 	ImageList_AddIcon(g_hImageListIcons, hIcon);		
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE)); //21 52
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE)); //21 52         ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ETQW)); //22 56 ET QW ICON
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ETQW)); //22 56 ET QW ICONd     ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RTCW)); //23 63 RTCW
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RTCW)); //23 63 RTCW       ddddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_Q3)); //24 74
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_Q3)); //24 74            dd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_WARSOW)); //25 78
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_WARSOW)); //25 78                  dd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);	
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD)); //26 80
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD2)); //27 79
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD2)); //27 79         dd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);	
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD4)); //28 81
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD4)); //28 81     ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CS)); //29
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CS)); //29          dd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_VAC)); //30
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CSS)); //31
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CSS)); //31  ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_USERS)); //32
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
@@ -7071,18 +7074,7 @@ void LoadImageList()
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RULES)); //38
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE1)); //39
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE2)); //40
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	DestroyIcon(hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKEARENA)); //41
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_HALFLIFE2)); //42
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_URBAN)); //43
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	DestroyIcon(hIcon);
+
 
 }
 
@@ -7754,6 +7746,7 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 
 char Get_GameIcon(char index)
 {
+	return GamesInfo[index].iIconIndex;
 	switch(index)
 	{
 		case ETQW_SERVERLIST: 
@@ -10140,7 +10133,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 		
 	lang.SetPath(EXE_PATH);
 
-	
+	g_hInst = hInstance; // Store instance handle in our global variable
 	LoadImageList();
 	CFG_Load();
 
@@ -11427,7 +11420,8 @@ void CleanUpFilesRegistry()
 
 int CFG_Load()
 {
-	Initialize_GameSettings();
+	Initialize_GameSettings();		
+
 	Default_GameSettings();
 	Default_Appsettings();
 
