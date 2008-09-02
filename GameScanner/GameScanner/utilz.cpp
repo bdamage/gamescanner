@@ -633,6 +633,33 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 	return addr;
 }
 
+//split/parse ip & port string indata=1.1.1.1:27960
+char *SplitIPandPORT(char *szIPport,DWORD &port)
+{
+	port = 0;
+	if(strlen(szIPport)>0)
+	{
+		char *p=NULL,*r=NULL;
+	
+		p = strchr(szIPport,':');
+		
+		//Added since v5.41
+		r = strrchr(szIPport,'/');  //reverse find
+		if(r!=NULL)
+			r[0]=0;
+
+		if(p!=NULL)
+		{
+			p[0]=0;
+			p++;
+			port = atoi(p);		
+		}
+		return szIPport;
+	}
+	return NULL;
+}
+
+
 BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 {
 	hash_multimap <int, int>::iterator hmp_Iter;

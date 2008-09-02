@@ -13,7 +13,7 @@
 		<MapPreviewPath>etmaps</MapPreviewPath>
 		<MasterServers>
 			<MasterServer>etmaster.idsoftware.com:27950</MasterServer>
-			<ServerProtocol>84</ServerProtocol>
+			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<Detection>
 			<Registry>
@@ -29,10 +29,10 @@
 			</FileSearch>
 		</Detection>
 		<Installs>
-				<Install name="Name" value="Day of Defeat Source" />
-				<Install name="Path" value="HL2.EXE" />
-				<Install name="Cmd" value="-applaunch 300" />
-				<Install name="LaunchByMod" value="dod" />
+				<Install name="Name" value="" />
+				<Install name="Path" value="" />
+				<Install name="Cmd" value="" />
+				<Install name="LaunchByMod" value="" />
 				<Install name="LaunchByVer" value="" />
 		</Installs>	  
 	</Game>
@@ -48,8 +48,7 @@
 		<MasterQueryString></MasterQueryString>
 		<MapPreviewPath>etqwmaps</MapPreviewPath>
 		<MasterServers>
-			<MasterServer>http://etqw-ipgetter.demonware.net/ipgetter/"</MasterServer>
-			<ServerProtocol>0</ServerProtocol>
+			<MasterServer>http://etqw-ipgetter.demonware.net/ipgetter/</MasterServer>
 			<UseHTTP>1</UseHTTP>
 		</MasterServers>
 		<Detection>
@@ -77,7 +76,7 @@
 		<MapPreviewPath>q3maps</MapPreviewPath>
 		<MasterServers>
 			<MasterServer>monster.idsoftware.com:27950</MasterServer>
-			<ServerProtocol>68</ServerProtocol>
+			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -109,7 +108,7 @@
 		<MapPreviewPath>q4maps</MapPreviewPath>
 		<MasterServers>
 			<MasterServer>q4master.idsoftware.com:27650</MasterServer>
-			<ServerProtocol>0</ServerProtocol>
+			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28004</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -537,6 +536,7 @@
 		<ShortName>Urban Terror</ShortName>
 		<Filename>urbanterror.servers</Filename>
 		<NetEngine>Q3</NetEngine>
+		<ColorEncoding>Q3</ColorEncoding>
 		<WebProtocol>urbant</WebProtocol>
 		<MapPreviewPath>urbantmaps</MapPreviewPath>
 		<MasterServers>
@@ -544,8 +544,8 @@
 			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
-		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers  68 empty full</MasterQueryString>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 68 empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>

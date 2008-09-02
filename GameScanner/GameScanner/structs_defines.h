@@ -396,25 +396,20 @@ struct GAME_INFO;
 
 struct GAME_INFO
 {
+	int bActive;
 	char cGAMEINDEX;
-	//SERVER_INFO *pStartServerInfo;
 	char szGAME_NAME[MAX_PATH];
 	char szGAME_SHORTNAME[MAX_PATH];
-	char szGAME_PATH[MAX_PATH];
-	char szGAME_CMD[MAX_PATH*2];
-	char szLaunchByVersion[MAX_PATH];
-	char szLaunchByMod[MAX_PATH];
 	char szMAP_MAPPREVIEW_PATH[MAX_PATH];
 	char szMAP_YAWN_PATH[MAX_PATH];
 	char szMAP_SPLATTERLADDER_PATH[MAX_PATH];
 	char szMAP_OTHER_WEBPATH_PATH[MAX_PATH];   //ie ETQW stats webserver...	
 	char szMasterServerIP[MAX_PATH];	
 	char szProtocolName[20];
-	char szGameTypeSearch[15];
 	char szMasterQueryString[MAX_PATH];
-	char szServerRequestInfo[30]; //0xFF 0xFF etc getInfo
+	char szServerRequestInfo[MAX_PATH]; //0xFF 0xFF etc getInfo
 	BOOL bUseHTTPServerList;
-	int bActive;
+
 	DWORD dwViewFlags;
 	DWORD dwMasterServerPORT;
 	DWORD dwDefaultPort;
@@ -423,8 +418,11 @@ struct GAME_INFO
 	HTREEITEM hTI;
 	int iIconIndex;
 	char szFilename[MAX_PATH];
-	DWORD dwGameTypeFilter;
 	BOOL bLockServerList;
+	DWORD dwScanIdx;
+	time_t lastScanTimeStamp;
+	int GAME_ENGINE;	
+
 	//SERVER_CONTAINER *pSC;
 	vSRV_INF vSI;
 	vREF_SRV_INF vRefListSI;
@@ -435,13 +433,10 @@ struct GAME_INFO
 	vGF	 vFilterMap;
 	vGF	 vFilterVersion;
 	vGAME_INSTALLS vGAME_INST;
-	DWORD dwScanIdx;
-	
 	FILTER_SETTINGS filter;
     char *(*colorfilter)(const char *szIn, char *szOut,int length);
 	LRESULT (*Draw_ColorEncodedText)(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
-	time_t lastScanTimeStamp;
-	int GAME_ENGINE;
+
 	DWORD (*GetServersFromMasterServer)(GAME_INFO *pGI);
 	DWORD (*GetServerStatus)(SERVER_INFO *pSI,long (__cdecl*)(LPPLAYERDATA pPlayers),long (__cdecl*)(LPSERVER_RULES pServerRules));
 };

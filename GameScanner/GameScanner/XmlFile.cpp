@@ -19,7 +19,7 @@ void CXmlFile::SetPath(const char *pszDir)
 }
 int CXmlFile::load(const char* pszFilename)
 {
-	m_pDocument->SetCondenseWhiteSpace(false);
+	m_pDocument->SetCondenseWhiteSpace(false);	
 	SetCurrentDirectory(m_pszDirectory);
 	if (m_pDocument->LoadFile(pszFilename)==false) 
 		return XMLFILE_ERROR_LOADING;

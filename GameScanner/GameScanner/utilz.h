@@ -23,6 +23,10 @@ void dbg_print(char *szMsg, ...);
 #define ETSV_INFO 20
 #define ETSV_DEBUG 30
 #define ETSV_ERROR 40
+
+
+char *SplitIPandPORT(char *szIPport,DWORD &port);
+
 int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer);
 void LOGGER_DeInit();
 void LOGGER_Init();

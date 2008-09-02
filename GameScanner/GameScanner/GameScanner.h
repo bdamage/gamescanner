@@ -5,8 +5,7 @@
 #include "..\..\tinyxml\tinyxml.h"
 
 
-
-
+int LoadIconIntoImageList(char*szFilename);
 void CleanUpFilesRegistry();
 DWORD WINAPI Do_ServerListSort(LPVOID column);
 void Do_ServerListSortThread(int iColumn);

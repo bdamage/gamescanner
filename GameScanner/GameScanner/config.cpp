@@ -89,11 +89,14 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 			GamesInfoCFG[gameID].bUseHTTPServerList = FALSE;
 
 		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GamesInfoCFG[gameID].szMasterServerIP,MAX_PATH);						
-		char szTmp[10];
-		GetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,szTmp,sizeof(szTmp));
-		GamesInfoCFG[gameID].dwMasterServerPORT = atoi(szTmp);
-		GetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,szTmp,sizeof(szTmp));
-		GamesInfoCFG[gameID].dwProtocol= atoi(szTmp);
+
+		if(GamesInfoCFG[gameID].bUseHTTPServerList==FALSE)
+			SplitIPandPORT(GamesInfoCFG[gameID].szMasterServerIP,GamesInfoCFG[gameID].dwMasterServerPORT);
+
+	//	GetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,szTmp,sizeof(szTmp));
+	//	GamesInfoCFG[gameID].dwMasterServerPORT = atoi(szTmp);
+		//GetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,szTmp,sizeof(szTmp));
+		//GamesInfoCFG[gameID].dwProtocol= atoi(szTmp);
 	}
 }
 
@@ -230,8 +233,17 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				hNewItem = TreeView_AddItem(GamesInfo[i].iIconIndex,GamesInfo[i].szGAME_SHORTNAME);
 
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
-				
-			GamesInfoCFG = GamesInfo;
+
+			for(int i=0; i<GamesInfo.size();i++)
+			{
+					GamesInfoCFG[i].bActive = GamesInfo[i].bActive;
+					GamesInfoCFG[i].bUseHTTPServerList = GamesInfo[i].bUseHTTPServerList;
+					GamesInfoCFG[i].dwMasterServerPORT = GamesInfo[i].dwMasterServerPORT;
+					strcpy(GamesInfoCFG[i].szGAME_NAME, GamesInfo[i].szGAME_NAME);
+					strcpy(GamesInfoCFG[i].szMasterServerIP, GamesInfo[i].szMasterServerIP);
+					GamesInfoCFG[i].vGAME_INST = GamesInfo[i].vGAME_INST;								
+			}
+			//GamesInfoCFG = GamesInfo;
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 		//	memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*GamesInfo.size());
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
@@ -337,8 +349,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					{
 						GamesInfo[i].bActive = GamesInfoCFG[i].bActive;
 						GamesInfo[i].bUseHTTPServerList = GamesInfoCFG[i].bUseHTTPServerList;
-						GamesInfo[i].dwMasterServerPORT = GamesInfoCFG[i].dwMasterServerPORT;
-			
+						GamesInfo[i].dwMasterServerPORT = GamesInfoCFG[i].dwMasterServerPORT;					
+						strcpy(GamesInfo[i].szMasterServerIP, GamesInfoCFG[i].szMasterServerIP);
+						GamesInfo[i].vGAME_INST = GamesInfoCFG[i].vGAME_INST;	
 					}
 
 					memcpy(&AppCFG,&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
@@ -364,10 +377,10 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				case IDC_BUTTON_DEFAULT:
 				{				
 					Default_Appsettings();
-					Default_GameSettings();
+				//	Default_GameSettings();
 					memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 					//memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*GamesInfo.size());
-					GamesInfoCFG = GamesInfo;
+					//GamesInfoCFG = GamesInfo;
 					g_currSelCfg=-1;
 					CFG_OnSelChanged(hDlg); 
 					return TRUE;
@@ -592,8 +605,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 
 						if(gameID!=-1)
 						{
-
-							ofn.lpstrInitialDir = GamesInfoCFG[gameID].szGAME_PATH;
+							ofn.lpstrInitialDir = GamesInfoCFG[gameID].vGAME_INST[CFG_editexeIdx].szGAME_PATH.c_str();
 						}
 						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
@@ -687,8 +699,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 
 						if(gameID!=-1)
 						{
-
-							ofn.lpstrInitialDir = GamesInfoCFG[gameID].szGAME_PATH;
+								ofn.lpstrInitialDir = GamesInfoCFG[gameID].vGAME_INST[CFG_editexeIdx].szGAME_PATH.c_str();
 						}
 						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
@@ -854,10 +865,16 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			{
 				sprintf(szText,lang.GetString("CFGSettingsTitle"),GamesInfoCFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
-
-				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GamesInfoCFG[gameID].szMasterServerIP);
-				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GamesInfoCFG[gameID].dwMasterServerPORT,szTmp,10));
-				SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GamesInfoCFG[gameID].dwProtocol,szTmp,10));
+				
+				char szTempMaster[200];
+				if(GamesInfoCFG[gameID].bUseHTTPServerList==FALSE)
+					sprintf(szTempMaster,"%s:%d",GamesInfoCFG[gameID].szMasterServerIP,GamesInfoCFG[gameID].dwMasterServerPORT);
+				else
+					sprintf(szTempMaster,"%s",GamesInfoCFG[gameID].szMasterServerIP);
+	
+				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,szTempMaster);//GamesInfoCFG[gameID].szMasterServerIP);
+//				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GamesInfoCFG[gameID].dwMasterServerPORT,szTmp,10));
+				//SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GamesInfoCFG[gameID].dwProtocol,szTmp,10));
 
 				if(GamesInfoCFG[gameID].bUseHTTPServerList)
 					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
@@ -994,7 +1011,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 						}
 					}
 					break;
-				case IDC_BUTTON_ET_PATH:
+		/*		case IDC_BUTTON_ET_PATH:
 				{	
 					 
 					OPENFILENAME ofn;
@@ -1028,7 +1045,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 						SetDlgItemText(hDlg,IDC_EDIT_PATH,ofn.lpstrFile);
 
 					return TRUE;					
-				}
+				}*/
 				case IDC_EXT_EXE:
 				{
 			

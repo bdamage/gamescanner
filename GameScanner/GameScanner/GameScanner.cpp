@@ -283,7 +283,7 @@ void StartGame_ConnectToServer(bool connectFromBuddyList);
 void Favorite_Remove();
 void Favorite_Add(bool manually, char *szIp=NULL);
 void FilterUpdate();
-char *SplitIPandPORT(char *szIPport,DWORD &port);
+
 DWORD Build_CountryFilter(HTREEITEM hRoot);
 void Initialize_CountryFilter();
 LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
@@ -2105,24 +2105,22 @@ void Default_GameSettings2()
 {
 	GAME_INSTALLATIONS gi;
 	
-/*	for(int i=0; i<GamesInfo.size(); i++)
+	for(int i=0; i<GamesInfo.size(); i++)
 	{
 		GamesInfo[i].bUseHTTPServerList = FALSE;
-		GamesInfo[i].szGAME_PATH[0]=0; //quick erase
 		GamesInfo[i].dwViewFlags = 0;
-		GamesInfo[i].pSC = &SC[i];
 		GamesInfo[i].vGAME_INST.clear();
 	}
-*/
+
 	CXmlFile xml;
-	xml.SetPath(EXE_PATH);
+	xml.SetPath(EXE_PATH);	
 	if(xml.load("gamedefaults.xml")==XMLFILE_ERROR_LOADING)
 		return;
 	//TixmlElement *ptempElement = xml.GetElementSafe(xml.m_pRootElement,"Version");
 	char szVersion[10];
 	xml.GetText(xml.m_pRootElement,"Version",szVersion,sizeof(szVersion));
 
-	
+
 
 	TiXmlElement *pGame = xml.GetElementSafe(xml.m_pRootElement,"Game");
 
@@ -2138,17 +2136,17 @@ void Default_GameSettings2()
 		
 		ZeroMemory(&gameinfo.filter,sizeof(gameinfo.filter));
 		ZeroMemory(&gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME));
-		ZeroMemory(&gameinfo.szGAME_PATH,sizeof(gameinfo.szGAME_PATH));
 		ZeroMemory(&gameinfo.szMasterQueryString,sizeof(gameinfo.szMasterQueryString));
 		ZeroMemory(&gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP));
-		ZeroMemory(&gameinfo.szLaunchByMod,sizeof(gameinfo.szLaunchByMod));
-		ZeroMemory(&gameinfo.szLaunchByVersion,sizeof(gameinfo.szLaunchByVersion));
 
 		ZeroMemory(&szTemp,sizeof(szTemp));
 		xml.GetInteger(pGame,"GameIndex",(long*)&gameinfo.cGAMEINDEX);		
 		gameinfo.vGAME_INST.clear();
 	
 		gameinfo.iIconIndex = Get_GameIcon(gameinfo.cGAMEINDEX);
+		xml.GetText(pGame,"Icon",szTemp,sizeof(szTemp)-1);
+		gameinfo.iIconIndex  = LoadIconIntoImageList(szTemp);
+
 		xml.GetText(pGame,"Name",gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME)-1);
 		xml.GetText(pGame,"NetEngine",szTemp,sizeof(szTemp)-1);
 		gameinfo.GAME_ENGINE = GetNetEngine(szTemp);
@@ -2172,22 +2170,25 @@ void Default_GameSettings2()
 		}
 
 		xml.GetText(pGame,"ServerDefaultPort",gameinfo.szMAP_MAPPREVIEW_PATH,sizeof(gameinfo.szMAP_MAPPREVIEW_PATH)-1);
-
 		xml.GetText(pGame,"ServerInfoQuery",gameinfo.szServerRequestInfo,sizeof(gameinfo.szServerRequestInfo)-1);
-		
 		xml.GetText(pGame,"MasterQueryString",gameinfo.szMasterQueryString,sizeof(gameinfo.szMasterQueryString)-1);
 
+
 		TiXmlElement *ptempMaster = xml.GetElementSafe(pGame,"MasterServers");
-		xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
-	//	xml.GetInteger(ptempMaster,"ServerProtocol",(long*)&gameinfo.dwProtocol);
 		xml.GetInteger(ptempMaster,"UseHTTP",(long*)&gameinfo.bUseHTTPServerList);
-		DWORD dwPort=0;
-		SplitIPandPORT(gameinfo.szMasterServerIP,dwPort);
-		gameinfo.dwMasterServerPORT =dwPort;
+
+		xml.GetText(ptempMaster,"MasterServer",gameinfo.szMasterServerIP,sizeof(gameinfo.szMasterServerIP)-1);
+
+		if(gameinfo.bUseHTTPServerList==FALSE)
+			SplitIPandPORT(gameinfo.szMasterServerIP,gameinfo.dwMasterServerPORT);
 
 		char szKey[256];
 		char szItem[100];
 		char szInstallSuffix[100];
+		
+		ZeroMemory(szKey,sizeof(szKey));
+		ZeroMemory(szItem,sizeof(szItem));
+		ZeroMemory(szInstallSuffix,sizeof(szInstallSuffix));
 		TiXmlElement *ptempDetection = xml.GetElementSafe(pGame,"Detection");
 		TiXmlElement *ptempRegistry = xml.GetElementSafe(ptempDetection,"Registry");
 		xml.GetText(ptempRegistry,"RegRoot",szTemp,sizeof(szTemp)-1);
@@ -2195,7 +2196,9 @@ void Default_GameSettings2()
 		xml.GetText(ptempRegistry,"RegItem",szItem,sizeof(szItem)-1);
 		xml.GetText(ptempRegistry,"InstallSuffix",szInstallSuffix,sizeof(szInstallSuffix)-1);
 
-		DWORD dwBuffSize = sizeof(gameinfo.szGAME_PATH);
+		char szPath[MAX_PATH*2];
+		ZeroMemory(szPath,sizeof(szPath));
+		DWORD dwBuffSize = sizeof(szPath);
 
 		HKEY hkey = HKEY_LOCAL_MACHINE;
 		if(strcmp(szTemp,"HKEY_LOCAL_MACHINE")==0)
@@ -2205,14 +2208,16 @@ void Default_GameSettings2()
 		else if (strcmp(szTemp,"HKEY_CLASSES_ROOT")==0)
 			hkey = HKEY_CLASSES_ROOT;
 
-		Registry_GetGamePath(hkey, szKey,szItem,gameinfo.szGAME_PATH,&dwBuffSize);
+		Registry_GetGamePath(hkey, szKey,szItem,szPath,&dwBuffSize);
 		gameinfo.bActive = false;
-		int len = strlen(gameinfo.szGAME_PATH);
-		if(len>0)
+		int len = strlen(szPath);
+		int len2 = strlen(szInstallSuffix);
+		if((len>0) && (len2>0)) //should we add suffix into game path?
 		{
 			gameinfo.bActive = true;
-			strcat_s(gameinfo.szGAME_PATH,sizeof(gameinfo.szGAME_PATH),szInstallSuffix);
-		}
+			strcat_s(szPath,sizeof(szPath),szInstallSuffix);
+		}else if(len>0)
+			gameinfo.bActive = true;
 
 		TiXmlElement *ptempInstalls = xml.GetElementSafe(pGame,"Installs");
 
@@ -2222,8 +2227,8 @@ void Default_GameSettings2()
 		
 			xml.GetAttribute(pInstall,"Name",szTemp,sizeof(szTemp)-1);
 			gi.sName = szTemp;
-			if(strlen(gameinfo.szGAME_PATH)>0)
-				gi.szGAME_PATH = gameinfo.szGAME_PATH;
+			if(strlen(szPath)>0)
+				gi.szGAME_PATH = szPath;
 			else
 			{
 				xml.GetAttribute(pInstall,"Path",szTemp,sizeof(szTemp)-1);
@@ -2243,7 +2248,7 @@ void Default_GameSettings2()
 				break;		
 		}
 
-	//	HICON hicon = (HICON) LoadImage(NULL,"",IMAGE_ICON,0,0,LR_LOADFROMFILE);
+	
 		switch(gameinfo.GAME_ENGINE)
 		{
 			default:
@@ -5189,7 +5194,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	Initialize_WindowSizes();
 
-	LoadImageList();
 	SetImageList();
 
 
@@ -6007,16 +6011,16 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 		TiXmlElement * abc = new TiXmlElement( "Game" );  
 		WriteCfgStr(abc, "GameData", "GameName",GamesInfo[i].szGAME_NAME) ;
 
-		WriteCfgStr(abc, "GameData", "yawn",GamesInfo[i].szMAP_YAWN_PATH);
+		//WriteCfgStr(abc, "GameData", "yawn",GamesInfo[i].szMAP_YAWN_PATH);
 		WriteCfgStr(abc, "GameData", "MasterServer",GamesInfo[i].szMasterServerIP);
 		WriteCfgStr(abc, "GameData", "MapPreview",GamesInfo[i].szMAP_MAPPREVIEW_PATH);
-		WriteCfgStr(abc, "GameData", "webpath",GamesInfo[i].szMAP_OTHER_WEBPATH_PATH);
-		WriteCfgStr(abc, "GameData", "splatterladder",GamesInfo[i].szMAP_SPLATTERLADDER_PATH);
+		//WriteCfgStr(abc, "GameData", "webpath",GamesInfo[i].szMAP_OTHER_WEBPATH_PATH);
+		//WriteCfgStr(abc, "GameData", "splatterladder",GamesInfo[i].szMAP_SPLATTERLADDER_PATH);
 		WriteCfgStr(abc, "GameData", "ProtcolName",GamesInfo[i].szProtocolName);
 		WriteCfgInt(abc, "GameData", "Active",GamesInfo[i].bActive);
 		WriteCfgInt(abc, "GameData", "gametype",GamesInfo[i].cGAMEINDEX);
 		WriteCfgInt(abc, "GameData", "MasterServerPort",GamesInfo[i].dwMasterServerPORT);
-		WriteCfgInt(abc, "GameData", "Protocol",GamesInfo[i].dwProtocol);
+		//WriteCfgInt(abc, "GameData", "Protocol",GamesInfo[i].dwProtocol);
 		WriteCfgInt(abc, "GameData", "IconIndex",GamesInfo[i].iIconIndex);
 		WriteCfgInt(abc, "GameData", "FilterMod",GamesInfo[i].filter.dwMod);
 		WriteCfgInt(abc, "GameData", "FilterRegion",GamesInfo[i].filter.dwRegion);
@@ -6206,32 +6210,6 @@ void SetInitialViewStates()
 }
 
 
-
-//split/parse ip & port string indata=1.1.1.1:27960
-char *SplitIPandPORT(char *szIPport,DWORD &port)
-{
-	port = 0;
-	if(strlen(szIPport)>0)
-	{
-		char *p=NULL,*r=NULL;
-	
-		p = strchr(szIPport,':');
-		
-		//Added since v5.41
-		r = strrchr(szIPport,'/');  //reverse find
-		if(r!=NULL)
-			r[0]=0;
-
-		if(p!=NULL)
-		{
-			p[0]=0;
-			p++;
-			port = atoi(p);		
-		}
-		return szIPport;
-	}
-	return NULL;
-}
 
 void SaveAll(DWORD dwCloseReason)
 {
@@ -6989,6 +6967,20 @@ void Load_CountryFlags()
 	DeleteDC(hDC);
 }
 
+int LoadIconIntoImageList(char*szFilename)
+{
+	int index=0;
+	HICON hIcon = (HICON) LoadImage(NULL,szFilename,IMAGE_ICON,0,0,LR_LOADFROMFILE);
+	//hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_HALFLIFE2)); //42
+	if(hIcon!=NULL)
+	{	
+		index = ImageList_AddIcon(g_hImageListIcons, hIcon);
+		if(index==-1)
+			index=7;
+		DestroyIcon(hIcon);
+	}
+	return index;
+}
 
 void LoadImageList()
 {
@@ -9694,28 +9686,31 @@ BOOL ExecuteGame(GAME_INFO *pGI,char *szCmd,int GameInstallIdx)
 {
 	char LoadLocation[512],  WETFolder[512];
 	HINSTANCE hret=NULL;
-	if(pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.length()>0)
-	{			
-		strcpy(WETFolder,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
-		char* pos = strrchr(WETFolder,'\\');
-		if(pos!=NULL)
-		{
-			pos[1]=0;
-		}
-		strcpy(LoadLocation,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
-		AddLogInfo(ETSV_DEBUG,WETFolder);
-		AddLogInfo(ETSV_DEBUG,LoadLocation);
-		hret = ShellExecute(NULL, "open", LoadLocation, szCmd,WETFolder, 1);
+	if(pGI->vGAME_INST.size()>0)
+	{
+		if(pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.length()>0)
+		{			
+			strcpy(WETFolder,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
+			char* pos = strrchr(WETFolder,'\\');
+			if(pos!=NULL)
+			{
+				pos[1]=0;
+			}
+			strcpy(LoadLocation,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
+			AddLogInfo(ETSV_DEBUG,WETFolder);
+			AddLogInfo(ETSV_DEBUG,LoadLocation);
+			hret = ShellExecute(NULL, "open", LoadLocation, szCmd,WETFolder, 1);
 
-		if((int)hret<=32)
-		{
-			MessageBox(NULL,lang.GetString("ErrorLaunchingGame"),"Error!",MB_OK);
-			return FALSE;
+			if((int)hret<=32)
+			{
+				MessageBox(NULL,lang.GetString("ErrorLaunchingGame"),"Error!",MB_OK);
+				return FALSE;
+			}
+			return TRUE;
 		}
-		return TRUE;
 	}
-	else
-		MessageBox(NULL,lang.GetString("ErrorLaunchingGame"),"Error!",MB_OK);	
+
+	MessageBox(NULL,lang.GetString("ErrorLaunchingGame"),"Error!",MB_OK);	
 
 	return FALSE;
 }
@@ -10145,6 +10140,8 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 		
 	lang.SetPath(EXE_PATH);
 
+	
+	LoadImageList();
 	CFG_Load();
 
 	//Do the conversion of the IP to country database 
@@ -10509,9 +10506,18 @@ void LaunchGame(SERVER_INFO pSI,GAME_INFO *pGI,int GameInstallIdx)
 		}
 	}
 	string cmd;
-	cmd = pGI->vGAME_INST.at(GameInstallIdx).szGAME_CMD;
+	if(pGI->vGAME_INST.size()>0)
+	{
+		cmd = pGI->vGAME_INST.at(GameInstallIdx).szGAME_CMD;
 
-	ReplaceStrInStr(cmd,"%MODNAME%",pSI.szMod);
+		ReplaceStrInStr(cmd,"%MODNAME%",pSI.szMod);
+		char szTempPath[MAX_PATH*2];
+		strcpy(szTempPath,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
+		char *p=strrchr(szTempPath,'\\');
+			if(p!=NULL)
+				p[0]=0;
+		ReplaceStrInStr(cmd,"%GAMEPATH%",szTempPath);
+	}
 
 	if(strstr(cmd.c_str(),"applaunch")!=NULL)  //quick steam fix cmd has to be pre-merged
 	{
@@ -11628,15 +11634,10 @@ int CFG_Load()
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMinPlayers",(int&)AppCFG.filter.dwShowServerWithMinPlayers);
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMaxPlayersActive",(int&)AppCFG.filter.cActiveMaxPlayer);
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMinPlayersActive",(int&)AppCFG.filter.cActiveMinPlayer);
-	
-	
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"Ping",(int&)AppCFG.filter.dwPing);
-
-	
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"Transparancy",(int&)AppCFG.g_cTransparancy);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"MaxScanThreads",(int&)AppCFG.dwThreads);
-
-
+	ReadCfgInt(hRoot.FirstChild("NetworkRetries").FirstChild().ToElement(),"MaxScanThreads",(int&)AppCFG.dwRetries);
 
 	pElem=hRoot.FirstChild("SocketTimeout").Element();
 	if (pElem)
@@ -11652,13 +11653,6 @@ int CFG_Load()
 		AppCFG.socktimeout.tv_usec   = 0;	
 	}
 
-	pElem=hRoot.FirstChild("NetworkRetries").Element();
-	if (pElem)
-	{
-		pElem->QueryIntAttribute("value",&intVal);
-		AppCFG.dwRetries  = intVal;				
-
-	}
 	TiXmlElement * pElemSort;
 	pElemSort=hRoot.FirstChild("Sort").ToElement();
 	if(pElemSort!=NULL)
@@ -11669,6 +11663,7 @@ int CFG_Load()
 			TiXmlElement * pElemSortIdx = pNode->ToElement();
 			if(pElemSortIdx!=NULL)
 			{
+				int NoColumnsCheck=0;
 				for(int i=0;i<MAX_COLUMNS; i++)
 				{		
 					
@@ -11678,7 +11673,9 @@ int CFG_Load()
 						int val=0;
 						if(ReadCfgInt(pElemSortValue, "Active",(int&)val)==XML_READ_OK)
 							CUSTCOLUMNS[i].bActive = val;
-
+						if(CUSTCOLUMNS[i].bActive)
+							NoColumnsCheck++;
+							
 						if(ReadCfgInt(pElemSortValue, "id",(int&)val)==XML_READ_OK)
 							CUSTCOLUMNS[i].id = val;
 
@@ -11699,6 +11696,10 @@ int CFG_Load()
 						if(pElemSortIdx==NULL)
 							break;
 					}
+				}
+				if(NoColumnsCheck==0)
+				{
+					ListView_SetDefaultColumns(); //sanity check
 				}
 			}
 		}
@@ -11721,21 +11722,23 @@ int CFG_Load()
 					ReadCfgStr(pNode, "GameName",temp,MAX_PATH);
 					if(strlen(temp)>0)
 						strcpy(GamesInfo[i].szGAME_NAME,temp);
-
 					
-					if(ReadCfgStr(pNode, "Path",GamesInfo[i].szGAME_PATH,MAX_PATH)!=NULL) //old changed since ver 1.08
+					
+					if(ReadCfgStr(pNode, "Path",temp,MAX_PATH)!=NULL) //old changed since ver 1.08
 					{
+						
 						GamesInfo[i].vGAME_INST.clear();
-						ReadCfgStr(pNode, "Cmd",GamesInfo[i].szGAME_CMD,sizeof(GamesInfo[i].szGAME_CMD));
-						ReadCfgStr(pNode, "LaunchByVer",GamesInfo[i].szLaunchByVersion,MAX_PATH);
-						ReadCfgStr(pNode, "LaunchByMod",GamesInfo[i].szLaunchByMod,MAX_PATH);
-
 						GAME_INSTALLATIONS gi;
 						gi.sName = "Default";
-						gi.szGAME_PATH = GamesInfo[i].szGAME_PATH;
-						gi.szGAME_CMD = GamesInfo[i].szGAME_CMD;
-						gi.sMod = GamesInfo[i].szLaunchByMod;		
-						gi.sVersion = GamesInfo[i].szLaunchByVersion;
+						gi.szGAME_PATH = temp;
+						
+
+						ReadCfgStr(pNode, "Cmd",temp,MAX_PATH);
+						gi.szGAME_PATH = temp;
+						ReadCfgStr(pNode, "LaunchByVer",temp,MAX_PATH);
+						gi.sVersion = temp;
+						ReadCfgStr(pNode, "LaunchByMod",temp,MAX_PATH);
+						gi.sMod = temp;
 
 						GamesInfo[i].vGAME_INST.push_back(gi);
 					} else
@@ -11747,22 +11750,27 @@ int CFG_Load()
 							TiXmlElement* pInstalls = pInstallTags->ToElement();
 							if(pInstalls!=NULL)
 								GamesInfo[i].vGAME_INST.clear();
+
 							while(pInstalls!=NULL)
 							{
 								TiXmlElement* pInstall = pInstalls->FirstChild("Install")->ToElement();
-								char szTemp[512];
+								char szTemp[MAX_PATH];
 								ReadCfgStr(pInstall, "Name",szTemp,MAX_PATH); 
-								ReadCfgStr(pInstall, "Path",GamesInfo[i].szGAME_PATH,MAX_PATH); //old changed since ver 1.08
-								ReadCfgStr(pInstall, "Cmd",GamesInfo[i].szGAME_CMD,sizeof(GamesInfo[i].szGAME_CMD));
-								ReadCfgStr(pInstall, "LaunchByVer",GamesInfo[i].szLaunchByVersion,MAX_PATH);
-								ReadCfgStr(pInstall, "LaunchByMod",GamesInfo[i].szLaunchByMod,MAX_PATH);
+								GAME_INSTALLATIONS gi;							
 
-								GAME_INSTALLATIONS gi;
 								gi.sName = szTemp;
-								gi.szGAME_PATH = GamesInfo[i].szGAME_PATH;
-								gi.szGAME_CMD = GamesInfo[i].szGAME_CMD;
-								gi.sMod = GamesInfo[i].szLaunchByMod;		
-								gi.sVersion = GamesInfo[i].szLaunchByVersion;
+
+								ReadCfgStr(pInstall, "Path",temp,MAX_PATH);
+								gi.szGAME_PATH = temp;
+
+								ReadCfgStr(pInstall, "Cmd",temp,MAX_PATH);
+								gi.szGAME_CMD = temp;
+
+								ReadCfgStr(pInstall, "LaunchByVer",temp,MAX_PATH);
+								gi.sVersion = temp;
+
+								ReadCfgStr(pInstall, "LaunchByMod",temp,MAX_PATH);
+								gi.sMod = temp;		
 
 								GamesInfo[i].vGAME_INST.push_back(gi);
 								pInstalls = pInstalls->NextSiblingElement();
