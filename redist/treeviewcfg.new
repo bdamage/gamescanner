@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG Version="4.69">
+<TreeViewCFG Version="4.70">
     <!--Settings for Game Scanner treeview.-->
     <TreeItems>
         <Item name="Wolfenstein - Enemy Territory" strval="" value="0" compare="0" icon="0" expanded="0" type="1024" state="0" game="0" action="1">
@@ -549,12 +549,12 @@
                 <FilterItem name="Dedicated" strval="" value="0" compare="0" icon="9" expanded="0" type="33" state="0" game="15" action="9" />
                 <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="15" action="0" />
                 <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="15" action="0">
-                    <ModItems name="Team Fortress: Source" strval="tf" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
+                    <ModItems name="Team Fortress 2" strval="tf" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="Day of Defeat: Source" strval="dod" value="2" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="Half-life 2" strval="hl2mp" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="Battle Grounds 2" strval="bf2" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="PVKII" strval="pvkii" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
-                    <ModItems name="Dark Messiah - Might and Magic" strval="mmdarkmessiah" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
+                    <ModItems name="Might and Magic - Dark Messiah" strval="mmdarkmessiah" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="Zombie Panic" strval="zps" value="64" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="Hidden: Source" strval="hidden" value="128" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
                     <ModItems name="Garry&apos;s Mod" strval="garrysmod" value="256" compare="0" icon="9" expanded="0" type="24" state="0" game="15" action="9" />
@@ -631,7 +631,48 @@
                 <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="17" action="0" />
                 <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="17" action="0" />
             </Filter>
-        </Item>			
+        </Item>		
+        <Item name="Half-life" strval="" value="0" compare="0" icon="42" expanded="0" type="1024" state="0" game="18" action="1">
+            <ChildItem name="Internet servers" strval="" value="0" compare="0" icon="12" expanded="0" type="0" state="0" game="18" action="1" />
+            <ChildItem name="Favorites Public" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="18" action="5" />
+            <ChildItem name="Favorites Private" strval="" value="0" compare="0" icon="2" expanded="0" type="0" state="0" game="18" action="6" />
+            <ChildItem name="History" strval="" value="0" compare="0" icon="16" expanded="0" type="0" state="0" game="18" action="7" />
+            <Filter name="Filters" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="18" action="0">
+                <FilterItem name="VAC" strval="" value="0" compare="0" icon="9" expanded="0" type="1" state="0" game="18" action="9" />
+                <FilterItem name="No Empty" strval="" value="0" compare="0" icon="9" expanded="0" type="8" state="0" game="18" action="9" />
+                <FilterItem name="No Full" strval="" value="0" compare="0" icon="9" expanded="0" type="4" state="0" game="18" action="9" />
+                <FilterItem name="Show Private" strval="" value="0" compare="0" icon="9" expanded="0" type="2" state="0" game="18" action="9" />
+                <FilterItem name="Hide Private" strval="" value="0" compare="0" icon="9" expanded="0" type="128" state="0" game="18" action="9" />
+                <FilterItem name="No Bots" strval="" value="0" compare="0" icon="9" expanded="0" type="64" state="0" game="18" action="9" />
+                <FilterItem name="Dedicated" strval="" value="0" compare="0" icon="9" expanded="0" type="33" state="0" game="18" action="9" />
+                <GameTypes name="Game types" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="18" action="0" />
+                <Mods name="Mods" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="18" action="0">
+                    <ModItems name="Team Fortress: Source" strval="tf" value="1" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Day of Defeat: Source" strval="dod" value="2" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Half-life 2" strval="hl2mp" value="4" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Battle Grounds 2" strval="bf2" value="8" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="PVKII" strval="pvkii" value="16" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Dark Messiah - Might and Magic" strval="mmdarkmessiah" value="32" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Zombie Panic" strval="zps" value="64" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Hidden: Source" strval="hidden" value="128" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                    <ModItems name="Garry&apos;s Mod" strval="garrysmod" value="256" compare="0" icon="9" expanded="0" type="24" state="0" game="18" action="9" />
+                </Mods>
+                <Versions name="Versions" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="18" action="0" />
+                <Maps name="Maps" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="18" action="0">
+                </Maps>
+                <RegionFilter name="Region" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="18" action="0">
+                    <RegionItem name="US East coast" strval="" value="1" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="US West coast" strval="" value="2" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="South America" strval="" value="4" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="Europe" strval="" value="8" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="Asia" strval="" value="16" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="Australia" strval="" value="32" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="Middle East" strval="" value="64" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="Africa" strval="" value="128" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                    <RegionItem name="Rest of the World" strval="" value="256" compare="0" icon="9" expanded="0" type="31" state="0" game="18" action="9" />
+                </RegionFilter>
+            </Filter>
+        </Item>		
         <Item name="Global filter" strval="" value="0" compare="0" icon="17" expanded="0" type="0" state="0" game="-25" action="0">
             <FilterItem name="Hide offline servers" strval="" value="0" compare="0" icon="9" expanded="0" type="16" state="0" game="-25" action="8" />
             <FilterItem name="Min Players" strval="" value="6" compare="0" icon="9" expanded="0" type="100" state="0" game="-25" action="11" />

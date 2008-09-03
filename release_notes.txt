@@ -1,13 +1,26 @@
 version 1.12
 ------------
-* Updated translation file to version 1.1, new text fields/messageboxes has been added.
+* Updated translation file to version 1.1, a bunch of new text fields/messageboxes can now be translated.
 * Fixed max player slot bug in ETQW (thanks to JBRAA for discovering this).
-* Improved ETQW player parsing with Clan tags, including a memory leak was fixed.
+* Improved ETQW player parsing with Clan tags, including a memory leak fix.
 * Added Games Default XML (no more hard coded stuff).
 * Added a "No Columns bug" sanity check, if no columns is active then a default setting will occur.
 * Simplified Master server settings, merged IP and port into one field.
 * Protocol settings is moved into games default XML file including Master Query string.
 * New template value possible to use within Command field (Game settings in Config) %GAMEPATH% (currently needed for Warsow).
+* All game icons are now loaded externally (this will help to add new games easier/quicker).
+* Added new game Nexuiz.
+* Added new game Half-life, which includes mods.
+  - The Specialist (ts)
+  - Team Fortress Classic  (tfc)
+  - Zombie Panic  (zp)
+  - Day of Defeat (dod
+  - Vampire Slayer (vs)
+  - Natural Selection (ns)
+    etc...
+ 
+  
+
 
 
 
