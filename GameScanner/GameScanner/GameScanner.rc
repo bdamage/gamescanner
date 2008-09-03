@@ -34,19 +34,16 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 IDI_GAMESCANNER         ICON                    "GameScanner.ico"
-IDI_ICON_ET             ICON                    "res\\ET.ico"
 IDI_ICON_PB             ICON                    "res\\pb.ico"
 IDI_ICON_FAVORITES      ICON                    "res\\favorites.ico"
 IDI_ICON_BUDDY          ICON                    "res\\user.ico"
 IDI_ICON_ERROR          ICON                    "res\\eventlogError.ico"
 IDI_ICON_LOCKED         ICON                    "res\\eventlogFailureAudit.ico"
-IDI_ICON_ET1            ICON                    "res\\icon_et1.ico"
 IDI_ICON_WARNING        ICON                    "res\\warning.ico"
 IDI_ICON_UNKOWN         ICON                    "res\\icon14.ico"
 ICON_INFO               ICON                    "res\\INFO.ICO"
 IDI_ICON_SLIDER         ICON                    "res\\slider.ico"
 IDI_ICON_QUAKE          ICON                    "res\\quake16x16.ico"
-IDI_ICON_ETQW           ICON                    "res\\etqw.ico"
 IDI_ICON_LAN            ICON                    "res\\group.ico"
 IDI_ICON_GLOBE          ICON                    "res\\globe.ico"
 IDI_ICON_FILTER         ICON                    "res\\pixel-install.ico"
@@ -546,7 +543,6 @@ IDI_ICON8               ICON                    "res\\GSOrg32.ico"
 IDI_ICON4               ICON                    "res\\GSPlusOrg16.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_QUAKEARENA     ICON                    "res\\ico00005.ico"
-IDI_ICON_HALFLIFE2      ICON                    "res\\ico00006.ico"
 IDI_ICON_URBAN          ICON                    "res\\urbanterror.ico"
 
 /////////////////////////////////////////////////////////////////////////////

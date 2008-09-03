@@ -1,7 +1,7 @@
 version 1.12
 ------------
-* Updated translation file to version 1.1, new items added.
-* Fixed max player slot bug in ETQW (thanks to JBRAA for discover this).
+* Updated translation file to version 1.1, new text fields/messageboxes has been added.
+* Fixed max player slot bug in ETQW (thanks to JBRAA for discovering this).
 * Improved ETQW player parsing with Clan tags, including a memory leak was fixed.
 * Added Games Default XML (no more hard coded stuff).
 * Added a "No Columns bug" sanity check, if no columns is active then a default setting will occur.

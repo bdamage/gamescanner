@@ -30,7 +30,6 @@
 #define IDI_ICON3                       132
 #define IDD_DLG_PROGRESS                133
 #define IDR_241                         139
-#define IDI_ICON_ET                     139
 #define IDD_DLG_ADD_BUDDY               140
 #define IDI_ICON_PB                     140
 #define IDI_ICON_FAVORITES              141
@@ -65,7 +64,6 @@
 #define IDI_ICON_SLIDER1                212
 #define IDI_ICON_FAVORITE_ADD           213
 #define IDI_ICON_QUAKE                  216
-#define IDI_ICON_ETQW                   217
 #define IDI_ICON_LAN                    229
 #define IDI_ICON_GLOBE                  231
 #define IDI_ICON_FILTER                 233
@@ -82,7 +80,6 @@
 #define IDB_BITMAP_SETTINGS_DISABLED1   254
 #define IDI_ICON_Q3                     255
 #define IDI_ICON_FOLDER                 256
-#define IDI_ICON_ET1                    257
 #define IDI_ICON_RANKED                 261
 #define IDI_ICON_BLANK                  262
 #define IDI_ICON_WARSOW                 263
@@ -244,7 +241,6 @@
 #define IDI_ICON4                       1097
 #define IDI_ICON_TASKTRAY               1098
 #define IDI_ICON_QUAKEARENA             1099
-#define IDI_ICON_HALFLIFE2              1100
 #define IDC_BUTTON_ADD_INSTALL          1101
 #define IDI_ICON9                       1101
 #define IDI_ICON_URBAN                  1101

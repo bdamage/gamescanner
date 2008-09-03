@@ -220,12 +220,12 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			SendMessage(g_hwndTree, TVM_SETIMAGELIST , TVSIL_NORMAL, (LPARAM)g_hImageListIcons);
 			HTREEITEM hNewItem;
-			hNewItem = TreeView_AddItem(34,lang.GetString("ConfigGeneral"));
-			hNewItem = TreeView_AddItem(17,lang.GetString("ConfigMinimizer"));
+			hNewItem = TreeView_AddItem(27,lang.GetString("ConfigGeneral"));
+			hNewItem = TreeView_AddItem(15,lang.GetString("ConfigMinimizer"));
 			hNewItem = TreeView_AddItem(16,lang.GetString("ConfigExtExe"));
-			hNewItem = TreeView_AddItem(36,lang.GetString("ConfigGraphic"));
+			hNewItem = TreeView_AddItem(25,lang.GetString("ConfigGraphic"));
 			hNewItem = TreeView_AddItem(13,lang.GetString("ConfigNetwork"));
-			hNewItem = TreeView_AddItem(15 ,lang.GetString("ConfigGames"));
+			hNewItem = TreeView_AddItem(20 ,lang.GetString("ConfigGames"));
 			if (hNewItem)
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
@@ -857,8 +857,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 		   }
 		   
 		   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_SELECTSTRING, 0, (LPARAM)lang.m_strCurrentLang.c_str() );  			
-
-			char szTmp[10];
+		
 			int gameID=-1;
 			gameID = CFG_GetGameID(g_currSelCfg);
 			if(gameID!=-1)
@@ -943,8 +942,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 							SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETLBTEXT, idx, (LPARAM)sztemp );
 							strcpy(AppCFGtemp.szLanguageFilename,lang.m_Languages[sztemp].c_str());
 							lang.loadFile(lang.m_Languages[sztemp].c_str());
-							MessageBox(NULL,lang.GetString("AlertRestartRequired"),"Alert!",MB_OK);
-							 
+							MessageBox(NULL,lang.GetString("AlertRestartRequired"),"Alert!",MB_OK);							 
 						}
 					}
 					break;

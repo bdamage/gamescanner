@@ -1639,7 +1639,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 							if(pSrvInf->cGAMEINDEX<CS_SERVERLIST)
 								pLVItem->iImage = 1; //Punkbuster icon
 							else
-								pLVItem->iImage = 30;  //VAC/Steam icon
+								pLVItem->iImage = 21;  //VAC/Steam icon
 							
 						}
 						return TRUE;
@@ -5201,20 +5201,20 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	TCITEM tci;
 	ZeroMemory(&tci,sizeof(tci));
-	tci.iImage = 32;
+	tci.iImage = 0;
 	tci.mask =  TCIF_IMAGE|TCIF_TEXT;
 	tci.pszText = (LPSTR)lang.GetString("TabPlayers");
 	TabCtrl_InsertItem(g_hwndTabControl,0,&tci);
-	tci.iImage = 38;
+	tci.iImage = 27;
 	tci.pszText = (LPSTR)lang.GetString("TabRules");
 	TabCtrl_InsertItem(g_hwndTabControl,1,&tci);
-	tci.iImage = 33;
+	tci.iImage = 22;
 	tci.pszText = (LPSTR)lang.GetString("TabRCON");
 	TabCtrl_InsertItem(g_hwndTabControl,2,&tci);
-	tci.iImage = 37;
+	tci.iImage = 26;
 	tci.pszText = (LPSTR)lang.GetString("TabNetwork");
 	TabCtrl_InsertItem(g_hwndTabControl,3,&tci);
-	tci.iImage = 34;
+	tci.iImage = 23;
 	tci.pszText =  (LPSTR)lang.GetString("TabLogger");
 	TabCtrl_InsertItem(g_hwndTabControl,4,&tci);
 
@@ -6996,7 +6996,7 @@ void LoadImageList()
 
 	HICON hIcon;
 	int i=0;
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ET));		    //0 ET
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_USERS));		    //0 
 	i = ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_PB));			//1
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
@@ -7038,6 +7038,26 @@ void LoadImageList()
 	ImageList_AddIcon(g_hImageListIcons, hIcon);		
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_BLANK)); //20 77
 	ImageList_AddIcon(g_hImageListIcons, hIcon);		
+
+
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_VAC)); //21
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RCON)); //22
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_LOGGER)); //23
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FONT)); //24
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_PAINT)); //25
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_STATS)); //26
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RULES)); //27
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+
+/*
+
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE)); //21 52         ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ETQW)); //22 56 ET QW ICONd     ddd
@@ -7056,26 +7076,13 @@ void LoadImageList()
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CS)); //29          dd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_VAC)); //30
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
+
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CSS)); //31  ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_USERS)); //32
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RCON)); //33
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_LOGGER)); //34
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FONT)); //35
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_PAINT)); //36
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_STATS)); //37
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RULES)); //38
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_USERS)); //32  ddd
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 
-
+*/
 }
 
 
@@ -10224,7 +10231,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	if(FindWindow(szWindowClass,szDialogTitle )!=NULL)
 	{
 
-		MessageBox(NULL,"You can only run one instance of Game Scanner!","Alert",MB_OK);
+		MessageBox(NULL,lang.GetString("MessageInstance"),"Alert",MB_OK);
 		return 0;
 	}
 	InitializeCriticalSection(&SCANNER_cs);
@@ -10258,7 +10265,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	{		
 		if (!RegisterHotKey(NULL, HOTKEY_ID, AppCFG.dwMinimizeMODKey , AppCFG.cMinimizeKey))
 		{
-			MessageBox(0, "Couldn't register hotkey!\nProbably due to another application is running as a minimzer.\nETSV will disable minimze function & continue.\nYou can enable it from the settings if neccessary.", NULL, NULL);
+			MessageBox(NULL,lang.GetString("ErrorRegHotkey"),"Hotkey error",NULL);			
 			AppCFG.bUse_minimize = false;
 		}
 	}
@@ -11779,7 +11786,7 @@ int CFG_Load()
 					ReadCfgStr( pNode, "MapPreview",GamesInfo[i].szMAP_MAPPREVIEW_PATH,sizeof(GamesInfo[i].szMAP_MAPPREVIEW_PATH));
 					ReadCfgStr( pNode, "MasterServer",GamesInfo[i].szMasterServerIP,sizeof(GamesInfo[i].szMasterServerIP));		
 					ReadCfgInt( pNode, "MasterServerPort",(int&)GamesInfo[i].dwMasterServerPORT);
-					ReadCfgInt( pNode, "Protocol",(int&)GamesInfo[i].dwProtocol);		
+					//ReadCfgInt( pNode, "Protocol",(int&)GamesInfo[i].dwProtocol);		
 					ReadCfgInt(pNode, "Active",(int&)GamesInfo[i].bActive);
 					ReadCfgInt(pNode, "FilterMod",(int&)GamesInfo[i].filter.dwMod);
 					ReadCfgInt(pNode, "FilterVersion",(int&)GamesInfo[i].filter.dwVersion);
