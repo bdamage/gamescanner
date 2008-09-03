@@ -5104,9 +5104,9 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	ZeroMemory(&lvColumn,sizeof(LV_COLUMN));
 			
-	Q3_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, &InsertServerItem);
-	Q4_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, &InsertServerItem);
-	STEAM_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, &InsertServerItem);
+	Q3_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);//&InsertServerItem);
+	Q4_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);//&InsertServerItem);
+	STEAM_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies,NULL);// &InsertServerItem);
 
 	g_CurrentSRV = NULL;
 	g_bRedrawServerListThread =  FALSE;
@@ -7191,151 +7191,38 @@ nextGame:
 
 	SetStatusText(GamesInfo[currGameIdx].iIconIndex,lang.GetString("StatusReceivingServers"),GamesInfo[currGameIdx].szGAME_NAME);
 
-/*	switch(GamesInfo[currGameIdx].cGAMEINDEX)
+	SCAN_Set_CALLBACKS(GamesInfo[currGameIdx].GetServerStatus,&UpdateServerItem);
+
+	if((DWORD)lpParam==SCAN_FILTERED)
+		Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
+	else
 	{
-		case ETQW_SERVERLIST:
-			{
-			
-				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"etqwservers.txt",NULL,NULL);
-				if(ret!=0)
-					goto exitError;
-				
-				//SetStatusText(ICO_INFO,"Downloading %s servers... Done!",GamesInfo[currGameIdx].szGAME_NAME);
-				//ETQW_ParseServerList();				
-				Parse_FileServerList(&GamesInfo[currGameIdx],"etqwservers.txt");
-
-				SCAN_Set_CALLBACKS(&Q4_Get_ServerStatus,&UpdateServerItem);				
-				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GamesInfo[ETQW_SERVERLIST],&FilterServerItemV2);
-				else
-					Initialize_Rescan2(&GamesInfo[ETQW_SERVERLIST],NULL);
-			}
-		break;
-		case Q4_SERVERLIST:
-			{
-				SCAN_Set_CALLBACKS(&Q4_Get_ServerStatus,&UpdateServerItem);				
-				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GamesInfo[Q4_SERVERLIST],&FilterServerItemV2);
-				else
-				{
-					Q4_ConnectToMasterServer(&GamesInfo[currGameIdx]);			
-					Initialize_Rescan2(&GamesInfo[Q4_SERVERLIST],NULL);
-				}
-			}
-			break;
-		case HL2_SERVERLIST:
-		case CSCZ_SERVERLIST:
-		case CS_SERVERLIST:
-		case CSS_SERVERLIST:
-			{
-				
-				SCAN_Set_CALLBACKS(&STEAM_Get_ServerStatus,&UpdateServerItem);
-				
-				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
-				else
-				{
-					
-					STEAM_ConnectToMasterServer(&GamesInfo[currGameIdx]);
-					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
-					
-				}
-	
-			}
-			break;
-		case Q2_SERVERLIST:
-			{
-				
-				if(GamesInfo[currGameIdx].bUseHTTPServerList)
-				{
-					HFD_SetPath(USER_SAVE_PATH);
-					int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"q2servers.txt",NULL,NULL);
-					if(ret!=0)
-						goto exitError;
-					Parse_FileServerList(&GamesInfo[currGameIdx],"q2servers.txt");
-				}
-				SCAN_Set_CALLBACKS(&Q3_Get_ServerStatus,&UpdateServerItem);
-				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
-				else
-				{
-					if(GamesInfo[currGameIdx].bUseHTTPServerList == FALSE)				
-						Q3_ConnectToMasterServer(&GamesInfo[currGameIdx]);
-					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
-				}
-
-			}
-			break;
-		case QW_SERVERLIST:
-			{
-				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"qwservers.txt",NULL,NULL);
-				if(ret!=0)
-					goto exitError;
-				Parse_FileServerList(&GamesInfo[currGameIdx],"qwservers.txt");
-				SCAN_Set_CALLBACKS(&Q3_Get_ServerStatus,&UpdateServerItem);
-				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
-				else
-					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
-			}
-			break;
-
-		default:
-			{
-				SCAN_Set_CALLBACKS(&Q3_Get_ServerStatus,&UpdateServerItem);
-				if((DWORD)lpParam==SCAN_FILTERED)
-					Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
-				else
-				{
-					Q3_ConnectToMasterServer(&GamesInfo[currGameIdx]);
-					Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
-				}
-
-			}
-
-			break;
-	}
-
-*/
-		SCAN_Set_CALLBACKS(GamesInfo[currGameIdx].GetServerStatus,&UpdateServerItem);
-
-		if((DWORD)lpParam==SCAN_FILTERED)
-			Initialize_Rescan2(&GamesInfo[currGameIdx],&FilterServerItemV2);
-		else
+		if(GamesInfo[currGameIdx].bUseHTTPServerList)
 		{
-			if(GamesInfo[currGameIdx].bUseHTTPServerList)
+			HFD_SetPath(USER_SAVE_PATH);
+			int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
+			if(ret!=0)
+				goto exitError;
+			Parse_FileServerList(&GamesInfo[currGameIdx],"servers.txt");
+		}else	
+		{	
+			if(GamesInfo[currGameIdx].GetServersFromMasterServer!=NULL)
+				GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
+			else
 			{
-				HFD_SetPath(USER_SAVE_PATH);
-				int ret = HttpFileDownload(GamesInfo[currGameIdx].szMasterServerIP,"servers.txt",NULL,NULL);
-				if(ret!=0)
-					goto exitError;
-				Parse_FileServerList(&GamesInfo[currGameIdx],"servers.txt");
-			}else	
-			{	
-				if(GamesInfo[currGameIdx].GetServersFromMasterServer!=NULL)
-					GamesInfo[currGameIdx].GetServersFromMasterServer(&GamesInfo[currGameIdx]);
-				else
-				{
-					AddLogInfo(ETSV_ERROR,"%s didn't have a valid funtion to recieve servers.",GamesInfo[currGameIdx].szGAME_NAME);
-					goto exitError;
-				}
-
+				AddLogInfo(ETSV_ERROR,"%s didn't have a valid funtion to recieve servers.",GamesInfo[currGameIdx].szGAME_NAME);
+				goto exitError;
 			}
-
-			Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
 		}
-
-
+		Initialize_RedrawServerListThread();
+		Initialize_Rescan2(&GamesInfo[currGameIdx],NULL);
+	}
 
 	char szBuffer[100];
 	sprintf(szBuffer,"%s (%d)",GamesInfo[currGameIdx].szGAME_NAME,GamesInfo[currGameIdx].dwTotalServers);
 	TreeView_SetItemText(GamesInfo[currGameIdx].hTI,szBuffer);	
 	if((options==SCAN_ALL_GAMES) && (g_bCancel==false))
 		goto nextGame;
-
-	
 
 	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 
 

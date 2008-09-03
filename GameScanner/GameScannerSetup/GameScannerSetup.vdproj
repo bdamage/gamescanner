@@ -69,6 +69,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_0A826A77022C41689BB162B52B06A6BF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_0B1BC4BE3C1E4409B85470BF0B729356"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -94,6 +100,12 @@
         "Entry"
         {
         "MsmKey" = "8:_0FF0E9089FCC4337965EE825F6CF48BF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_13DABE23198142BCA7A98A0BD0C1F53D"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -195,6 +207,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_281F57372AF94A4CA76EF80652A7C0A0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_28EF2EAC6FC44EA3B9BEE61DCF65BF99"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -220,6 +238,12 @@
         "Entry"
         {
         "MsmKey" = "8:_2EFD924EB2974A16814FFAF4B1AFA501"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_32E711287D4541DC9B2F5BAF67B4D4F6"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -262,6 +286,12 @@
         "Entry"
         {
         "MsmKey" = "8:_37DE4BB69B2E493F83B1D40D9A33D3A8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_3945526F78F0428FB7AA1A87E7AEFDD9"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -346,6 +376,12 @@
         "Entry"
         {
         "MsmKey" = "8:_47CC44CA648B447AABD5E074840DDA27"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_4C09122A63954DD6968765AF3DF1FF35"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -525,6 +561,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_71DFD4910B4E4B169CF302C5502B57C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_74CB036EB446448C806D5FD75CCE83CC"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -597,6 +639,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_8AE1A6EE77B74ECAA43907F69289E509"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8CECA3955A5B409FB7B31E52D7EF889E"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -657,6 +705,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9B26FBB049DB4A889FD4D24834F015AE"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_9C2068DA8A84498881A4CAA42AF36080"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -664,6 +718,12 @@
         "Entry"
         {
         "MsmKey" = "8:_9C319A988D8C4220998AEDAFDC0C9ED8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_9C6428B4472946A08E3DB577D4C017E5"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -957,6 +1017,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_C76B0ED56B6F4791A184980B8746D9F0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C911D04BC8EB439BA8BB7C14FBF95466"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1041,7 +1107,19 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_DB32481EC53D4975A58B26D20CFCF46D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_DD9F401AEA27428DB8DB48A2174F26AD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_DE3B379E9BB644AEB58916B680EE9684"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1060,6 +1138,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E13B111463674B938CBE2FE238319193"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E364DBB531624A009EC6731FC143A27A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1113,6 +1197,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EDE8C6773FF6462AA751104FCFD23FE0"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_EF072CA9454C457096B554EA9B8C310F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1156,6 +1246,18 @@
         "Entry"
         {
         "MsmKey" = "8:_FC0DA9CCD02C40FAB64AAD6C5BA005E8"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FC8E681C8E0A4785979ADCB1AA8BD5FD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FD3D2941962E40548CE8B8C523D4F152"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1437,6 +1539,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0A826A77022C41689BB162B52B06A6BF"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\Warsow.ico"
+            "TargetName" = "8:Warsow.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_0B1BC4BE3C1E4409B85470BF0B729356"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_fj.gif"
@@ -1523,6 +1645,26 @@
             "TargetName" = "8:flag_nr.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_13DABE23198142BCA7A98A0BD0C1F53D"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\cod.ico"
+            "TargetName" = "8:cod.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -1857,6 +1999,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_281F57372AF94A4CA76EF80652A7C0A0"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\urbanterror.ico"
+            "TargetName" = "8:urbanterror.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_28EF2EAC6FC44EA3B9BEE61DCF65BF99"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_jm.gif"
@@ -1943,6 +2105,26 @@
             "TargetName" = "8:flag_py.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_32E711287D4541DC9B2F5BAF67B4D4F6"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\q2.ico"
+            "TargetName" = "8:q2.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2083,6 +2265,26 @@
             "TargetName" = "8:flag_jp.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_3945526F78F0428FB7AA1A87E7AEFDD9"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\callofduty2.ico"
+            "TargetName" = "8:callofduty2.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2363,6 +2565,26 @@
             "TargetName" = "8:flag_ca.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_4C09122A63954DD6968765AF3DF1FF35"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\ET.ico"
+            "TargetName" = "8:ET.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -2957,6 +3179,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_71DFD4910B4E4B169CF302C5502B57C2"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\cod4.ico"
+            "TargetName" = "8:cod4.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74CB036EB446448C806D5FD75CCE83CC"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_ms.gif"
@@ -3197,6 +3439,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8AE1A6EE77B74ECAA43907F69289E509"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\css.ico"
+            "TargetName" = "8:css.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_8CECA3955A5B409FB7B31E52D7EF889E"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_nf.gif"
@@ -3377,6 +3639,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9B26FBB049DB4A889FD4D24834F015AE"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\q4.ico"
+            "TargetName" = "8:q4.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C2068DA8A84498881A4CAA42AF36080"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_mq.gif"
@@ -3403,6 +3685,26 @@
             "TargetName" = "8:flag_ua.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9C6428B4472946A08E3DB577D4C017E5"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\hf2.ico"
+            "TargetName" = "8:hf2.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4377,6 +4679,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C76B0ED56B6F4791A184980B8746D9F0"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\qw.ico"
+            "TargetName" = "8:qw.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_C911D04BC8EB439BA8BB7C14FBF95466"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_be.gif"
@@ -4657,12 +4979,52 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DB32481EC53D4975A58B26D20CFCF46D"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\etqw.ico"
+            "TargetName" = "8:etqw.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DD9F401AEA27428DB8DB48A2174F26AD"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_lc.gif"
             "TargetName" = "8:flag_lc.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_DE3B379E9BB644AEB58916B680EE9684"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\openarena.ico"
+            "TargetName" = "8:openarena.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4723,6 +5085,26 @@
             "TargetName" = "8:flag_bb.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E364DBB531624A009EC6731FC143A27A"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\rtcw.ico"
+            "TargetName" = "8:rtcw.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -4897,6 +5279,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EDE8C6773FF6462AA751104FCFD23FE0"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\prey.ico"
+            "TargetName" = "8:prey.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EF072CA9454C457096B554EA9B8C310F"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_pr.gif"
@@ -5057,6 +5459,46 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FC8E681C8E0A4785979ADCB1AA8BD5FD"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\cstrike.ico"
+            "TargetName" = "8:cstrike.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FD3D2941962E40548CE8B8C523D4F152"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\q3.ico"
+            "TargetName" = "8:q3.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FFD35BBF039B4C94B441FC7F026ED0EE"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_bz.gif"
@@ -5126,6 +5568,17 @@
             "Property" = "8:TARGETDIR"
                 "Folders"
                 {
+                    "{9EF0B969-E518-4E46-987F-47570745A589}:_52B22F184C964B5AB5EAC5F19905881B"
+                    {
+                    "Name" = "8:GameIcons"
+                    "AlwaysCreate" = "11:FALSE"
+                    "Condition" = "8:"
+                    "Transitive" = "11:FALSE"
+                    "Property" = "8:_C64521E5F73B4390A429434225F94F72"
+                        "Folders"
+                        {
+                        }
+                    }
                     "{9EF0B969-E518-4E46-987F-47570745A589}:_C19AAD18D7144D37B7FB647A383D79DA"
                     {
                     "Name" = "8:flags"
