@@ -568,5 +568,31 @@
 				<Install name="LaunchByMod" value="" />
 				<Install name="LaunchByVer" value="" />
 		</Installs>	
-	</Game>			
+	</Game>	
+	<Game>
+		<GameIndex>17</GameIndex>
+		<Name>Nexuiz</Name>
+		<ShortName>Nexuiz</ShortName>
+		<Filename>nexuiz.servers</Filename>
+		<NetEngine>Q3</NetEngine>
+		<ColorEncoding>QW</ColorEncoding>
+		<WebProtocol>nexuiz</WebProtocol>
+		<MapPreviewPath>Nexuizmaps</MapPreviewPath>
+		<Icon>Nexuiz.ico</Icon>
+		<MasterServers>
+			<MasterServer>dpmaster.deathmask.net:27950</MasterServer>
+			<UseHTTP>0</UseHTTP>
+		</MasterServers>
+		<ServerDefaultPort>28960</ServerDefaultPort>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers Nexuiz 3 empty full</MasterQueryString>
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
+				<RegKey>SOFTWARE\Id\Quake III Arena"</RegKey>
+				<RegItem>INSTALLPATH</RegItem>
+				<InstallSuffix></InstallSuffix>
+			</Registry>
+		</Detection>
+	</Game>		
 </Games>
