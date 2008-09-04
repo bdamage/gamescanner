@@ -54,7 +54,7 @@ Upgrade code 1.0 - 1.0.9:
 #pragma comment(lib, "HttpFileDownload.lib")
 #pragma comment(lib, "iptocountry.lib")
 
-//#pragma comment(lib, "..\\..\\FreeImage\\FreeImage.lib")
+#pragma comment(lib, "..\\..\\FreeImage\\FreeImage.lib")
 
 #pragma comment(lib, "UxTheme.lib")
 #pragma comment(lib, "Mswsock.lib")
@@ -62,7 +62,7 @@ Upgrade code 1.0 - 1.0.9:
 #pragma comment(lib, "comdlg32.lib")
 #pragma comment(lib, "user32.lib")
 #pragma comment(lib, "comctl32.lib")
-#pragma comment(lib, "Winmm.lib")  //Playsound
+//#pragma comment(lib, "Winmm.lib")  //Playsound
 #pragma comment(lib, "Iphlpapi.lib")  //ICMP
 
 
@@ -229,7 +229,7 @@ CLanguage lang;
 BOOL Sizing = FALSE;
 
 long UpdateServerItem(DWORD index);
-char Get_GameIcon(char index);
+UINT Get_GameIcon(UINT GameIndex);
 long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI);
 int TreeView_GetIndexByHItemTree(HTREEITEM hItemtree);
 int TreeView_SetAllChildItemExpand(int startIdx, bool expand);
@@ -785,7 +785,7 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 	PAINTSTRUCT ps;
 	HDC  hDC;
 	RECT size;
-	HBRUSH hbrBkgnd=NULL,hbrBar=NULL;
+	
 	switch (message)
 	{
 		case WM_INITDIALOG:
@@ -1074,7 +1074,7 @@ int StrSorter(char *a, char *b)
 	if(a==NULL)
 		return 0;
 
-	while(1)
+	while(a[i]!=0)
 	{
 		if(a[i]==0 && b[i2]==0)
 			return 0;
@@ -2868,10 +2868,9 @@ void Default_Appsettings()
 	AddLogInfo(ETSV_INFO,"Settings set to defaults.");
 	
 	ZeroMemory(&AppCFG,sizeof(APP_SETTINGS_NEW));
-
+                     
 	g_sMIRCoutput = "is joining server %SERVERNAME% %GAMENAME% %IP% %PRIVATE%";
-	
-	AppCFG.dwVersion = 14;
+
 	AppCFG.bAutostart = FALSE;
 	AppCFG.bUse_minimize = TRUE;
 	AppCFG.dwMinimizeMODKey =MOD_ALT;
@@ -2891,7 +2890,7 @@ void Default_Appsettings()
 	strcpy(AppCFG.szEXT_EXE_CMD,"127.0.0.1?nickname=MyNick?loginname=MyLoginAccount?password=XYZ?channel=Axis");
 	strcpy(AppCFG.szEXT_EXE_WINDOWNAME,"TEAMSPEAK 2");
 	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4");
-	strcpy(AppCFG.szET_CMD,"");
+
 
 	//Legacy stuff - this should be cleared out from source code...
 	AppCFG.filter.bNoEmpty = FALSE;
@@ -2953,10 +2952,7 @@ void Default_Appsettings()
 
 void OnButtonClick_AddServer()
 {
-	SERVER_INFO *pSrvInf = NULL;
-
 	char ip[100];
-	DWORD dwPort=0;
 	ZeroMemory(ip,sizeof(ip));
 	GetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,ip,99);
 
@@ -4060,6 +4056,7 @@ HTREEITEM MainTreeView_AddItem(_TREEITEM *ti,HTREEITEM hCurrent,bool active)
 }
 
 DWORD g_TreeLevel=1;
+
 int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 {
 	char szName[100];
@@ -4075,6 +4072,12 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		ti.dwCompare = 0;
 		ti.dwState = 0;
 		ti.dwValue = 0;
+		ti.iIconIndex = 0;
+		ti.hTreeItem = NULL;
+		ti.sElementName.clear();
+		ti.pGI = NULL;
+		ti.bVisible = true;
+		ti.bExpanded = false;
 		ti.sName = "No name";
 
 		XML_GetTreeItemName(childItem,szName,sizeof(szName));		
@@ -4084,34 +4087,34 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		ti.sElementName = childItem->Value();
  
 		ti.cGAMEINDEX = (char)XML_GetTreeItemInt(childItem,"game");
-		ti.dwType =  XML_GetTreeItemInt(childItem,"type");
-	
+	    ti.dwType =  XML_GetTreeItemInt(childItem,"type");
 		ti.dwCompare =  XML_GetTreeItemInt(childItem,"compare");
+		ti.dwAction = XML_GetTreeItemInt(childItem,"action");
+		ti.dwValue =  XML_GetTreeItemInt(childItem,"value");
+		ti.dwState =  XML_GetTreeItemInt(childItem,"state");
+		ti.bExpanded = (bool) XML_GetTreeItemInt(childItem,"expanded");
 
 		if(ti.dwType==1024)
 			ti.iIconIndex = Get_GameIcon(ti.cGAMEINDEX);
 		else
 			ti.iIconIndex = XML_GetTreeItemInt(childItem,"icon");
 
-		ti.dwAction = XML_GetTreeItemInt(childItem,"action");
-		ti.dwValue =  XML_GetTreeItemInt(childItem,"value");
 		ZeroMemory(szName,sizeof(szName));
 		ti.strValue = "zz";	
 		XML_GetTreeItemStrValue(childItem,szName,sizeof(szName));
 		if(szName!=NULL)
 			ti.strValue = szName;
 
-		ti.dwState =  XML_GetTreeItemInt(childItem,"state");
-		ti.bExpanded = (bool) XML_GetTreeItemInt(childItem,"expanded");
 		ti.dwLevel = g_TreeLevel;
 		ti.dwIndex = vTI.size();
+
 		bool active=true;
 		if(ti.cGAMEINDEX!=-25)
 		{
 			if(ti.cGAMEINDEX<GamesInfo.size())
 				active = GamesInfo[ti.cGAMEINDEX].bActive;
 		}
-				
+		
 		ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);
 		vTI.push_back(ti);
 
@@ -4131,8 +4134,8 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 			GamesInfo[ti.cGAMEINDEX].vFilterMap.push_back(gf);
 
 		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
-
-	}
+		
+	}	
 	g_TreeLevel--;
 	return 0;
 }
@@ -4152,7 +4155,7 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 
 
 		TiXmlElement * elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
-
+/*
 #ifdef _DEBUG	
 		char padding[40];
 		padding[0]=0;
@@ -4160,7 +4163,7 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 			strcat(padding," ");
 		dbg_print("%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
 #endif
-
+*/
 		elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
 		elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
 		elem->SetAttribute("value",vTI.at(iSel).dwValue);
@@ -4192,59 +4195,6 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 	return vTI.at(g_save_counter).dwLevel;
 }
 
-DWORD  Save_all_by_level_country(TiXmlElement *pElemRoot,DWORD dwlevel)
-{
-	if(g_save_counter>vTI.size())
-		return 0;
-	
-	while(dwlevel==vTI.at(g_save_counter).dwLevel)
-	{			
-		int iSel = g_save_counter;
-		
-		if(vTI.at(iSel).dwType==1001) //reached to country filter
-			return 0;
-
-
-		TiXmlElement * elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
-
-#ifdef _DEBUG	
-		char padding[40];
-		padding[0]=0;
-		for(int i=0;i<dwlevel;i++)
-			strcat(padding," ");
-		dbg_print("%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
-#endif
-
-		elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
-		elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
-		elem->SetAttribute("value",vTI.at(iSel).dwValue);
-		elem->SetAttribute("compare",vTI.at(iSel).dwCompare);
-		elem->SetAttribute("icon",vTI.at(iSel).iIconIndex);
-		elem->SetAttribute("expanded",(UINT)vTI.at(iSel).bExpanded);
-		elem->SetAttribute("type",vTI.at(iSel).dwType);
-		elem->SetAttribute("state",vTI.at(iSel).dwState);
-		elem->SetAttribute("game",vTI.at(iSel).cGAMEINDEX);
-		elem->SetAttribute("action",vTI.at(iSel).dwAction);
-			
-		g_save_counter++;
-		pElemRoot->LinkEndChild( elem ); 
-		if(g_save_counter>=vTI.size())
-			return 0;
-
-		 
-		DWORD nextlevel = vTI.at(g_save_counter).dwLevel;
-		DWORD lvl=0;
-		if(nextlevel>dwlevel)
-		{	
-			lvl = Save_all_by_level(elem,nextlevel);
-			if(lvl!=dwlevel)
-				return lvl;
-		}		
-		if(g_save_counter>=vTI.size())
-			return 0;
-	}
-	return vTI.at(g_save_counter).dwLevel;
-}
 
 void TreeView_cleanup()
 {
@@ -4275,15 +4225,10 @@ int TreeView_save()
 	
 
 	TiXmlElement * TreeItems = new TiXmlElement( "TreeItems" );  
-
-	HTREEITEM hRoot = TreeView_GetRoot(g_hwndMainTreeCtrl);
 		
 	g_save_counter=0;
 	if(!vTI.empty())
 		Save_all_by_level(TreeItems,vTI.at(g_save_counter).dwLevel);
-
-	//Save_all_childs(TreeItems,hRoot);
-
 
 	root->LinkEndChild( TreeItems );  
 	doc.LinkEndChild( root );  
@@ -4376,11 +4321,11 @@ void TreeView_BuildList()
 
 int TreeView_load()
 {
+
 	char szFilePath[_MAX_PATH+_MAX_FNAME];
 	ZeroMemory(szFilePath,sizeof(szFilePath));
 	strncpy(szFilePath,USER_SAVE_PATH,strlen(USER_SAVE_PATH));
 	strcat(szFilePath,"treeviewcfg.xml");
-	//strcat(szFilePath,"treetest.xml");//"treeviewcfg.xml");
 	AddLogInfo(ETSV_INFO,"Trying to load TreeView from %s",szFilePath);
 	SetCurrentDirectory(USER_SAVE_PATH);
 	TiXmlDocument doc(szFilePath);
@@ -4410,6 +4355,7 @@ int TreeView_load()
 		}
 		SetCurrentDirectory(USER_SAVE_PATH);
 		AddLogInfo(ETSV_INFO,"Success loading TreeView config file from USER_SAVE_PATH (%s)",szFilePath);
+
 	}
 
 	g_bTREELOADED = TRUE;
@@ -4418,10 +4364,7 @@ int TreeView_load()
 	
 	TiXmlDocument docNew;
 
-	TiXmlElement* pElem;
-	TiXmlHandle hRoot(0);
-
-
+	TiXmlElement* pElem = NULL;
 	pElem=hDoc.FirstChildElement().Element();
 	// should always have a valid root but handle gracefully if it does
 	if (!pElem)
@@ -4462,17 +4405,16 @@ int TreeView_load()
 				return 1;
 		
 			}
-			//Clear all old filtering settings... ugly hack.
-		//	for(int i=0; i<GamesInfo.size(); i++)  //removed since 1.05
-		//		ZeroMemory(&GamesInfo[i].filter,sizeof(FILTER_SETTINGS));//removed since 1.05
-		}
-			
+		}			
 	}
 
 	vTI.clear();
-	// save this for later
-	hRoot=TiXmlHandle(pElem);
 
+	// save this for later
+	TiXmlHandle hRoot(0);
+	hRoot=TiXmlHandle(pElem);
+	
+	
 	TiXmlElement* child = hRoot.FirstChild( "TreeItems" ).ToElement();
 
 	g_TreeLevel=1;
@@ -4630,7 +4572,7 @@ long UpdatePlayerList(LPPLAYERDATA pPlayers)
 	while (pPlayers!=NULL)
 	{
 		//Potential mem leak, may have to rewrite/improve this part of code
-		PLAYERDATA *pPD = Copy_PlayerToCurrentPL(pCurrentPL,pPlayers);  //This will keep a copy of the playerlist during scanning
+		Copy_PlayerToCurrentPL(pCurrentPL,pPlayers);  //This will keep a copy of the playerlist during scanning
 		pPlayers = pPlayers->pNext;
 		
 		n++;
@@ -5202,7 +5144,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	TreeView_SetExtendedStyle(g_hwndMainTreeCtrl, WS_EX_LEFT,dwExStyle);
 	
 	SetWindowTheme(g_hwndMainTreeCtrl, L"explorer", 0);
-	//SetWindowTheme(g_hwndListViewServer, L"explorer", 0);
+
 
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewPlayers);
 	dwExStyle |= LVS_EX_FULLROWSELECT ;
@@ -5321,6 +5263,8 @@ void OnClose()
 	ImageList_Destroy(g_hImageListIcons);
 	g_hImageListIcons= NULL;
 
+	ImageList_Destroy(g_hILFlags);
+	g_hILFlags = NULL;
 	ImageList_Destroy(m_hImageList);
 	m_hImageList = NULL;
 	ImageList_Destroy(m_hImageListHot);
@@ -5341,7 +5285,7 @@ void OnClose()
 		GamesInfo[i].vFilterMod.clear();
 		GamesInfo[i].vFilterVersion.clear();
 	}
-
+	g_sMIRCoutput.clear();
 	UTILZ_CleanUp_PlayerList(pCurrentPL);
 	pCurrentPL = NULL;
 	bMainWindowsRunning=false;
@@ -5408,8 +5352,10 @@ void OnInitialize_MainDlg(HWND hwnd)
 	
 	TreeView_BuildList();
 
-
-	currCV = &GamesInfo[0];
+	if(GamesInfo.size()>0)
+		currCV = &GamesInfo[0];
+	else
+		currCV = NULL;
 
 	LoadAllServerList();
 
@@ -5422,7 +5368,6 @@ void OnInitialize_MainDlg(HWND hwnd)
 
 	Show_ToolbarButton(IDC_BUTTON_FIND,false);
 	Show_ToolbarButton(IDC_DOWNLOAD, false);
-	//RedrawServerList(Get_CurrentServerListByView());
 	
 	ShowWindow(g_hwndLogger,SW_HIDE);
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
@@ -5466,14 +5411,9 @@ char * ReplaceIllegalChars(char *szIn)
 //TODO rewrite file structure for easier future changes/additional info
 void SaveServerList(GAME_INFO *pGI)
 {
-
-	//SetStatusText(ICO_INFO,"Saving...");
-
-	//dbg_print("Saving serverlist... %s");
 	SetCurrentDirectory(USER_SAVE_PATH);
-	FILE *fp=NULL;
+
 	FILE *fp2=NULL;
-//	fopen_s(&fp,pGI->szFilename, "wb");
 	char szFilename2[260];
 	sprintf(szFilename2,"%s.csv",pGI->szFilename);
 	fopen_s(&fp2,szFilename2, "wb");
@@ -5527,7 +5467,6 @@ void SaveServerList(GAME_INFO *pGI)
 				}
 			}
 		}
-	//	fclose(fp);
 		fclose(fp2);
 	}
 
@@ -5779,13 +5718,16 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 	
 	LeaveCriticalSection(&LOAD_SAVE_CS);
 
-	if(GamesInfo[g_currentGameIdx].bActive)
-		SetCurrentViewTo(g_currentGameIdx);
-	else
-		SetCurrentViewTo(FindFirstActiveGame());
+	if(GamesInfo.size()>0)
+	{
+		if(GamesInfo[g_currentGameIdx].bActive)
+			SetCurrentViewTo(g_currentGameIdx);
+		else
+			SetCurrentViewTo(FindFirstActiveGame());
 
-	if(GamesInfo[g_currentGameIdx].vSI.size()>0)
-		OnActivate_ServerList(SCAN_FILTERED);
+		if(GamesInfo[g_currentGameIdx].vSI.size()>0)
+			OnActivate_ServerList(SCAN_FILTERED);
+	}
 		
  return 0;
 }
@@ -5947,7 +5889,6 @@ DWORD WINAPI SavingFilesCleaningUpThread(LPVOID pvoid )
 }
 DWORD WINAPI CFG_Save(LPVOID lpVoid)
 {
-
 	SetCurrentDirectory(USER_SAVE_PATH);
 	AddLogInfo(ETSV_DEBUG,"Saving config");
 
@@ -6967,99 +6908,96 @@ void LoadImageList()
 
 	if(g_hImageListIcons!=NULL)
 		return;
-	dbg_print("Image list\n");
-
+	
+	dbg_print("LoadImageList");
 	g_hImageListIcons = ImageList_Create(16, 16, ILC_COLOR32|ILC_MASK,35, 1);
 
 	HICON hIcon;
 	int i=0;
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_USERS));		    //0 
 	i = ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_PB));			//1
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FAVORITES));   //2
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_BUDDY));		//3
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_LOCKED));		//4
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ERROR));		//5
 	ImageList_AddIcon(g_hImageListIcons, hIcon); 
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_WARNING));		//6
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_UNKOWN));		//7
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(ICON_INFO));			//8
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CHECKBOX));	//9 61 Checkbox
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CHECKEDBOX));	//10 62 CHECKEDBOX
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_TRICHECKEDBOX)); //11 65 Tri Checkedbox
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_GLOBE));		//12 57 Globe
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_LAN));			//13 58 Lan
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_APP_LOGO));	//14 59 App logo
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FILTER));		//15 60 Filter
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_HISTORY));		//16 64 History
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FILTER2));	   // 17 82
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FOLDER));	  //18 75
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RANKED)); //19 76  Ranked
 	ImageList_AddIcon(g_hImageListIcons, hIcon);		
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_BLANK)); //20 77
 	ImageList_AddIcon(g_hImageListIcons, hIcon);		
-
-
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_VAC)); //21
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RCON)); //22
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_LOGGER)); //23
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FONT)); //24
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_PAINT)); //25
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_STATS)); //26
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RULES)); //27
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
-
-/*
-
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_QUAKE)); //21 52         ddd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ETQW)); //22 56 ET QW ICONd     ddd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RTCW)); //23 63 RTCW       ddddd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_Q3)); //24 74            dd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_WARSOW)); //25 78                  dd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);	
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD)); //26 80
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD2)); //27 79         dd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);	
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_COD4)); //28 81     ddd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CS)); //29          dd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_CSS)); //31  ddd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_USERS)); //32  ddd
-	ImageList_AddIcon(g_hImageListIcons, hIcon);
-
-*/
+	DestroyIcon(hIcon);
 }
 
 
@@ -7159,7 +7097,7 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 		}
 	}
 
-	int iGame=0;
+	UINT iGame=0;
 nextGame:
 	if(options==SCAN_ALL_GAMES)
 		currGameIdx = iGame++;
@@ -7615,56 +7553,9 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 }
 
 
-char Get_GameIcon(char index)
+UINT Get_GameIcon(UINT GameIndex)
 {
-	return GamesInfo[index].iIconIndex;
-	switch(index)
-	{
-		case ETQW_SERVERLIST: 
-			return 22;  //ETQW icon
-			break;
-		case Q4_SERVERLIST:
-			return 21;  //Quake 4 icon
-			break;
-		case ET_SERVERLIST: 
-			return 0;  //ETQW icon
-			break;
-		case Q3_SERVERLIST:
-			return 24;  //Quake icon
-			break;
-		case RTCW_SERVERLIST: 
-			return 23; 
-			break;
-		case COD_SERVERLIST: 
-			return 26;  
-			break;
-		case COD2_SERVERLIST: 
-			return 27; 
-		case COD4_SERVERLIST: 
-			return 28; 
-			break;
-		case WARSOW_SERVERLIST: 
-			return 25; 
-			break;
-		case CS_SERVERLIST:
-		case CSCZ_SERVERLIST:
-			return 29;
-		case CSS_SERVERLIST:
-			return 31;
-		case QW_SERVERLIST:
-			return 39;
-		case Q2_SERVERLIST:
-			return 40;
-		case OPENARENA_SERVERLIST:
-			return 41;
-		case HL2_SERVERLIST:
-			return 42;
-		case UTERROR_SERVERLIST:
-			return 43;
-		default:
-			return 7;  //unkown icon
-	}
-
+	return GamesInfo[GameIndex].iIconIndex;
 }
 //This is only for reference purpose
 long InsertServerItem(GAME_INFO *pGI,SERVER_INFO pSI)
@@ -8314,8 +8205,7 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 							{
 								for(int i=0;i<nItem;i++)
 									pPlayerData = pPlayerData->pNext;
-								
-								HDC  hDC = pListDraw->nmcd.hdc;							
+																				
 								RECT rc;								
 								if(pPlayerData!=NULL)
 								{
@@ -8534,16 +8424,6 @@ void Show_ToolbarButton(int id, bool show)
 	
 	::SendMessage(g_hwndSearchToolbar,	TB_HIDEBUTTON, (WPARAM)id, (LPARAM)MAKELONG(!show,0)); 
 	UpdateWindow(g_hwndSearchCombo);
-}
-
-bool bPlayingNotify=false;
-
-DWORD WINAPI PlayNotify(LPVOID lpParam )
-{
-	 bPlayingNotify=true;
-	 PlaySound(AppCFG.szNotifySoundWAVfile, 0, SND_FILENAME);
-	 bPlayingNotify=false;
-	 return 0;
 }
 
 
@@ -9248,7 +9128,7 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 			wmEvent = HIWORD(wParam); 
 
 		
-				for(int x=0; x<currCV->vGAME_INST.size();x++)
+				for(UINT x=0; x<currCV->vGAME_INST.size();x++)
 					if(wmId == 36000+x)
 					{
 						int i = ListView_GetSelectionMark(g_hwndListViewServer);
@@ -10000,13 +9880,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	AddLogInfo(ETSV_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
 	AddLogInfo(ETSV_INFO,"Cmd line input %s",lpCmdLine);
 
-	IPC_SetPath(EXE_PATH);
-		
+	IPC_SetPath(EXE_PATH);		
 	lang.SetPath(EXE_PATH);
 
 	g_hInst = hInstance; // Store instance handle in our global variable
-	LoadImageList();
-	CFG_Load();
+
 
 	//Do the conversion of the IP to country database 
 //#ifdef CONVERTIPDATABASE
@@ -10021,14 +9899,16 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	
 	memset((void*)&etMode,0,sizeof(DEVMODE));
 
-	
-
 	WSADATA wsaData;
 	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != NO_ERROR)
 	{
 	  AddLogInfo(ETSV_INFO,"Error at WSAStartup()");
 	}
+
+	LoadImageList();
+	CFG_Load();
+
 
 	if(AppCFG.bAutostart)  //auto run up on boot
 		SelfInstall(EXE_PATH);
@@ -10496,6 +10376,8 @@ DWORD WINAPI ProgressGUI_Thread(LPVOID lpParam)
 
 DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 {
+	
+
 	BOOL bAnyUpdates=FALSE;
 	SetCurrentDirectory(USER_SAVE_PATH);
 	int ret = 0;
@@ -11291,10 +11173,10 @@ void CleanUpFilesRegistry()
 
 int CFG_Load()
 {
-	Initialize_GameSettings();		
-
-	Default_GameSettings();
 	Default_Appsettings();
+	//Initialize_GameSettings();		
+	Default_GameSettings();
+	
 
 	lang.loadFile("lang_en.xml");
 
@@ -11575,103 +11457,106 @@ int CFG_Load()
 	pElement=hRoot.FirstChild("Games").ToElement();
 	if(pElement!=NULL)
 	{
-		pElement = pElement->FirstChild()->ToElement();
-		if(pElement!=NULL)
+		if(pElement->FirstChild()!=NULL)  //No games found in config!
 		{
-			for(int i=0;i<GamesInfo.size();i++)
+			pElement = pElement->FirstChild()->ToElement();
+			if(pElement!=NULL)
 			{
-				TiXmlElement* pNode = pElement->FirstChild()->ToElement();
-				if(pNode!=NULL)
+				for(int i=0;i<GamesInfo.size();i++)
 				{
-					char temp[MAX_PATH];
-					ReadCfgStr(pNode, "GameName",temp,MAX_PATH);
-					if(strlen(temp)>0)
-						strcpy(GamesInfo[i].szGAME_NAME,temp);
-					
-					
-					if(ReadCfgStr(pNode, "Path",temp,MAX_PATH)!=NULL) //old changed since ver 1.08
+					TiXmlElement* pNode = pElement->FirstChild()->ToElement();
+					if(pNode!=NULL)
 					{
+						char temp[MAX_PATH];
+						ReadCfgStr(pNode, "GameName",temp,MAX_PATH);
+						if(strlen(temp)>0)
+							strcpy(GamesInfo[i].szGAME_NAME,temp);
 						
-						GamesInfo[i].vGAME_INST.clear();
-						GAME_INSTALLATIONS gi;
-						gi.sName = "Default";
-						gi.szGAME_PATH = temp;
 						
-
-						ReadCfgStr(pNode, "Cmd",temp,MAX_PATH);
-						gi.szGAME_PATH = temp;
-						ReadCfgStr(pNode, "LaunchByVer",temp,MAX_PATH);
-						gi.sVersion = temp;
-						ReadCfgStr(pNode, "LaunchByMod",temp,MAX_PATH);
-						gi.sMod = temp;
-
-						GamesInfo[i].vGAME_INST.push_back(gi);
-					} else
-					{
-						TiXmlNode* pInstallTags = pElement->FirstChild("Installs");
-						
-						if( pInstallTags!=NULL)
+						if(ReadCfgStr(pNode, "Path",temp,MAX_PATH)!=NULL) //old changed since ver 1.08
 						{
-							TiXmlElement* pInstalls = pInstallTags->ToElement();
-							if(pInstalls!=NULL)
-								GamesInfo[i].vGAME_INST.clear();
+							
+							GamesInfo[i].vGAME_INST.clear();
+							GAME_INSTALLATIONS gi;
+							gi.sName = "Default";
+							gi.szGAME_PATH = temp;
+							
 
-							while(pInstalls!=NULL)
+							ReadCfgStr(pNode, "Cmd",temp,MAX_PATH);
+							gi.szGAME_PATH = temp;
+							ReadCfgStr(pNode, "LaunchByVer",temp,MAX_PATH);
+							gi.sVersion = temp;
+							ReadCfgStr(pNode, "LaunchByMod",temp,MAX_PATH);
+							gi.sMod = temp;
+
+							GamesInfo[i].vGAME_INST.push_back(gi);
+						} else
+						{
+							TiXmlNode* pInstallTags = pElement->FirstChild("Installs");
+							
+							if( pInstallTags!=NULL)
 							{
-								TiXmlElement* pInstall = pInstalls->FirstChild("Install")->ToElement();
-								char szTemp[MAX_PATH];
-								ReadCfgStr(pInstall, "Name",szTemp,MAX_PATH); 
-								GAME_INSTALLATIONS gi;							
+								TiXmlElement* pInstalls = pInstallTags->ToElement();
+								if(pInstalls!=NULL)
+									GamesInfo[i].vGAME_INST.clear();
 
-								gi.sName = szTemp;
+								while(pInstalls!=NULL)
+								{
+									TiXmlElement* pInstall = pInstalls->FirstChild("Install")->ToElement();
+									char szTemp[MAX_PATH];
+									ReadCfgStr(pInstall, "Name",szTemp,MAX_PATH); 
+									GAME_INSTALLATIONS gi;							
 
-								ReadCfgStr(pInstall, "Path",temp,MAX_PATH);
-								gi.szGAME_PATH = temp;
+									gi.sName = szTemp;
 
-								ReadCfgStr(pInstall, "Cmd",temp,MAX_PATH);
-								gi.szGAME_CMD = temp;
+									ReadCfgStr(pInstall, "Path",temp,MAX_PATH);
+									gi.szGAME_PATH = temp;
 
-								ReadCfgStr(pInstall, "LaunchByVer",temp,MAX_PATH);
-								gi.sVersion = temp;
+									ReadCfgStr(pInstall, "Cmd",temp,MAX_PATH);
+									gi.szGAME_CMD = temp;
 
-								ReadCfgStr(pInstall, "LaunchByMod",temp,MAX_PATH);
-								gi.sMod = temp;		
+									ReadCfgStr(pInstall, "LaunchByVer",temp,MAX_PATH);
+									gi.sVersion = temp;
 
-								GamesInfo[i].vGAME_INST.push_back(gi);
-								pInstalls = pInstalls->NextSiblingElement();
-								if(pInstalls==NULL)
-									break;
-								
+									ReadCfgStr(pInstall, "LaunchByMod",temp,MAX_PATH);
+									gi.sMod = temp;		
+
+									GamesInfo[i].vGAME_INST.push_back(gi);
+									pInstalls = pInstalls->NextSiblingElement();
+									if(pInstalls==NULL)
+										break;
+									
+								}
 							}
 						}
-					}
-					
-				//	ReadCfgStr( pNode, "yawn",GamesInfo[i].szMAP_YAWN_PATH,sizeof(GamesInfo[i].szMAP_YAWN_PATH));
-					ReadCfgStr( pNode, "MapPreview",GamesInfo[i].szMAP_MAPPREVIEW_PATH,sizeof(GamesInfo[i].szMAP_MAPPREVIEW_PATH));
-					ReadCfgStr( pNode, "MasterServer",GamesInfo[i].szMasterServerIP,sizeof(GamesInfo[i].szMasterServerIP));		
-					ReadCfgInt( pNode, "MasterServerPort",(int&)GamesInfo[i].dwMasterServerPORT);
-					//ReadCfgInt( pNode, "Protocol",(int&)GamesInfo[i].dwProtocol);		
-					ReadCfgInt(pNode, "Active",(int&)GamesInfo[i].bActive);
-					ReadCfgInt(pNode, "FilterMod",(int&)GamesInfo[i].filter.dwMod);
-					ReadCfgInt(pNode, "FilterVersion",(int&)GamesInfo[i].filter.dwVersion);
-					ReadCfgInt(pNode, "FilterMap",(int&)GamesInfo[i].filter.dwMap);
-					ReadCfgInt(pNode, "FilterRegion",(int&)GamesInfo[i].filter.dwRegion);
-					ReadCfgInt(pNode, "FilterGameType",(int&)GamesInfo[i].filter.dwGameTypeFilter);					
-					ReadCfgInt(pNode, "FilterHideFull",(int&)GamesInfo[i].filter.bNoFull);
-					ReadCfgInt(pNode, "FilterHideEmpty",(int&)GamesInfo[i].filter.bNoEmpty);
-					ReadCfgInt(pNode, "FilterPunkbuster",(int&)GamesInfo[i].filter.bPunkbuster);
-					ReadCfgInt(pNode, "FilterHideOffline",(int&)GamesInfo[i].filter.bHideOfflineServers);
-					ReadCfgInt(pNode, "FilterPure",(int&)GamesInfo[i].filter.bPure);
-					ReadCfgInt(pNode, "FilterRanked",(int&)GamesInfo[i].filter.bRanked);
-					ReadCfgInt(pNode, "FilterHideBots",(int&)GamesInfo[i].filter.bNoBots);
-					ReadCfgInt(pNode, "FilterNoPrivate",(int&)GamesInfo[i].filter.bNoPrivate);
-					ReadCfgInt(pNode, "FilterOnlyPrivate",(int&)GamesInfo[i].filter.bOnlyPrivate);					
-					ReadCfgInt(pNode, "FilterDedicated",(int&)GamesInfo[i].filter.bDedicated);					
-					pElement = pElement->NextSiblingElement();
-					if(pElement==NULL)
+						
+					//	ReadCfgStr( pNode, "yawn",GamesInfo[i].szMAP_YAWN_PATH,sizeof(GamesInfo[i].szMAP_YAWN_PATH));
+						ReadCfgStr( pNode, "MapPreview",GamesInfo[i].szMAP_MAPPREVIEW_PATH,sizeof(GamesInfo[i].szMAP_MAPPREVIEW_PATH));
+						ReadCfgStr( pNode, "MasterServer",GamesInfo[i].szMasterServerIP,sizeof(GamesInfo[i].szMasterServerIP));		
+						ReadCfgInt( pNode, "MasterServerPort",(int&)GamesInfo[i].dwMasterServerPORT);
+						//ReadCfgInt( pNode, "Protocol",(int&)GamesInfo[i].dwProtocol);		
+						ReadCfgInt(pNode, "Active",(int&)GamesInfo[i].bActive);
+						ReadCfgInt(pNode, "FilterMod",(int&)GamesInfo[i].filter.dwMod);
+						ReadCfgInt(pNode, "FilterVersion",(int&)GamesInfo[i].filter.dwVersion);
+						ReadCfgInt(pNode, "FilterMap",(int&)GamesInfo[i].filter.dwMap);
+						ReadCfgInt(pNode, "FilterRegion",(int&)GamesInfo[i].filter.dwRegion);
+						ReadCfgInt(pNode, "FilterGameType",(int&)GamesInfo[i].filter.dwGameTypeFilter);					
+						ReadCfgInt(pNode, "FilterHideFull",(int&)GamesInfo[i].filter.bNoFull);
+						ReadCfgInt(pNode, "FilterHideEmpty",(int&)GamesInfo[i].filter.bNoEmpty);
+						ReadCfgInt(pNode, "FilterPunkbuster",(int&)GamesInfo[i].filter.bPunkbuster);
+						ReadCfgInt(pNode, "FilterHideOffline",(int&)GamesInfo[i].filter.bHideOfflineServers);
+						ReadCfgInt(pNode, "FilterPure",(int&)GamesInfo[i].filter.bPure);
+						ReadCfgInt(pNode, "FilterRanked",(int&)GamesInfo[i].filter.bRanked);
+						ReadCfgInt(pNode, "FilterHideBots",(int&)GamesInfo[i].filter.bNoBots);
+						ReadCfgInt(pNode, "FilterNoPrivate",(int&)GamesInfo[i].filter.bNoPrivate);
+						ReadCfgInt(pNode, "FilterOnlyPrivate",(int&)GamesInfo[i].filter.bOnlyPrivate);					
+						ReadCfgInt(pNode, "FilterDedicated",(int&)GamesInfo[i].filter.bDedicated);					
+						pElement = pElement->NextSiblingElement();
+						if(pElement==NULL)
+							break;
+					} else
 						break;
-				} else
-					break;
+				}
 			}
 		}
 	}
@@ -12189,11 +12074,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 }
 
 
-
-
-
-
-
 const char * XML_GetTreeItemName(TiXmlElement* pNode,char *szOutput, DWORD maxBytes)
 {
 	const char *pName=pNode->Attribute("name");
@@ -12226,7 +12106,7 @@ const char * XML_GetTreeItemStr(TiXmlElement* pNode, const char* attributeName,c
 		const char *pValue = pNode->Attribute(attributeName);
 		if(pValue!=NULL)
 		{
-			strcpy_s(szOutput,maxBytes,pValue);
+			strcpy_s(szOutput,maxBytes,pValue);			
 			return szOutput;
 		}
 	}

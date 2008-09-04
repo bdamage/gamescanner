@@ -1,6 +1,6 @@
 #pragma once
 
-#include <..\..\tinyxml\tinyxml.h>
+#include "..\..\tinyxml\tinyxml.h"
 
 #define XMLFILE_SUCCESS_LOADING 0
 #define XMLFILE_ERROR_LOADING 1

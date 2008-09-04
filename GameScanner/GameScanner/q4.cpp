@@ -91,8 +91,6 @@ char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char 
 DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 {
 	Q4_bScanningInProgress = TRUE;
-
-	SERVER_INFO * pSI = NULL;
 	
 	size_t packetlen=0;
 
@@ -171,28 +169,16 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 }
 
 
-SERVER_INFO *LastAddedServerToFavorites=NULL;
-
-SERVER_INFO *Q4_LastAddedServerToFavorites()
-{
-	return LastAddedServerToFavorites;
-}
-
-
-
 
 SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*InsertServerListView)(GAME_INFO *pGI,SERVER_INFO pSI))
 {
 	Q4DATA *q4d;
 	q4d = (Q4DATA*)p;
 
-	int i=0;
 	SERVER_INFO tempSI;
 	DWORD idx = pGI->vSI.size();
 
 	DWORD *dwIP=NULL;
-	DWORD dwResult=0;
-
 
 	p = q4d->data;
 
@@ -245,10 +231,7 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 	return NULL;
 }
 
-DWORD Q4_GetTotalServers()
-{
-	return Q4_dwNewTotalServers;
-}
+
 
 char *Q4_Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
 {
@@ -478,10 +461,6 @@ retry:
 	return 0;
 }
 
-void Q4_Get_ServerUpdateByLPARAM(LPARAM *param)
-{
-	SERVER_INFO *pSI = (SERVER_INFO*)param;
-}
 
 
 void Q4_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(PLAYERDATA *pPlayers),long (*UpdateRulesList)(SERVER_RULES*pServer_Rules) )

@@ -24,8 +24,8 @@ string UTILZ_sLogger;
 #else
 
 void dbg_print(char *szMsg, ...)
-{
-	char *szBuffer;
+{	
+	char *szBuffer=NULL;
 	va_list argList;
 	size_t len;
 	va_start(argList, szMsg);
@@ -309,7 +309,6 @@ void AddGetLastErrorIntoLog(char* lpszFunction)
 
 void AddLogInfo(int color, char *lpszText, ...)
 {
-
 
 #ifndef NOLOG
 	//if(appSettings.bLogging)

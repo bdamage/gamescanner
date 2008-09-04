@@ -59,7 +59,6 @@
 #include <UxTheme.h>
 //#include <tmschema.h>  
 #include <vssym32.h>		//Themes
-#include <Mmsystem.h> //Playsound
 #include <algorithm>
 #include <strsafe.h>
 #include <functional>
@@ -76,7 +75,7 @@
 #include "..\..\HttpFileDownload\HttpFileDownload.h"
 #include "..\..\IPtoCountry\IPtoCountry.h"
 #include "..\..\FreeImage\freeimage.h"
-#include <..\..\hashlib\src\hashlibpp.h>
+#include "..\..\hashlib\src\hashlibpp.h"
 #include <..\..\tinyxml\tinyxml.h>
 
 // TODO: reference additional headers your program requires here

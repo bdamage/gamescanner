@@ -22,6 +22,7 @@ void CLanguage::SetPath(const char *pszDir)
 
 int CLanguage::loadFile(const char *filename)
 {
+
 	char sztemp[200];
 	ZeroMemory(sztemp,sizeof(sztemp));
 	SetCurrentDirectory(m_pszDirectory);	
@@ -64,8 +65,9 @@ int CLanguage::AddFile(const char *filename)
 }
 const char* CLanguage::GetString(const char* szXmlTagName)
 {
-	if(DefaultLanguage[szXmlTagName].length()>0)
-		return DefaultLanguage[szXmlTagName].c_str();
+	if(DefaultLanguage.size()>0)
+		if(DefaultLanguage[szXmlTagName].length()>0)
+			return DefaultLanguage[szXmlTagName].c_str();
 	
 	sprintf(m_szError,"Missing Tagname: %s",szXmlTagName);
 	return m_szError;

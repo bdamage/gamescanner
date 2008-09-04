@@ -207,10 +207,6 @@ struct COUNTRY_SAVA_DATA
 
 struct APP_SETTINGS_NEW
 {
-   DWORD dwID; 
-   DWORD dwVersion;
-   char szET_PATH[MAX_PATH];
-   char szET_CMD[MAX_PATH];
    char szEXT_EXE_PATH[MAX_PATH];
    char szEXT_EXE_CMD[MAX_PATH];
    char szEXT_EXE_WINDOWNAME[MAX_PATH];
@@ -315,7 +311,7 @@ struct SERVER_INFO
 	char cCountryFlag;	
 	BYTE cFavorite;  
 	BYTE cHistory;  //History.... connected to this server.
-	BYTE cGAMEINDEX;  //RTCW, ET, Quake 4....
+	int cGAMEINDEX;  //RTCW, ET, Quake 4....
 	char cLAN;
 	char szGameTypeName[MAX_GAMETYPENAME_LEN];
 	BYTE bDedicated;
@@ -416,7 +412,7 @@ struct GAME_INFO
 	DWORD dwProtocol;
 	DWORD dwTotalServers;
 	HTREEITEM hTI;
-	int iIconIndex;
+	UINT iIconIndex;
 	char szFilename[MAX_PATH];
 	BOOL bLockServerList;
 	DWORD dwScanIdx;
@@ -481,7 +477,7 @@ struct _TREEITEM
 	bool bVisible;
 	DWORD dwIndex;
 	GAME_INFO *pGI;
-	char cGAMEINDEX;
+	int cGAMEINDEX;
 };
 
 

@@ -80,16 +80,14 @@ BOOL TreeView_SetCheckBoxState(int iSel,DWORD dwState);
 BOOL TreeView_SetDWValueByItemType(DWORD dwType,DWORD dwNewValue,DWORD dwNewState, char*pszNewStrValue=NULL);
 
 DWORD TreeView_GetItemStateByType(char cGameIdx,DWORD dwType);
-DWORD WINAPI  QueryThread(LPVOID lpParam );
-DWORD WINAPI  PlayNotify(LPVOID lpParam );
 DWORD WINAPI GetServerList(LPVOID lpParam );
 DWORD WINAPI ProgressGUI_Thread(LPVOID lpParam);
 DWORD WINAPI CheckForUpdates(LPVOID lpParam);
 SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
-//DWORD WINAPI  RefreshServerListThread(LPVOID lpParam);
+
 DWORD WINAPI  GetServerStatusThread(LPVOID lpParam);
-//bool FilterServerItem(LPARAM *lp, DWORD dwFlags); //bool bForceFavorites=false, bool bForceHistory=false);
-bool FilterServerItemV2(LPARAM *lp, GAME_INFO *pGI); //bool bForceFavorites=false, bool bForceHistory=false);
+
+bool FilterServerItemV2(LPARAM *lp, GAME_INFO *pGI); 
 DWORD WINAPI RedrawServerList(LPSERVERINFO pServerInfo,DWORD dwFilterFlags=0);// bool bForceFavorites=false, bool bForceHistory=false,bool bForceFavoritesPrivate=false);
 DWORD WINAPI  RedrawServerListThread(LPVOID pvoid );
 void ShowBalloonTip(char *title,char *message);

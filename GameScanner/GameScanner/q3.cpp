@@ -70,7 +70,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	if(pSI==NULL)
 	{
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
-		return -1;
+		return (DWORD)0xFFFFFFF;
 	}
 
 	if(pSI->pPlayerData!=NULL)
@@ -87,7 +87,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
-	  return -1;
+	  return 0xFFFFFF;
 	}
 
 	size_t packetlen = 0;

@@ -139,7 +139,7 @@ TiXmlNode::TiXmlNode( NodeType _type ) : TiXmlBase()
 	firstChild = 0;
 	lastChild = 0;
 	prev = 0;
-	next = 0;
+	next = 0;	
 }
 
 

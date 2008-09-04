@@ -24,7 +24,7 @@ extern GamesMap GamesInfo;
 extern CLanguage lang;
 extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(char *title,char *message);
-extern char Get_GameIcon(char index);
+extern UINT Get_GameIcon(UINT GameIndex);
 extern void StartGame_ConnectToServer(bool connectFromBuddyList);
 extern const char * ReadCfgStr2(TiXmlElement* pNode, char *szParamName,char *szOutputBuffer,int iBuffSize);
 extern int ReadCfgInt2(TiXmlElement* pNode, char *szParamName, int& intVal);

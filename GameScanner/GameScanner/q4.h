@@ -26,18 +26,11 @@ struct ETQWDATA_RESPONSE_SERVERINFO
 
 void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),long (*_Callback_CheckForBuddy)(PLAYERDATA *pPlayers, SERVER_INFO* pServerInfo), long (*InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI));
 
-int Q4_AddServer(LPSERVERINFO &pSI, char *IP,DWORD port,char cGAMETYPE,long (*InstertServerListView)(SERVER_INFO *q4server),bool bFavorite=false);
-void Q4_InitilizeRescan(GAME_INFO *pGI);
 DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI);
 SERVER_INFO *Q4_parseServers(char * p, DWORD length, GAME_INFO *pGI,long (*InsertServerListView)(GAME_INFO *pGI,SERVER_INFO q4server));
-DWORD Q4_GetTotalServers();
-void Q4_ResetTotalServers();
-DWORD WINAPI  Q4_Get_ServerStatusThread(LPVOID lpParam);
 DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *q4players),long (*UpdateRulesListView)(SERVER_RULES *pServRules));
 PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI, char *pointer,char *end, DWORD *numPlayers);
 void Q4_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(PLAYERDATA *q4players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules)  );
 char *Q4_Get_RuleValue(char *szRuleName, SERVER_RULES *pSR);
-void Q4_UpdateItem(LPARAM * lp);
 void Q4_CleanUp_PlayerList(LPPLAYERDATA &pPL);
 void Q4_CleanUp_ServerRules(LPSERVER_RULES &pSR);
-SERVER_INFO *Q4_LastAddedServerToFavorites();
