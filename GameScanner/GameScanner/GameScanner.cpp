@@ -54,7 +54,7 @@ Upgrade code 1.0 - 1.0.9:
 #pragma comment(lib, "HttpFileDownload.lib")
 #pragma comment(lib, "iptocountry.lib")
 
-#pragma comment(lib, "..\\..\\FreeImage\\FreeImage.lib")
+//#pragma comment(lib, "..\\..\\FreeImage\\FreeImage.lib")
 
 #pragma comment(lib, "UxTheme.lib")
 #pragma comment(lib, "Mswsock.lib")
@@ -4059,7 +4059,7 @@ HTREEITEM MainTreeView_AddItem(_TREEITEM *ti,HTREEITEM hCurrent,bool active)
 	return hNewItem;
 }
 
-DWORD level=1;
+DWORD g_TreeLevel=1;
 int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 {
 	char szName[100];
@@ -4067,24 +4067,21 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 	if(childItem==NULL)
 		return 0;
 
-	level++;
+	g_TreeLevel++;
 	for( childItem; childItem; childItem=childItem->NextSiblingElement() )
-	{	
-		
+	{			
 		ti.dwAction = 0;
 		ti.dwType = 0;
 		ti.dwCompare = 0;
 		ti.dwState = 0;
 		ti.dwValue = 0;
-		
-
 		ti.sName = "No name";
+
 		XML_GetTreeItemName(childItem,szName,sizeof(szName));		
 		if(szName!=NULL)
 			ti.sName = szName;
 
 		ti.sElementName = childItem->Value();
-
  
 		ti.cGAMEINDEX = (char)XML_GetTreeItemInt(childItem,"game");
 		ti.dwType =  XML_GetTreeItemInt(childItem,"type");
@@ -4106,7 +4103,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 
 		ti.dwState =  XML_GetTreeItemInt(childItem,"state");
 		ti.bExpanded = (bool) XML_GetTreeItemInt(childItem,"expanded");
-		ti.dwLevel = level;
+		ti.dwLevel = g_TreeLevel;
 		ti.dwIndex = vTI.size();
 		bool active=true;
 		if(ti.cGAMEINDEX!=-25)
@@ -4117,44 +4114,26 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 				
 		ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);
 		vTI.push_back(ti);
+
+		GAMEFILTER gf;
+		gf.sFriendlyName = ti.sName;
+		gf.sStrValue = ti.strValue;
+		gf.dwValue = ti.dwValue;
+		gf.dwExactMatch = ti.dwCompare;
+
 		if(ti.sElementName == "GameTypesItems")
-		{
-			GAMEFILTER gf;
-			gf.sFriendlyName = ti.sName;
-			gf.sStrValue = ti.strValue;
-			gf.dwValue = ti.dwValue;
 			GamesInfo[ti.cGAMEINDEX].vFilterGameType.push_back(gf);
-		}
-		if(ti.sElementName == "ModItems")
-		{
-			GAMEFILTER gf;
-			gf.sFriendlyName = ti.sName;
-			gf.sStrValue = ti.strValue;
-			gf.dwValue = ti.dwValue;
+		else if(ti.sElementName == "ModItems")
 			GamesInfo[ti.cGAMEINDEX].vFilterMod.push_back(gf);
-		}
-		if(ti.sElementName == "Version")
-		{
-			GAMEFILTER gf;
-			gf.sFriendlyName = ti.sName;
-			gf.sStrValue = ti.strValue;
-			gf.dwValue = ti.dwValue;
+		else if(ti.sElementName == "Version")
 			GamesInfo[ti.cGAMEINDEX].vFilterVersion.push_back(gf);
-		}
-		if(ti.sElementName == "Map")
-		{
-			GAMEFILTER gf;
-			gf.sFriendlyName = ti.sName;
-			gf.sStrValue = ti.strValue;
-			gf.dwValue = ti.dwValue;
-			gf.dwExactMatch = ti.dwCompare;
+		else if(ti.sElementName == "Map")
 			GamesInfo[ti.cGAMEINDEX].vFilterMap.push_back(gf);
-		}
+
 		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
 
 	}
-	level--;
-
+	g_TreeLevel--;
 	return 0;
 }
 
@@ -4496,7 +4475,7 @@ int TreeView_load()
 
 	TiXmlElement* child = hRoot.FirstChild( "TreeItems" ).ToElement();
 
-	level=1;
+	g_TreeLevel=1;
 	for( child; child; child=child->NextSiblingElement() )
 	{
 		Tree_ParseChilds(child->FirstChildElement(),NULL);
@@ -4522,8 +4501,6 @@ int TreeView_load()
 			TreeView_SetFilterCheckState(i, 26,GamesInfo[i].filter.bPure);
 			TreeView_SetFilterCheckState(i, 27,GamesInfo[i].filter.bRanked);
 
-	
-	
 			TreeView_SetFilterGroupCheckState(i,FILTER_MOD,GamesInfo[i].filter.dwMod);
 			TreeView_SetFilterGroupCheckState(i,FILTER_MAP,GamesInfo[i].filter.dwMap);
 			TreeView_SetFilterGroupCheckState(i,FILTER_VERSION,GamesInfo[i].filter.dwVersion);

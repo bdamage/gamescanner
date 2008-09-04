@@ -174,6 +174,8 @@ void SelfInstall(char *path)
 	LONG ret;
 	HKEY hkey;
 	DWORD dwDisposition;
+	if(path==NULL)
+		return;
     char totpath[_MAX_PATH+_MAX_FNAME],path2[_MAX_PATH+_MAX_FNAME];
 
 	strcpy_s(path2,sizeof(path2),path);
