@@ -13,6 +13,12 @@
 using namespace stdext;
 using namespace std;
 
+#define QW_ENGINE 100
+#define Q3_ENGINE 101
+#define Q4_ENGINE 102
+#define VALVE_ENGINE 103
+
+
 #define MAX_VAR_LEN 100
 #define MAX_NAME_LEN 100
 #define MAX_IP_LEN 80
@@ -84,7 +90,7 @@ typedef BOOL(WINAPI *SLWA)(HWND, COLORREF, BYTE, DWORD);
 #define FORCE_SCAN_FILTERED				0x00000008
 #define REDRAW_SERVERLIST				16
 
-//#define MAX_SERVERLIST		17  //This value should be as the last one +1
+
 #define ET_SERVERLIST		0
 #define ETQW_SERVERLIST		1
 #define Q3_SERVERLIST		2
@@ -167,12 +173,6 @@ struct GAMEFILTER{
 };
 
 
-struct RCON_DATA
-{
-	char szIP[40];
-	DWORD dwPort;
-	char szPassword[40];
-};
 
 struct FILTER_SETTINGS
 {
@@ -188,7 +188,7 @@ struct FILTER_SETTINGS
 	BOOL bDedicated;
 	DWORD dwPing;
 	DWORD dwGameTypeFilter;
-	DWORD dwMod;
+	DWORD ddwMod;
 	DWORD dwShowServerWithMaxPlayers;
 	DWORD dwShowServerWithMinPlayers;
 	DWORD dwVersion;
@@ -198,11 +198,6 @@ struct FILTER_SETTINGS
 	char cActiveMinPlayer;
 };
 
-struct COUNTRY_SAVA_DATA
-{
-	char szCountry[50];
-	int bActive;
-};
 
 
 struct APP_SETTINGS_NEW
@@ -224,7 +219,6 @@ struct APP_SETTINGS_NEW
    BOOL bLogging;
    BOOL bUse_EXT_APP;
    BOOL bUSE_SCREEN_RESTORE;
-   RCON_DATA rconData;
    FILTER_SETTINGS filter;
    FILTER_SETTINGS filterFavorites;
    FILTER_SETTINGS filterMaster;
@@ -249,7 +243,6 @@ struct APP_SETTINGS_NEW
    DWORD dwRetries;
    DWORD dwThreads;
    char szLanguageFilename[MAX_PATH];
-
 };
 
 
@@ -284,22 +277,27 @@ struct SERVER_RULES
 typedef struct SERVER_RULES* LPSERVER_RULES;
 struct SERVER_INFO
 {	
+	int cGAMEINDEX;  //RTCW, ET, Quake 4....
 	DWORD dwIndex;
 	DWORD dwLVIndex; //index of the ListView for on screen update.
 	char szServerName[MAX_NAME_LEN];
 	char szIPaddress[MAX_IP_LEN];
 	DWORD dwIP;
-	DWORD dwPort;
-	char szMap[MAX_MAPNAME_LEN];
-	DWORD dwMap;
+	short dwPort;
 	int nCurrentPlayers;
 	int nMaxPlayers;	
-	char szCountry[MAX_COUNTRYNAME_LEN];
+	char szMap[MAX_MAPNAME_LEN];
+	DWORD dwMap;
 	char szMod[MAX_MODNAME_LEN];
-	DWORD wMod;						//Used for faster filtering
+	DWORD dwMod;						//Used for faster filtering
+	char szGameTypeName[MAX_GAMETYPENAME_LEN];
+	DWORD dwGameType;
 	char szVersion[MAX_VERSION_LEN];
 	DWORD dwVersion;                  //Used for faster filtering
-	DWORD dwGameType;
+
+	char szCountry[MAX_COUNTRYNAME_LEN];
+	char szShortCountryName[5];
+
 	DWORD dwPing;
 	DWORD dwAvgPing;	
 	char bPrivate;
@@ -311,15 +309,13 @@ struct SERVER_INFO
 	char cCountryFlag;	
 	BYTE cFavorite;  
 	BYTE cHistory;  //History.... connected to this server.
-	int cGAMEINDEX;  //RTCW, ET, Quake 4....
-	char cLAN;
-	char szGameTypeName[MAX_GAMETYPENAME_LEN];
+	BYTE cLAN;
 	BYTE bDedicated;
 	char cPure;
 	char cLocked;
 	char cRanked;
 	BYTE cBots;
-	char szShortCountryName[3];	
+	
 	char szRCONPASS[MAX_RCON_LEN];
 	char szPRIVATEPASS[MAX_PASSWORD_LEN];
 	char szSTATUS[40];

@@ -542,7 +542,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		ptempSI.dwPort = 0;
 		ptempSI.dwPort  = ((p[0])<<8);
 		ptempSI.dwPort |=(unsigned char)(p[1]);
-		ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
+		//ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
 		p+=2;
 
 		int hash = ptempSI.dwIP + ptempSI.dwPort;
@@ -728,7 +728,7 @@ retry:
 		}
 		
 		pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
-		pSI->wMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
+		pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
 
 	
 		DWORD dwChallenge;

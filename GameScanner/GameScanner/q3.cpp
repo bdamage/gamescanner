@@ -263,7 +263,7 @@ retry:
 						pVarValue = Q3_Get_RuleValue("mod",pServRules);			
 						if(pVarValue!=NULL)
 						{
-							pSI->wMod = 1;
+							pSI->dwMod = 1;
 							if(strcmp(pVarValue,"1")==0)
 							{	
 								char *mod;
@@ -301,7 +301,7 @@ retry:
 						
 					}
 			}
-			pSI->wMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
+			pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
 			
 			switch(pSI->cGAMEINDEX)
 			{			
@@ -428,11 +428,7 @@ void Q3_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(
 {
 	if(pServerInfo==NULL)
 		return;
-
 	Q3_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
-
-//	if(Q3_UpdateServerListView!=NULL)
-//		Q3_UpdateServerListView(pServerInfo->dwIndex);
 }
 
 
@@ -442,11 +438,9 @@ SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
 	Q3DATA *Q3d;
 	Q3d = (Q3DATA*)p;
 
-	int i=0;
 	SERVER_INFO ptempSI;
 	DWORD idx = pGI->vSI.size();	
 	DWORD *dwIP=NULL;
-	DWORD dwResult=0;
 	if (p==NULL)
 		return NULL;
 
@@ -501,7 +495,7 @@ CoD 4                                                                           
 		p+=4;
 		ptempSI.dwPort  = ((p[0])<<8);
 		ptempSI.dwPort |=(unsigned char)(p[1]);
-		ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
+		//ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
 		
 		if(pGI->cGAMEINDEX == Q2_SERVERLIST)
 			p+=2; //q2
@@ -515,22 +509,19 @@ CoD 4                                                                           
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
 			ptempSI.dwPing = 9999;
 			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
-			ptempSI.cCountryFlag = 0;
+			//ptempSI.cCountryFlag = 0;
 			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;
 			strcpy(ptempSI.szShortCountryName,"zz");
 			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 			pGI->vSI.push_back(ptempSI);
 
-			if(Q3_InsertServerItem!=NULL)
-				Q3_InsertServerItem(pGI,ptempSI);
-
-
+			//if(Q3_InsertServerItem!=NULL)
+			//	Q3_InsertServerItem(pGI,ptempSI);
 			Q3_dwNewTotalServers++;
 		} //end serverexsist
 
 	} //end while
-	//dbg_print("Parsing servers DONE!\n");
 	return NULL;
 }
 
@@ -712,6 +703,39 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 32 20 35 37 20 22 48 45 52 42 45 52 54 22 0a 00 fd fd fd fd ab ab ab ab ab ab ab ab    2 57 "HERBERT"..¤¤¤¤лллллллл	
 
 */
+int ParseNum(char* pData)
+{
+	char *endOfString = strchr(pData,' ');
+	if(endOfString!=NULL)
+	{
+		endOfString[0] = 0;
+		int val = atoi(pData);		
+		pData+=strlen(pData)+1;
+		return val;
+	}
+	return 0;
+}
+//Don't forget to free up the new allocated string
+char * ParseString(char* pData)
+{
+	char *StartOfString= NULL;
+	StartOfString = strchr(pData,'\"');				
+	if(StartOfString!=NULL)
+	{
+		pData++; //skip initial byte which is "
+		
+		char *EndOfString = strrchr(pData,'\"');
+		if(EndOfString!=NULL)
+		{
+			EndOfString[0]=0; //Add a termination NULL 			
+			char *NewString= _strdup(pData);
+			pData+=strlen(pData)+1;			
+			return NewString;
+		}
+	}
+	return NULL;
+}
+
 PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers,char *szP)
 {
 	int Pindex =0;
@@ -759,7 +783,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				pointer+=strlen(pointer)+1;
 
 				//trim
-				endString = strchr(pointer,0x0a);
+				endString = strchr(pointer,0x0a);  //is this really needed???
 				if(endString!=NULL)
 					endString[0] = 0;
 
@@ -813,8 +837,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 						else if(strcmp(pointer,"3")==0)
 							player->szTeam= _strdup("Blue");
 							
-						pointer++;
-						pointer++;
+						pointer+=2;						
 						break;
 					}
 				}

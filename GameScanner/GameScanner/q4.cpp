@@ -185,24 +185,18 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 	if (p==NULL)
 		return NULL;
 
-
 	char *end;
 	end = p+length-10;
 
 	while(p<end) 
 	{	
-
 		ZeroMemory(&tempSI,sizeof(SERVER_INFO));
-
 		//Parse and initialize server info
-	
 		dwIP = (DWORD*)&p[0];
 		tempSI.dwIP = ntohl((DWORD)*dwIP); 
-		
 		sprintf_s(tempSI.szIPaddress,sizeof(tempSI.szIPaddress),"%d.%d.%d.%d",(unsigned char)p[0],(unsigned char)p[1],(unsigned char)p[2],(unsigned char)p[3]);
 		tempSI.dwPort  = ((p[5])<<8);
 		tempSI.dwPort |=(unsigned char)(p[4]);
-
 
 		p+=6;	
 		if(UTILZ_CheckForDuplicateServer(pGI,tempSI)==false)
@@ -217,8 +211,9 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 			tempSI.pServerRules = NULL;
 			pGI->vSI.push_back(tempSI);
 
-			if(InsertServerListView!=NULL)
+			/*if(InsertServerListView!=NULL)
 				InsertServerListView(pGI,tempSI);
+			*/
 
 			Q4_dwNewTotalServers++;
 		} //end serverexsist
@@ -367,7 +362,7 @@ retry:
 			if(Q4_Get_RuleValue("gamename",pServRules)!=NULL)
 			{
 				strncpy(pSI->szMod, Q4_Get_RuleValue("gamename",pServRules),19);
-				pSI->wMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
+				pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
 			}
 
 		
