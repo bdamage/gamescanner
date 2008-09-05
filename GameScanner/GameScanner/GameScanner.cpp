@@ -9247,10 +9247,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	hOfflineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_GAMESCANNER)); //ICON_APP_LOGO)); 
 	hOnlineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_TASKTRAY)); 
 
-
-	//GetCurrentDirectory(512,EXE_PATH);
-
- 	GetModuleFileName ( NULL, EXE_PATH, MAX_PATH );
+ 	GetModuleFileName ( NULL, EXE_PATH, MAX_PATH*2 );
 	char *p = strrchr(EXE_PATH,'\\');
 	if(p!=NULL)
 		p[0]=0;
@@ -9280,11 +9277,10 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	//	bool installed = IsInstalled(ETSV_VERSION);
 	LOGGER_Init();
 
-	AddLogInfo(ETSV_INFO,"Initilizing Game Scanner...");
-	AddLogInfo(ETSV_INFO,"Version %s",APP_VERSION);
+	AddLogInfo(ETSV_INFO,"Initializing Game Scanner version %s",APP_VERSION);
 	AddLogInfo(ETSV_INFO,"Executable directory: %s",EXE_PATH);
 	AddLogInfo(ETSV_INFO,"User Data directory: %s",USER_SAVE_PATH);	
-	AddLogInfo(ETSV_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
+	//AddLogInfo(ETSV_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
 	AddLogInfo(ETSV_INFO,"Cmd line input %s",lpCmdLine);
 
 	IPC_SetPath(EXE_PATH);		
