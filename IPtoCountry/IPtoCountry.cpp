@@ -298,10 +298,6 @@ DWORD fnIPtoCountryInit()
 	//Create a look up table for optimiziation
 	DWORD dwSize = vIPC.size();
 	DWORD dwPartition = dwSize/30;
-	DWORD dwHalf = dwSize/2;
-	DWORD dwQuarter = dwHalf/2;
-	DWORD dwHalfQuarter = dwQuarter/2;
-
 
 	CIPCountry tmpIPC;
 	DWORD dwIdx = dwSize;

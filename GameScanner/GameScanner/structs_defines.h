@@ -424,6 +424,7 @@ struct GAME_INFO
 	vGF	 vFilterGameType;
 	vGF	 vFilterMap;
 	vGF	 vFilterVersion;
+	vGAME_INSTALLS vGAME_INST_DEFAULT;  //This is used for config
 	vGAME_INSTALLS vGAME_INST;
 	FILTER_SETTINGS filter;
     char *(*colorfilter)(const char *szIn, char *szOut,int length);

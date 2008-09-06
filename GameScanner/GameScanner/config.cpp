@@ -638,6 +638,12 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 				SetDlgItemText(hDlg,IDC_STATIC_COMMAND,lang.GetString("ColumnCommand"));
 				SetDlgItemText(hDlg,IDC_STATIC_VERSION,lang.GetString("CFGTextVersion"));
 				SetDlgItemText(hDlg,IDC_STATIC_MOD,lang.GetString("CFGTextMod"));
+				SetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,"Default");
+				int gameID = CFG_GetGameID(g_currSelCfg);
+				if(GamesInfo[gameID].vGAME_INST_DEFAULT.size()>0)
+				{
+					SetDlgItemText(hDlg,IDC_EDIT_CMD,GamesInfo[gameID].vGAME_INST_DEFAULT.at(0).szGAME_CMD.c_str());
+				}
 				
 				break;
 			}

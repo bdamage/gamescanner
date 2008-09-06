@@ -2227,7 +2227,10 @@ void Default_GameSettings()
 			gi.sMod = szTemp;
 			xml.GetAttribute(pInstall,"LaunchByVer",szTemp,sizeof(szTemp)-1);
 			gi.sVersion = szTemp;
-			gameinfo.vGAME_INST.push_back(gi);
+			if(gameinfo.bActive)
+				gameinfo.vGAME_INST.push_back(gi);
+
+			gameinfo.vGAME_INST_DEFAULT.push_back(gi); //This is used for config
 
 			ptempInstalls = ptempInstalls->NextSiblingElement();
 			if(ptempInstalls==NULL)
@@ -4354,7 +4357,8 @@ void UpdateColumnsPosAfterDrag()
 
 	if((iItems = SendMessage(g_hwndListViewServerListHeader, HDM_GETITEMCOUNT, 0,0))!=-1)
 	{
-		if(!(lpiArray =(int*) calloc(iItems,sizeof(int))))
+		lpiArray =(int*) calloc(iItems,sizeof(int));
+		if(lpiArray==NULL)
 		{
 			MessageBox(NULL, "Out of memory.","Error", MB_OK);
 		}
@@ -8466,7 +8470,8 @@ LRESULT APIENTRY ListViewServerListSubclassProc(HWND hwnd, UINT uMsg, WPARAM wPa
 							// Get memory for buffer.
 							if((iItems = SendMessage(pNMheader->hdr.hwndFrom, HDM_GETITEMCOUNT, 0,0))!=-1)
 							{
-								if(!(lpiArray =(int*) calloc(iItems,sizeof(int))))
+								lpiArray =(int*) calloc(iItems,sizeof(int));
+								if(lpiArray==NULL)
 								{
 									MessageBox(hwnd, "Out of memory.","Error", MB_OK);
 								}
@@ -8892,7 +8897,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				{
 					NMHDR *lpnmhdr;
 					lpnmhdr = (LPNMHDR) lParam; 
-					if(lpnmhdr->hwndFrom = g_hwndTabControl)
+					if(lpnmhdr->hwndFrom == g_hwndTabControl)
 					{
 						int iSel =  TabCtrl_GetCurSel(g_hwndTabControl);
 						if(iSel==0)
