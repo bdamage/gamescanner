@@ -320,7 +320,7 @@ DWORD fnIPtoCountryDeInit()
 }
 
 
-char * fnIPtoCountry2(DWORD IP, DWORD *pSHORTNAME, char *country,char *szShortName)
+char * fnIPtoCountry2(DWORD IP,  char *country,char *szShortName)
 {
 	vecIPC::iterator vIPCiter;		
 	CIPCountry tmpIPC;

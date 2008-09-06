@@ -97,15 +97,14 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 		{
-			DWORD dwIPSHORT;
+	
 			char country[60],szShortName[4];
-			ZeroMemory(szShortName,sizeof(szShortName));
+		//	ZeroMemory(szShortName,sizeof(szShortName));
 		//	dwStartTick = GetTickCount();
-			strncpy(pSI->szCountry,fnIPtoCountry2(pSI->dwIP,&dwIPSHORT,country,szShortName),49);  //Update country info only when adding a new server		
+			strncpy(pSI->szCountry,fnIPtoCountry2(pSI->dwIP,country,szShortName),49);  //Update country info only when adding a new server		
 			strcpy(pSI->szShortCountryName,szShortName);
 		//	sprintf(country,"IPGeo %d ms %s\n",(GetTickCount() - dwStartTick),pSI->szCountry);
 		//	dbg_print(country);				
-			pSI->cCountryFlag = 1;
 
 		}
 	DWORD dwRetries=0;
@@ -609,10 +608,7 @@ player number, score, time, ping, name, skin, color1, color2
 
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers)
 {
-
-	int Pindex =0;
 	PLAYERDATA *pPlayers=NULL;
-	BOOL bGTVBug=FALSE;
 
 	if(pointer[0]!=0)
 	{

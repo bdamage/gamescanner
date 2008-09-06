@@ -1710,7 +1710,7 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 					}
 				case COL_COUNTRY:
 					{
-						pLVItem->iImage = pSrvInf->cCountryFlag;
+						//pLVItem->iImage = pSrvInf->cCountryFlag;
 						strncpy(pLVItem->pszText,pSrvInf->szCountry,pLVItem->cchTextMax);
 						return TRUE;
 					break;
@@ -2324,7 +2324,8 @@ void Default_Appsettings()
 	AppCFG.dwRetries = 0;
 
 	AppCFG.g_cTransparancy = 100;
-
+	
+	AppCFG.dwSleep = 100;
 
 	AppCFG.cBuddyColumnSort = 0; 
 	
@@ -2462,7 +2463,7 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, DWORD dwPort,bool bFavorite)
 	
 	pSI.dwPing = 9999;
 	strcpy(pSI.szShortCountryName,"zz");
-	pSI.cCountryFlag = 0;
+//	pSI.cCountryFlag = 0;
 	pSI.bNeedToUpdateServerInfo = true;
 	
 	pSI.dwIndex = pGI->vSI.size();
@@ -5402,7 +5403,8 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	root->LinkEndChild( options );  
 	WriteCfgInt(options,"General","Transparancy",AppCFG.g_cTransparancy);
 	WriteCfgInt(options,"General","MaxScanThreads",AppCFG.dwThreads);
-
+	WriteCfgInt(options,"General","NetworkRetries",AppCFG.dwRetries);
+	WriteCfgInt(options,"General","SleepPerScan",AppCFG.dwSleep);
 	//---------------------------
 	//Filter options
 	//---------------------------
@@ -5487,10 +5489,7 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	root->LinkEndChild( xmlElm5 );  
 	xmlElm5->SetAttribute("seconds", AppCFG.socktimeout.tv_sec);
 	xmlElm5->SetAttribute("useconds", AppCFG.socktimeout.tv_usec);
-	
-	TiXmlElement * xmlElmRet = new TiXmlElement( "NetworkRetries" );  
-	root->LinkEndChild( xmlElmRet );  
-	xmlElmRet->SetAttribute("value", AppCFG.dwRetries);
+
 
 	TiXmlElement * xmlElmlang = new TiXmlElement( "CurrentLanguage" );  
 	root->LinkEndChild( xmlElmlang );  
@@ -10794,7 +10793,8 @@ int CFG_Load()
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"Ping",(int&)AppCFG.filter.dwPing);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"Transparancy",(int&)AppCFG.g_cTransparancy);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"MaxScanThreads",(int&)AppCFG.dwThreads);
-	ReadCfgInt(hRoot.FirstChild("NetworkRetries").FirstChild().ToElement(),"MaxScanThreads",(int&)AppCFG.dwRetries);
+	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"NetworkRetries",(int&)AppCFG.dwRetries);
+	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"SleepPerScan",(int&)AppCFG.dwSleep);
 
 	pElem=hRoot.FirstChild("SocketTimeout").Element();
 	if (pElem)

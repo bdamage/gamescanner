@@ -9,7 +9,12 @@ version 1.12
 * Protocol settings is moved into games default XML file including Master Query string.
 * New template value possible to use within Command field (Game settings in Config) %GAMEPATH% (currently needed for Warsow).
 * All game icons are now loaded externally (this will help to add new games easier/quicker).
-* Code Optimization, when scanning server and IP to Country look up.
+* Code Optimization at scanning servers and IP to Country look up.
+* Fixed that network retries now save in config properly.
+* Added a new Network config, users can now set sleep time after each scanned server (how much CPU time GS will use during scanning, default is 100 ms). 
+
+
+
 * Added new game Nexuiz.
 * Added new game Half-life, which includes mods.
   - The Specialist (ts)

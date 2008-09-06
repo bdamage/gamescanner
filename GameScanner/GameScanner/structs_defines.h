@@ -242,6 +242,7 @@ struct APP_SETTINGS_NEW
    BOOL bUseMIRC;
    DWORD dwRetries;
    DWORD dwThreads;
+   DWORD dwSleep;
    char szLanguageFilename[MAX_PATH];
 };
 
@@ -306,7 +307,7 @@ struct SERVER_INFO
 	char bNeedToUpdateServerInfo;
 	char bUpdated;		
 	BYTE nPrivateClients;
-	char cCountryFlag;	
+
 	BYTE cFavorite;  
 	BYTE cHistory;  //History.... connected to this server.
 	BYTE cLAN;

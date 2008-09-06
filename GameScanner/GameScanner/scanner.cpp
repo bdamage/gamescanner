@@ -230,7 +230,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 				SendMessage(g_hwndProgressBar, PBM_STEPIT, (WPARAM) 0, 0);
 		
 	
-		Sleep(25);		
+		Sleep(AppCFG.dwSleep);		
 	//	PollForNewServers();
 	//	size = pGI->vRefScanSI.size();
 		

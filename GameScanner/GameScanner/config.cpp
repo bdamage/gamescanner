@@ -524,8 +524,9 @@ HFONT FAR PASCAL CFG_SelectFont( void )
     return (hfont); 
 } 
 
-HWND g_hwndScrollTrans;
-HWND g_hwndScrollThreads;
+HWND g_hwndScrollTrans = NULL;
+HWND g_hwndScrollThreads = NULL;
+HWND g_hwndSleepSlider = NULL;
 int CFG_editexeIdx;
 
 LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
@@ -878,8 +879,6 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					sprintf(szTempMaster,"%s",GamesInfoCFG[gameID].szMasterServerIP);
 	
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,szTempMaster);//GamesInfoCFG[gameID].szMasterServerIP);
-//				SetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,_itoa(GamesInfoCFG[gameID].dwMasterServerPORT,szTmp,10));
-				//SetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,_itoa(GamesInfoCFG[gameID].dwProtocol,szTmp,10));
 
 				if(GamesInfoCFG[gameID].bUseHTTPServerList)
 					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
@@ -898,8 +897,6 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			SetDlgItemText(hDlg,IDC_BUTTON_EDIT_INSTALL,lang.GetString("CFGEditInstall"));
 			SetDlgItemText(hDlg,IDC_BUTTON_DELETE_INSTALL,lang.GetString("CFGDeleteInstall"));
 
-
-
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_EXE,AppCFGtemp.szEXT_EXE_PATH);
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_CMD,AppCFGtemp.szEXT_EXE_CMD);
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_WINDOWNAME,AppCFGtemp.szEXT_EXE_WINDOWNAME);
@@ -912,11 +909,21 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			SendMessage(g_hwndScrollTrans,TBM_SETPOS,TRUE,(LPARAM)AppCFGtemp.g_cTransparancy ) ; //AppCFG.g_cTransparancy);
 			SetDlgTrans(hDlg,AppCFGtemp.g_cTransparancy);
 
+
+
+			 g_hwndSleepSlider =  GetDlgItem(hDlg,IDC_SLIDER_SLEEP_VAL);
+			SendMessage(g_hwndSleepSlider,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(0, 2000)) ;
+			SendMessage(g_hwndSleepSlider,TBM_SETPOS,TRUE,(LPARAM)AppCFGtemp.dwSleep) ; 
+			char sztemp[100];
+			sprintf(sztemp,"Sleep time is %d ms",AppCFGtemp.dwSleep);
+			SetDlgItemText(hDlg,IDC_STATIC_SLEEP_VAL,sztemp);
+
+
 			g_hwndScrollThreads =  GetDlgItem(hDlg,IDC_SLIDER_THREADS);
 			SendMessage( g_hwndScrollThreads,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(1, 256)) ;
 			SendMessage(g_hwndScrollThreads,TBM_SETPOS,TRUE,(LPARAM)AppCFGtemp.dwThreads) ; 
 
-			char sztemp[20];		
+				
 			SetDlgItemText(hDlg,IDC_STATIC_THREAD,_itoa(AppCFGtemp.dwThreads ,sztemp,10));
 			break;
 		}
@@ -932,7 +939,16 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				char sztemp[20];
 				AppCFGtemp.dwThreads = i;
 				SetDlgItemText(hDlg,IDC_STATIC_THREAD,_itoa(i,sztemp,10));
-			}			
+			}	
+			else if (lParam==(LPARAM)g_hwndSleepSlider)
+			{
+				DWORD i = (DWORD)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_SLEEP_VAL),TBM_GETPOS,0,(LPARAM)0) ; 
+				char sztemp[100];
+				AppCFG.dwSleep = i;
+				AppCFGtemp.dwSleep = i;
+				sprintf(sztemp,"Sleep time is %d ms",i);
+				SetDlgItemText(hDlg,IDC_STATIC_SLEEP_VAL,sztemp);
+			}
 			return FALSE;
 		}
 		case WM_COMMAND:
@@ -1015,41 +1031,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 						}
 					}
 					break;
-		/*		case IDC_BUTTON_ET_PATH:
-				{	
-					 
-					OPENFILENAME ofn;
-					memset(&ofn,0,sizeof(OPENFILENAME));
-					ofn.lStructSize = sizeof (OPENFILENAME);
-					ofn.hwndOwner = hDlg;
-					ofn.lpstrFilter = NULL;
-					ofn.lpstrFile = szFile;
 
-					// Set lpstrFile[0] to '\0' so that GetOpenFileName does not 
-					// use the contents of szFile to initialize itself.
-					//
-					ofn.lpstrFile[0] = '\0';
-					ofn.nMaxFile = sizeof(szFile);
-					ofn.lpstrFilter = "All\0*.*\0ET exe\0*.exe\0";
-					ofn.nFilterIndex = 2;
-					ofn.lpstrFileTitle = NULL;
-					ofn.nMaxFileTitle = 0;
-					ofn.lpstrInitialDir = NULL;
-					int gameID=-1;
-					gameID = CFG_GetGameID(g_currSelCfg);
-
-					if(gameID!=-1)
-					{
-
-						ofn.lpstrInitialDir = GamesInfoCFG[gameID].szGAME_PATH;
-					}
-					ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
-
-					if(GetOpenFileName(&ofn))
-						SetDlgItemText(hDlg,IDC_EDIT_PATH,ofn.lpstrFile);
-
-					return TRUE;					
-				}*/
 				case IDC_EXT_EXE:
 				{
 			

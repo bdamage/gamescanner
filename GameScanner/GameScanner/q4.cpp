@@ -203,7 +203,7 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 		{		
 
 			tempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
-			tempSI.cCountryFlag = 0;
+//			tempSI.cCountryFlag = 0;
 			tempSI.bNeedToUpdateServerInfo = true;
 			tempSI.dwIndex = idx++;
 			tempSI.pPlayerData = NULL;
@@ -277,10 +277,9 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 	{
-		DWORD dwIPSHORT;
 	    char country[60],szShortName[8];
-		ZeroMemory(szShortName,sizeof(szShortName));
-		strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,&dwIPSHORT,country,szShortName),49);  //Update country info only when adding a new server						
+		//ZeroMemory(szShortName,sizeof(szShortName));
+		strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,country,szShortName),49);  //Update country info only when adding a new server						
 		strcpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName);
 	}
 	DWORD dwRetries=0;

@@ -610,18 +610,16 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 		{
-			DWORD dwSHORTNAME;
+			//DWORD dwSHORTNAME;
 			char country[60],szShortName[4];
 			
-			ZeroMemory(szShortName,sizeof(szShortName));
+			//ZeroMemory(szShortName,sizeof(szShortName));
 			//dwStartTick = GetTickCount();
-			char *szNewCountryName = fnIPtoCountry2(pSI->dwIP,&dwSHORTNAME,country,szShortName);
+			char *szNewCountryName = fnIPtoCountry2(pSI->dwIP,country,szShortName);
 			strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),szNewCountryName,_TRUNCATE);  //Update country info only when adding a new server		
 			strncpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName,_TRUNCATE);
 			//sprintf(country,"IPGeo %d ms %s\n",(GetTickCount() - dwStartTick),pSI->szCountry);
-			//dbg_print(country);				
-
-			pSI->cCountryFlag = 1;
+			//dbg_print(country);
 		}
 	DWORD dwRetries=0;
 retry:
@@ -729,7 +727,7 @@ retry:
 		
 		pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
 		pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
-
+		pSI->dwGameType = pSI->dwMod ; //For sorting
 	
 		DWORD dwChallenge;
 		if(STEAM_GetChallenge(pSI,dwChallenge)==0)
