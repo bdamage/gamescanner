@@ -283,7 +283,7 @@ struct SERVER_INFO
 	char szServerName[MAX_NAME_LEN];
 	char szIPaddress[MAX_IP_LEN];
 	DWORD dwIP;
-	short dwPort;
+	unsigned short dwPort;
 	int nCurrentPlayers;
 	int nMaxPlayers;	
 	char szMap[MAX_MAPNAME_LEN];

@@ -32,43 +32,6 @@ void SCAN_Set_CALLBACKS(DWORD (*_Get_ServerStatus)(SERVER_INFO *pSI, long (*Upda
 	SCANNER_UpdateServerListView = _UpdateServerListView;
 }
 
-GAME_INFO *ppGI;
-void PollForNewServers()
-{
-	vSRV_INF::iterator  iLst;
-	DWORD dwSize = ppGI->vRefScanSI.size();
-
-	for ( iLst = ppGI->vSI.begin()+dwSize; iLst != ppGI->vSI.end( ); iLst++ )
-	{
-	
-		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
-		REF_SERVER_INFO refSI;
-		refSI.dwIndex = pSI.dwIndex;
-		refSI.cGAMEINDEX = pSI.cGAMEINDEX;
-
-		//pSrvInf = &pSI;
-		if(SCAN_FilterServerItem!=NULL)
-		{
-			if(SCAN_FilterServerItem((LPARAM*)&pSI,ppGI))
-			{
-
-
-				ppGI->vRefScanSI.push_back(refSI);
-			}
-		}
-		else
-			ppGI->vRefScanSI.push_back(refSI);  
-
-	}
-	dbg_print("Created scan serverlist!\n");
-
-	if(g_hwndProgressBar!=NULL)
-	{
-		//ReInitililze Progressbar
-		SendMessage(g_hwndProgressBar, PBM_SETRANGE, (WPARAM) 0,MAKELPARAM(0,ppGI->vRefScanSI.size())); 
-	}
-	
-}
 
 //Create scanning threads
 void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME_INFO *pGI))
@@ -119,7 +82,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	SCANNER_dwThreadCounter=0;
 	pGI->dwScanIdx = 0;
 	
-	//Create and setup Continue Event, this is important! Otherwise ETSV can crash due.
+	//Create and setup Continue Event, this is important! Otherwise ETSV can crash.
 	SCAN_hContinueEvent = CreateEvent(NULL,TRUE,TRUE,"ScanContinueEvent"); 
     if (SCAN_hContinueEvent == NULL) 
         AddLogInfo(ETSV_DEBUG,"CreateEvent failed (%d)\n", GetLastError());
@@ -155,7 +118,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	if (! SetEvent(SCAN_hContinueEvent) ) 
 		dbg_print("SetEvent failed\n");
 	//After this this the thread counter can decrease properly with a noncorrupted handle
-
+	DWORD dwStartTick = GetTickCount();
 	DWORD iWaitIndex = 0;
 	DWORD i=0;
 	//Wait for all threads to finish...
@@ -165,7 +128,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	
 		DWORD max = ((dwMaxThreads-iWaitIndex)<MAXIMUM_WAIT_OBJECTS)?(dwMaxThreads-iWaitIndex):MAXIMUM_WAIT_OBJECTS;		
 
-		AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
+	//	AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
 		DWORD dwEvent = WaitForMultipleObjects(max, &hThreadIndex[iWaitIndex], TRUE, INFINITE);
 		//AddLogInfo(ETSV_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
 	
@@ -198,9 +161,8 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 		}
 		iWaitIndex+=MAXIMUM_WAIT_OBJECTS;
 	}
-
-	AddLogInfo(0,"All servers is now scanned...");
-	
+	DWORD dwEndTick = GetTickCount();
+	AddLogInfo(0,"All servers is now scanned...%d sec",(dwEndTick-dwStartTick)/1000);
 	pGI->vRefScanSI.clear();
 
 
@@ -211,20 +173,12 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 
 DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 {
-
-
 	GAME_INFO *pGI = (GAME_INFO *)lpParam;
-	ppGI = pGI;
 	SERVER_INFO pSI;
-	memset(&pSI,0,sizeof(SERVER_INFO));
-	
 	DWORD idx=0;
 	DWORD size = pGI->vRefScanSI.size();
-//	char szText[100];
-
 	while(pGI->dwScanIdx<size)
-	{	
-		
+	{			
 		if(SCANNER_bCloseApp)
 		{
 			dbg_print("Closing down SIGNALED!\n");
@@ -237,15 +191,11 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		if(pGI->dwScanIdx<size)
 		{
 			SetStatusText(pGI->iIconIndex, "Scanning server %d of %d",pGI->dwScanIdx,size);
-			idx = pGI->dwScanIdx;
-			REF_SERVER_INFO refSI;
-			refSI = pGI->vRefScanSI.at(idx);
-			refSI.cGAMEINDEX = pSI.cGAMEINDEX;
-			
-			pSI = pGI->vSI.at(refSI.dwIndex);
-			
-			//sprintf(szText,"idx: %d scanid %d %d\n",pSI.dwIndex,pGI->dwScanIdx,pSI.dwPing);
-		//	dbg_print(szText);		
+			//idx = pGI->dwScanIdx;
+			//REF_SERVER_INFO refSI;
+			//refSI = pGI->vRefScanSI.at(idx).dwIndex;
+			//refSI.cGAMEINDEX = pSI.cGAMEINDEX;			
+			pSI = pGI->vSI.at(pGI->vRefScanSI.at(pGI->dwScanIdx).dwIndex);
 			pGI->dwScanIdx++;
 		}
 		LeaveCriticalSection(&SCANNER_cs);

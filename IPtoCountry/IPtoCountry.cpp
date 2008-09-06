@@ -3,7 +3,7 @@
 
 #include "stdafx.h"
 #include "IPtoCountry.h"
-
+#include <list>
 //#include <fcntl.h>     /* for _O_TEXT and _O_BINARY */
 //#include <errno.h>     /* for EINVAL */
 
@@ -60,7 +60,9 @@ struct LOOKUPTABLE
 	IPCOUNTRY ipc;
 };
 
-#define MAX_LUT 10
+
+
+#define MAX_LUT 35
 LOOKUPTABLE LUT[MAX_LUT];
 
 class CIPCountry
@@ -93,18 +95,19 @@ public:
 	}	
 };
 
-	inline bool operator == (CIPCountry const &a, CIPCountry const &b ) 
-	{
-		return ((b.dwStartIP >= a.dwStartIP) && (b.dwEndIP<= a.dwEndIP));
-	}
+inline bool operator == (CIPCountry const &a, CIPCountry const &b ) 
+{
+	return ((b.dwStartIP >= a.dwStartIP) && (b.dwEndIP<= a.dwEndIP));
+}
 
-	inline bool operator == (CIPCountry  a, CIPCountry * b   ) 
-	{
-		return ((b->dwStartIP >= a.dwStartIP) && (b->dwEndIP<= a.dwEndIP));
-	}
+inline bool operator == (CIPCountry  a, CIPCountry * b   ) 
+{
+	return ((b->dwStartIP >= a.dwStartIP) && (b->dwEndIP<= a.dwEndIP));
+}
 
 
-
+typedef vector<CIPCountry> vecIPC;
+vecIPC vIPC;
 
 IPTOCOUNTRY_API bool IPC_SetPath(char *szPath)
 {
@@ -260,14 +263,6 @@ $dotted_ip_address = long2ip($ip_number);
 
 
 
-
-//typedef vector<IPCOUNTRY> vecIPC;
-typedef vector<CIPCountry> vecIPC;
-vecIPC vIPC;
-typedef map <DWORD, IPCOUNTRY> mIPC;
-mIPC mIPcountry;
- 
-
 DWORD fnIPtoCountryInit()
 {
 
@@ -302,6 +297,7 @@ DWORD fnIPtoCountryInit()
 
 	//Create a look up table for optimiziation
 	DWORD dwSize = vIPC.size();
+	DWORD dwPartition = dwSize/30;
 	DWORD dwHalf = dwSize/2;
 	DWORD dwQuarter = dwHalf/2;
 	DWORD dwHalfQuarter = dwQuarter/2;
@@ -309,9 +305,9 @@ DWORD fnIPtoCountryInit()
 
 	CIPCountry tmpIPC;
 	DWORD dwIdx = dwSize;
-	for(int i=0;i<6; i++)
+	for(int i=0;i<30; i++)
 	{
-		dwIdx-=dwHalfQuarter;
+		dwIdx-=dwPartition;  //dwHalfQuarter
 		tmpIPC  = vIPC.at(dwIdx);
 
 		LUT[i].dwIndex = dwIdx;
@@ -320,6 +316,7 @@ DWORD fnIPtoCountryInit()
 	}
 	return 0;
 }
+
 DWORD fnIPtoCountryDeInit()
 {
 	vIPC.clear();
@@ -329,21 +326,13 @@ DWORD fnIPtoCountryDeInit()
 
 char * fnIPtoCountry2(DWORD IP, DWORD *pSHORTNAME, char *country,char *szShortName)
 {
-	*pSHORTNAME = 7;
-	strcpy(country,"unknown");
-	strcpy(szShortName,"zz");
-	
-	vecIPC::iterator vIPCiter;
-
+	vecIPC::iterator vIPCiter;		
 	CIPCountry tmpIPC;
 	tmpIPC.dwStartIP = IP;
 	tmpIPC.dwEndIP = IP;
-	IPCOUNTRY inIP;
-	inIP.startIP = IP;
-	inIP.endIP = IP;
 
 	DWORD dwStartIdx = 0;
-	for(int i=0;i<6; i++)
+	for(int i=0;i<30; i++)
 	{		
 		if(IP>=LUT[i].ipc.startIP)
 		{
@@ -352,21 +341,20 @@ char * fnIPtoCountry2(DWORD IP, DWORD *pSHORTNAME, char *country,char *szShortNa
 		}
 
 	}
-	
-
 	vIPCiter  = std::find(vIPC.begin()+dwStartIdx,vIPC.end(),&tmpIPC);
 	// search_n(vIPC.begin(),vIPC.end(),1,inIP,insideiprange);
 	//vIPCiter = upper_bound(vIPC.begin(),vIPC.end(),inIP,insideiprange);
 
 	if(vIPCiter != vIPC.end())
 	{	
-
 		tmpIPC =  *vIPCiter;
-		//IPCOUNTRY ipc = *vIPCiter;
 		strcpy(country,tmpIPC.COUNTRYNAME);
 		strcpy(szShortName,tmpIPC.COUNTRYNAME_SHORT);
-		//*pSHORTNAME = fnConvertShortNameImageListIndex(tmpIPC.COUNTRYNAME_MID);
 		return country;	
+	} else
+	{
+		strcpy(country,"unknown");
+		strcpy(szShortName,"zz");
 	}
 
 	return country;

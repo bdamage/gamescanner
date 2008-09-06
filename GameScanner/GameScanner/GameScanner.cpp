@@ -6503,7 +6503,7 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 			CloseHandle( hThread );
 		}
 	}
-
+	DWORD dwStartTick = GetTickCount();
 	UINT iGame=0;
 nextGame:
 	if(options==SCAN_ALL_GAMES)
@@ -6558,7 +6558,7 @@ nextGame:
 			dbg_print("SetEvent failed!\n");
 	      
 		}
-		AddLogInfo(ETSV_DEBUG,  "cancel GetServerList <<<<<");
+		AddLogInfo(ETSV_DEBUG,  "GetServerList was breaked by user.");
 		Show_StopScanningButton(FALSE);
 		g_currentScanGameIdx = -1;
 		g_bRunSimulation = FALSE;
@@ -6568,7 +6568,9 @@ nextGame:
 		goto exitError;
 
 	SetStatusText(ICO_INFO,lang.GetString("StatusReceivingServersDone"),GamesInfo[currGameIdx].szGAME_NAME);
-	
+	DWORD dwEndTick = GetTickCount();
+	AddLogInfo(ICO_INFO,"GetServerList took %d sec",(dwEndTick-dwStartTick)/1000);
+
 	//We don't want to overdraw wrong serverlist
 	if(currGameIdx==g_currentGameIdx)
 	{
@@ -6605,7 +6607,7 @@ NoError:
     }
    EnableButtons(TRUE);
    SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 
-   AddLogInfo(ETSV_DEBUG,  "GetServerList DONE!");
+ //  AddLogInfo(ETSV_DEBUG,  "GetServerList DONE!");
   return 0x00FF00FF;
  }
 
@@ -9396,7 +9398,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	userMode = GetScreenResolution();
 
 	MyRegisterClass(hInstance);
-	AddLogInfo(ETSV_INFO,"Registered class");
+//	AddLogInfo(ETSV_INFO,"Registered class");
 
 	// Perform application initialization:
 	if (!InitInstance (hInstance, nCmdShow)) 
@@ -9404,7 +9406,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 		AddLogInfo(ETSV_INFO,"Error InitInstance");
 		return FALSE;
 	}
-	AddLogInfo(ETSV_INFO,"InitInstance...");
+//	AddLogInfo(ETSV_INFO,"InitInstance...");
 	CleanUpFilesRegistry();
 	hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_ETSERVERVIEWER);
 	//register hot key
