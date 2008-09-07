@@ -219,15 +219,15 @@ BEGIN
     CONTROL         "",IDC_SLIDER_THREADS,"msctls_trackbar32",TBS_VERT | TBS_BOTH | WS_TABSTOP,34,26,22,95
     GROUPBOX        "Threads / Connections",IDC_STATIC,12,11,81,116
     LTEXT           "??",IDC_STATIC_THREAD,71,68,14,8
-    GROUPBOX        "Socket timeout settings",IDC_STATIC,7,138,90,31
+    GROUPBOX        "Socket timeout settings",IDC_STATIC,7,138,90,30
     EDITTEXT        IDC_EDIT_SOCK_TIMEOUT_S,24,149,36,14,ES_AUTOHSCROLL
     LTEXT           "ms",IDC_STATIC,66,152,10,8
-    GROUPBOX        "Retries",IDC_STATIC,117,138,80,31
+    GROUPBOX        "Retries",IDC_STATIC,117,138,80,30
     EDITTEXT        IDC_EDIT_CFG_RETRIES,130,149,49,15,ES_AUTOHSCROLL
-    GROUPBOX        "Sleep time per server scan (Real time throttle)",IDC_STATIC,116,11,248,117
+    GROUPBOX        "Sleep time (ms) per server scan (Real time throttle)",IDC_STATIC,116,11,206,117
     CONTROL         "",IDC_SLIDER_SLEEP_VAL,"msctls_trackbar32",TBS_VERT | WS_TABSTOP,127,23,27,87
     LTEXT           "Static",IDC_STATIC_SLEEP_VAL,125,113,232,11
-    LTEXT           "Super Quad+ Core CPU\n\n\n\nNormal Dual Core CPU\n\n\n\n\nSlow scanning. (or I got a piece of crap computer).",IDC_STATIC,164,27,189,87
+    LTEXT           "Fastest possible scanning (highest CPU usage).\n\n\n\nNormal scanning (mid CPU usage).\n\n\n\n\nSlow scanning (less CPU usage).",IDC_STATIC,164,27,155,87
 END
 
 IDD_ABOUTBOX DIALOGEX 22, 17, 160, 223
@@ -417,7 +417,7 @@ BEGIN
         RIGHTMARGIN, 400
         HORZGUIDE, 11
         HORZGUIDE, 138
-        HORZGUIDE, 169
+        HORZGUIDE, 168
     END
 
     IDD_ABOUTBOX, DIALOG

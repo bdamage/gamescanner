@@ -98,6 +98,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 #define MAX_LOADSTRING 100
 
 char TREEVIEW_VERSION[20];
+char TREEVIEW_GLOBAL_FILTER_VERSION[20];
 
 #define ICON_HEIGHT 24
 #define ICON_WIDTH	24
@@ -2957,16 +2958,20 @@ void Initialize_CountryFilter()
 	TVITEM  tvitem;
 	ZeroMemory(&tvitem,sizeof(TVITEM));
 	hRootCountryFiltersItem = TreeView_GetTIByItemType(1001);
-	tvitem.hItem = hRootCountryFiltersItem;
-	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
-	TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
+	if(hRootCountryFiltersItem!=NULL)
+	{
 
-	if(	tvitem.iImage == 9) //Unchecked image
-		AppCFG.bUseCountryFilter = FALSE;
-	else
-		AppCFG.bUseCountryFilter = TRUE;
+		tvitem.hItem = hRootCountryFiltersItem;
+		tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
+		TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
 
-	Build_CountryFilter(hRootCountryFiltersItem);
+		if(	tvitem.iImage == 9) //Unchecked image
+			AppCFG.bUseCountryFilter = FALSE;
+		else
+			AppCFG.bUseCountryFilter = TRUE;
+
+		Build_CountryFilter(hRootCountryFiltersItem);
+	}
 }
 
 DWORD Build_CountryFilter(HTREEITEM hRoot)
@@ -3464,7 +3469,7 @@ HTREEITEM MainTreeView_AddItem(_TREEITEM *ti,HTREEITEM hCurrent,bool active)
 
 DWORD g_TreeLevel=1;
 
-int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
+int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem, BOOL bIgnoreGlobalFilters)
 {
 	char szName[100];
 	_TREEITEM ti;
@@ -3522,8 +3527,20 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 				active = GamesInfo[ti.cGAMEINDEX].bActive;
 		}
 		
-		ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);
-		vTI.push_back(ti);
+	
+		if(bIgnoreGlobalFilters)
+		{
+			if(ti.cGAMEINDEX!=-25)
+			{
+				ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);
+				vTI.push_back(ti);
+			}
+		}
+		else //read all
+		{
+			ti.hTreeItem = MainTreeView_AddItem(&ti,hTreeItem, active);		
+			vTI.push_back(ti);
+		}
 
 		GAMEFILTER gf;
 		gf.sFriendlyName = ti.sName;
@@ -3540,7 +3557,7 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 		else if(ti.sElementName == "Map")
 			GamesInfo[ti.cGAMEINDEX].vFilterMap.push_back(gf);
 
-		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem );
+		Tree_ParseChilds(childItem->FirstChildElement(),ti.hTreeItem,bIgnoreGlobalFilters);
 		
 	}	
 	g_TreeLevel--;
@@ -3548,42 +3565,51 @@ int Tree_ParseChilds(TiXmlElement* childItem, HTREEITEM hTreeItem)
 }
 
 UINT g_save_counter=0;  //Ugly hack
-DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
+DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel,BOOL bIgnoreGlobalFilter)
 {
 	if(g_save_counter>vTI.size())
 		return 0;
-	
+	BOOL bSkip=FALSE;
+
+	if(pElemRoot == NULL)
+		return 0;
+
 	while(dwlevel==vTI.at(g_save_counter).dwLevel)
 	{			
 		int iSel = g_save_counter;
 		
-	//	if(vTI.at(iSel).dwType==1001) //reached to country filter
-	//		return 0;
+		bSkip=FALSE;
+		if(bIgnoreGlobalFilter && vTI.at(iSel).cGAMEINDEX==-25) //reached to global filter
+			bSkip=TRUE;
 
+		TiXmlElement * elem = NULL;
+		if(bSkip==FALSE)
+		{
+			elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
 
-		TiXmlElement * elem = new TiXmlElement( vTI.at(iSel).sElementName.c_str());  
-/*
-#ifdef _DEBUG	
-		char padding[40];
-		padding[0]=0;
-		for(int i=0;i<dwlevel;i++)
-			strcat(padding," ");
-		dbg_print("%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
-#endif
-*/
-		elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
-		elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
-		elem->SetAttribute("value",vTI.at(iSel).dwValue);
-		elem->SetAttribute("compare",vTI.at(iSel).dwCompare);
-		elem->SetAttribute("icon",vTI.at(iSel).iIconIndex);
-		elem->SetAttribute("expanded",(UINT)vTI.at(iSel).bExpanded);
-		elem->SetAttribute("type",vTI.at(iSel).dwType);
-		elem->SetAttribute("state",vTI.at(iSel).dwState);
-		elem->SetAttribute("game",vTI.at(iSel).cGAMEINDEX);
-		elem->SetAttribute("action",vTI.at(iSel).dwAction);
-			
+	#ifdef _DEBUG	
+			char padding[40];
+			padding[0]=0;
+			for(int i=0;i<dwlevel;i++)
+				strcat(padding," ");
+			dbg_print("%s %d %d %s %s Action %d level:%d",padding,iSel,dwlevel,vTI.at(iSel).sElementName.c_str(),vTI.at(iSel).sName.c_str(),vTI.at(iSel).dwAction,vTI.at(iSel).dwLevel);
+	#endif
+
+			elem->SetAttribute("name",vTI.at(iSel).sName.c_str());
+			elem->SetAttribute("strval",vTI.at(iSel).strValue.c_str());
+			elem->SetAttribute("value",vTI.at(iSel).dwValue);
+			elem->SetAttribute("compare",vTI.at(iSel).dwCompare);
+			elem->SetAttribute("icon",vTI.at(iSel).iIconIndex);
+			elem->SetAttribute("expanded",(UINT)vTI.at(iSel).bExpanded);
+			elem->SetAttribute("type",vTI.at(iSel).dwType);
+			elem->SetAttribute("state",vTI.at(iSel).dwState);
+			elem->SetAttribute("game",vTI.at(iSel).cGAMEINDEX);
+			elem->SetAttribute("action",vTI.at(iSel).dwAction);
+				
+			pElemRoot->LinkEndChild( elem ); 
+		}
+
 		g_save_counter++;
-		pElemRoot->LinkEndChild( elem ); 
 		if(g_save_counter>=vTI.size())
 			return 0;
 
@@ -3592,7 +3618,7 @@ DWORD  Save_all_by_level(TiXmlElement *pElemRoot,DWORD dwlevel)
 		DWORD lvl=0;
 		if(nextlevel>dwlevel)
 		{	
-			lvl = Save_all_by_level(elem,nextlevel);
+			lvl = Save_all_by_level(elem,nextlevel,bIgnoreGlobalFilter);
 			if(lvl!=dwlevel)
 				return lvl;
 		}		
@@ -3618,6 +3644,7 @@ void TreeView_cleanup()
 
 int TreeView_save()
 {
+	char szFilePath[_MAX_PATH+_MAX_FNAME];
 	dbg_print("Saving treeview state in progress...");
 	TiXmlDocument doc;  
  	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
@@ -3625,33 +3652,49 @@ int TreeView_save()
  
 	TiXmlElement * root = new TiXmlElement( "TreeViewCFG" );  //TreeView config
 	root->SetAttribute("Version",TREEVIEW_VERSION);
-	
 	TiXmlComment * comment = new TiXmlComment();
 	comment->SetValue("Settings for Game Scanner treeview." );  
 	root->LinkEndChild( comment );  
-	
-
 	TiXmlElement * TreeItems = new TiXmlElement( "TreeItems" );  
 		
 	g_save_counter=0;
 	if(!vTI.empty())
-		Save_all_by_level(TreeItems,vTI.at(g_save_counter).dwLevel);
+		Save_all_by_level(TreeItems,vTI.at(g_save_counter).dwLevel,TRUE);
 
 	root->LinkEndChild( TreeItems );  
 	doc.LinkEndChild( root );  
 
-
-	char szFilePath[_MAX_PATH+_MAX_FNAME];
-	ZeroMemory(szFilePath,sizeof(szFilePath));
-	strncpy(szFilePath,USER_SAVE_PATH,strlen(USER_SAVE_PATH));
-	strcat(szFilePath,"treeviewcfg.xml");
+	sprintf(szFilePath,"%s%s",USER_SAVE_PATH,"treeviewcfg.xml");
 	SetCurrentDirectory(USER_SAVE_PATH);
-
 	if(!doc.SaveFile(szFilePath))
 		AddLogInfo(ETSV_WARNING,"Error saving Treeview XML file!");
 
+	TiXmlDocument GlobalFilterDoc;  
+	 TiXmlDeclaration* decl2 = new TiXmlDeclaration( "1.0", "", "" );   
+	GlobalFilterDoc.LinkEndChild( decl2 );  
+ 
+	TiXmlElement * GFroot = new TiXmlElement( "Globalfilter" );  //TreeView config
+	GFroot->SetAttribute("version",TREEVIEW_GLOBAL_FILTER_VERSION);
+	
+	TiXmlComment * comment2 = new TiXmlComment();
+	comment2->SetValue("Global filter settings for Game Scanner treeview." );  
+	GFroot->LinkEndChild( comment2 );  
+	TiXmlElement * TreeItems2 = new TiXmlElement( "TreeItems" );  
+	dbg_print("Saving ---------- Global Filter -------------- ");
+	g_save_counter--;
+	if(!vTI.empty() && (g_save_counter<vTI.size()))
+		Save_all_by_level(TreeItems2,vTI.at(g_save_counter).dwLevel,FALSE);
 
-//	AddLogInfo(ETSV_WARNING,"Saving treeview state in progress... DONE!");
+	GFroot->LinkEndChild( TreeItems2 );  
+	GlobalFilterDoc.LinkEndChild( GFroot );  
+
+	sprintf(szFilePath,"%s%s",USER_SAVE_PATH,"globalfilter.xml");
+	SetCurrentDirectory(USER_SAVE_PATH);
+	if(!GlobalFilterDoc.SaveFile(szFilePath))
+		AddLogInfo(ETSV_WARNING,"Error saving Treeview XML file!");
+
+
+
 	return 0;
 }
 
@@ -3879,6 +3922,8 @@ int TreeView_load()
 		}			
 	}
 
+
+
 	vTI.clear();
 
 	// save this for later
@@ -3891,11 +3936,39 @@ int TreeView_load()
 	g_TreeLevel=1;
 	for( child; child; child=child->NextSiblingElement() )
 	{
-		Tree_ParseChilds(child->FirstChildElement(),NULL);
+		Tree_ParseChilds(child->FirstChildElement(),NULL,TRUE);
 	}	
+
+	sprintf(szFilePath,"%s%s",USER_SAVE_PATH,"globalfilter.xml");	
+	AddLogInfo(ETSV_INFO,"Trying to load globalfilter.xml from %s",szFilePath);
+	SetCurrentDirectory(USER_SAVE_PATH);
+	TiXmlDocument GlobalFilterDoc(szFilePath);
+	if (!GlobalFilterDoc.LoadFile()) 
+	{
+		AddLogInfo(ETSV_ERROR,"Error loading config file for globalfilter.xml from USER_SAVE_PATH (%s)",szFilePath);
+		sprintf(szFilePath,"%s\\%s",EXE_PATH,"globalfilter.xml");
+		SetCurrentDirectory(EXE_PATH);
+		if (!GlobalFilterDoc.LoadFile(szFilePath)) 
+		{
+			AddLogInfo(ETSV_ERROR,"Error loading default globalfilter.xml file from EXE_PATH (%s)",szFilePath);
+	
+		}
+	}
+
+	TiXmlHandle hGlobalFilterDoc(&GlobalFilterDoc);
+	TiXmlElement* root2 = hGlobalFilterDoc.FirstChild("Globalfilter").ToElement();
+	ZeroMemory(TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION));
+	XML_GetTreeItemStr(root2, "version",TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION)-1);
+
+	child = root2->FirstChildElement("TreeItems" );
+	for( child; child; child=child->NextSiblingElement() )
+	{	
+		Tree_ParseChilds(child->FirstChildElement(),NULL,FALSE);
+	}	
+
 	char szBuffer[200];
 
-	//Let's do some resync values, this will help to ensure after an upgrade of the treeview  structure to display correct
+	//Let's do some resync values, this will help to ensure after an upgrade of the treeview structure to display correct values and states.
 	for(int i=0; i<GamesInfo.size();i++)
 	{
 		GamesInfo[i].hTI = TreeView_GetTIByItemGame(i);
@@ -3945,6 +4018,7 @@ int TreeView_load()
 	SetFocus(g_hwndMainTreeCtrl);
 	return 0;
 }
+
 
 void OnActivate_ServerList(DWORD options)
 {

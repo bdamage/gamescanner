@@ -495,8 +495,8 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_60723412831A434CB0903970FD166C3F"
-        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
+        "MsmKey" = "8:_61557EAC76CC4BA58EA661B5EEFB6142"
+        "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -551,6 +551,12 @@
         {
         "MsmKey" = "8:_6E560D2387894BC9B0F048677FFCA541"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_6E6B4177151B42D099387151AEEE65BB"
+        "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -741,12 +747,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_9CC247CE3C504E9ABFE98518D6EB2F19"
-        "OwnerKey" = "8:_60723412831A434CB0903970FD166C3F"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_9D590B9FCAA946ABB472571A116A873B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -838,6 +838,12 @@
         "Entry"
         {
         "MsmKey" = "8:_A9D5388372324C2EBE54E7AFA0B77E0F"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_AAB1F60F91AB4A2FBA2DA96A39A51689"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -1113,6 +1119,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D658040658534F80BC15D262CA35D8C4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D9E331F142835F002B74AAD403E3BD57"
         "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
@@ -1227,6 +1239,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EE503BF91B6D4F68B0A71FEABF49C817"
+        "OwnerKey" = "8:_6E6B4177151B42D099387151AEEE65BB"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_EF072CA9454C457096B554EA9B8C310F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1276,6 +1294,12 @@
         "Entry"
         {
         "MsmKey" = "8:_FD3D2941962E40548CE8B8C523D4F152"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FFC4E8C022B14083BDCF6534416F1751"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2977,6 +3001,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_61557EAC76CC4BA58EA661B5EEFB6142"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\nexuiz.ico"
+            "TargetName" = "8:nexuiz.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_62D0DFD8C180422BA47C51F198C3B418"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_ke.gif"
@@ -4077,6 +4121,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AAB1F60F91AB4A2FBA2DA96A39A51689"
+            {
+            "SourcePath" = "8:..\\..\\redist\\globalfilter.xml"
+            "TargetName" = "8:globalfilter.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_AC31C6791837472E81852AAC905E8506"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_br.gif"
@@ -4977,6 +5041,26 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D658040658534F80BC15D262CA35D8C4"
+            {
+            "SourcePath" = "8:..\\..\\redist\\gamedefaults.xml"
+            "TargetName" = "8:gamedefaults.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D9E331F142835F002B74AAD403E3BD57"
             {
             "SourcePath" = "8:IPHLPAPI.DLL"
@@ -5521,6 +5605,26 @@
             {
             "SourcePath" = "8:..\\..\\redist\\GameIcons\\q3.ico"
             "TargetName" = "8:q3.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_FFC4E8C022B14083BDCF6534416F1751"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\cstrikezero.ico"
+            "TargetName" = "8:cstrikezero.ico"
             "Tag" = "8:"
             "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
@@ -6190,7 +6294,7 @@
         }
         "MergeModule"
         {
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_60723412831A434CB0903970FD166C3F"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_6E6B4177151B42D099387151AEEE65BB"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -6204,7 +6308,7 @@
             "Feature" = "8:"
             "IsolateTo" = "8:"
             }
-            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_9CC247CE3C504E9ABFE98518D6EB2F19"
+            "{CEE29DC0-9FBA-4B99-8D47-5BC643D9B626}:_EE503BF91B6D4F68B0A71FEABF49C817"
             {
             "UseDynamicProperties" = "11:TRUE"
             "IsDependency" = "11:TRUE"
@@ -6223,7 +6327,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9572CAEE2F59444B8B9E89C61DF38097"
             {
-            "SourcePath" = "8:..\\Release\\GameScanner.exe"
+            "SourcePath" = "8:..\\Debug\\GameScanner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"

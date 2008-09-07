@@ -1,0 +1,132 @@
+<?xml version="1.0" ?>
+<Globalfilter version="1.0">
+    <TreeItems>
+		<Item name="Global filter" strval="" value="0" compare="0" icon="17" expanded="0" type="0" state="0" game="-25" action="0">
+			<FilterItem name="Hide offline servers" strval="" value="0" compare="0" icon="9" expanded="0" type="16" state="0" game="-25" action="8" />
+			<FilterItem name="Min Players" strval="" value="6" compare="0" icon="9" expanded="0" type="100" state="0" game="-25" action="11" />
+			<FilterItem name="Max Players" strval="" value="24" compare="0" icon="9" expanded="0" type="101" state="0" game="-25" action="11" />
+			<Pings name="Maximum Ping" strval="" value="0" compare="0" icon="18" expanded="0" type="0" state="0" game="-25" action="0">
+				<Ping name="Ping 200" strval="" value="200" compare="0" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+				<Ping name="Ping 150" strval="" value="150" compare="0" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+				<Ping name="Ping 100" strval="" value="100" compare="0" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+				<Ping name="Ping 50" strval="" value="50" compare="0" icon="9" expanded="0" type="28" state="0" game="-25" action="8" />
+			</Pings>
+		</Item>
+		<Item name="Country filter" strval="0" value="0" compare="0" icon="9" expanded="0" type="1001" state="0" game="-25" action="10">
+			<Country name="Unknown" strval="zz" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+			<Continent name="Africa" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Country name="Egypt" strval="eg" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="South Africa" strval="za" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Tanzania" strval="tz" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Tunisia" strval="tn" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Uruguay" strval="uy" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+			</Continent>
+			<Continent name="Australasia" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Country name="Australia" strval="au" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="New Zeeland" strval="nz" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+			</Continent>
+			<Continent name="Micronesia" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Country name="Guam" strval="gu" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+			</Continent>
+			<Continent name="Asia" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Country name="Belarus" strval="by" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="China" strval="cn" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Hong Kong" strval="hk" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="India" strval="in" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Indonesia" strval="id" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Japan" strval="jp" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Malaysia" strval="my" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Pakistan" strval="pk" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Phillipines" strval="ph" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Singapore" strval="sg" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="South Korea" strval="kr" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Taiwan" strval="tw" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Thailand" strval="th" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Turkey" strval="tr" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Viet Nam" strval="vn" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Ukraine" strval="ua" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+			</Continent>
+			<Continent name="Americas" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Region name="North America" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="United States" strval="us" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Canada" strval="ca" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				</Region>
+				<Region name="Central America" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="Aruba" strval="aw" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Barbados" strval="bb" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Cuba" strval="cu" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Mexico" strval="mx" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Jamaica" strval="jm" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				</Region>
+				<Region name="South America" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="Argentina" strval="ar" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Chile" strval="cl" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Colombia" strval="co" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Brazil" strval="br" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Venezuela" strval="ve" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				</Region>
+			</Continent>
+			<Continent name="Middle East" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Country name="Israel" strval="il" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Iran" strval="ir" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Iraq" strval="iq" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				<Country name="Saudi Arabia" strval="sa" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+			</Continent>
+			<Continent name="Europe" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+				<Region name="Eastern Europe" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="Bulgaria" strval="bg" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Poland" strval="pl" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Czech Republic" strval="cz" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Hungary" strval="hu" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Romania" strval="ro" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Russia" strval="ru" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Serbia" strval="rs" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Slovakia" strval="sk" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Slovenia" strval="sl" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				</Region>
+				<Region name="North Europe" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="Iceland" strval="is" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Area name="Baltics" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+						<Country name="Estonia" strval="ee" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Latvia" strval="lv" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Lithuania" strval="lt" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					</Area>
+					<Area name="Nordics" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+						<Country name="Denmark" strval="dk" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Norway" strval="no" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Finland" strval="fi" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Sweden" strval="se" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					</Area>
+				</Region>
+				<Region name="Western Europe" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="Austria" strval="at" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Germany" strval="de" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="France" strval="fr" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Ireland" strval="ie" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Liechtenstein" strval="li" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="United Kingdom" strval="gb" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Switzerland" strval="ch" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Area name="Benelux" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+						<Country name="Belgium" strval="be" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Netherlands" strval="nl" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+						<Country name="Luxembourg" strval="lu" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					</Area>
+				</Region>
+				<Region name="South Europe" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
+					<Country name="Albania" strval="al" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Bosnia and Herzegowina" strval="ba" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Bulgaria" strval="bg" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Cyprus" strval="cy" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Croatia" strval="hr" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Gibraltar" strval="gi" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Greece" strval="gr" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Italy" strval="it" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Malta" strval="mt" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Macadonia" strval="mk" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Portugal" strval="pt" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Spain" strval="es" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+				</Region>
+			</Continent>
+		</Item>
+	</TreeItems>
+</Globalfilter>
