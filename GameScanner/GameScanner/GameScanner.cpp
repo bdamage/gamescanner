@@ -3418,9 +3418,7 @@ void TreeView_SetItemText(HTREEITEM hTI, char *szText)
 HTREEITEM MainTreeView_AddItem(_TREEITEM *ti,HTREEITEM hCurrent,bool active)
 							
 {
-
 	 int iImageIndex = ti->iIconIndex+ti->dwState;
-    // char *text = ti->sName.c_str();
 	 bool expand = ti->bExpanded;
 	
 	 char text[256];
@@ -3620,7 +3618,7 @@ void TreeView_cleanup()
 
 int TreeView_save()
 {
-	AddLogInfo(ETSV_WARNING,"Saving treeview state in progress...");
+	dbg_print("Saving treeview state in progress...");
 	TiXmlDocument doc;  
  	TiXmlDeclaration* decl = new TiXmlDeclaration( "1.0", "", "" );  
 	doc.LinkEndChild( decl );  
@@ -3649,13 +3647,11 @@ int TreeView_save()
 	strcat(szFilePath,"treeviewcfg.xml");
 	SetCurrentDirectory(USER_SAVE_PATH);
 
-	if(doc.SaveFile(szFilePath))
-		AddLogInfo(ETSV_WARNING,"Success saving Treeview XML file!");
-	else
+	if(!doc.SaveFile(szFilePath))
 		AddLogInfo(ETSV_WARNING,"Error saving Treeview XML file!");
 
 
-	AddLogInfo(ETSV_WARNING,"Saving treeview state in progress... DONE!");
+//	AddLogInfo(ETSV_WARNING,"Saving treeview state in progress... DONE!");
 	return 0;
 }
 
@@ -3726,6 +3722,72 @@ void TreeView_BuildList()
 	TreeView_DeleteAllItems(g_hwndMainTreeCtrl);
 	TreeView_load();
 	return;
+}
+int TreeView_ReBuildListChild(HTREEITEM hTreeItemParent,int idx,int ParentLevel)
+{
+	HTREEITEM hTreeItem=NULL;
+	int i = idx;
+	int level;
+
+	for (i; i<vTI.size();i++)
+	{
+		_TREEITEM ti;
+		ti = vTI.at(i);
+
+		bool active=true;
+		if(ti.cGAMEINDEX!=-25)
+		{
+			if(ti.cGAMEINDEX<GamesInfo.size())
+				active = GamesInfo[ti.cGAMEINDEX].bActive;
+		}
+		if(ParentLevel==vTI.at(i).dwLevel)
+		{
+			vTI.at(i).hTreeItem = MainTreeView_AddItem(&ti,hTreeItemParent, active);
+			level = vTI.at(i).dwLevel ;
+			hTreeItem = vTI.at(i).hTreeItem;
+		} else if (ParentLevel<vTI.at(i).dwLevel)
+		{
+			i = TreeView_ReBuildListChild(hTreeItem,i,vTI.at(i).dwLevel);
+			hTreeItem = NULL;
+			if(i<vTI.size())
+			{
+				if (vTI.at(i).dwLevel==ParentLevel)
+					i--;
+				else
+					return i;
+			}
+			else
+				return i;
+
+		} else if (ParentLevel>vTI.at(i).dwLevel)
+			return i;
+		
+	}
+	return i;
+}
+
+void TreeView_ReBuildList()
+{   
+	g_tvIndex = 0;	
+	int level=2;
+	TreeView_DeleteAllItems(g_hwndMainTreeCtrl);
+	HTREEITEM hTreeItem=NULL;
+	for (int i=0; i<vTI.size();i++)
+	{
+		i = TreeView_ReBuildListChild(hTreeItem,i, level);	
+	}
+	char szBuffer[200];
+	for(int i=0; i<GamesInfo.size();i++)
+	{
+		GamesInfo[i].hTI = TreeView_GetTIByItemGame(i);
+		sprintf(szBuffer,"%s (%d)",GamesInfo[i].szGAME_NAME,GamesInfo[i].dwTotalServers);
+		if(GamesInfo[i].hTI!=NULL)
+		{
+			TreeView_SetItemText(GamesInfo[i].hTI,szBuffer);
+			TreeView_SetItemState(g_hwndMainTreeCtrl,GamesInfo[i].hTI,TVIS_BOLD ,TVIS_BOLD);
+		}
+
+	}
 }
 
 int TreeView_load()
@@ -5156,22 +5218,29 @@ void DeleteAllServerLists()
 			ListView_DeleteAllItems(g_hwndListViewPlayers);
 			ListView_DeleteAllItems(g_hwndListViewServer);
 
-			ClearAllServerLinkedList();
-			ListView_SetItemCount(g_hwndListViewServer,0);
-		
-			char szBuffer[100];
-			for(int i=0;i<GamesInfo.size();i++)
+			if(TryEnterCriticalSection(&LOAD_SAVE_CS)==TRUE)
 			{
-				remove(GamesInfo[i].szFilename);
-				GamesInfo[i].dwTotalServers = 0;
-				sprintf(szBuffer,"%s (%d)",GamesInfo[i].szGAME_NAME,GamesInfo[i].dwTotalServers);
-				if(GamesInfo[i].bActive)
-					TreeView_SetItemText(GamesInfo[i].hTI,szBuffer);
+
+				ClearAllServerLinkedList();
+				ListView_SetItemCount(g_hwndListViewServer,0);
+				
+				
+				char szBuffer[100];
+				for(int i=0;i<GamesInfo.size();i++)
+				{
+					remove(GamesInfo[i].szFilename);
+					GamesInfo[i].dwTotalServers = 0;
+					sprintf(szBuffer,"%s (%d)",GamesInfo[i].szGAME_NAME,GamesInfo[i].dwTotalServers);
+					if(GamesInfo[i].bActive)
+						TreeView_SetItemText(GamesInfo[i].hTI,szBuffer);
+				}
+				LeaveCriticalSection(&LOAD_SAVE_CS);
+				MessageBox(NULL,lang.GetString("DeletedServerList"),"Info",MB_OK);
+				return;
 			}
-			MessageBox(NULL,lang.GetString("DeletedServerList"),"Info",MB_OK);
-		
-		}else
-			MessageBox(NULL,lang.GetString("ErrorDeletingServerList"),"Warning!",MB_OKCANCEL | MB_ICONWARNING);
+			
+		}
+		MessageBox(NULL,lang.GetString("ErrorDeletingServerList"),"Warning!",MB_OKCANCEL | MB_ICONWARNING);
 	}
 }
 
@@ -7146,6 +7215,8 @@ COLORREF GetColor(char inC)
 LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
 	HDC  hDC =  pListDraw->nmcd.hdc;
+	if(pszText==NULL)
+		return (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
 	HBRUSH hbrSel= NULL;
 	hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
 	FillRect(hDC, &rc, (HBRUSH) hbrSel);
@@ -7197,6 +7268,9 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
 	HDC  hDC =  pListDraw->nmcd.hdc;
+	if(pszText==NULL)
+		return (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
+
 	HBRUSH hbrSel= NULL;
 	hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
 	FillRect(hDC, &rc, (HBRUSH) hbrSel);
@@ -7260,9 +7334,12 @@ LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszT
 {
 	HDC  hDC =  pListDraw->nmcd.hdc;
 	HBRUSH hbrSel= NULL;
+	if(pszText==NULL)
+		return (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
+	
 	hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
 	FillRect(hDC, &rc, (HBRUSH) hbrSel);
-
+	
 	if( pListDraw->nmcd.uItemState & ( CDIS_SELECTED))
 	{
 		pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
@@ -11412,15 +11489,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case IDM_SETTINGS:
 					{
 						DialogBox(g_hInst, (LPCTSTR)IDD_DIALOG_CONFIG, g_hWnd, (DLGPROC)CFG_MainProc);
-						
-						currCV = &GamesInfo[g_currentGameIdx];		//restore currCV pointer			
-
+					
 						OnSize(g_hWnd);
-						TreeView_BuildList();
+						TreeView_ReBuildList();							
 						SetDlgTrans(hWnd,AppCFG.g_cTransparancy);
 						
-							
-
+						currCV = &GamesInfo[g_currentGameIdx];		//restore currCV pointer									
 						//Do we need to change view after configuring?
 						if(GamesInfo[g_currentGameIdx].bActive==false)
 						{

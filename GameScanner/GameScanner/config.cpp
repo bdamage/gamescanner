@@ -358,7 +358,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					//memcpy(&GI,&GamesInfoCFG,sizeof(GAME_INFO)*GamesInfo.size());
 				//	ZeroMemory(&GamesInfoCFG,sizeof(GAME_INFO)*GamesInfo.size());
 					ZeroMemory(&AppCFGtemp,sizeof(APP_SETTINGS_NEW));
-					/*HANDLE hThread=NULL; 
+					HANDLE hThread=NULL; 
 					DWORD dwThreadIdBrowser=0;				
 					hThread = CreateThread( NULL, 0, &CFG_Save,(LPVOID)0 ,0, &dwThreadIdBrowser);                
 					if (hThread == NULL) 
@@ -367,9 +367,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					} else
 					{
 						CloseHandle( hThread );
-					}*/
+					}
 
-					CFG_Save(0);
+			//		CFG_Save(0);
 					LocalFree(g_pHdr);
 					EndDialog(hDlg, LOWORD(wParam));
 					return TRUE;

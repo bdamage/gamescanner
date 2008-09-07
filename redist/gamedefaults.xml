@@ -320,7 +320,7 @@
                 <Install name="LaunchByVer" value="" />
             </Installs>
 	</Game>
-		<Game>
+	<Game>
 		<GameIndex>10</GameIndex>
 		<Name>Counter Strike Condition Zero</Name>
 		<ShortName>CS Condition Zero</ShortName>
@@ -328,7 +328,7 @@
 		<NetEngine>VALVE</NetEngine>
 		<WebProtocol>cscz</WebProtocol>
 		<MapPreviewPath>csczmaps</MapPreviewPath>
-		<Icon>cstrike.ico</Icon>
+		<Icon>cstrikezero.ico</Icon>
 		<MasterServers>
 			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
 			<UseHTTP>0</UseHTTP>
@@ -352,7 +352,7 @@
                 <Install name="LaunchByVer" value="" />
             </Installs>
 	</Game>
-		<Game>
+	<Game>
 		<GameIndex>11</GameIndex>
 		<Name>Counter Strike: Source</Name>
 		<ShortName>CSS</ShortName>
@@ -466,7 +466,7 @@
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers openarena 69 empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 69 openarena empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot></RegRoot>
@@ -595,4 +595,29 @@
 			</Registry>
 		</Detection>
 	</Game>		
+	<Game>
+		<GameIndex>18</GameIndex>
+		<Name>Half-life</Name>
+		<ShortName>HL</ShortName>
+		<Filename>hl.servers</Filename>
+		<NetEngine>VALVE</NetEngine>
+		<WebProtocol>hl</WebProtocol>
+		<MapPreviewPath>hlmaps</MapPreviewPath>
+		<Icon>hl.ico</Icon>
+		<MasterServers>
+			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
+			<UseHTTP>0</UseHTTP>
+		</MasterServers>
+		<ServerDefaultPort>27015</ServerDefaultPort>
+		<ServerInfoQuery></ServerInfoQuery>
+		<MasterQueryString></MasterQueryString>
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_CURRENT_USER</RegRoot>
+				<RegKey>Software\Valve\Steam</RegKey>
+				<RegItem>SteamExe</RegItem>
+				<InstallSuffix></InstallSuffix>
+			</Registry>
+		</Detection>
+	</Game>	
 </Games>

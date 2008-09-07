@@ -2,10 +2,10 @@
 Todo
 ---------
 Add support for QW spectator?
-Add support for multiple executables.
-Add laungage support.
 Add larger font support.
-Add support for Net Quake and Nexuiz.
+Add support for Net Quake.
+
+Fix Delete serverlist during loading serverlist bug.
 
 
 
@@ -18,12 +18,14 @@ Add support for Net Quake and Nexuiz.
 
 DONE List! 
 ----------
-* buddy file as xml 
-* Create load function to support new CSV format
-* columns save state
-6 No filter on favorites.
-7 Gametype, version, map & map add the filter settings/values into xml file (strlvalue="").
-4 Multithreaded Logger (string sLogger)
+ buddy file as xml 
+ Create load function to support new CSV format
+ columns save state
+ No filter on favorites.
+ Gametype, version, map & map add the filter settings/values into xml file (strlvalue="").
+ Multithreaded Logger (string sLogger)
+FIXED: Copy IP address should be changed to get the IP and port from SERVER_INFO (NOT ListView)
+
 
 
 Known bugs
@@ -34,6 +36,4 @@ Buddy code can cause a crash during scanning.
 
 
 
-
-FIXED: Copy IP address should be changed to get the IP and port from SERVER_INFO (NOT ListView)
 
