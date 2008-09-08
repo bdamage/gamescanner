@@ -192,10 +192,6 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		if(pGI->dwScanIdx<size)
 		{
 			SetStatusText(pGI->iIconIndex,lang.GetString("ScanStatus"),pGI->dwScanIdx,size);
-			//idx = pGI->dwScanIdx;
-			//REF_SERVER_INFO refSI;
-			//refSI = pGI->vRefScanSI.at(idx).dwIndex;
-			//refSI.cGAMEINDEX = pSI.cGAMEINDEX;			
 			pSI = pGI->vSI.at(pGI->vRefScanSI.at(pGI->dwScanIdx).dwIndex);
 			pGI->dwScanIdx++;
 		}

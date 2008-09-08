@@ -575,7 +575,7 @@
 		<ShortName>Nexuiz</ShortName>
 		<Filename>nexuiz.servers</Filename>
 		<NetEngine>Q3</NetEngine>
-		<ColorEncoding>QW</ColorEncoding>
+		<ColorEncoding>NEXUIZ</ColorEncoding>
 		<WebProtocol>nexuiz</WebProtocol>
 		<MapPreviewPath>Nexuizmaps</MapPreviewPath>
 		<Icon>Nexuiz.ico</Icon>

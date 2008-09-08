@@ -353,6 +353,8 @@ retry:
 						szVarValue = Q3_Get_RuleValue("version",pServRules);
 						if(szVarValue==NULL)
 							szVarValue = Q3_Get_RuleValue("*version",pServRules); // QuakeWorld
+								if(szVarValue==NULL)
+									szVarValue = Q3_Get_RuleValue("gameversion",pServRules); // Nexuiz
 						
 						if(szVarValue!=NULL)
 							strncpy(pSI->szVersion,szVarValue,MAX_VERSION_LEN-1);

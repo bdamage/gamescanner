@@ -15,7 +15,7 @@ extern GamesMap GamesInfo;
 extern RECT g_INFOIconRect;
 extern _WINDOW_CONTAINER WNDCONT[15];
 string UTILZ_sLogger;
-
+extern char NexuizASCII[];
 //Debug OFF!!!
 #ifndef _DEBUG
 
@@ -395,7 +395,6 @@ BOOL isNumeric(char c)
 
 char *colorfilter(const char* name,char *namefilter,int len)
 {
-	size_t i=0,ii=0;
 	int n=0;
 	if(name!=NULL)
 	{
@@ -412,39 +411,36 @@ char *colorfilter(const char* name,char *namefilter,int len)
 			
 			namefilter[n] = name[i];		
 			n++;
+		}
+	}
+	return namefilter;
+}
+
+char *colorfilterNEXUIZ(const char* name,char *namefilter,int len)
+{
+	int n=0;
+	if(name!=NULL)
+	{
+		memset(namefilter,0,len);
+		for(int i=0;i<strlen(name);i++)
+		{
+			
+			if(name[i]=='^')
+			{
+				i++;
+				if(name[i]!='^') // this fixes these kind of names with double ^^
+					continue;
+			}
+			
+			namefilter[n] = NexuizASCII[name[i]];		
+			n++;
 			
 			
 
 		}
 	}
-	/*	while(i<strlen(name))
-		{
-			if(name[i]=='^')
-			{
-
-				if(name[i+1]!='^')  //for those who are using double ^^
-					i+=2;
-				else
-				{
-					namefilter[ii]=name[i];
-					i++;
-					ii++;
-				}
-			}
-			else
-			{
-				namefilter[ii]=name[i];
-				i++;
-				ii++;
-			}	
-		}
-	} else
-		return "...";
-		*/
 	return namefilter;
 }
-
-
 /*
 http://www.truecarnage.com/quake-4-color-code-chart-r24.htm
 http://www.truecarnage.com/coloring-team-chat-and-name-tricks-in-q4-r2.htm
