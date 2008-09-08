@@ -182,7 +182,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 	{			
 		if(SCANNER_bCloseApp)
 		{
-			dbg_print("Closing down SIGNALED!\n");
+			dbg_print("Closing down SIGNALED!");
 			break;
 		}
 		

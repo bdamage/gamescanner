@@ -563,7 +563,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
 							if(strlen(szTemp)==0)
 							{
-								MessageBox(hDlg,"Ensure that a Name is entered.","Error saving",MB_OK);
+								MessageBox(hDlg,lang.GetString("NoName"),"Error saving",MB_OK);
 								return TRUE;
 							}
 
@@ -663,7 +663,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
 							if(strlen(szTemp)==0)
 							{
-								MessageBox(hDlg,"Ensure that a Name is entered.","Error saving",MB_OK);
+								MessageBox(hDlg,lang.GetString("NoName"),"Error saving",MB_OK);
 								return TRUE;
 							}
 							gi.sName = szTemp;

@@ -15,17 +15,15 @@ version 1.12
 * Splitted Global filter settings into a own xml file, this wil help to persist Country settings during upgrades.
 * Fixed a bug when Game Scanner autostarts it never opens up from the task tray.
 * Added a new command line option /portable this option will save all settings and servers in the same folder as the executable.
+* Updated IP to Country database.
++loads of other code changes/bug fixes has been done...
 
-* Support for new games: 
+* Added support for new games: 
   Nexuiz.
-  Half-life, which includes mods.
-  - The Specialist (ts)
+  Half-life, including mods:
   - Team Fortress Classic  (tfc)
-  - Zombie Panic  (zp)
-  - Day of Defeat (dod
-  - Vampire Slayer (vs)
-  - Natural Selection (ns)
-    etc...
+  - Day of Defeat (dod)
+    much more... 
  
   
 

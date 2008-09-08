@@ -1137,7 +1137,19 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 			packet[i]=NULL;
 			SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q3_dwNewTotalServers,pGI->szGAME_NAME);
 			if(g_bCancel)
+			{
+				//ensure to clean up
+				for(i=0; i<MAX_PACKETS;i++)
+				{
+					if(packet[i] != NULL)
+					{
+						free(packet[i]);			
+						packet[i]=NULL;
+					}
+				}
+			
 				break;
+			}
 			Sleep(50); //give cpu sometime to breath
 		}
 	}
