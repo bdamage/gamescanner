@@ -19,6 +19,7 @@ DWORD Q4_dwTotalServers=0;
 DWORD Q4_dwNewTotalServers=0;
 extern HWND g_hwndProgressBar;
 extern APP_SETTINGS_NEW AppCFG;
+extern CLanguage lang;
 BOOL Q4_bScanningInProgress = FALSE;
 
 void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),
@@ -130,13 +131,6 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 
 		packet[i]=(unsigned char*)getpacket(ConnectSocket, &packetlen);
 
-/*		int iBytesInBuffer = 0;
-		ioctlsocket(ConnectSocket, FIONREAD , (u_long FAR*) &iBytesInBuffer);
-
-		if(iBytesInBuffer==0)
-			DebugBreak();
-*/
-		//dbg_dumpbuf("serverlist.bin", packet[i], packetlen);
 
 		if(packet[i]==NULL) 
 		{
@@ -144,12 +138,8 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 			dbg_print("Could NOT receive all packets!\n");
 			break;  	
 		} 
-		
-		//if(Q4_pSIServerListStart==NULL)
+		SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q4_dwNewTotalServers,pGI->szGAME_NAME);		
 		Q4_parseServers((char*)packet[i],packetlen,pGI,Q4_InsertServerItem);
-	//	else
-	//		Q4_parseServers((char*)packet[i],packetlen,Q4_pSIServerListStart,InsertServerListView);
-
 		free(packet[i]);
 	
 	}

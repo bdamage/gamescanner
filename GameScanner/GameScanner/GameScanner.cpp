@@ -4669,10 +4669,57 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	
 	ChangeMainMenuLanguage(hwnd);
 	ChangeFont(hwnd,g_hf);
-	ShowWindow(g_hwndLogger,SW_HIDE);
+
+	ShowWindow(g_hwndListViewPlayers,SW_SHOW);	
+	ShowWindow(g_hwndListViewVars,SW_HIDE);	
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
 	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
-	SendMessage(hwnd,WM_GETSERVERLIST_START,0, 0);
+	ShowWindow(g_hwndLogger,SW_HIDE);
+	TabCtrl_SetCurSel(g_hwndTabControl,0);
+
+
+
+	//SendMessage(hwnd,WM_GETSERVERLIST_START,0, 0);
+
+//-----
+
+	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 	
+
+	strcpy(g_szMapName,"unknownmap.png");
+	//AddLogInfo(ETSV_INFO,"Initialize main dialog.");
+	ZeroMemory(g_szIPtoAdd,sizeof(g_szIPtoAdd));
+	EnableButtons(TRUE);
+	//EnableDownloadLink(FALSE);	
+	if(g_bDoFirstTimeCheckForUpdate)
+		PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,1);
+	
+	CenterWindow(g_hWnd);
+
+	g_nCurrentSortMode = COL_PLAYERS;
+
+	SetInitialViewStates();
+	
+	SetDlgTrans(hwnd,AppCFG.g_cTransparancy);
+	
+	TreeView_BuildList();
+
+	if(GamesInfo.size()>0)
+		currCV = &GamesInfo[0];
+	else
+		currCV = NULL;
+
+	LoadAllServerList();
+
+	g_iCurrentSelectedServer = -1;
+
+	ListView_InitilizeColumns();
+
+	Buddy_Load(g_pBIStart);
+	Buddy_UpdateList(g_pBIStart);
+
+	Show_ToolbarButton(IDC_BUTTON_FIND,false);
+	Show_ToolbarButton(IDC_DOWNLOAD, false);
+	SetStatusText(ICO_INFO,lang.GetString("Ready"));
 }
 
 
@@ -4755,56 +4802,7 @@ void OnDestroy(HWND hWnd)
 	g_hwndStatus = NULL;		
 }
 
-void OnInitialize_MainDlg(HWND hwnd)
-{
-	ListView_DeleteAllItems(g_hwndListViewServer);
-	ListView_DeleteAllItems(g_hwndListViewPlayers);
-	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 	
 
-	strcpy(g_szMapName,"unknownmap.png");
-	//AddLogInfo(ETSV_INFO,"Initialize main dialog.");
-	ZeroMemory(g_szIPtoAdd,sizeof(g_szIPtoAdd));
-	EnableButtons(TRUE);
-	//EnableDownloadLink(FALSE);	
-	if(g_bDoFirstTimeCheckForUpdate)
-		PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,1);
-	
-	CenterWindow(g_hWnd);
-
-	g_nCurrentSortMode = COL_PLAYERS;
-
-	SetInitialViewStates();
-	
-	SetDlgTrans(hwnd,AppCFG.g_cTransparancy);
-	
-	TreeView_BuildList();
-
-	if(GamesInfo.size()>0)
-		currCV = &GamesInfo[0];
-	else
-		currCV = NULL;
-
-	LoadAllServerList();
-
-	g_iCurrentSelectedServer = -1;
-
-	ListView_InitilizeColumns();
-
-	Buddy_Load(g_pBIStart);
-	Buddy_UpdateList(g_pBIStart);
-
-	Show_ToolbarButton(IDC_BUTTON_FIND,false);
-	Show_ToolbarButton(IDC_DOWNLOAD, false);
-	
-	ShowWindow(g_hwndLogger,SW_HIDE);
-	ShowWindow(g_hwndMainRCON,SW_HIDE);	
-	ShowWindow(g_hwndListViewVars,SW_HIDE);	
-	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
-	TabCtrl_SetCurSel(g_hwndTabControl,0);
-	ShowWindow(g_hwndListViewPlayers,SW_SHOW);	
-
-	SetStatusText(ICO_INFO,"Initialization done.");
-}
 
 char * TrimString(char *szIn)
 {	
@@ -4897,7 +4895,7 @@ void SaveServerList(GAME_INFO *pGI)
 		fclose(fp2);
 	}
 
-	SetStatusText(ICO_INFO,"Saving... DONE!");
+
 }
 //TODO rewrite file structure for easier future changes/additional info
 DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
@@ -5110,6 +5108,8 @@ void SaveAllServerList()
 {
 	for(int i=0;i<GamesInfo.size();i++)
 		SaveServerList(&GamesInfo[i]);
+
+	SetStatusText(ICO_INFO,lang.GetString("SavedServers"));
 }
 
 void LoadAllServerList()
@@ -5596,7 +5596,7 @@ DWORD WINAPI StopScanningThread(LPVOID pvoid )
 		return 0;
 
 	EnableButtons(false);
-	SetStatusText(ICO_INFO,"Stopping scanner!");
+	SetStatusText(ICO_INFO,lang.GetString("StoppingScanner"));
 	bWaitingToSave = TRUE;
 	dbg_print("Entering SavingFilesCleaningUpThread!\n");
 	if(g_bRunningQueryServerList==true)
@@ -5633,7 +5633,7 @@ DWORD WINAPI StopScanningThread(LPVOID pvoid )
 	g_bCancel = false;
 	SCANNER_bCloseApp = FALSE;
 	bWaitingToSave = FALSE;
-	SetStatusText(ICO_INFO,"Scanner stopped!");
+	SetStatusText(ICO_INFO,lang.GetString("ScannerStopped"));
 	EnableButtons(true);
 	return 0;
 }
@@ -11024,23 +11024,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		case WM_INITVIEWS:
 			Initialize_WindowSizes();
-			//Update_WindowSizes();
 			PostMessage(g_hWnd,WM_SIZE,0,0);
 			return TRUE;
 
 		case WM_REFRESHSERVERLIST:
 			Initialize_RedrawServerListThread();
-			//RedrawServerListThread(&GamesInfo[g_currentGameIdx]);
 			return TRUE;
 		case WM_CREATE:
-		{
-			  //add a band that contains a combobox			
+		{			  
 			OnCreate(hWnd,g_hInst);	
-			
-			OnInitialize_MainDlg(hWnd);
-			PostMessage(hWnd, WM_SIZE, 0, 0);
-	
-			
+			PostMessage(hWnd, WM_SIZE, 0, 0);			
 			return TRUE;
 		break;
 		}

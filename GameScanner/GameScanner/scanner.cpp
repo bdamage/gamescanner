@@ -7,6 +7,7 @@
 extern APP_SETTINGS_NEW AppCFG;
 extern HWND g_hwndProgressBar;
 extern HWND g_hWnd;
+extern CLanguage lang;
 
 LPSERVERINFO		SCANNER_pSI_rescan = NULL;
 extern CRITICAL_SECTION	SCANNER_cs,SCANNER_CSthreadcounter; 
@@ -190,7 +191,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		EnterCriticalSection(&SCANNER_cs);
 		if(pGI->dwScanIdx<size)
 		{
-			SetStatusText(pGI->iIconIndex, "Scanning server %d of %d",pGI->dwScanIdx,size);
+			SetStatusText(pGI->iIconIndex,lang.GetString("ScanStatus"),pGI->dwScanIdx,size);
 			//idx = pGI->dwScanIdx;
 			//REF_SERVER_INFO refSI;
 			//refSI = pGI->vRefScanSI.at(idx).dwIndex;
@@ -236,7 +237,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		
 	}
 
-	SetStatusText(pGI->iIconIndex, "Waiting for connections to die!");
+	SetStatusText(pGI->iIconIndex, lang.GetString("ScanWaitingForThreads") );
 	
 	//This ensures that all threads has been created properly and thread count critical sections works correctly
 	//dbg_print("Waiting for all threads to finish the loop!\n");
