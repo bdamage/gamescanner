@@ -65,8 +65,6 @@ Upgrade code 1.0 - 1.0.9:
 //#pragma comment(lib, "Winmm.lib")  //Playsound
 #pragma comment(lib, "Iphlpapi.lib")  //ICMP
 
-
-
 #pragma warning( disable : 4244 ) 
 #pragma warning( disable : 4018 ) 
 #pragma warning( disable : 4800 ) 
@@ -111,7 +109,7 @@ char TREEVIEW_GLOBAL_FILTER_VERSION[20];
 #define SCAN_ALL_GAMES	2
 
 
-#define ETSV_PURGE_COUNTER 5  //Counter after X timeouts to purge (delete) the server
+#define SERVER_PURGE_COUNTER 5  //Counter after X timeouts to purge (delete) the server
 
 #define XML_READ_OK		0
 #define XML_READ_ERROR	1
@@ -339,8 +337,8 @@ bool g_bRunningQueryServerList = false;
 int g_iCurrentSelectedServer = -1;
 int g_statusIcon = -1;
 BOOL g_bRedrawServerListThread = FALSE;
-HICON hOnlineIcon = NULL;
-HICON hOfflineIcon = NULL;
+HICON g_hAppIcon = NULL;
+
 
 BOOL g_bControl = FALSE;
 
@@ -856,167 +854,27 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			hDC = BeginPaint(hWnd, &ps);
 			if(hDC==NULL)
 				return FALSE;
-		
-		if(g_bPinging==TRUE)
-		{
-			deQPing::reverse_iterator iLst;
-			deQPing::iterator MaxElement;
-
-			MaxElement = max_element ( QPing.begin ( ) , QPing.end ( ) );
-			DWORD dwMaxPing = 0;
-			if(MaxElement !=QPing.end())
-				dwMaxPing = *MaxElement;
-
-			Draw_GraphBackground(hWnd,hDC,12, 6,"Ping response from", "seconds" ,"milliseconds",dwMaxPing*2);
-			Draw_PingStats( hWnd, hDC, 12, 6,dwMaxPing*2);
-		}
-		else
-		{
-			Draw_GraphBackground(hWnd,hDC, _TraceRT.size(), 10, "Trace route to","hops" ,"milliseconds",350,DRAW_GRAPH_X_LEFT_TO_RIGHT);
-			Draw_TraceRouteStats( hWnd, hDC,  _TraceRT.size(), 10,350);
-		}
-/*
-			HGDIOBJ original = NULL;
-			original = SelectObject(hDC,GetStockObject(DC_PEN));
-			GetWindowRect(hWnd,&size);
-		
-			hbrBkgnd = CreateSolidBrush(RGB(0, 0,64)); 
-			hbrushOld = (HBRUSH)SelectObject(hDC, hbrBkgnd);
-
-			SetDCPenColor(hDC,RGB(192,192,255));
-			SetBkColor(hDC,    RGB(0, 0,64));
-			rect.left = 2;
-			rect.top = 2;
 			
-			rect.bottom = (size.bottom - size.top);
-			rect.right = (size.right - size.left);
-			FillRect(hDC, &rect, (HBRUSH) hbrBkgnd);   //fill out the main dark blue background
-			
-			rect.left = X_OFFSET_STATS;
-			rect.top = X_OFFSET_STATS;
-			rect.bottom-=20;
-			rect.right-=20;
-			
-			
-			Rectangle(hDC, rect.left, rect.top ,rect.right, rect.bottom); 
-			
-			CopyRect(&rectInner,&rect);
-			
-			//Shrink one pixel for the maind rawing area
-			rectInner.left = X_OFFSET_STATS+1;
-			rectInner.top = X_OFFSET_STATS+1;
-			rectInner.bottom--;
-			rectInner.right--;
-			FillRect(hDC, &rectInner, (HBRUSH) hbrBkgnd);
-			
-			SetTextColor(hDC,0x00FFFFFF);
-
-			hPenStatus = CreatePen(PS_SOLID, 1, RGB(0,255,0));
-
-			hpen = CreatePen(PS_DOT, 1, RGB(64,64,204));
-			hpenOld = (HPEN) SelectObject(hDC, hpen);
-		
-			int offsetX = rectInner.right / 6;
-			int offsetY = rectInner.bottom / 6;
-			deQPing::reverse_iterator iLst;
-			deQPing::iterator MaxElement;
-
-			MaxElement = max_element ( QPing.begin ( ) , QPing.end ( ) );
-			DWORD dwMaxPing = 0;
-			if(MaxElement !=QPing.end())
-				dwMaxPing = *MaxElement;
-			
-			int scale = 10;
-			if(dwMaxPing!=0)
-				scale = dwMaxPing / 5;
-
-
-			for(int i=0; i<5;i++)
-			{	
-				char szTxt[10];
-
-				if((rectInner.right-offsetX*(i+1))>rectInner.left)
-				{
-					int x = rectInner.right-offsetX*(i+1);
-					MoveToEx(hDC,x,rectInner.top,NULL);
-					LineTo(hDC,x,rectInner.bottom);
-					
-					sprintf(szTxt,"%d",(i+1)*6);
-					MyDrawFont(hDC, x, rectInner.bottom+3, szTxt,0);
-				}
-				if((rectInner.bottom-offsetY*(i+1))>rectInner.top)
-				{
-					int y = rectInner.bottom-offsetY*(i+1);
-					MoveToEx(hDC,rectInner.left,y,NULL);
-					LineTo(hDC,rectInner.right,y);
-
-					sprintf(szTxt,"%d",(i+1)*scale);
-					MyDrawFont(hDC, rectInner.left-12, y, szTxt,900);
-				}
-
-			}
-			SelectObject(hDC, hPenStatus);
-
-			offsetX = offsetX/6;
-			
-			int oldX = rectInner.right,
-				oldY = rectInner.bottom;
-	
-			int i=0;
-			for ( iLst = QPing.rbegin(); iLst != QPing.rend(); iLst++ )
+			if(g_bPinging==TRUE)
 			{
-				
-				DWORD dwPingi = *iLst;
-				MoveToEx(hDC,oldX,oldY,NULL);
-				int fact = dwPingi / scale;
-					
-				int y = fact * offsetY;
-				y+= dwPingi-(fact*scale);  //rest
+				deQPing::reverse_iterator iLst;
+				deQPing::iterator MaxElement;
 
-				int yTot = rectInner.bottom-y;
-				if(yTot<rectInner.top)
-					yTot = rectInner.top;
-				
-				int x = rectInner.right-(offsetX*(i+1));
-				if(x<rectInner.left)
-					x = rectInner.left;
-				
-				LineTo(hDC,x,yTot);
-				oldX = x;
-				oldY = yTot;
-				i++;
+				MaxElement = max_element ( QPing.begin ( ) , QPing.end ( ) );
+				DWORD dwMaxPing = 0;
+				if(MaxElement !=QPing.end())
+					dwMaxPing = *MaxElement;
 
+				Draw_GraphBackground(hWnd,hDC,12, 6,"Ping response from", "seconds" ,"milliseconds",dwMaxPing*2);
+				Draw_PingStats( hWnd, hDC, 12, 6,dwMaxPing*2);
 			}
-		
-
-			// Do not forget to clean up.
-			SelectObject(hDC, hpenOld);
-			DeleteObject(hPenStatus);
-			DeleteObject(hpen);
-			SelectObject(hDC, hbrushOld);
-		
-			char szText[100];
-		
-			sprintf(szText,"Ping response from %s",szIPAddressToPing);
-			
-			
-			MyDrawFont(hDC, 5, (rectInner.bottom/2)+40, "milliseconds",900);
-
-			MyDrawFont(hDC, rectInner.right / 2, rectInner.bottom+10, "seconds",0);
-			size.left = 20;
-			size.top = 6;
-
-			TextOut(hDC, size.left+2,size.top-1, szText, strlen(szText));
-			SetTextColor(hDC,0x00000000);
-			if(hbrBkgnd!=NULL)
-				DeleteObject(hbrBkgnd);
-			if(hbrBar!=NULL)
-				DeleteObject(hbrBar);
-			
-			SelectObject(hDC,original);
-*/
+			else
+			{
+				Draw_GraphBackground(hWnd,hDC, _TraceRT.size(), 10, "Trace route to","hops" ,"milliseconds",350,DRAW_GRAPH_X_LEFT_TO_RIGHT);
+				Draw_TraceRouteStats( hWnd, hDC,  _TraceRT.size(), 10,350);
+			}
 			EndPaint(hWnd, &ps);
-	
+		
 		}
 		break;
 	case WM_CLOSE:
@@ -2894,7 +2752,7 @@ int TreeView_GetSelectionV3()
 	{
 		case DO_NOTHING_: return DO_NOTHING; 
 		case DO_REDRAW_SERVERLIST: 
-			return SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); 
+			return SetCurrentActiveGame(vTI.at(iSel).cGAMEINDEX); 
 		case DO_CHECKBOX: 
 			{
 				TreeView_SetCheckBoxState(iSel,vTI.at(iSel).dwState);
@@ -2905,10 +2763,10 @@ int TreeView_GetSelectionV3()
 			//HWND hwndEditCtrl = TreeView_EditLabel(g_hwndMainTreeCtrl,&tvitem);
 			break;
 			}
-		case DO_FAV_NO_FILT	: SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return DO_NOTHING;
-		case DO_FAV_PUB	: SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PUBLIC;
-		case DO_FAV_PRIV : SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PRIVATE;
-		case DO_HISTORY : SetCurrentViewTo(vTI.at(iSel).cGAMEINDEX); return SHOW_HISTORY;
+		case DO_FAV_NO_FILT	: SetCurrentActiveGame(vTI.at(iSel).cGAMEINDEX); return DO_NOTHING;
+		case DO_FAV_PUB	: SetCurrentActiveGame(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PUBLIC;
+		case DO_FAV_PRIV : SetCurrentActiveGame(vTI.at(iSel).cGAMEINDEX); return SHOW_FAVORITES_PRIVATE;
+		case DO_HISTORY : SetCurrentActiveGame(vTI.at(iSel).cGAMEINDEX); return SHOW_HISTORY;
 		case DO_GAME_SPECIFIC_FILTER:		
 			vTI.at(iSel).dwState = Filter_game_specific_edit(&GamesInfo[vTI.at(iSel).cGAMEINDEX],vTI.at(iSel), &tvitem,iSel);
 			break;
@@ -2944,7 +2802,7 @@ int TreeView_GetSelectionV3()
 	}
 
 	TreeView_SelectItem(g_hwndMainTreeCtrl,NULL);	
-	SetCurrentViewTo(g_currentGameIdx);
+	SetCurrentActiveGame(g_currentGameIdx);
 	//RedrawServerListThread(&GamesInfo[g_currentGameIdx]);
 	Initialize_RedrawServerListThread();
 	return DO_NOTHING;
@@ -3411,6 +3269,8 @@ void Select_item_and_all_childs(HTREEITEM hRoot, bool selected)
 void TreeView_SetItemText(HTREEITEM hTI, char *szText)
 {
 	TVITEM  tvitem;
+	if(szText==NULL)
+		return;
 	memset(&tvitem,0,sizeof(TVITEM));
 	tvitem.hItem = hTI;
 	tvitem.mask = TVIF_TEXT ;
@@ -3951,7 +3811,7 @@ int TreeView_load()
 		if (!GlobalFilterDoc.LoadFile(szFilePath)) 
 		{
 			AddLogInfo(ETSV_ERROR,"Error loading default globalfilter.xml file from EXE_PATH (%s)",szFilePath);
-	
+			return 1;
 		}
 	}
 
@@ -4298,11 +4158,51 @@ void ListView_SetHeaderSortImage(HWND listView, int columnIndex, BOOL isAscendin
 void OnRestore()
 {
 	OutputDebugString("OnRestore\n");
-	//AddLogInfo(ETSV_INFO, "Message WM_SIZE restoring.");
-	//Initialize_WindowSizes();
+	ListView_DeleteAllItems(g_hwndListViewServer);
+	ListView_DeleteAllItems(g_hwndListViewPlayers);
+	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 	
+	strcpy(g_szMapName,"unknownmap.png");
+	ZeroMemory(g_szIPtoAdd,sizeof(g_szIPtoAdd));
+	EnableButtons(TRUE);
+	if(g_bDoFirstTimeCheckForUpdate)
+		PostMessage(g_hWnd,WM_COMMAND,IDM_UPDATE,1);
+	
+	CenterWindow(g_hWnd);
+
+	g_nCurrentSortMode = COL_PLAYERS;
+
+	SetInitialViewStates();
+	
+	SetDlgTrans(g_hWnd,AppCFG.g_cTransparancy);
+	
+	TreeView_ReBuildList();
+
 	g_iCurrentSelectedServer = -1;
 
+	ListView_InitilizeColumns();
 
+	Buddy_UpdateList(g_pBIStart);
+
+	Show_ToolbarButton(IDC_BUTTON_FIND,false);
+	Show_ToolbarButton(IDC_DOWNLOAD, false);
+	
+	ShowWindow(g_hwndLogger,SW_HIDE);
+	ShowWindow(g_hwndMainRCON,SW_HIDE);	
+	ShowWindow(g_hwndListViewVars,SW_HIDE);	
+	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
+	TabCtrl_SetCurSel(g_hwndTabControl,0);
+	ShowWindow(g_hwndListViewPlayers,SW_SHOW);	
+	
+	if(GamesInfo.size()>0)
+	{
+		if(GamesInfo[g_currentGameIdx].bActive)
+			SetCurrentActiveGame(g_currentGameIdx);
+		else
+			SetCurrentActiveGame(FindFirstActiveGame());
+
+		if((GamesInfo[g_currentGameIdx].vSI.size()>0) && (g_bMinimized == false))
+			OnActivate_ServerList(SCAN_FILTERED);
+	}
 }
 
 void ListView_SetDefaultColumns()
@@ -4462,7 +4362,6 @@ void ListView_ReInitializeColumns()
 	{
 		for(int i = 0;i<MAX_COLUMNS;i++)
 		{	
-			//CUSTCOLUMNS[i].columnIdx = CUSTCOLUMNS[i].columnIdxToSave;
 			if(CUSTCOLUMNS[i].bActive && (CUSTCOLUMNS[i].columnIdx == x))
 			{
 				CUSTCOLUMNS[i].columnIdx = idx;
@@ -4566,7 +4465,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	AddLogInfo(ETSV_INFO,"Called OnCreate...");
 
 	LV_COLUMN   lvColumn;
-
 	ZeroMemory(&lvColumn,sizeof(LV_COLUMN));
 			
 	Q3_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);//&InsertServerItem);
@@ -4590,8 +4488,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 
 	WNDCONT[WIN_MAINTREEVIEW].hWnd = g_hwndMainTreeCtrl;
-
-
 
 	g_hwndListViewServer = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
 							 LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
@@ -4658,11 +4554,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_PING].hWnd = InitSTATS(hwnd);
 
 	Initialize_WindowSizes();
-
 	SetImageList();
-
-
-	AddLogInfo(ETSV_INFO,"Called All CreateWindowEx.");
 
 	TCITEM tci;
 	ZeroMemory(&tci,sizeof(tci));
@@ -4690,7 +4582,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	TreeView_SetExtendedStyle(g_hwndMainTreeCtrl, WS_EX_LEFT,dwExStyle);
 	
 	SetWindowTheme(g_hwndMainTreeCtrl, L"explorer", 0);
-
 
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewPlayers);
 	dwExStyle |= LVS_EX_FULLROWSELECT ;
@@ -4752,8 +4643,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	lvColumn.pszText = (LPSTR)lang.GetString("ColumnIP");
 	ListView_InsertColumn(g_hwndListBuddy, 2, &lvColumn);
 
-	SendMessage(hwnd,WM_SETICON,ICON_SMALL, (LPARAM)hOnlineIcon);
-
+	SendMessage(hwnd,WM_SETICON,ICON_SMALL, (LPARAM)g_hAppIcon);
 	
 	SetWindowText(hwnd,szDialogTitle);
 
@@ -4762,9 +4652,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	long style = GetWindowLong(g_hwndListViewServerListHeader,GWL_STYLE);
 	style |= HDS_DRAGDROP;
 	SetWindowLong(g_hwndListViewServerListHeader,GWL_STYLE,style);
-
-
-	AddLogInfo(ETSV_INFO,"Creating Subclasses");
 
 	// Subclassing    
 	g_wpOrigListViewServerProc = (LONG_PTR) SetWindowLongPtr(g_hwndListViewServer, GWLP_WNDPROC, (LONG_PTR) ListViewServerListSubclassProc); 
@@ -4780,18 +4667,12 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	g_hf = MyCreateFont(hwnd);
 	g_hf2 = MyCreateFont(hwnd,14,FW_BOLD,"Verdana");//Courier New");
 	
-
 	ChangeMainMenuLanguage(hwnd);
-
 	ChangeFont(hwnd,g_hf);
-	
 	ShowWindow(g_hwndLogger,SW_HIDE);
 	ShowWindow(g_hwndMainRCON,SW_HIDE);	
 	ShowWindow(g_hwndMainSTATS,SW_HIDE);	
-	
 	SendMessage(hwnd,WM_GETSERVERLIST_START,0, 0);
-	
-	AddLogInfo(ETSV_INFO,"Exit OnCreate...");
 }
 
 
@@ -4980,7 +4861,7 @@ void SaveServerList(GAME_INFO *pGI)
 				//memcpy(pSI.cIdentifier,"SERV",4);
 				//pSI.dwVersion = SERVERSLISTFILE_VER;
 				bWrite=false;
-				if (pSI.cPurge<ETSV_PURGE_COUNTER )
+				if (pSI.cPurge<SERVER_PURGE_COUNTER )
 					bWrite=true;
 				else if (pSI.cFavorite)
 					bWrite=true;
@@ -5267,11 +5148,11 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 	if(GamesInfo.size()>0)
 	{
 		if(GamesInfo[g_currentGameIdx].bActive)
-			SetCurrentViewTo(g_currentGameIdx);
+			SetCurrentActiveGame(g_currentGameIdx);
 		else
-			SetCurrentViewTo(FindFirstActiveGame());
+			SetCurrentActiveGame(FindFirstActiveGame());
 
-		if(GamesInfo[g_currentGameIdx].vSI.size()>0)
+		if((GamesInfo[g_currentGameIdx].vSI.size()>0) && (g_bMinimized == false))
 			OnActivate_ServerList(SCAN_FILTERED);
 	}
 		
@@ -5791,16 +5672,14 @@ void OnMinimize(HWND hWnd)
 	//ShowBalloonTip("Notification","ET Server Viewer is still running.\nDouble click to activate ETSV\nRight click to exit the application.");
 }
 
-int SetCurrentViewTo(int index)
-{
-	g_currentGameIdx = index;
-	//Clear old
-	//if(currCV!=NULL)
-	//	currCV->vRefListSI.clear();
 
+int SetCurrentActiveGame(int GameIndex)
+{
+	g_currentGameIdx = GameIndex;
 	currCV = &GamesInfo[g_currentGameIdx];
 	if(g_hwndMainTreeCtrl==NULL)
 		return 0;
+
 	//Deselect
 	for(int i=0;i<GamesInfo.size();i++)
 		TreeView_SetItemState(g_hwndMainTreeCtrl,GamesInfo[i].hTI,0 , TVIS_SELECTED );
@@ -6893,7 +6772,7 @@ bool FilterServerItemV2(LPARAM *lp,GAME_INFO *pGI)
 			if(srv->bDedicated==0)
 				return false;
 
-		if((srv->cPurge>=ETSV_PURGE_COUNTER) && (srv->cFavorite==0))
+		if((srv->cPurge>=SERVER_PURGE_COUNTER) && (srv->cFavorite==0))
 			return false;
 
 		if(bForceHistory)
@@ -9384,11 +9263,9 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lpCmdLine,int nCmdShow)
-{
-	
+{	
 	MSG msg;
 	HACCEL hAccelTable;
-
 	InitCommonControls(); 
 	INITCOMMONCONTROLSEX icex;
  
@@ -9401,15 +9278,24 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	LoadString(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadString(hInstance, IDC_GAMESCANNER, szWindowClass, MAX_LOADSTRING);
 
-	hOfflineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_GAMESCANNER)); //ICON_APP_LOGO)); 
-	hOnlineIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_TASKTRAY)); 
+	g_hAppIcon = LoadIcon(hInstance,(LPCTSTR)MAKEINTRESOURCE(IDI_ICON_TASKTRAY)); 
 
  	GetModuleFileName ( NULL, EXE_PATH, MAX_PATH*2 );
 	char *p = strrchr(EXE_PATH,'\\');
 	if(p!=NULL)
 		p[0]=0;
 
-	SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,USER_SAVE_PATH);
+	char *pszCmd=NULL;
+	pszCmd = strchr(lpCmdLine,'/');
+	if(pszCmd!=NULL)
+	{
+		if(strcmp(pszCmd,"/portable")==0)
+			strcpy(USER_SAVE_PATH,	EXE_PATH);
+		 else
+			SHGetFolderPath(NULL,CSIDL_APPDATA,NULL,SHGFP_TYPE_CURRENT,USER_SAVE_PATH);
+	}
+
+	
 	
 	SHGetFolderPath(NULL,CSIDL_COMMON_APPDATA,NULL,SHGFP_TYPE_CURRENT,COMMON_SAVE_PATH);
 	 
@@ -9469,34 +9355,32 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	LoadImageList();
 	CFG_Load();
 
-
 	if(AppCFG.bAutostart)  //auto run up on boot
 		SelfInstall(EXE_PATH);
 	else
 		UnInstall();
 
-	char *pszCmd=NULL;
 	pszCmd = strchr(lpCmdLine,'/');
 	if(pszCmd!=NULL)
 	{
 		if(strcmp(pszCmd,"/tasktray")==0)
+		{
+			g_bMinimized = true;
 			g_bNormalWindowed = false;
+		}
 		 else
 			g_bNormalWindowed = true;
 	}
 
 	SetCurrentDirectory(USER_SAVE_PATH);
-
 	if(strlen(lpCmdLine)>0)
 	{
-
 		char *p,*q;
 		char proto[256];
 		strcpy(proto,lpCmdLine);
 		p = strchr(lpCmdLine,'/');
 		if(p!=NULL)
 		{
-
 			p+=2;
 			q = strchr(p,'/');
 			if(q != NULL)
@@ -9553,7 +9437,6 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	userMode = GetScreenResolution();
 
 	MyRegisterClass(hInstance);
-//	AddLogInfo(ETSV_INFO,"Registered class");
 
 	// Perform application initialization:
 	if (!InitInstance (hInstance, nCmdShow)) 
@@ -9561,7 +9444,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 		AddLogInfo(ETSV_INFO,"Error InitInstance");
 		return FALSE;
 	}
-//	AddLogInfo(ETSV_INFO,"InitInstance...");
+
 	CleanUpFilesRegistry();
 	hAccelTable = LoadAccelerators(hInstance, (LPCTSTR)IDC_ETSERVERVIEWER);
 	//register hot key
@@ -9581,7 +9464,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	structNID.uID = 100123; //ID of the icon that willl appear in the system tray 
 	structNID.uFlags =  NIF_ICON | NIF_MESSAGE | NIF_TIP; 
 	strcpy(structNID.szTip,"Game Scanner");
-	structNID.hIcon = hOnlineIcon; 
+	structNID.hIcon = g_hAppIcon; 
 	structNID.uCallbackMessage = WM_USER_SHELLICON;
 
 	int try_count=1;
@@ -9598,8 +9481,7 @@ tryagain:
 		goto tryagain;
 	}
 
-
-	 
+ 
 	// Main message loop:
 	while (GetMessage(&msg, NULL, 0, 0)) 
 	{
@@ -9630,8 +9512,7 @@ tryagain:
 	
 	Shell_NotifyIcon(NIM_DELETE,&structNID);
 	CloseHandle(hCloseEvent);
-	DestroyIcon(hOfflineIcon);
-	DestroyIcon(hOnlineIcon);
+	DestroyIcon(g_hAppIcon);
 	WSACleanup();
 
 	DestroyAcceleratorTable(hAccelTable); 
@@ -10082,7 +9963,7 @@ DWORD WINAPI AutomaticDownloadUpdateSetUp(LPVOID lpParam)
 				if(pChild==NULL)
 					break;
 
-				ReadCfgStr2(pChild , "FileName",szFileName,sizeof(szFileName));
+				ReadCfgStr2(pChild ,"FileName",szFileName,sizeof(szFileName));
 				ReadCfgStr2(pChild, "Dest",szDestPath,sizeof(szDestPath));
 				ReadCfgStr2(pChild, "MD5",szMD5,sizeof(szMD5));
 				ReadCfgInt2(pChild, "exec",(int&)iExec);					
@@ -10228,17 +10109,11 @@ LRESULT CALLBACK MINMAX_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPara
 }
 
 
-
 void OnMinMaxPlayers(HWND hWndParent,bool bMinValueToSet)
 {
-	int ret =(int) DialogBoxParam(g_hInst, (LPCTSTR)IDD_DLG_MAXMIN_PLY, hWndParent, (DLGPROC)MINMAX_Dlg,bMinValueToSet);					
-
-	if(ret == IDOK)
-	{
-//		TreeView_BuildList();
-	}
-
+	DialogBoxParam(g_hInst, (LPCTSTR)IDD_DLG_MAXMIN_PLY, hWndParent, (DLGPROC)MINMAX_Dlg,bMinValueToSet);					
 }
+
 HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 {
     RECT rcClient;  // dimensions of client area 
@@ -10585,7 +10460,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    g_hInst = hInstance; // Store instance handle in our global variable
 
    hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, hInstance, NULL);
+      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, g_hInst, NULL);
 
    if (!hWnd)
    {
@@ -10603,140 +10478,17 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 
 
-//*************************************************************
-//
-//  RegDelnodeRecurse()
-//
-//  Purpose:    Deletes a registry key and all it's subkeys / values.
-//
-//  Parameters: hKeyRoot    -   Root key
-//              lpSubKey    -   SubKey to delete
-//
-//  Return:     TRUE if successful.
-//              FALSE if an error occurs.
-//
-//*************************************************************
-
-BOOL RegDelnodeRecurse (HKEY hKeyRoot, LPTSTR lpSubKey)
-{
-    LPTSTR lpEnd;
-    LONG lResult;
-    DWORD dwSize;
-    TCHAR szName[MAX_PATH];
-    HKEY hKey;
-    FILETIME ftWrite;
-
-    // First, see if we can delete the key without having
-    // to recurse.
-
-    lResult = RegDeleteKey(hKeyRoot, lpSubKey);
-	AddGetLastErrorIntoLog("RegDelnodeRecurse");
-    if (lResult == ERROR_SUCCESS) 
-        return TRUE;
-
-    lResult = RegOpenKeyEx (hKeyRoot, lpSubKey, 0, KEY_READ, &hKey);
-
-    if (lResult != ERROR_SUCCESS) 
-    {
-        if (lResult == ERROR_FILE_NOT_FOUND) {
-            printf("Key not found.\n");
-            return TRUE;
-        } 
-        else {
-            printf("Error opening key.\n");
-            return FALSE;
-        }
-    }
-
-    // Check for an ending slash and add one if it is missing.
-
-    lpEnd = lpSubKey + lstrlen(lpSubKey);
-
-    if (*(lpEnd - 1) != TEXT('\\')) 
-    {
-        *lpEnd =  TEXT('\\');
-        lpEnd++;
-        *lpEnd =  TEXT('\0');
-    }
-
-    // Enumerate the keys
-
-    dwSize = MAX_PATH;
-    lResult = RegEnumKeyEx(hKey, 0, szName, &dwSize, NULL,
-                           NULL, NULL, &ftWrite);
-
-    if (lResult == ERROR_SUCCESS) 
-    {
-        do {
-
-            StringCchCopy (lpEnd, MAX_PATH*2, szName);
-
-            if (!RegDelnodeRecurse(hKeyRoot, lpSubKey)) {
-                break;
-            }
-
-            dwSize = MAX_PATH;
-
-            lResult = RegEnumKeyEx(hKey, 0, szName, &dwSize, NULL,
-                                   NULL, NULL, &ftWrite);
-
-        } while (lResult == ERROR_SUCCESS);
-    }
-
-    lpEnd--;
-    *lpEnd = TEXT('\0');
-
-    RegCloseKey (hKey);
-
-    // Try again to delete the key.
-
-    lResult = RegDeleteKey(hKeyRoot, lpSubKey);
-
-    if (lResult == ERROR_SUCCESS) 
-        return TRUE;
-
-    return FALSE;
-}
-
-//*************************************************************
-//
-//  RegDelnode()
-//
-//  Purpose:    Deletes a registry key and all it's subkeys / values.
-//
-//  Parameters: hKeyRoot    -   Root key
-//              lpSubKey    -   SubKey to delete
-//
-//  Return:     TRUE if successful.
-//              FALSE if an error occurs.
-//
-//*************************************************************
-
-BOOL RegDelnode (HKEY hKeyRoot, LPTSTR lpSubKey)
-{
-    TCHAR szDelKey[2 * MAX_PATH];
-
-    StringCchCopy (szDelKey, MAX_PATH*2, lpSubKey);
-    return RegDelnodeRecurse(hKeyRoot, szDelKey);
-
-}
-
 void CleanUpFilesRegistry()
 {
 	SetCurrentDirectory(USER_SAVE_PATH);
 	remove("ETSVsetup.msi");
-
- //   RegDelnode(HKEY_LOCAL_MACHINE,TEXT("SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{122CD6F9-B1C2-4124-B5B4-5C0B255B74D1}"));
-//	RegDelnode(HKEY_LOCAL_MACHINE,"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{CEC4EAF2-8EBA-4C36-8B4F-A69EA0E5AF00}");
-
+	remove("GameScanner.msi");
 }
 
 int CFG_Load()
 {
 	Default_Appsettings();
-	//Initialize_GameSettings();		
 	Default_GameSettings();
-	
 
 	lang.loadFile("lang_en.xml");
 
@@ -10764,19 +10516,15 @@ int CFG_Load()
 	TiXmlHandle hDoc(&doc);
 	TiXmlElement* pElem;
 	TiXmlHandle hRoot(0);
-//	TiXmlNode *pNode;
+	pElem=hDoc.FirstChildElement().Element();
+	// should always have a valid root but handle gracefully if it does
+	if (!pElem) 
+		return 1;
+	const char *szP;
+	szP = pElem->Value(); //= ETSVcfg
 
-	// block: name
-	{
-		pElem=hDoc.FirstChildElement().Element();
-		// should always have a valid root but handle gracefully if it does
-		if (!pElem) return 1;
-		const char *szP;
-		szP = pElem->Value(); //= ETSVcfg
-
-		// save this for later
-		hRoot=TiXmlHandle(pElem);
-	}
+	// save this for later
+	hRoot=TiXmlHandle(pElem);
 	int intVal=0;
 
 	pElem=hRoot.FirstChild("CurrentLanguage").Element();
@@ -11303,20 +11051,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		}
 		break;
 	case WM_SIZE:
-	   {
-		   
+	   {		   
 		 if(wParam==SIZE_RESTORED)
 		 {
 			 OnRestore();
-			// CalcSplitterGripArea();
 		 }
 		 else if (wParam==SIZE_MINIMIZED)
 		 {
 			 g_bMinimized=true;
 			 PostMessage(g_hWnd,WM_CLOSE,0xdead,0);
-			
-			 //Removed since v5.41
-			 //ShowBalloonTip("Notification","ET Server Viewer has still running.\nDouble click on the task tray icon to\nopen it again.");
+			 //ShowBalloonTip("Notification","Game Scanner is still running.\nDouble click on the task tray icon to\nopen it again.");
 			return TRUE;
 		 }
 
@@ -11368,9 +11112,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_COMMAND:
 			wmId    = LOWORD(wParam); 
 			wmEvent = HIWORD(wParam); 
-
-
-		switch(wmEvent)
+			switch(wmEvent)
 			{
 				
 				case CBN_EDITCHANGE:
@@ -11441,10 +11183,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				case IDM_OPEN:
 				{		
 					if(g_bMinimized==false)
-						return TRUE;
-					//ShowWindow(hWnd, SW_SHOWMAXIMIZED);
-					OnInitialize_MainDlg(g_hWnd);
-					//ShowWindow(g_hWnd, 	 SW_SHOW); 
+						return TRUE;					
+
+					
+
 					ShowWindow(g_hWnd, 	 SW_SHOW);
 					ShowWindow(g_hWnd, SW_RESTORE);
 					
@@ -11574,7 +11316,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						{
 							ListView_DeleteAllItems(g_hwndListViewServer);
 							ListView_DeleteAllItems(g_hwndListViewPlayers);
-							SetCurrentViewTo(FindFirstActiveGame());
+							SetCurrentActiveGame(FindFirstActiveGame());
 						} 
 						return TRUE;
 					}

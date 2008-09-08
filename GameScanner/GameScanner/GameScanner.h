@@ -4,7 +4,7 @@
 #include "structs_defines.h"
 #include "..\..\tinyxml\tinyxml.h"
 
-
+void ListView_InitilizeColumns();
 void TreeView_ReBuildList();
 int LoadIconIntoImageList(char*szFilename);
 void CleanUpFilesRegistry();
@@ -59,7 +59,7 @@ LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK	About(HWND, UINT, WPARAM, LPARAM);
 LRESULT CALLBACK	MainProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT CALLBACK PRIVPASS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
-int SetCurrentViewTo(int index);
+int SetCurrentActiveGame(int index);
 int FindFirstActiveGame();
 void RefreshServerList();
 void OnSize(HWND hwndParent, BOOL bRepaint=TRUE);
