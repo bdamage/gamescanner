@@ -69,7 +69,7 @@ const char* CLanguage::GetString(const char* szXmlTagName)
 		if(DefaultLanguage[szXmlTagName].length()>0)
 			return DefaultLanguage[szXmlTagName].c_str();
 	
-	sprintf(m_szError,"Missing Tagname: %s",szXmlTagName);
+	sprintf(m_szError,"Missing Tag: %s",szXmlTagName);
 	return m_szError;
 }
 

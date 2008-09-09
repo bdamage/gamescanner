@@ -229,12 +229,12 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			if (hNewItem)
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
-			for(int i=0;i<GamesInfo.size();i++)
+			for(UINT i=0;i<GamesInfo.size();i++)
 				hNewItem = TreeView_AddItem(GamesInfo[i].iIconIndex,GamesInfo[i].szGAME_SHORTNAME);
 
 			TreeView_Select(g_hwndTree, NULL, TVGN_CARET);
 
-			for(int i=0; i<GamesInfo.size();i++)
+			for(UINT i=0; i<GamesInfo.size();i++)
 			{
 					GamesInfoCFG[i].bActive = GamesInfo[i].bActive;
 					GamesInfoCFG[i].bUseHTTPServerList = GamesInfo[i].bUseHTTPServerList;
@@ -345,7 +345,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					}
 					
 					
-					for(int i=0; i<GamesInfo.size();i++)
+					for(UINT i=0; i<GamesInfo.size();i++)
 					{
 						GamesInfo[i].bActive = GamesInfoCFG[i].bActive;
 						GamesInfo[i].bUseHTTPServerList = GamesInfoCFG[i].bUseHTTPServerList;
@@ -436,7 +436,7 @@ VOID WINAPI CFG_OnSelChanged(HWND hwndDlg)
 
 	TreeView_GetItem(g_hwndTree, &tvitem );
 
-	int iSel = (int)tvitem.lParam;
+	UINT iSel = (UINT)tvitem.lParam;
 
 	if(g_currSelCfg==iSel)
 		return;
