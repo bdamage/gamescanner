@@ -109,7 +109,7 @@
 		</MasterServers>
 		<ServerDefaultPort>28004</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
-		<MasterQueryString></MasterQueryString>
+		<MasterQueryString>\xFF\xFFgetServers\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
@@ -556,7 +556,7 @@
 		<Detection>
 			<Registry>
 				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
-				<RegKey>SOFTWARE\Id\Quake III Arena"</RegKey>
+				<RegKey>SOFTWARE\Id\Quake III Arena</RegKey>
 				<RegItem>INSTALLPATH</RegItem>
 				<InstallSuffix></InstallSuffix>
 			</Registry>
@@ -588,9 +588,9 @@
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers Nexuiz 3 empty full</MasterQueryString>
 		<Detection>
 			<Registry>
-				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
-				<RegKey>SOFTWARE\Id\Quake III Arena"</RegKey>
-				<RegItem>INSTALLPATH</RegItem>
+				<RegRoot></RegRoot>
+				<RegKey></RegKey>
+				<RegItem></RegItem>
 				<InstallSuffix></InstallSuffix>
 			</Registry>
 		</Detection>
@@ -620,4 +620,31 @@
 			</Registry>
 		</Detection>
 	</Game>	
+	<Game>
+		<GameIndex>19</GameIndex>
+		<Name>Doom 3</Name>
+		<ShortName>Doom 3</ShortName>
+		<Filename>doom3.servers</Filename>
+		<NetEngine>Q4</NetEngine>
+		<WebProtocol>q4</WebProtocol>
+		<MapPreviewPath>doom3maps</MapPreviewPath>
+		<Icon>doom3.ico</Icon>
+		<MasterServers>
+			<MasterServer>idnet.ua-corp.com:27650</MasterServer>
+			<UseHTTP>0</UseHTTP>
+		</MasterServers>
+		<ServerDefaultPort>27666</ServerDefaultPort>
+		<ServerInfoQuery></ServerInfoQuery>		
+		
+		<MasterQueryString>\xFF\xFFgetServers\x00\x00\x00\x00\x00\x00\x0A</MasterQueryString>
+		<!-- <MasterQueryString>\xFF\xFFgetServers\x00\x00\x00\x01\x00\x00\x0A</MasterQueryString>-->
+		<Detection>
+			<Registry>
+				<RegRoot></RegRoot>
+				<RegKey></RegKey>
+				<RegItem></RegItem>
+				<InstallSuffix></InstallSuffix>
+			</Registry>
+		</Detection>
+	</Game>		
 </Games>

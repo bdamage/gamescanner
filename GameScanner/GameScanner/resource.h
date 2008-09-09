@@ -224,10 +224,7 @@
 #define IDI_ICON7                       1090
 #define IDI_ICON_RULES                  1090
 #define IDI_ICON_APP_LOGO1              1091
-#define IDI_ICON_APP_LOGO               1091
 #define IDI_ICONQUAKE2                  1093
-#define IDI_ICON8                       1096
-#define IDI_ICON4                       1097
 #define IDI_ICON_TASKTRAY               1098
 #define IDC_BUTTON_ADD_INSTALL          1101
 #define IDI_ICON9                       1101
@@ -243,7 +240,6 @@
 #define IDC_STATIC_ADDNEWINSTALL        1204
 #define IDC_STATIC_VERSION              1205
 #define IDC_STATIC_MOD                  1206
-#define IDC_SLIDER1                     1207
 #define IDC_SLIDER_SLEEP_VAL            1207
 #define IDC_STATIC_SLEEP_VAL            1208
 #define IDM_OPEN                        32771

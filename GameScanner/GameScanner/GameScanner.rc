@@ -56,7 +56,6 @@ IDI_ICON_BLANK          ICON                    "res\\blank.ico"
 IDI_ICON_FILTER2        ICON                    "res\\icon_glo.ico"
 IDI_ICON_VAC            ICON                    "res\\vac.ico"
 IDI_ICON_RCON           ICON                    "res\\icon_loc.ico"
-IDI_ICON_APP_LOGO       ICON                    "res\\icon_app.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -372,7 +371,6 @@ END
 // Bitmap
 //
 
-IDB_BITMAP_LOCK         BITMAP                  "res\\bitmap2.bmp"
 IDB_BITMAP_CONNECT      BITMAP                  "res\\bitmap_c.bmp"
 IDB_BITMAP_REFRESH_SMALL BITMAP                  "res\\bmp00002.bmp"
 IDB_BITMAP_STOP_SMALL   BITMAP                  "res\\bitmap_r.bmp"
@@ -534,8 +532,6 @@ IDI_ICON_PAINT          ICON                    "res\\icon_sta.ico"
 IDI_ICON_LOGGER         ICON                    "res\\ico00002.ico"
 IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
 IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
-IDI_ICON8               ICON                    "res\\GSOrg32.ico"
-IDI_ICON4               ICON                    "res\\GSPlusOrg16.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 
 /////////////////////////////////////////////////////////////////////////////

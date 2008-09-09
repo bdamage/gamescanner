@@ -97,6 +97,14 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 
 	//WSADATA wsaData;
 	SOCKET ConnectSocket;
+	char sendbuf[30];// = {"\xFF\xFFgetServers\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}; 
+	ZeroMemory(sendbuf,sizeof(sendbuf));
+	
+	int len = 0;//(int)strlen(sendbuf);
+	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
+
+	dbg_print("Master server %s:%d",pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
+
 
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
    
@@ -106,12 +114,8 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 		dbg_print("Error connecting to socket!");
 		return 1;
 	}
-
-	//char sendbuf[80];
-	//ZeroMemory(sendbuf,sizeof(sendbuf));
-	char sendbuf[] = {"\xFF\xFFgetServers\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}; 
-
-	if(send(ConnectSocket, sendbuf, sizeof(sendbuf), 0)==SOCKET_ERROR) 
+	dbg_print("Sending command %s Len: %d",sendbuf,len);
+	if(send(ConnectSocket, sendbuf, len, 0)==SOCKET_ERROR) 
 	{
 		Q4_bScanningInProgress = FALSE;
 		closesocket(ConnectSocket);		
@@ -457,7 +461,15 @@ void Q4_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(
 	//if(Q4_UpdateServerListView!=NULL)
  //	Q4_UpdateServerListView(pServerInfo->dwIndex);
 }
-
+/*
+0x035437F2  32 3a 35 38 3a 31 37 00 73 69 5f 70 75 72 65 00 31 00 67 61 6d 65 6e 61 6d 65 00 62 61 73 65 44 4f 4f 4d 2d 31 00 00 00  2:58:17.si_pure.1.gamename.baseDOOM-1...
+            id 
+0x0354381A  00 a2 00 80 3e 00 00 5e 34 28 28 28 5e 32 47 49 5e 37 4f 20 4b 5e 31 41 4e 5e 34 29 29 29 00 01 72 00 80 3e 00 00 5e 37  .¢.€>..^4(((^2GI^7O K^1AN^4)))..r.€>..^7
+0x03543842  46 5e 31 74 5e 37 50 7c 5e 31 46 40 53 54 5e 37 42 45 4e 4e 00 02 21 00 80 3e 00 00 5e 32 4d 6f 67 77 61 69 20 5e 33 7b  F^1t^7P|^1F@ST^7BENN..!.€>..^2Mogwai ^3{
+0x0354386A  5e 31 4b 41 4e 5e 33 7d 00 03 72 00 80 3e 00 00 5e 39 4f 4c 44 5e 31 4d 49 43 48 4c 5e 33 7b 4b 41 4e 7d 00 04 72 00 b0  ^1KAN^3}..r.€>..^9OLD^1MICHL^3{KAN}..r.°
+0x03543892  36 00 00 5e 33 54 5e 31 6f 5e 33 6d 20 5e 31 6f 5e 33 6e 20 5e 31 46 5e 33 69 5e 31 72 5e 33 65 5e 38 20 7b 4b 41 4e 7d  6..^3T^1o^3m ^1o^3n ^1F^3i^1r^3e^8 {KAN}
+0x035438BA  00 05 3f 00 80 3e 00 00 5e 30 4a 77 61 79 6e 65 38 39 5e 39 7b 4b 41 4e 7d 00 20 07 00 00 00 00 fd fd fd fd ab ab ab ab  ..?.€>..^0Jwayne89^9{KAN}. .....ý
+*/
 
 
 PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numPlayers)
@@ -496,7 +508,7 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 			ping = (WORD*)&packet[0];
 			player->ping  = *ping; 
 			packet+=2;
-			if(pSI->cGAMEINDEX==Q4_SERVERLIST)
+			if((pSI->cGAMEINDEX==Q4_SERVERLIST) ||(pSI->cGAMEINDEX==DOOM3_SERVERLIST) )
 			{
 				rate = (WORD*)&packet[0];
 				player->rate  = *rate; 
@@ -512,7 +524,7 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 					player->szClanTag = _strdup(packet);
 				packet+=strlen(packet)+1;
 			} 
-			else //Otherwise go for ETQW
+			else if(pSI->cGAMEINDEX==ETQW_SERVERLIST)//Otherwise go for ETQW
 			{
 
 				packet++; //Skip Clan tag position info

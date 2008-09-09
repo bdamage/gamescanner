@@ -764,9 +764,21 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 	while(pszInput[i]!=0)
 	{
 		char *c = &pszInput[i];
+		char val;
 		if(c[0]=='\\')
 		{
-			if((c[1]=='x') && (c[2]=='F')&& (c[3]=='F'))
+			if((c[1]=='x') )//&& (c[2]=='F')&& (c[3]=='F'))
+			{
+				char hex[4];
+				hex[0] = c[2];
+				hex[1] = c[3];
+				hex[2] = 0;
+				char *End = &hex[2];
+				val = (char)strtol(hex,&End,16);
+				c = &val;//&xFF;			
+				i+=3;
+			}
+/*			if((c[1]=='x') && (c[2]=='F')&& (c[3]=='F'))
 			{
 				c = &xFF;			
 				i+=3;
@@ -780,8 +792,8 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 			{
 				c = &x00;			
 				i+=3;
-			}
-			else if((c[1]=='n'))
+			}*/
+			if((c[1]=='n'))
 			{
 				i++;
 				c = &n;

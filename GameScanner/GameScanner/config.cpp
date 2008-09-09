@@ -438,7 +438,7 @@ VOID WINAPI CFG_OnSelChanged(HWND hwndDlg)
 
 	UINT iSel = (UINT)tvitem.lParam;
 
-	if(g_currSelCfg==iSel)
+	if((UINT)g_currSelCfg==iSel)
 		return;
 
 	if(iSel==-1)
