@@ -683,6 +683,7 @@ BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 	return FALSE;
 }
 
+/*
 //Check if the server exsist
 bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)
 {
@@ -694,6 +695,7 @@ bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)
 
 	 return true;
 }
+*/
 
 void SetStatusText( int icon,const char *szMsg,...)
 {	
@@ -721,34 +723,6 @@ void SetStatusText( int icon,const char *szMsg,...)
 		rc.top = WNDCONT[WIN_STATUS].rSize.top; 
 		rc.right = 25;
 		InvalidateRect(g_hWnd,&rc,TRUE);
-	}
-}
-
-//linked list clean up
-void UTILZ_CleanUp_ServerRules(LPSERVER_RULES &pSR)
-{
-	//dbg_print("Enter Q3_CleanUp_ServerRules(...)\n");
-	if(pSR!=NULL)
-	{
-		__try
-		{
-			if(pSR->pNext!=NULL)
-				UTILZ_CleanUp_ServerRules(pSR->pNext);
-
-			free(pSR->name);
-			free(pSR->value);
-			pSR->pNext = NULL;
-			free(pSR);
-			pSR = NULL;
-
-		} 	
-		__except(GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION)
-		{
-			// exception handling code
-			AddLogInfo(ETSV_ERROR,"Access Violation!!! @ Q3_CleanUp_ServerList(...)\n");
-			DebugBreak();
-		}
-		
 	}
 }
 
@@ -815,14 +789,26 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 	pszOutput[dwMaxBuffer-1]=0;
 	return len;
 }
-void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
+char *Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
+{
+	while(pSR!=NULL)
+	{
+		if(_stricmp(pSR->name,szRuleName)==0)
+			return pSR->value;
+		pSR = pSR->pNext;
+
+	}
+	return NULL;
+}
+
+void CleanUp_PlayerList(LPPLAYERDATA &pPL)
 {
 //	dbg_print("Enter Q3_CleanUp_PlayerList(...)\n");
 	if(pPL!=NULL)
 	{
 		
 		if(pPL->pNext!=NULL)
-			UTILZ_CleanUp_PlayerList(pPL->pNext);
+			CleanUp_PlayerList(pPL->pNext);
 		
 		pPL->pNext = NULL;
 		if(pPL->szPlayerName!=NULL)
@@ -845,6 +831,33 @@ void UTILZ_CleanUp_PlayerList(LPPLAYERDATA &pPL)
 	}
 }
 
+
+//linked list clean up
+void CleanUp_ServerRules(LPSERVER_RULES &pSR)
+{
+	if(pSR!=NULL)
+	{
+		__try
+		{
+			if(pSR->pNext!=NULL)
+				CleanUp_ServerRules(pSR->pNext);
+
+			free(pSR->name);
+			free(pSR->value);
+			pSR->pNext = NULL;
+			free(pSR);
+			pSR = NULL;
+
+		} 	
+		__except(GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION)
+		{
+			// exception handling code
+			AddLogInfo(ETSV_ERROR,"Access Violation!!! @ CleanUp_ServerList(...)\n");
+			DebugBreak();
+		}
+		
+	}
+}
 
 
 char *getpacket(SOCKET s, size_t *len) {

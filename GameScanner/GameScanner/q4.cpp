@@ -137,7 +137,7 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 	{
 		if(packet[i]==NULL) //End of packets
 			break;  	
-		Q4_parseServers((char*)packet[i],packetlen,pGI,Q4_InsertServerItem);
+		Q4_ParseServers((char*)packet[i],packetlen,pGI,Q4_InsertServerItem);
 		SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q4_dwNewTotalServers,pGI->szGAME_NAME);		
 		free(packet[i]);
 	}
@@ -151,55 +151,47 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 
 
 
-SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*InsertServerListView)(GAME_INFO *pGI,SERVER_INFO pSI))
+SERVER_INFO* Q4_ParseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*InsertServerListView)(GAME_INFO *pGI,SERVER_INFO pSI))
 {
 	Q4DATA *q4d;
-	q4d = (Q4DATA*)p;
-
 	SERVER_INFO tempSI;
-	DWORD idx = pGI->vSI.size();
-
 	DWORD *dwIP=NULL;
-
-	p = q4d->data;
+	DWORD idx = pGI->vSI.size();
 
 	if (p==NULL)
 		return NULL;
 
-	char *end;
-	end = p+length-10;
+	q4d = (Q4DATA*)p;
+	char *end = p+length;
 
+	p = q4d->data;
+
+	ZeroMemory(&tempSI,sizeof(SERVER_INFO));		
+	tempSI.pPlayerData = NULL;
+	tempSI.pServerRules = NULL;
+	strcpy(tempSI.szShortCountryName,"zz");
+	tempSI.cGAMEINDEX =  pGI->cGAMEINDEX;
+	tempSI.bNeedToUpdateServerInfo = true;
+
+	int hash = 0;
 	while(p<end) 
 	{	
-		ZeroMemory(&tempSI,sizeof(SERVER_INFO));
-		//Parse and initialize server info
 		dwIP = (DWORD*)&p[0];
 		tempSI.dwIP = ntohl((DWORD)*dwIP); 
-		sprintf_s(tempSI.szIPaddress,sizeof(tempSI.szIPaddress),"%d.%d.%d.%d",(unsigned char)p[0],(unsigned char)p[1],(unsigned char)p[2],(unsigned char)p[3]);
 		tempSI.dwPort  = ((p[5])<<8);
 		tempSI.dwPort |=(unsigned char)(p[4]);
-
-		p+=6;	
-		if(UTILZ_CheckForDuplicateServer(pGI,tempSI)==false)
+	
+		 hash = tempSI.dwIP + tempSI.dwPort;
+		
+		if(UTILZ_checkforduplicates(pGI,  hash,tempSI.dwIP, tempSI.dwPort)==FALSE)	
 		{		
-
-			tempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
-//			tempSI.cCountryFlag = 0;
-			tempSI.bNeedToUpdateServerInfo = true;
+			sprintf_s(tempSI.szIPaddress,sizeof(tempSI.szIPaddress),"%d.%d.%d.%d",(unsigned char)p[0],(unsigned char)p[1],(unsigned char)p[2],(unsigned char)p[3]);
 			tempSI.dwIndex = idx++;
-			tempSI.pPlayerData = NULL;
-			strcpy(tempSI.szShortCountryName,"zz");
-			tempSI.pServerRules = NULL;
+			pGI->shash.insert(Int_Pair(hash,tempSI.dwIndex));
 			pGI->vSI.push_back(tempSI);
-
-			/*if(InsertServerListView!=NULL)
-				InsertServerListView(pGI,tempSI);
-			*/
-
 			Q4_dwNewTotalServers++;
 		} //end serverexsist
-
-		
+		p+=6;			
 		Q4_dwTotalServers++;
 
 	} //end while
@@ -209,17 +201,7 @@ SERVER_INFO* Q4_parseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 
 
 
-char *Q4_Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
-{
-	while(pSR!=NULL)
-	{
-		if(_stricmp(pSR->name,szRuleName)==0)
-			return pSR->value;
-		pSR = pSR->pNext;
 
-	}
-	return NULL;
-}
 
 
 
@@ -232,11 +214,11 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		return -1;
 	}
 	if(pSI->pPlayerData!=NULL)
-		Q4_CleanUp_PlayerList(pSI->pPlayerData);
+		CleanUp_PlayerList(pSI->pPlayerData);
 	pSI->pPlayerData = NULL;
 
 	if(pSI->pServerRules!=NULL)
-		Q4_CleanUp_ServerRules(pSI->pServerRules);
+		CleanUp_ServerRules(pSI->pServerRules);
 	pSI->pServerRules = NULL;
 
 	SOCKET pSocket;
@@ -329,12 +311,12 @@ Quake 4 Responses
 		if(pServRules!=NULL)
 		{		
 			char *szVarValue = NULL;
-			szVarValue = Q4_Get_RuleValue("si_version",pServRules);
+			szVarValue = Get_RuleValue("si_version",pServRules);
 			if(szVarValue!=NULL)
 				strncpy(pSI->szVersion, szVarValue,49);	
 
-			if(Q4_Get_RuleValue("si_name",pServRules)!=NULL)
-				strncpy(pSI->szServerName, Q4_Get_RuleValue("si_name",pServRules),99);
+			if(Get_RuleValue("si_name",pServRules)!=NULL)
+				strncpy(pSI->szServerName, Get_RuleValue("si_name",pServRules),99);
 
 			PLAYERDATA *pQ4Players=NULL;
 			DWORD nPlayers=0;
@@ -361,25 +343,25 @@ Quake 4 Responses
 			pSI->nCurrentPlayers = nPlayers;
 			
 			
-			if(Q4_Get_RuleValue("si_name",pServRules)!=NULL)
-				strncpy(pSI->szServerName, Q4_Get_RuleValue("si_name",pServRules),99);
-			if(Q4_Get_RuleValue("si_map",pServRules)!=NULL)
-				strncpy(pSI->szMap, Q4_Get_RuleValue("si_map",pServRules),39);
-			if(Q4_Get_RuleValue("gamename",pServRules)!=NULL)
+			if(Get_RuleValue("si_name",pServRules)!=NULL)
+				strncpy(pSI->szServerName, Get_RuleValue("si_name",pServRules),99);
+			if(Get_RuleValue("si_map",pServRules)!=NULL)
+				strncpy(pSI->szMap, Get_RuleValue("si_map",pServRules),39);
+			if(Get_RuleValue("gamename",pServRules)!=NULL)
 			{
-				strncpy(pSI->szMod, Q4_Get_RuleValue("gamename",pServRules),24);
+				strncpy(pSI->szMod, Get_RuleValue("gamename",pServRules),24);
 				pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
 			}
 
 		
-			szVarValue = Q4_Get_RuleValue("si_gametype",pServRules);
+			szVarValue = Get_RuleValue("si_gametype",pServRules);
 			if(szVarValue!=NULL)
 			{	
 				strncpy(pSI->szGameTypeName, szVarValue,29);		
 			}
 			else
 			{
-				szVarValue = Q4_Get_RuleValue("si_rules",pServRules);
+				szVarValue = Get_RuleValue("si_rules",pServRules);
 				if(szVarValue!=NULL)
 				{		
 					if(strlen(szVarValue)>11)
@@ -392,7 +374,7 @@ Quake 4 Responses
 			
 			pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, pSI->szGameTypeName);
 
-			szVarValue = Q4_Get_RuleValue("si_pure",pServRules);
+			szVarValue = Get_RuleValue("si_pure",pServRules);
 			if(szVarValue!=NULL)
 				pSI->cPure = atoi(szVarValue);
 
@@ -412,43 +394,33 @@ Quake 4 Responses
 			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
 
 			
-			if(Q4_Get_RuleValue("net_serverPunkbusterEnabled",pServRules)!=NULL)
-				pSI->bPunkbuster = (char)atoi(Q4_Get_RuleValue("net_serverPunkbusterEnabled",pServRules));
-			else if(Q4_Get_RuleValue("sv_punkbuster",pServRules)!=NULL)
-				pSI->bPunkbuster = (char)atoi(Q4_Get_RuleValue("sv_punkbuster",pServRules));
+			if(Get_RuleValue("net_serverPunkbusterEnabled",pServRules)!=NULL)
+				pSI->bPunkbuster = (char)atoi(Get_RuleValue("net_serverPunkbusterEnabled",pServRules));
+			else if(Get_RuleValue("sv_punkbuster",pServRules)!=NULL)
+				pSI->bPunkbuster = (char)atoi(Get_RuleValue("sv_punkbuster",pServRules));
 			
-			if(Q4_Get_RuleValue("si_usepass",pServRules)!=NULL)
-				pSI->bPrivate = (char)atoi(Q4_Get_RuleValue("si_usepass",pServRules));				
-			else if(Q4_Get_RuleValue("si_needPass",pServRules)!=NULL)  //ETQW
-				pSI->bPrivate = (char)atoi(Q4_Get_RuleValue("si_needPass",pServRules));
+			if(Get_RuleValue("si_usepass",pServRules)!=NULL)
+				pSI->bPrivate = (char)atoi(Get_RuleValue("si_usepass",pServRules));				
+			else if(Get_RuleValue("si_needPass",pServRules)!=NULL)  //ETQW
+				pSI->bPrivate = (char)atoi(Get_RuleValue("si_needPass",pServRules));
 			
-			if(Q4_Get_RuleValue("si_maxPlayers",pServRules)!=NULL)
-				pSI->nMaxPlayers = atoi(Q4_Get_RuleValue("si_maxPlayers",pServRules));
+			if(Get_RuleValue("si_maxPlayers",pServRules)!=NULL)
+				pSI->nMaxPlayers = atoi(Get_RuleValue("si_maxPlayers",pServRules));
 			
 			
-			if(Q4_Get_RuleValue("si_privatePlayers",pServRules)!=NULL)
-				pSI->nPrivateClients = atoi(Q4_Get_RuleValue("si_privatePlayers",pServRules));
-			else if(Q4_Get_RuleValue("si_privateClients",pServRules)!=NULL) 			//ETQW
+			if(Get_RuleValue("si_privatePlayers",pServRules)!=NULL)
+				pSI->nPrivateClients = atoi(Get_RuleValue("si_privatePlayers",pServRules));
+			else if(Get_RuleValue("si_privateClients",pServRules)!=NULL) 			//ETQW
 			{
-				pSI->nPrivateClients = atoi(Q4_Get_RuleValue("si_privateClients",pServRules));
+				pSI->nPrivateClients = atoi(Get_RuleValue("si_privateClients",pServRules));
 				pSI->nMaxPlayers -=	pSI->nPrivateClients;
 			}
 
-			//Debug purpose
-			if(pServRules!=pSI->pServerRules)
-			{
-				AddLogInfo(ETSV_DEBUG,"Error at pServRules!=pSI->pServerRules");
-				DebugBreak();
-			}
+			CleanUp_PlayerList(pQ4Players);
+			pSI->pPlayerData = NULL;
 
-		//	if(UpdatePlayerListView==NULL)
-			{
-				Q4_CleanUp_PlayerList(pQ4Players);
-				pSI->pPlayerData = NULL;
-				Q4_CleanUp_ServerRules(pServRules);
-				pSI->pServerRules = NULL;
-
-			}
+			CleanUp_ServerRules(pServRules);
+			pSI->pServerRules = NULL;
 
 		} //end if(pServRules!=NULL)
 
@@ -463,34 +435,9 @@ Quake 4 Responses
 }
 
 
-
-void Q4_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(PLAYERDATA *pPlayers),long (*UpdateRulesList)(SERVER_RULES*pServer_Rules) )
-{
-	if(pServerInfo==NULL)
-		return;
-
-	Q4_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
-
-	//if(Q4_UpdateServerListView!=NULL)
- //	Q4_UpdateServerListView(pServerInfo->dwIndex);
-}
-/*
-0x035437F2  32 3a 35 38 3a 31 37 00 73 69 5f 70 75 72 65 00 31 00 67 61 6d 65 6e 61 6d 65 00 62 61 73 65 44 4f 4f 4d 2d 31 00 00 00  2:58:17.si_pure.1.gamename.baseDOOM-1...
-            id 
-0x0354381A  00 a2 00 80 3e 00 00 5e 34 28 28 28 5e 32 47 49 5e 37 4f 20 4b 5e 31 41 4e 5e 34 29 29 29 00 01 72 00 80 3e 00 00 5e 37  .¢.€>..^4(((^2GI^7O K^1AN^4)))..r.€>..^7
-0x03543842  46 5e 31 74 5e 37 50 7c 5e 31 46 40 53 54 5e 37 42 45 4e 4e 00 02 21 00 80 3e 00 00 5e 32 4d 6f 67 77 61 69 20 5e 33 7b  F^1t^7P|^1F@ST^7BENN..!.€>..^2Mogwai ^3{
-0x0354386A  5e 31 4b 41 4e 5e 33 7d 00 03 72 00 80 3e 00 00 5e 39 4f 4c 44 5e 31 4d 49 43 48 4c 5e 33 7b 4b 41 4e 7d 00 04 72 00 b0  ^1KAN^3}..r.€>..^9OLD^1MICHL^3{KAN}..r.°
-0x03543892  36 00 00 5e 33 54 5e 31 6f 5e 33 6d 20 5e 31 6f 5e 33 6e 20 5e 31 46 5e 33 69 5e 31 72 5e 33 65 5e 38 20 7b 4b 41 4e 7d  6..^3T^1o^3m ^1o^3n ^1F^3i^1r^3e^8 {KAN}
-0x035438BA  00 05 3f 00 80 3e 00 00 5e 30 4a 77 61 79 6e 65 38 39 5e 39 7b 4b 41 4e 7d 00 20 07 00 00 00 00 fd fd fd fd ab ab ab ab  ..?.€>..^0Jwayne89^9{KAN}. .....ý
-*/
-
-
 PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numPlayers)
 {
-	
 	PLAYERDATA *pQ4Players=NULL;
-//	if(pSI->cGAMEINDEX==ETQW_SERVERLIST)
-//		packet+=2;
 
 	pSI->cBots = 0;
 	if(packet[0]==0x20)
@@ -598,44 +545,4 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 		
 	}
 	return pQ4Players;
-}
-
-//linked list clean up
-void Q4_CleanUp_ServerRules(LPSERVER_RULES &pSR)
-{
-	if(pSR!=NULL)
-	{
-		if(pSR->pNext!=NULL)
-			Q4_CleanUp_ServerRules(pSR->pNext);
-		
-		free(pSR->name);
-		free(pSR->value);
-		pSR->pNext = NULL;
-		free(pSR);
-		pSR = NULL;
-
-	}
-}
-
-void Q4_CleanUp_PlayerList(LPPLAYERDATA &pPL)
-{
-	if(pPL!=NULL)
-	{
-		if(pPL->pNext!=NULL)
-			Q4_CleanUp_PlayerList(pPL->pNext);
-		
-		if(pPL->szPlayerName!=NULL)
-			free(pPL->szPlayerName);
-		if(pPL->szClanTag!=NULL)
-			free(pPL->szClanTag);
-		if(pPL->szTeam!=NULL)
-			free(pPL->szTeam);
-		
-		pPL->szPlayerName = NULL;
-		pPL->szClanTag = NULL;
-		pPL->szTeam = NULL;
-		pPL->pNext = NULL;
-		free(pPL);
-		pPL = NULL;
-	}
 }

@@ -4,6 +4,7 @@
 #include "structs_defines.h"
 #include "..\..\tinyxml\tinyxml.h"
 
+void ClearServerList(int i);
 void ListView_InitilizeColumns();
 void TreeView_ReBuildList();
 int LoadIconIntoImageList(char*szFilename);

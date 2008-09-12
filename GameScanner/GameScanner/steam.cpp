@@ -521,19 +521,24 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 	char *p = leaddata->data;
 	endAddress = packet+length; 
 	
-	ptempSI.dwIP = 0;
-	ptempSI.dwPort = 0;
 
 	int i=1;
+	int hash=0;
+	ZeroMemory(&ptempSI,sizeof(SERVER_INFO));
+
+	ptempSI.dwPing = 9999;
+	ptempSI.cGAMEINDEX = pGI->cGAMEINDEX;
+	ptempSI.bNeedToUpdateServerInfo = true;			
+	strcpy(ptempSI.szShortCountryName,"zz");
+
 	while(p<(endAddress)) 
 	{	
-		ZeroMemory(&ptempSI,sizeof(SERVER_INFO));
 		//Parse and initialize server info
 		dwIP = (DWORD*)&p[0];
 		ptempSI.dwIP = 0;
 		ptempSI.dwIP = ntohl((DWORD)*dwIP); 
 		
-		if(ptempSI.dwIP==0) //(p[0]==0) && (p[1]==0) && (p[2]==0) && (p[3]==0))
+		if(ptempSI.dwIP==0) 
 		{
 			dwLastPort = 0;
 			break;
@@ -542,27 +547,16 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		ptempSI.dwPort = 0;
 		ptempSI.dwPort  = ((p[0])<<8);
 		ptempSI.dwPort |=(unsigned char)(p[1]);
-		//ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
 		p+=2;
 
-		int hash = ptempSI.dwIP + ptempSI.dwPort;
-		//AddLogInfo(0,"Got   >%d %s:%d",i,ptempSI.szIPaddress,ptempSI.dwPort);
-		if(UTILZ_checkforduplicates(pGI,hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)//if(UTILZ_CheckForDuplicateServer(pGI,ptempSI)==false)
+		hash = ptempSI.dwIP + ptempSI.dwPort;
+		if(UTILZ_checkforduplicates(pGI,hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
 		{					
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
-		//	AddLogInfo(0,"New   >%d %s:%d",i,ptempSI.szIPaddress,ptempSI.dwPort);
-			ptempSI.dwPing = 9999;
-			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
-			//ptempSI.cCountryFlag = 0;
-			ptempSI.bNeedToUpdateServerInfo = true;			
-			ptempSI.dwIndex = idx++;
-			strcpy(ptempSI.szShortCountryName,"zz");
-			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
-		
-			pGI->vSI.push_back(ptempSI);
 
-			//if(CALLBACK_InsertServerItem!=NULL)
-			//	CALLBACK_InsertServerItem(pGI,ptempSI);
+			ptempSI.dwIndex = idx++;
+			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );		
+			pGI->vSI.push_back(ptempSI);
 
 			dwNewTotalServers++;
 		} //end serverexsist
@@ -747,7 +741,7 @@ retry:
 					CALLBACK_CheckForBuddy(pSI->pPlayerData,pSI);
 				}
 				
-				UTILZ_CleanUp_PlayerList(pSI->pPlayerData);
+				CleanUp_PlayerList(pSI->pPlayerData);
 				pSI->pPlayerData = NULL;
 			}
 		}

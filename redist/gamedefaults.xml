@@ -197,6 +197,7 @@
 		<ShortName>CoD 2</ShortName>
 		<Filename>cod2.servers</Filename>
 		<NetEngine>Q3</NetEngine>
+		<ColorEncoding>Q3</ColorEncoding>
 		<WebProtocol>cod2</WebProtocol>
 		<MapPreviewPath>cod2maps</MapPreviewPath>
 		<Icon>callofduty2.ico</Icon>

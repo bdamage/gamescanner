@@ -47,17 +47,6 @@ void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index),
 }
 
 
-char *Q3_Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
-{
-	while(pSR!=NULL)
-	{
-		if(_stricmp(pSR->name,szRuleName)==0)
-			return pSR->value;
-		pSR = pSR->pNext;
-
-	}
-	return NULL;//Q3_unkown;
-}
 
 
 DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
@@ -74,11 +63,11 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	}
 
 	if(pSI->pPlayerData!=NULL)
-		UTILZ_CleanUp_PlayerList(pSI->pPlayerData);
+		CleanUp_PlayerList(pSI->pPlayerData);
 	pSI->pPlayerData = NULL;
 
 	if(pSI->pServerRules!=NULL)
-		UTILZ_CleanUp_ServerRules(pSI->pServerRules);
+		CleanUp_ServerRules(pSI->pServerRules);
 	pSI->pServerRules = NULL;
 
 
@@ -156,7 +145,7 @@ retry:
 			{			
 				ZeroMemory(&szP_ET,sizeof(szP_ET));			
 				char *szPVarValue=NULL;
-				szPVarValue = Q3_Get_RuleValue("P",pServRules);
+				szPVarValue = Get_RuleValue("P",pServRules);
 				if(szPVarValue!=NULL)
 					strcpy(szP_ET,szPVarValue);
 			}
@@ -197,14 +186,14 @@ retry:
 			pSI->nCurrentPlayers = nPlayers;
 			char *szVarValue=NULL;
 			char *pVarValue = NULL;
-			pVarValue = Q3_Get_RuleValue("sv_hostname",pServRules);
+			pVarValue = Get_RuleValue("sv_hostname",pServRules);
 			if(pVarValue!=NULL)
 			{
 				strncpy(pSI->szServerName,pVarValue ,99);
 			}
 			else  //QW
 			{
-				pVarValue = Q3_Get_RuleValue("hostname",pServRules);
+				pVarValue = Get_RuleValue("hostname",pServRules);
 				if(pVarValue!=NULL)
 					strncpy(pSI->szServerName,pVarValue ,99);
 			}
@@ -213,24 +202,24 @@ retry:
 			{	
 				case QW_SERVERLIST:
 					{
-						pVarValue = Q3_Get_RuleValue("status",pServRules); //QW
+						pVarValue = Get_RuleValue("status",pServRules); //QW
 						if(pVarValue!=NULL)
 								strncpy(pSI->szSTATUS,pVarValue ,39);
 					}
 				break;
 				case Q2_SERVERLIST:
 					{
-						pVarValue = Q3_Get_RuleValue("time_remaining",pServRules); //Q2
+						pVarValue = Get_RuleValue("time_remaining",pServRules); //Q2
 						if(pVarValue!=NULL)
 								strncpy(pSI->szSTATUS,pVarValue ,39);
 						else
 						{
-							pVarValue = Q3_Get_RuleValue("#time_left",pServRules); //Q2
+							pVarValue = Get_RuleValue("#time_left",pServRules); //Q2
 							if(pVarValue!=NULL)
 									strncpy(pSI->szSTATUS,pVarValue ,39);
 							else
 							{
-								pVarValue = Q3_Get_RuleValue("gamestats",pServRules); //Q2
+								pVarValue = Get_RuleValue("gamestats",pServRules); //Q2
 								if(pVarValue!=NULL)
 									strncpy(pSI->szSTATUS,pVarValue ,39);
 
@@ -240,12 +229,12 @@ retry:
 				break;
 			}
 
-			pVarValue = Q3_Get_RuleValue("mapname",pServRules);
+			pVarValue = Get_RuleValue("mapname",pServRules);
 			if(pVarValue!=NULL)
 				strncpy(pSI->szMap,pVarValue ,39);
 			else
 			{ //for QW
-				pVarValue = Q3_Get_RuleValue("map",pServRules);
+				pVarValue = Get_RuleValue("map",pServRules);
 				if(pVarValue!=NULL)
 					strncpy(pSI->szMap,pVarValue ,39);
 
@@ -259,14 +248,14 @@ retry:
 
 				case COD4_SERVERLIST :
 					{
-						pVarValue = Q3_Get_RuleValue("mod",pServRules);			
+						pVarValue = Get_RuleValue("mod",pServRules);			
 						if(pVarValue!=NULL)
 						{
 							pSI->dwMod = 1;
 							if(strcmp(pVarValue,"1")==0)
 							{	
 								char *mod;
-								mod = Q3_Get_RuleValue("fs_game",pServRules);
+								mod = Get_RuleValue("fs_game",pServRules);
 								if(mod!=NULL)
 								{
 									strncpy(pSI->szMod, mod,MAX_MODNAME_LEN-1);									
@@ -278,15 +267,15 @@ retry:
 					default:
 					{
 						//Fall through and do some guessing...
-						pVarValue = Q3_Get_RuleValue("gamename",pServRules);			
+						pVarValue = Get_RuleValue("gamename",pServRules);			
 						if(pVarValue==NULL)
 						{
-							pVarValue = Q3_Get_RuleValue("*gamedir",pServRules); //Normal QW
+							pVarValue = Get_RuleValue("*gamedir",pServRules); //Normal QW
 							if(pVarValue==NULL)							
 							{
-								pVarValue = Q3_Get_RuleValue("gamename",pServRules); //Normal Q2
+								pVarValue = Get_RuleValue("gamename",pServRules); //Normal Q2
 								if(pVarValue==NULL)
-									pVarValue = Q3_Get_RuleValue("*progs",pServRules); //Is it QW with Qizmo proxy
+									pVarValue = Get_RuleValue("*progs",pServRules); //Is it QW with Qizmo proxy
 								if(pVarValue!=NULL)
 									if(strcmp(pVarValue,"666")==0)
 										pVarValue="Qizmo";
@@ -308,11 +297,11 @@ retry:
 				case COD2_SERVERLIST :
 				case COD4_SERVERLIST :
 					{
-						szVarValue = Q3_Get_RuleValue("pswrd",pServRules);  //CoD & Cod2
+						szVarValue = Get_RuleValue("pswrd",pServRules);  //CoD & Cod2
 						if(szVarValue!=NULL)
 							pSI->bPrivate = atoi(szVarValue);
 
-						szVarValue = Q3_Get_RuleValue("shortversion",pServRules);
+						szVarValue = Get_RuleValue("shortversion",pServRules);
 						if(szVarValue!=NULL)
 						{
 							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
@@ -322,24 +311,24 @@ retry:
 				break;
 				case WARSOW_SERVERLIST:
 					{
-						szVarValue = Q3_Get_RuleValue("bots",pServRules); //Warsow specific
+						szVarValue = Get_RuleValue("bots",pServRules); //Warsow specific
 						if(szVarValue!=NULL)
 							pSI->cBots = atoi(szVarValue);
 					}
 				case ET_SERVERLIST:
 					{
-						szVarValue = Q3_Get_RuleValue("omnibot_enable",pServRules); //ET specific
+						szVarValue = Get_RuleValue("omnibot_enable",pServRules); //ET specific
 						if(szVarValue!=NULL)
 							pSI->cBots = atoi(szVarValue);
 					} //Fall through and continue on default...
 				default:
 					{						
-						szVarValue = Q3_Get_RuleValue("g_needpass",pServRules);
+						szVarValue = Get_RuleValue("g_needpass",pServRules);
 						if(szVarValue!=NULL)
 							pSI->bPrivate = (char)atoi(szVarValue);
 						else
 						{
-							szVarValue = Q3_Get_RuleValue("needpass",pServRules);
+							szVarValue = Get_RuleValue("needpass",pServRules);
 							if(szVarValue!=NULL)
 							{
 								pSI->bPrivate = (char)atoi(szVarValue);
@@ -350,11 +339,11 @@ retry:
 							}
 						}
 						ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
-						szVarValue = Q3_Get_RuleValue("version",pServRules);
+						szVarValue = Get_RuleValue("version",pServRules);
 						if(szVarValue==NULL)
-							szVarValue = Q3_Get_RuleValue("*version",pServRules); // QuakeWorld
+							szVarValue = Get_RuleValue("*version",pServRules); // QuakeWorld
 								if(szVarValue==NULL)
-									szVarValue = Q3_Get_RuleValue("gameversion",pServRules); // Nexuiz
+									szVarValue = Get_RuleValue("gameversion",pServRules); // Nexuiz
 						
 						if(szVarValue!=NULL)
 							strncpy(pSI->szVersion,szVarValue,MAX_VERSION_LEN-1);
@@ -364,31 +353,31 @@ retry:
 			if(pSI->szVersion!=NULL)
 				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
 
-			szVarValue = Q3_Get_RuleValue("sv_pure",pServRules);
+			szVarValue = Get_RuleValue("sv_pure",pServRules);
 			if(szVarValue!=NULL)
 				pSI->cPure = atoi(szVarValue);
 			
-			szVarValue = Q3_Get_RuleValue("g_gametype",pServRules);
+			szVarValue = Get_RuleValue("g_gametype",pServRules);
 			pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
 
-			szVarValue = Q3_Get_RuleValue("sv_punkbuster",pServRules);
+			szVarValue = Get_RuleValue("sv_punkbuster",pServRules);
 			if(szVarValue==NULL)
-				szVarValue = Q3_Get_RuleValue("sv_battleye",pServRules); //Warsow
+				szVarValue = Get_RuleValue("sv_battleye",pServRules); //Warsow
 			
 			if(szVarValue!=NULL)
 				pSI->bPunkbuster = (char)atoi(szVarValue);
 
 
-			szVarValue = Q3_Get_RuleValue("sv_privateClients",pServRules);
+			szVarValue = Get_RuleValue("sv_privateClients",pServRules);
 			if(szVarValue!=NULL)
 				pSI->nPrivateClients = atoi(szVarValue);
 
-			szVarValue = Q3_Get_RuleValue("sv_maxclients",pServRules);
+			szVarValue = Get_RuleValue("sv_maxclients",pServRules);
 			if(szVarValue!=NULL)
 				pSI->nMaxPlayers = atoi(szVarValue)-pSI->nPrivateClients;
 			else
 			{ //for QW
-				szVarValue = Q3_Get_RuleValue("maxclients",pServRules);
+				szVarValue = Get_RuleValue("maxclients",pServRules);
 				if(szVarValue!=NULL)
 					pSI->nMaxPlayers = atoi(szVarValue)-pSI->nPrivateClients;
 			}
@@ -404,11 +393,11 @@ retry:
 			} 
 			else
 			{
-				UTILZ_CleanUp_ServerRules(pSI->pServerRules);
+				CleanUp_ServerRules(pSI->pServerRules);
 				pSI->pServerRules = NULL;	
 			}
 
-			UTILZ_CleanUp_PlayerList(pQ3Players);
+			CleanUp_PlayerList(pQ3Players);
 			pSI->pPlayerData = NULL;
 			
 
@@ -425,16 +414,9 @@ retry:
 }
 
 
-void Q3_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesList)(SERVER_RULES*pServer_Rules) )
-{
-	if(pServerInfo==NULL)
-		return;
-	Q3_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
-}
 
 
-
-SERVER_INFO* Q3_parseServers(char * p, DWORD length, GAME_INFO *pGI)
+SERVER_INFO* Q3_ParseServers(char * p, DWORD length, GAME_INFO *pGI)
 {
 	Q3DATA *Q3d;
 	Q3d = (Q3DATA*)p;
@@ -479,15 +461,20 @@ CoD 4                                                                           
 			break;
 	}
 	p++;
+	
+	ZeroMemory(&ptempSI,sizeof(SERVER_INFO));
+	ptempSI.dwPing = 9999;
+	ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
+	strcpy(ptempSI.szShortCountryName,"zz");
+	ptempSI.bNeedToUpdateServerInfo = true;
 
+	int hash = 0;
 	while(p<end) 
 	{	
 		if((p[0]=='E') && (p[1]=='O') && (p[2]=='T') && (p[3]==0x00))
 			break;
 		else if((p[0]=='E') && (p[1]=='O') && (p[2]=='F') && (p[3]==0x00))
 			break;
-
-		ZeroMemory(&ptempSI,sizeof(SERVER_INFO));
 
 		//Parse and initialize server info
 		dwIP = (DWORD*)&p[0];
@@ -503,22 +490,15 @@ CoD 4                                                                           
 		else
 			p+=3; //q3
 		
-		int hash = ptempSI.dwIP + ptempSI.dwPort;
+		hash = ptempSI.dwIP + ptempSI.dwPort;
 
 		if(UTILZ_checkforduplicates(pGI,  hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
 		{	
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
-			ptempSI.dwPing = 9999;
-			ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
-			//ptempSI.cCountryFlag = 0;
-			ptempSI.bNeedToUpdateServerInfo = true;
 			ptempSI.dwIndex = idx++;
-			strcpy(ptempSI.szShortCountryName,"zz");
 			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 			pGI->vSI.push_back(ptempSI);
 
-			//if(Q3_InsertServerItem!=NULL)
-			//	Q3_InsertServerItem(pGI,ptempSI);
 			Q3_dwNewTotalServers++;
 		} //end serverexsist
 
@@ -1132,7 +1112,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	{
 		if(packet[i] != NULL)
 		{
-		    Q3_parseServers((char*)packet[i],packet_len[i],pGI);
+		    Q3_ParseServers((char*)packet[i],packet_len[i],pGI);
 			free(packet[i]);			
 			packet[i]=NULL;
 			SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q3_dwNewTotalServers,pGI->szGAME_NAME);
