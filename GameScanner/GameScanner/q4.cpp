@@ -45,10 +45,10 @@ char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char 
 	pSR=NULL;
 
 	char *pointer = NULL;
-	if(pSI->cGAMEINDEX==Q4_SERVERLIST)
-		pointer =Q4SI->data;
-	else
+	if(pSI->cGAMEINDEX==ETQW_SERVERLIST)
 		pointer = ETQWResponse->data;
+	else
+		pointer =Q4SI->data;
 
 	if(strcmp(&packet[4],"disconnect")==0)
 	{		
@@ -77,8 +77,6 @@ char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char 
 		if(pointer[0]==0 && pointer[1]==0)
 			break;
 	}
-//	if(g_bQ4)
-
 	pointer+=2; //move to playerlist data (Q4)
 
 
@@ -91,16 +89,13 @@ char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char 
 
 DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 {
-	Q4_bScanningInProgress = TRUE;
-	
+	Q4_bScanningInProgress = TRUE;	
 	size_t packetlen=0;
-
-	//WSADATA wsaData;
 	SOCKET ConnectSocket;
-	char sendbuf[30];// = {"\xFF\xFFgetServers\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"}; 
+	char sendbuf[40];
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	
-	int len = 0;//(int)strlen(sendbuf);
+	int len = 0;
 	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
 
 	dbg_print("Master server %s:%d",pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
@@ -129,34 +124,26 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 	Q4_dwTotalServers=0;
 	Q4_dwNewTotalServers=0;
 
+	// Let's retrieve all packets as fast as possible, that's the reason for splitting up the for loop.
 	for(i=0; i<iMAX_PACKETS;i++)
 	{
 		packet[i] = NULL;
-
 		packet[i]=(unsigned char*)getpacket(ConnectSocket, &packetlen);
-
-
-		if(packet[i]==NULL) 
-		{
-
-			dbg_print("Could NOT receive all packets!\n");
+		if(packet[i]==NULL) //End of transfer
 			break;  	
-		} 
-		SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q4_dwNewTotalServers,pGI->szGAME_NAME);		
-		Q4_parseServers((char*)packet[i],packetlen,pGI,Q4_InsertServerItem);
-		free(packet[i]);
-	
 	}
-
+	//Now parse all server IP's from recieved packets
+	for(i=0; i<iMAX_PACKETS;i++)
+	{
+		if(packet[i]==NULL) //End of packets
+			break;  	
+		Q4_parseServers((char*)packet[i],packetlen,pGI,Q4_InsertServerItem);
+		SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q4_dwNewTotalServers,pGI->szGAME_NAME);		
+		free(packet[i]);
+	}
+	
 	closesocket(ConnectSocket);
-
-	//Global Q4 serverlist to start
-	//Q4_pSI = pSI = Q4_pSIServerListStart;	
-
 	pGI->dwTotalServers = pGI->vSI.size();
-
-	//Q4_InitilizeRescan(pGI);
-		
 	Q4_bScanningInProgress = FALSE;
 
 	return 	0;
@@ -269,10 +256,10 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	//Some default values
 	pSI->dwPing = 9999;
 
+	//If country shortname is EU or zz (Unknown) try to find a country based on the IP address.
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 	{
 	    char country[60],szShortName[8];
-		//ZeroMemory(szShortName,sizeof(szShortName));
 		strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,country,szShortName),49);  //Update country info only when adding a new server						
 		strcpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName);
 	}
@@ -302,6 +289,32 @@ retry:
 			goto retry;
 		}
 	}
+/*
+Doom 3 Responeses
+0x02E7AB30  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 29 00 01 00 73 76 5f 70 75 6e 6b 62 75 73 74 65 72 00 30 00 73  ÿÿinfoResponse.....)...sv_punkbuster.0.s
+0x02E7AB58  69 5f 76 65 72 73 69 6f 6e 00 44 4f 4f 4d 20 31 2e 33 2e 31 2e 31 33 30 34 20 6c 69 6e 75 78 2d 78 38 36 20 4a 61 6e 20  i_version.DOOM 1.3.1.1304 linux-x86 Jan 
+0x02E7AB80  31 36 20 32 30 30 37 20 32 31 3a 35 33 3a 32 39 00 66 73 5f 67 61 6d 65 5f 62 61 73 65 00 00 66 73 5f 67 61 6d 65 00 00  16 2007 21:53:29.fs_game_base..fs_game..
+0x02E7ABA8  73 69 5f 69 64 6c 65 53 65 72 76 65 72 00 30 00 6e 65 74 5f 73 65 72 76 65 72 44 65 64 69 63 61 74 65 64 00 31 00 73 69  si_idleServer.0.net_serverDedicated.1.si
+
+0x02ECC6C8  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 55 00 02 00 6e 65 74 5f 73 65 72 76 65 72 4d 61 78 43 6c 69 65  ÿÿinfoResponse.....U...net_serverMaxClie
+0x02ECC6F0  6e 74 52 61 74 65 00 32 35 36 30 30 00 6e 65 74 5f 73 65 72 76 65 72 53 6e 61 70 73 68 6f 74 44 65 6c 61 79 00 33 30 00  ntRate.25600.net_serverSnapshotDelay.30.
+0x02ECC718  6e 65 74 5f 73 65 72 76 65 72 44 65 64 69 63 61 74 65 64 00 31 00 66 73 5f 67 61 6d 65 5f 62 61 73 65 00 00 66 73 5f 67  net_serverDedicated.1.fs_game_base..fs_g
+0x02ECC740  61 6d 65 00 71 34 6d 61 78 00 73 76 5f 70 75 6e 6b 62 75 73 74 65 72 00 30 00 73 69 5f 76 65 72 73 69 6f 6e 00 51 75 61  ame.q4max.sv_punkbuster.0.s
+
+Quake 4 Responses
+0x03772A98  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 55 00 02 00 6e 65 74 5f 73 65 72 76 65 72 4d 61 78 43 6c 69 65  ÿÿinfoResponse.....U...net_serverMaxClie
+0x03772AC0  6e 74 52 61 74 65 00 32 35 36 30 30 00 6e 65 74 5f 73 65 72 76 65 72 53 6e 61 70 73 68 6f 74 44 65 6c 61 79 00 33 30 00  ntRate.25600.net_serverSnapshotDelay.30.
+0x03772AE8  6e 65 74 5f 73 65 72 76 65 72 44 65 64 69 63 61 74 65 64 00 31 00 66 73 5f 67 61 6d 65 5f 62 61 73 65 00 00 66 73 5f 67  net_serverDedicated.1.fs_game_base..fs_g
+0x03772B10  61 6d 65 00 71 34 6d 70 00 73 76 5f 70 75 6e 6b 62 75 73 74 65 72 00 30 00 73 69 5f 76 65 72 73 69 6f 6e 00 51 75 61 6b  ame.q4mp.sv_punkbuster.0.si_version.Quak
+0x03772B38  65 34 20 20 56 31 2e 34 2e 32 20 77 69 6e 2d 78 38 36 20 4a 75 6e 20 31 35 20 32 30 30 37 00 73 69 5f 6d 61 78 50 6c 61  e4  V1.4.2 
+
+0x03772A98  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 55 00 02 00 6e 65 74 5f 73 65 72 76 65 72 4d 61 78 43 6c 69 65  ÿÿinfoResponse.....U...net_serverMaxClie
+0x03772AC0  6e 74 52 61 74 65 00 32 35 36 30 30 00 6e 65 74 5f 73 65 72 76 65 72 53 6e 61 70 73 68 6f 74 44 65 6c 61 79 00 33 30 00  ntRate.25600.net_serverSnapshotDelay.30.
+0x03772AE8  6e 65 74 5f 73 65 72 76 65 72 44 65 64 69 63 61 74 65 64 00 31 00 66 73 5f 67 61 6d 65 5f 62 61 73 65 00 00 66 73 5f 67  net_serverDedicated.1.fs_game_base..fs_g
+0x03772B10  61 6d 65 00 71 34 6d 70 00 73 76 5f 70 75 6e 6b 62 75 73 74 65 72 00 30 00 73 69 5f 76 65 72 73 69 6f 6e 00 51 75 61 6b  ame.q4mp.sv_punkbuster.0.si_version.Quak
+0x03772B38  65 34 20 20 56 31 2e 34 2e 32 20 77 69 6e 2d 78 38 36 20 4a 75 6e 20 31 35 20 32 30 30 37 00 73 69 5f 6d 61 78 50 6c 61  e4  V1.4.2 
+
+*/
 	if(packet) 
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);
@@ -354,7 +367,7 @@ retry:
 				strncpy(pSI->szMap, Q4_Get_RuleValue("si_map",pServRules),39);
 			if(Q4_Get_RuleValue("gamename",pServRules)!=NULL)
 			{
-				strncpy(pSI->szMod, Q4_Get_RuleValue("gamename",pServRules),19);
+				strncpy(pSI->szMod, Q4_Get_RuleValue("gamename",pServRules),24);
 				pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
 			}
 
@@ -370,7 +383,7 @@ retry:
 				if(szVarValue!=NULL)
 				{		
 					if(strlen(szVarValue)>11)
-						strncpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName), &szVarValue[strlen("sdGameRules")],14);	
+						strncpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName), &szVarValue[strlen("sdGameRules")],14);	//ETQW
 					else
 						strcpy_s(pSI->szGameTypeName,sizeof(pSI->szGameTypeName),"Unknown");					
 				}

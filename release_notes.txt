@@ -20,6 +20,7 @@ version 1.12
 
 * Added support for new games: 
   Nexuiz.
+  Doom 3
   Half-life, including mods:
   - Team Fortress Classic  (tfc)
   - Day of Defeat (dod)
