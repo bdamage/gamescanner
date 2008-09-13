@@ -10,7 +10,8 @@ class CXmlFile
 private:
 	TiXmlDocument *m_pDocument;
 	TiXmlHandle *m_pHandleDoc;  //Document handler
-	const char *m_pszDirectory;
+	const CHAR *m_pszDirectory;
+	const WCHAR *m_pwszDirectory;
 
 public:
 	TiXmlElement *m_pRootElement;  //This will point to the first root tag <>

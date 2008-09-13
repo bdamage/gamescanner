@@ -16,11 +16,16 @@ CXmlFile::~CXmlFile(void)
 void CXmlFile::SetPath(const char *pszDir)
 {
 	m_pszDirectory = pszDir;
+	
 }
 int CXmlFile::load(const char* pszFilename)
 {
 	m_pDocument->SetCondenseWhiteSpace(false);	
+#ifdef UNICODE
+	SetCurrentDirectory(m_pwszDirectory);
+#else
 	SetCurrentDirectory(m_pszDirectory);
+#endif
 	if (m_pDocument->LoadFile(pszFilename)==false) 
 		return XMLFILE_ERROR_LOADING;
 

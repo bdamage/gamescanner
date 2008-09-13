@@ -217,6 +217,7 @@
 #define IDI_ICON_USERS                  1075
 #define IDD_DIALOG_STATS                1077
 #define IDD_CFG3_NEW                    1078
+#define IDD_CFG_MIRC                    1079
 #define IDI_ICON_STATS                  1082
 #define IDI_ICON_PAINT                  1083
 #define IDI_ICON_LOGGER                 1084
@@ -233,6 +234,7 @@
 #define IDC_EDIT_CFG_RETRIES            1104
 #define IDC_CHECK_USE_HTTP              1105
 #define IDC_COMBO_LANG                  1106
+#define IDI_ICON_MIRC                   1107
 #define IDC_STATIC_BUDDY_NAME           1200
 #define IDC_TAB1                        1201
 #define IDC_STATIC_EXE                  1202
@@ -242,6 +244,7 @@
 #define IDC_STATIC_MOD                  1206
 #define IDC_SLIDER_SLEEP_VAL            1207
 #define IDC_STATIC_SLEEP_VAL            1208
+#define IDC_STATIC_ABC123               1209
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -326,9 +329,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1107
+#define _APS_NEXT_RESOURCE_VALUE        1108
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1209
+#define _APS_NEXT_CONTROL_VALUE         1210
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

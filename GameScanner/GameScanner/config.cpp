@@ -17,8 +17,7 @@ extern void ChangeFont(HWND hWnd, HFONT hf);
 extern HWND g_hWnd;
 
 //Config dialog vars
-#define GAME_CFG_INDEX 5   //This is the helper index in treeview where all games configuration starts from
-#define C_PAGES 18
+#define GAME_CFG_INDEX 6   //This is the helper index in treeview where all games configuration starts from
 bool g_bChanged=false;
 APP_SETTINGS_NEW AppCFGtemp;
 HWND g_hwndTree=NULL;
@@ -61,6 +60,11 @@ void CFG_Apply_General(HWND hDlg)
 	else
 		AppCFGtemp.bUseShortCountry=FALSE;
 
+
+}
+void CFG_Apply_MIRC(HWND hDlg)
+{
+
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK_MIRC)==BST_CHECKED)
 		AppCFGtemp.bUseMIRC=true;
 	else
@@ -92,19 +96,12 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 
 		if(GamesInfoCFG[gameID].bUseHTTPServerList==FALSE)
 			SplitIPandPORT(GamesInfoCFG[gameID].szMasterServerIP,GamesInfoCFG[gameID].dwMasterServerPORT);
-
-	//	GetDlgItemText(hDlg,IDC_EDIT_MASTER_PORT,szTmp,sizeof(szTmp));
-	//	GamesInfoCFG[gameID].dwMasterServerPORT = atoi(szTmp);
-		//GetDlgItemText(hDlg,IDC_EDIT_PROTOCOL,szTmp,sizeof(szTmp));
-		//GamesInfoCFG[gameID].dwProtocol= atoi(szTmp);
 	}
 }
 
 void CFG_Apply_Network(HWND hDlg)
 {
-
-	g_bChanged = false;
-							
+	g_bChanged = false;						
 	char szTmp[10];
 	GetDlgItemText(hDlg,IDC_EDIT_SOCK_TIMEOUT_S,szTmp,sizeof(szTmp));
 	
@@ -115,8 +112,6 @@ void CFG_Apply_Network(HWND hDlg)
 
 	GetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szTmp,sizeof(szTmp));
 	AppCFGtemp.dwRetries = atoi(szTmp);
-				
-
 }
 
 void CFG_Apply_Ext(HWND hDlg)
@@ -174,8 +169,7 @@ void CFG_Apply_Look(HWND hDlg)
 }
 
 DWORD CFG_GetGameID(int selectionIndex)
-{
-	
+{	
 	if(selectionIndex>GAME_CFG_INDEX)
 	{
 		return selectionIndex - (GAME_CFG_INDEX +1);
@@ -208,6 +202,27 @@ HTREEITEM TreeView_AddItem(int iImage, const char *text)
 	return hNewItem;
 }
 
+void CFG_ApplySettings()
+{
+	int gameID=-1;
+	switch(g_currSelCfg)
+	{
+		case 0: CFG_Apply_General(hwndConfDialog); break;
+		case 1: CFG_Apply_Minimizer(hwndConfDialog); break;
+		case 2: CFG_Apply_MIRC(hwndConfDialog); break;
+		case 3: CFG_Apply_Ext(hwndConfDialog); break;
+		case 4: CFG_Apply_Look(hwndConfDialog); break;
+		case 5: CFG_Apply_Network(hwndConfDialog); break;
+
+		default:
+				gameID = CFG_GetGameID(g_currSelCfg);
+			break;
+
+	}
+	if(gameID!=-1)
+		CFG_Apply_Games(gameID,hwndConfDialog);
+}
+
 LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -222,7 +237,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			HTREEITEM hNewItem;
 			hNewItem = TreeView_AddItem(27,lang.GetString("ConfigGeneral"));
 			hNewItem = TreeView_AddItem(15,lang.GetString("ConfigMinimizer"));
+			hNewItem = TreeView_AddItem(28,"mIRC");
 			hNewItem = TreeView_AddItem(16,lang.GetString("ConfigExtExe"));
+
 			hNewItem = TreeView_AddItem(25,lang.GetString("ConfigGraphic"));
 			hNewItem = TreeView_AddItem(13,lang.GetString("ConfigNetwork"));
 			hNewItem = TreeView_AddItem(20 ,lang.GetString("ConfigGames"));
@@ -243,9 +260,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					strcpy(GamesInfoCFG[i].szMasterServerIP, GamesInfo[i].szMasterServerIP);
 					GamesInfoCFG[i].vGAME_INST = GamesInfo[i].vGAME_INST;								
 			}
-			//GamesInfoCFG = GamesInfo;
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
-		//	memcpy(&GamesInfoCFG,&GI,sizeof(GAME_INFO)*GamesInfo.size());
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
 			SetDlgItemText(hDlg,IDOK,lang.GetString("Ok"));
 			SetDlgItemText(hDlg,IDC_BUTTON_DEFAULT,lang.GetString("SetDefault"));
@@ -270,28 +285,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					if((lpnmtv->hdr.code  == TVN_SELCHANGED)  )
 					{
 						if((g_bChanged==true) && (pnmtv->action == TVC_BYMOUSE))
-						{
+							CFG_ApplySettings();
 
-							int gameID=-1;
-							switch(g_currSelCfg)
-							{
-								case 0: CFG_Apply_General(hwndConfDialog); break;
-								case 1: CFG_Apply_Minimizer(hwndConfDialog); break;
-								case 2: CFG_Apply_Ext(hwndConfDialog); break;
-								case 3: CFG_Apply_Look(hwndConfDialog); break;
-								case 4: CFG_Apply_Network(hwndConfDialog); break;
-
-								default:
-										gameID = CFG_GetGameID(g_currSelCfg);
-									break;
-
-							}
-							if(gameID!=-1)
-								CFG_Apply_Games(gameID,hwndConfDialog);
-						} 
-						CFG_OnSelChanged(hDlg) ;
-
-							
+						CFG_OnSelChanged(hDlg);
 					}
 				}
 			break;
@@ -310,20 +306,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 				return TRUE;
 				case IDOK:
 				{					
-					int gameID=-1;
-					switch(g_currSelCfg)
-					{
-						case 0: CFG_Apply_General(hwndConfDialog); break;
-						case 1: CFG_Apply_Minimizer(hwndConfDialog); break;
-						case 2: CFG_Apply_Ext(hwndConfDialog); break;
-						case 3: CFG_Apply_Look(hwndConfDialog); break;
-						case 4: CFG_Apply_Network(hwndConfDialog); break;
-						default:
-								gameID = CFG_GetGameID(g_currSelCfg);
-
-					}
-					if(gameID!=-1)
-						CFG_Apply_Games(gameID,hwndConfDialog);
+					CFG_ApplySettings();
 					
 					if(AppCFGtemp.bAutostart)
 						SelfInstall(EXE_PATH);
@@ -409,10 +392,11 @@ VOID WINAPI CFG_OnTabbedDialogInit(HWND hwndDlg)
     // Lock the resources for the three child dialog boxes. 
     g_pHdr->apRes[0] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG1)); 
     g_pHdr->apRes[1] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG2)); 
-	g_pHdr->apRes[2] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG4)); 
-	g_pHdr->apRes[3] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG5)); 
-	g_pHdr->apRes[4] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_NET)); 
-	g_pHdr->apRes[5] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG3_NEW)); 
+	g_pHdr->apRes[2] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_MIRC)); 
+	g_pHdr->apRes[3] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG4)); 
+	g_pHdr->apRes[4] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG5)); 
+	g_pHdr->apRes[5] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_NET)); 
+	g_pHdr->apRes[6] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG3_NEW)); 
 	
 	g_currSelCfg=-1;
     CFG_OnSelChanged(hwndDlg); 
@@ -454,7 +438,7 @@ VOID WINAPI CFG_OnSelChanged(HWND hwndDlg)
     if (pHdr->hwndDisplay != NULL) 
         DestroyWindow(pHdr->hwndDisplay); 
  
-	if(iSel>=GAME_CFG_INDEX+GamesInfo.size()) //C_PAGES
+	if(iSel>=GAME_CFG_INDEX+GamesInfo.size()) 
 		return;
 	else if(iSel>GAME_CFG_INDEX)
 		iSel = GAME_CFG_INDEX;
@@ -741,7 +725,7 @@ void CFG_Enumerate_installations(HWND hDlg,int GameId)
 	for ( iLst = GamesInfoCFG[GameId].vGAME_INST.rbegin(); iLst != GamesInfoCFG[GameId].vGAME_INST.rend( ); iLst++ )
 	{
 	
-		GAME_INSTALLATIONS gi = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
+		GAME_INSTALLATIONS gi = *iLst;
 		if(gi.sName.length()>0)
 			lvItem.pszText = (LPSTR)gi.sName.c_str();
 		else
@@ -856,7 +840,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				CheckDlgButton(hDlg,IDC_CHECK_MIRC,BST_UNCHECKED);
 
 
-			lang.EnumerateLanguage();
+		   lang.EnumerateLanguage();
 		   for( map<string,string>::iterator ii=lang.m_Languages.begin(); ii!=lang.m_Languages.end(); ++ii)
 		   {			   
 			   const char *psz = (*ii).first.c_str() ;

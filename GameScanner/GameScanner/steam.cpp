@@ -11,7 +11,7 @@
 #include "scanner.h"
 #include "..\..\iptocountry\iptocountry.h"
 
-#define MAX_PACKETS 600
+#define MAX_PACKETS 1000
 extern bool g_bCancel;
 extern HWND g_hWnd;
 extern APP_SETTINGS_NEW AppCFG;

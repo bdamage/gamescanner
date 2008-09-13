@@ -147,9 +147,9 @@ STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSM
 CAPTION "Configuration"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,207,262,59,16
-    PUSHBUTTON      "Cancel",IDCANCEL,347,263,66,15
-    PUSHBUTTON      "Set default",IDC_BUTTON_DEFAULT,274,263,68,15
+    DEFPUSHBUTTON   "OK",IDOK,207,261,59,17
+    PUSHBUTTON      "Cancel",IDCANCEL,372,261,66,18
+    PUSHBUTTON      "Set default",IDC_BUTTON_DEFAULT,274,260,91,18
     CONTROL         "",IDC_TREE_CONF,"SysTreeView32",TVS_HASBUTTONS | TVS_LINESATROOT | TVS_FULLROWSELECT | WS_BORDER | WS_HSCROLL | WS_TABSTOP,2,8,107,271
 END
 
@@ -159,11 +159,6 @@ FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
     CONTROL         "Auto Start on boot up.",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,21,191,10
     CONTROL         "Use short country name.",IDC_CHECK_SHORTNAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,7,32,191,10
-    CONTROL         "Notify mIRC when joining servers (experimental)",IDC_CHECK_MIRC,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,15,109,250,9
-    GROUPBOX        "mIRC",IDC_STATIC,7,98,340,91
-    EDITTEXT        IDC_EDIT_MIRC,18,130,322,15,ES_AUTOHSCROLL
-    LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",IDC_STATIC,17,153,262,31
     GROUPBOX        "Language",IDC_STATIC,9,49,338,41
     COMBOBOX        IDC_COMBO_LANG,22,65,178,15,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
@@ -183,24 +178,24 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,39,187,10
 END
 
-IDD_CFG4 DIALOGEX 0, 0, 353, 196
+IDD_CFG4 DIALOGEX 0, 0, 400, 196
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Custom exec to launch when joining a server (e.g. Ventrilo or TeamSpeak).",IDC_STATIC,7,9,336,86
-    EDITTEXT        IDC_EDIT_EXT_EXE,58,34,251,14,ES_AUTOHSCROLL
+    GROUPBOX        "Custom exec to launch when joining a server (e.g. Ventrilo or TeamSpeak).",IDC_STATIC,4,9,381,101
+    EDITTEXT        IDC_EDIT_EXT_EXE,66,34,281,14,ES_AUTOHSCROLL
     LTEXT           "Exe file",IDC_STATIC,12,38,46,8
     LTEXT           "Command",IDC_STATIC,12,53,46,12
-    EDITTEXT        IDC_EDIT_EXT_CMD,58,50,251,14,ES_AUTOHSCROLL
-    PUSHBUTTON      "...",IDC_EXT_EXE,317,33,20,14
-    CONTROL         "Minimize during start up",IDC_CHECK_EXT_MIN,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,58,81,91,11
-    CONTROL         "Auto close",IDC_CHECK_EXT_CLOSE,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,155,82,48,11
-    EDITTEXT        IDC_EDIT_EXT_WINDOWNAME,58,66,251,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_EXT_CMD,66,49,281,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_EXT_EXE,358,32,20,14
+    CONTROL         "Minimize during start up",IDC_CHECK_EXT_MIN,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,60,84,106,11
+    CONTROL         "Auto close",IDC_CHECK_EXT_CLOSE,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,173,84,83,11
+    EDITTEXT        IDC_EDIT_EXT_WINDOWNAME,66,66,281,14,ES_AUTOHSCROLL
     LTEXT           "Window Name",IDC_STATIC,12,68,46,10
     CONTROL         "Active",IDC_CHECK_EXT_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,20,106,10
 END
 
-IDD_CFG5 DIALOGEX 0, 0, 296, 196
+IDD_CFG5 DIALOGEX 0, 0, 355, 196
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
@@ -208,7 +203,9 @@ BEGIN
     GROUPBOX        "Transparancy",IDC_STATIC,12,14,55,113
     LTEXT           "No trans",IDC_STATIC,35,111,28,8
     LTEXT           "Max",IDC_STATIC,46,30,14,8
-    PUSHBUTTON      "Pick Font",IDC_BUTTON_SEL_FONT,143,26,50,14,NOT WS_VISIBLE | WS_DISABLED
+    PUSHBUTTON      "Pick Font",IDC_BUTTON_SEL_FONT,219,31,50,14,NOT WS_VISIBLE | WS_DISABLED
+    GROUPBOX        "Static",IDC_STATIC,105,11,180,51
+    LTEXT           "ABC abc 123",IDC_STATIC_ABC123,114,31,76,14
 END
 
 IDD_CFG_NET DIALOGEX 0, 0, 414, 196
@@ -336,33 +333,44 @@ BEGIN
     CONTROL         "Activate game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
     CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,175,245,10
     CONTROL         "",IDC_LIST_CFG_EXES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,10,34,439,67
-    PUSHBUTTON      "Edit installation settings",IDC_BUTTON_EDIT_INSTALL,189,107,97,16
-    PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,73,107,97,16
-    PUSHBUTTON      "Delete installation settings",IDC_BUTTON_DELETE_INSTALL,305,107,97,16
+    PUSHBUTTON      "Edit installation settings",IDC_BUTTON_EDIT_INSTALL,179,108,120,21
+    PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,55,108,115,21
+    PUSHBUTTON      "Delete installation settings",IDC_BUTTON_DELETE_INSTALL,305,108,123,21
     GROUPBOX        "Game path for Enemy Territory",IDC_STATIC_GAME_NAME,4,5,455,131
 END
 
-IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 395, 172
+IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 395, 184
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | DS_CENTER | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Properties for game installation"
 FONT 8, "MS Shell Dlg", 400, 0, 0x0
 BEGIN
-    RTEXT           "Launch when Version is equal to:",IDC_STATIC_VERSION,12,97,151,11
-    GROUPBOX        "Add a new executable",IDC_STATIC_ADDNEWINSTALL,1,7,391,133
+    RTEXT           "Launch when Version is equal to:",IDC_STATIC_VERSION,12,108,151,11
+    GROUPBOX        "Add a new executable",IDC_STATIC_ADDNEWINSTALL,1,7,391,142
     EDITTEXT        IDC_EDIT_PATH,72,41,293,14,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_BUTTON_ET_PATH,367,41,19,14
     EDITTEXT        IDC_EDIT_CMD,72,58,301,14,ES_AUTOHSCROLL
     LTEXT           "Executable",IDC_STATIC_EXE,6,42,66,13
     LTEXT           "Command",IDC_STATIC_COMMAND,6,60,66,11
-    RTEXT           "Launch when Mod name is equal to:",IDC_STATIC_MOD,12,120,151,11
-    EDITTEXT        IDC_EDIT_CFG_VERSION,163,95,204,14,ES_AUTOHSCROLL
-    EDITTEXT        IDC_EDIT_CFG_MOD,163,117,204,14,ES_AUTOHSCROLL
+    RTEXT           "Launch when Mod name is equal to:",IDC_STATIC_MOD,12,131,151,11
+    EDITTEXT        IDC_EDIT_CFG_VERSION,163,106,204,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_CFG_MOD,163,128,204,14,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_CFG_PROPNAME,81,18,82,14,ES_AUTOHSCROLL
     RTEXT           "Property name:",IDC_STATIC,12,20,56,11
-    DEFPUSHBUTTON   "Cancel",IDC_BUTTON_CFG_EXE_CANCEL,213,145,74,21
-    PUSHBUTTON      "Save",IDC_BUTTON_EXE_CFG_OK,107,145,74,21
-    LTEXT           "%MODNAME% will be replaced by the current server mod name.",IDC_STATIC,69,75,282,12
+    DEFPUSHBUTTON   "Cancel",IDC_BUTTON_CFG_EXE_CANCEL,213,156,74,22
+    PUSHBUTTON      "Save",IDC_BUTTON_EXE_CFG_OK,107,156,74,22
+    LTEXT           "%MODNAME% equals mod name.\n%GAMEPATH% equals game path.",IDC_STATIC,69,75,282,17
+END
+
+IDD_CFG_MIRC DIALOGEX 0, 0, 355, 175
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    CONTROL         "Notify mIRC when joining servers.",IDC_CHECK_MIRC,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,18,25,322,15
+    GROUPBOX        "mIRC",-1,5,13,342,146
+    EDITTEXT        IDC_EDIT_MIRC,16,52,322,15,ES_AUTOHSCROLL
+    LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",-1,20,76,317,72
 END
 
 
@@ -406,8 +414,9 @@ BEGIN
 
     IDD_CFG4, DIALOG
     BEGIN
-        RIGHTMARGIN, 296
-        VERTGUIDE, 309
+        RIGHTMARGIN, 385
+        VERTGUIDE, 66
+        VERTGUIDE, 347
     END
 
     IDD_CFG_NET, DIALOG
@@ -432,7 +441,7 @@ BEGIN
         VERTGUIDE, 10
         BOTTOMMARGIN, 234
         HORZGUIDE, 108
-        HORZGUIDE, 123
+        HORZGUIDE, 129
     END
 
     IDD_ADD_NEW_GAME_INSTALLATION, DIALOG
@@ -444,8 +453,14 @@ BEGIN
         VERTGUIDE, 163
         VERTGUIDE, 365
         TOPMARGIN, 7
-        BOTTOMMARGIN, 166
-        HORZGUIDE, 145
+        BOTTOMMARGIN, 178
+        HORZGUIDE, 156
+    END
+
+    IDD_CFG_MIRC, DIALOG
+    BEGIN
+        RIGHTMARGIN, 347
+        BOTTOMMARGIN, 163
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -533,6 +548,7 @@ IDI_ICON_LOGGER         ICON                    "res\\ico00002.ico"
 IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
 IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
+IDI_ICON_MIRC           ICON                    "res\\mirc.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

@@ -589,6 +589,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\res\mirc.ico"
+				>
+			</File>
+			<File
 				RelativePath=".\res\NoDiskViewer.ico"
 				>
 			</File>

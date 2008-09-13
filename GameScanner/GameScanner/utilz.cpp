@@ -11,18 +11,17 @@ extern int g_statusIcon;
 extern HWND g_hwndLogger;
 extern HINSTANCE g_hInst;
 extern GamesMap GamesInfo;
-//extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 extern RECT g_INFOIconRect;
 extern _WINDOW_CONTAINER WNDCONT[15];
 string UTILZ_sLogger;
 extern char NexuizASCII[];
+
+
+
 //Debug OFF!!!
 #ifndef _DEBUG
-
 #define dbg_print(exp) ((void)0)
-
 #else
-
 void dbg_print(char *szMsg, ...)
 {	
 	char *szBuffer=NULL;
