@@ -34,7 +34,7 @@ DWORD Q3_dwNewTotalServers=0;
 BOOL Q3_bScanningInProgress = FALSE;
 
 
-TCHAR szPlyType[5][12] = {TEXT("Connecting"), TEXT("Axis"), TEXT("Allies"), TEXT("Spectator"),TEXT("Unknown")};
+char szPlyType[5][12] = {TEXT("Connecting"), TEXT("Axis"), TEXT("Allies"), TEXT("Spectator"),TEXT("Unknown")};
 
 
 void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index), 

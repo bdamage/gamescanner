@@ -967,7 +967,7 @@ void TiXmlElement::StreamIn (std::istream * in, TIXML_STRING * tag)
 			int tagIndex = (int) tag->length();
 
 			bool closingTag = false;
-			bool firstCharFound = false;
+			bool firscharFound = false;
 
 			for( ;; )
 			{
@@ -1000,9 +1000,9 @@ void TiXmlElement::StreamIn (std::istream * in, TIXML_STRING * tag)
 					}
 				}
 
-				if ( !firstCharFound && c != '<' && !IsWhiteSpace( c ) )
+				if ( !firscharFound && c != '<' && !IsWhiteSpace( c ) )
 				{
-					firstCharFound = true;
+					firscharFound = true;
 					if ( c == '/' )
 						closingTag = true;
 				}

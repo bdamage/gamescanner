@@ -10,17 +10,17 @@ class CXmlFile
 private:
 	TiXmlDocument *m_pDocument;
 	TiXmlHandle *m_pHandleDoc;  //Document handler
-	const CHAR *m_pszDirectory;
-	const WCHAR *m_pwszDirectory;
+	const TCHAR *m_pszDirectory;
+	
 
 public:
 	TiXmlElement *m_pRootElement;  //This will point to the first root tag <>
 	CXmlFile(void);
 	~CXmlFile(void);
-	int load(const char* pszFilename);	
-	TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const char *szElementName);
-	int GetText(TiXmlElement *pInElement,const char * szElementName, char *pszOut,DWORD dwBufferLen);
-	int GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut);
-	void SetPath(const char *pszDir);
-	char *GetAttribute(TiXmlElement* pNode, char *szParamName,char *szOutputBuffer,int iBuffSize);
+	int load(const TCHAR* pszFilename);	
+	TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const TCHAR *szElementName);
+	int GetText(TiXmlElement *pInElement,const TCHAR * szElementName, TCHAR *pszOut,DWORD dwBufferLen);
+	int GetInteger(TiXmlElement *pElm,TCHAR * pszElementName,long *lOut);
+	void SetPath(const TCHAR *pszDir);
+	TCHAR *GetAttribute(TiXmlElement* pNode, TCHAR *szParamName,TCHAR *szOutputBuffer,int iBuffSize);
 };

@@ -13,12 +13,12 @@ CXmlFile::~CXmlFile(void)
 	delete m_pDocument;
 	delete m_pHandleDoc;
 }
-void CXmlFile::SetPath(const char *pszDir)
+void CXmlFile::SetPath(const TCHAR *pszDir)
 {
 	m_pszDirectory = pszDir;
 	
 }
-int CXmlFile::load(const char* pszFilename)
+int CXmlFile::load(const TCHAR* pszFilename)
 {
 	m_pDocument->SetCondenseWhiteSpace(false);	
 #ifdef UNICODE
@@ -39,7 +39,7 @@ int CXmlFile::load(const char* pszFilename)
 }
 
 
-TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const char *szElementName)
+TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const TCHAR *szElementName)
 {
 	if(pElement!=NULL)
 	{
@@ -56,7 +56,7 @@ TiXmlElement * CXmlFile::GetElementSafe(TiXmlElement *pElement,const char *szEle
 	return NULL;
 }
 
-int CXmlFile::GetText(TiXmlElement *pInElement,const char * szElementName, char *pszOut,DWORD dwBufferLen)
+int CXmlFile::GetText(TiXmlElement *pInElement,const TCHAR * szElementName, TCHAR *pszOut,DWORD dwBufferLen)
 {
 
 	TiXmlElement *pElement=NULL;
@@ -65,7 +65,7 @@ int CXmlFile::GetText(TiXmlElement *pInElement,const char * szElementName, char 
 		pElement = GetElementSafe(pInElement,szElementName);
 		if(pElement!=NULL)
 		{
-			const char *szTxt = pElement->GetText();
+			const TCHAR *szTxt = pElement->GetText();
 			if(szTxt!=NULL)
 			{
 				//if(strlen(szTxt)+1 <= dwBufferLen)
@@ -88,7 +88,7 @@ GetInteger Returns
 
 
 ****************************/
-int CXmlFile::GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut)
+int CXmlFile::GetInteger(TiXmlElement *pElm,TCHAR * pszElementName,long *lOut)
 {
 	TiXmlNode* pNode=NULL;
 	pNode = pElm->FirstChild(pszElementName);
@@ -97,7 +97,7 @@ int CXmlFile::GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut)
 		TiXmlElement *pElement= pNode->ToElement();
 		if(pElement)
 		{
-			const char *szTxt = pElement->GetText();
+			const TCHAR *szTxt = pElement->GetText();
 			if(szTxt!=NULL)
 				*lOut = atol(szTxt);
 			return 0;
@@ -108,7 +108,7 @@ int CXmlFile::GetInteger(TiXmlElement *pElm,char * pszElementName,long *lOut)
 }
 
 
-char * CXmlFile::GetAttribute(TiXmlElement* pNode, char *szParamName,char *szOutputBuffer,int iBuffSize)
+TCHAR * CXmlFile::GetAttribute(TiXmlElement* pNode, TCHAR *szParamName,TCHAR *szOutputBuffer,int iBuffSize)
 {
 	if(szOutputBuffer==NULL)
 		return NULL;
@@ -116,13 +116,13 @@ char * CXmlFile::GetAttribute(TiXmlElement* pNode, char *szParamName,char *szOut
 	for( pNode; pNode; pNode=pNode->NextSiblingElement())
 	{
 		
-		const char *pName=pNode->Attribute("name");
+		const TCHAR *pName=pNode->Attribute("name");
 		if(pName==NULL)
 			continue;
 		
 		if(strcmp(szParamName,pName)==0)
 		{
-			const char *pValue = pNode->Attribute("value"); // If this fails, original value is left as-is
+			const TCHAR *pValue = pNode->Attribute("value"); // If this fails, original value is left as-is
 			//int len = strlen(pValue);
 			//strcpy(szOutputBuffer,pValue);
 			strncpy(szOutputBuffer,pValue,iBuffSize);

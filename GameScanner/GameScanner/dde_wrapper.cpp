@@ -9,7 +9,7 @@ HSZ hszServName;     // service name string handle
 HSZ hszSysTopic;     // System topic string handle 
 HSZ hszCommand;
 
-BOOL DDE_Send(char * szMsg)
+BOOL DDE_Send(TCHAR * szMsg)
 {
   
    // DdeSend(hConv,szMsg,strlen(szMsg)+1); //"/join #test123"

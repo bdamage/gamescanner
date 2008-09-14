@@ -1,21 +1,23 @@
-version 1.12
+version 1.20
 ------------
-* Updated translation file to version 1.1, a bunch of new text fields/messageboxes can now be translated.
+* Updated translation file to version 1.2, a bunch of new text fields/messageboxes can now be translated.
 * Fixed max player slot bug in ETQW (thanks to JBRAA for discovering this).
 * Improved ETQW player parsing with Clan tags, including a memory leak fix.
 * Added Games Default XML (no more hard coded stuff).
 * Added a "No Columns bug" sanity check, if no columns is active then a default setting will occur.
-* Simplified Master server settings, merged IP and port into one field.
-* Protocol settings is moved into games default XML file including Master Query string.
-* New template value possible to use within Command field (Game settings in Config) %GAMEPATH% (currently used for Warsow).
-* All game icons is now loaded externally.
+* New variable %GAMEPATH% which can now be used in the Command field of the Game installs settings.
 * Code Optimization when scanning servers and doing IP to Country look up.
 * Fixed that network retries now saves in config properly.
 * Added a new Network config, users can now set sleep time after each scanned server (how much CPU time GS will use during scanning, default is 100 ms). 
 * Splitted Global filter settings into a own xml file, this wil help to persist Country settings during upgrades.
 * Fixed a bug when Game Scanner autostarts it never opens up from the task tray.
-* Added a new command line option /portable this option will save all settings and servers in the same folder as the executable.
+* Added a new command line option /portable this option will save all settings and including servers in the same folder as the executable.
 * Updated IP to Country database.
+* All game icons is now loaded externally.
+* Simplified Master server settings, merged IP and port into one field.
+* Protocol settings is moved into games default XML file including Master Query string.
+* Spanish langauge  added into installer.
+
 +loads of other code changes/bug fixes has been done...
 
 * Added support for new games: 
@@ -26,7 +28,7 @@ version 1.12
   - Day of Defeat (dod)
     much more... 
  
-  
+
 
 
 

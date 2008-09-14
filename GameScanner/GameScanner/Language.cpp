@@ -15,25 +15,25 @@ CLanguage::~CLanguage(void)
 {
 	DefaultLanguage.clear();
 }
-void CLanguage::SetPath(const char *pszDir)
+void CLanguage::SetPath(const TCHAR *pszDir)
 {
 	m_pszDirectory = pszDir;
 }
 
-int CLanguage::loadFile(const char *filename)
+int CLanguage::loadFile(const TCHAR *filename)
 {
 
-	char sztemp[200];
+	TCHAR sztemp[200];
 	ZeroMemory(sztemp,sizeof(sztemp));
 	SetCurrentDirectory(m_pszDirectory);	
 	if(xmlFile.load(filename)!=XMLFILE_ERROR_LOADING)
 	{
 		TiXmlElement *pElement = xmlFile.m_pRootElement;  
-		const char* pLangTag = pElement->Value();
+		const TCHAR* pLangTag = pElement->Value();
 		pElement= pElement->FirstChildElement();
 		m_strCurrentLang = pElement->FirstChild()->Value();
 		pElement= pElement->NextSiblingElement();
-		const char* pVersion = pElement->Value();
+		const TCHAR* pVersion = pElement->Value();
 		pElement= pElement->NextSiblingElement();
 		while(pElement!=NULL)
 		{
@@ -44,26 +44,26 @@ int CLanguage::loadFile(const char *filename)
 	}
 	return 0;
 }
-int CLanguage::AddFile(const char *filename)
+int CLanguage::AddFile(const TCHAR *filename)
 {
-	char sztemp[200];
+	TCHAR sztemp[200];
 	ZeroMemory(sztemp,sizeof(sztemp));
 	SetCurrentDirectory(m_pszDirectory);
 	if(xmlFile.load(filename)!=XMLFILE_ERROR_LOADING)
 	{
 		TiXmlElement *pElement = xmlFile.m_pRootElement;  
-		const char* pLangTag = pElement->Value();
+		const TCHAR* pLangTag = pElement->Value();
 		pElement= pElement->FirstChildElement();
-		const char* pName = pElement->FirstChild()->Value();
+		const TCHAR* pName = pElement->FirstChild()->Value();
 		m_Languages[pName] = filename;
 		pElement= pElement->NextSiblingElement();
-		const char* pVersion = pElement->Value();
+		const TCHAR* pVersion = pElement->Value();
 		pElement= pElement->NextSiblingElement();
 	
 	}
 	return 0;
 }
-const char* CLanguage::GetString(const char* szXmlTagName)
+const TCHAR* CLanguage::GetString(const TCHAR* szXmlTagName)
 {
 	if(DefaultLanguage.size()>0)
 		if(DefaultLanguage[szXmlTagName].length()>0)

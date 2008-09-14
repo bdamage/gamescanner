@@ -31,10 +31,10 @@ GamesMap GamesInfoCFG;
 //GAME_INFO GamesInfoCFG[GamesInfo.size()+1];
 
 extern HINSTANCE g_hInst;
-extern char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
-extern char USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
-extern char COMMON_SAVE_PATH[_MAX_PATH+_MAX_FNAME];   //Used for downloading app update and preview images - purpose to share the same data between users.
-extern char EXE_PATH_OLD[_MAX_PATH+_MAX_FNAME];
+extern TCHAR EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
+extern TCHAR USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
+extern TCHAR COMMON_SAVE_PATH[_MAX_PATH+_MAX_FNAME];   //Used for downloading app update and preview images - purpose to share the same data between users.
+extern TCHAR EXE_PATH_OLD[_MAX_PATH+_MAX_FNAME];
 extern CLanguage lang;
 
 typedef struct tag_dlghdr { 
@@ -70,7 +70,7 @@ void CFG_Apply_MIRC(HWND hDlg)
 	else
 		AppCFGtemp.bUseMIRC=false;
 
-	 char tmp[MAX_PATH];	 
+	 TCHAR tmp[MAX_PATH];	 
 	 GetDlgItemText(hDlg,IDC_EDIT_MIRC,tmp,MAX_PATH);
 	 CFG_g_sMIRCoutputTemp = tmp;
 	 g_sMIRCoutput = CFG_g_sMIRCoutputTemp;
@@ -102,7 +102,7 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 void CFG_Apply_Network(HWND hDlg)
 {
 	g_bChanged = false;						
-	char szTmp[10];
+	TCHAR szTmp[10];
 	GetDlgItemText(hDlg,IDC_EDIT_SOCK_TIMEOUT_S,szTmp,sizeof(szTmp));
 	
 	AppCFGtemp.socktimeout.tv_sec = atoi(szTmp)/1000;
@@ -142,9 +142,9 @@ void CFG_Apply_Minimizer(HWND hDlg)
 		AppCFGtemp.bUse_minimize =true;
 	else
 		AppCFGtemp.bUse_minimize=false;
-	char tmp[20];
+	TCHAR tmp[20];
 	GetDlgItemText(hDlg,IDC_EDIT_KEY,tmp,2);
-	AppCFGtemp.cMinimizeKey = (char)toupper((char)tmp[0]);
+	AppCFGtemp.cMinimizeKey = (TCHAR)toupper((TCHAR)tmp[0]);
 	
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK_SCR_RESTORE)==BST_CHECKED)
 		AppCFGtemp.bUSE_SCREEN_RESTORE  =true;
@@ -165,7 +165,7 @@ void CFG_Enable_ApplyBtn(HWND hDlg,BOOL enable)
 }
 void CFG_Apply_Look(HWND hDlg)
 {
-	AppCFGtemp.g_cTransparancy = (char)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_TRANS),TBM_GETPOS,0,(LPARAM)0) ; 
+	AppCFGtemp.g_cTransparancy = (TCHAR)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_TRANS),TBM_GETPOS,0,(LPARAM)0) ; 
 }
 
 DWORD CFG_GetGameID(int selectionIndex)
@@ -177,7 +177,7 @@ DWORD CFG_GetGameID(int selectionIndex)
 	return 0xFFFFFFFF;
 }
 
-HTREEITEM TreeView_AddItem(int iImage, const char *text)
+HTREEITEM TreeView_AddItem(int iImage, const TCHAR *text)
 {
 	HTREEITEM hCurrent = TreeView_GetSelection(g_hwndTree);
 
@@ -497,7 +497,7 @@ HFONT FAR PASCAL CFG_SelectFont( void )
     // selection and return a handle identifying 
     // that font. 
 	lf.lfOutPrecision =0;
-	lf.lfCharSet =0;
+	lf.lfCharSet = 0;
 	lf.lfClipPrecision =0;
 	lf.lfEscapement = 0;
 	lf.lfPitchAndFamily = 0;
@@ -515,7 +515,7 @@ int CFG_editexeIdx;
 
 LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	char szFile[260];
+	TCHAR szFile[260];
 	switch(uMsg)
 	{
 		case WM_INITDIALOG:
@@ -542,7 +542,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 					case IDC_BUTTON_EXE_CFG_OK:
 						{
 							int gameID = CFG_GetGameID(g_currSelCfg);
-							char szTemp[MAX_PATH*2];
+							TCHAR szTemp[MAX_PATH*2];
 							GAME_INSTALLATIONS gi;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
 							if(strlen(szTemp)==0)
@@ -610,7 +610,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 
 LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	char szFile[260];
+	TCHAR szFile[260];
 	switch(uMsg)
 	{
 		case WM_INITDIALOG:
@@ -642,7 +642,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 					case IDC_BUTTON_EXE_CFG_OK:
 						{
 							int gameID = CFG_GetGameID(g_currSelCfg);
-							char szTemp[MAX_PATH*2];
+							TCHAR szTemp[MAX_PATH*2];
 							GAME_INSTALLATIONS gi;
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
 							if(strlen(szTemp)==0)
@@ -743,9 +743,9 @@ void CFG_Enumerate_installations(HWND hDlg,int GameId)
 
 LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	char szText[256];
-	char tmp[20];
-	char szFile[260];
+	TCHAR szText[256];
+	TCHAR tmp[20];
+	TCHAR szFile[260];
 	
 	hwndConfDialog = hDlg;
 	switch(uMsg)
@@ -843,7 +843,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 		   lang.EnumerateLanguage();
 		   for( map<string,string>::iterator ii=lang.m_Languages.begin(); ii!=lang.m_Languages.end(); ++ii)
 		   {			   
-			   const char *psz = (*ii).first.c_str() ;
+			   const TCHAR *psz = (*ii).first.c_str() ;
 			   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_ADDSTRING, 0, (LPARAM)psz );  			
 		   }
 		   
@@ -856,7 +856,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				sprintf(szText,lang.GetString("CFGSettingsTitle"),GamesInfoCFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
 				
-				char szTempMaster[200];
+				TCHAR szTempMaster[200];
 				if(GamesInfoCFG[gameID].bUseHTTPServerList==FALSE)
 					sprintf(szTempMaster,"%s:%d",GamesInfoCFG[gameID].szMasterServerIP,GamesInfoCFG[gameID].dwMasterServerPORT);
 				else
@@ -898,7 +898,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			 g_hwndSleepSlider =  GetDlgItem(hDlg,IDC_SLIDER_SLEEP_VAL);
 			SendMessage(g_hwndSleepSlider,TBM_SETRANGE,TRUE,(LPARAM)MAKELONG(0, 2000)) ;
 			SendMessage(g_hwndSleepSlider,TBM_SETPOS,TRUE,(LPARAM)AppCFGtemp.dwSleep) ; 
-			char sztemp[100];
+			TCHAR sztemp[100];
 			sprintf(sztemp,"Sleep time is %d ms",AppCFGtemp.dwSleep);
 			SetDlgItemText(hDlg,IDC_STATIC_SLEEP_VAL,sztemp);
 
@@ -915,19 +915,19 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 		{
 			if(lParam==(LPARAM)g_hwndScrollTrans)
 			{
-				int i = (char)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_TRANS),TBM_GETPOS,0,(LPARAM)0) ; 
+				int i = (TCHAR)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_TRANS),TBM_GETPOS,0,(LPARAM)0) ; 
 				SetDlgTrans(GetParent(hDlg),i);
 			} else if (lParam==(LPARAM)g_hwndScrollThreads)
 			{
 				DWORD i = (DWORD)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_THREADS),TBM_GETPOS,0,(LPARAM)0) ; 
-				char sztemp[20];
+				TCHAR sztemp[20];
 				AppCFGtemp.dwThreads = i;
 				SetDlgItemText(hDlg,IDC_STATIC_THREAD,_itoa(i,sztemp,10));
 			}	
 			else if (lParam==(LPARAM)g_hwndSleepSlider)
 			{
 				DWORD i = (DWORD)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_SLEEP_VAL),TBM_GETPOS,0,(LPARAM)0) ; 
-				char sztemp[100];
+				TCHAR sztemp[100];
 				AppCFG.dwSleep = i;
 				AppCFGtemp.dwSleep = i;
 				sprintf(sztemp,"Sleep time is %d ms",i);
@@ -943,7 +943,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					{
 						if(LOWORD(wParam)==IDC_COMBO_LANG)
 						{							
-							char sztemp[200];
+							TCHAR sztemp[200];
 							int idx=   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETCURSEL, 0, (LPARAM)0 );  
 							SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETLBTEXT, idx, (LPARAM)sztemp );
 							strcpy(AppCFGtemp.szLanguageFilename,lang.m_Languages[sztemp].c_str());

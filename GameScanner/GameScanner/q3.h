@@ -6,39 +6,39 @@
 
 struct Q3DATA
 {
-	char leadData[10]; //ÿÿservers
-	char data[1];
+	TCHAR leadData[10]; //ÿÿservers
+	TCHAR data[1];
 } ;
 struct Q3DATA_SERVER_INFO
 {
-	char lead[4]; //ÿÿÿÿ
-	char leadData[14]; //statusResponse or infoResponse
-	char seperators[2];
-	char data[1];  //first server var
+	TCHAR lead[4]; //ÿÿÿÿ
+	TCHAR leadData[14]; //statusResponse or infoResponse
+	TCHAR seperators[2];
+	TCHAR data[1];  //first server var
 };
 
 struct Q2DATA_SERVER_INFO
 {
-	char lead[4]; //ÿÿÿÿ
-	char leadData[5]; //print
-	char seperators[2];
-	char data[1];  //first server var starts here
+	TCHAR lead[4]; //ÿÿÿÿ
+	TCHAR leadData[5]; //print
+	TCHAR seperators[2];
+	TCHAR data[1];  //first server var starts here
 };
 
 struct WARSOWDATA_SERVER_INFO //
 {
-	char lead[4]; //ÿÿÿÿ
-	char leadData[12]; //statusResponse or infoResponse
-	char seperators[2];
-	char data[1];  //first server var
+	TCHAR lead[4]; //ÿÿÿÿ
+	TCHAR leadData[12]; //statusResponse or infoResponse
+	TCHAR seperators[2];
+	TCHAR data[1];  //first server var
 };
 
 struct QWDATA_SERVER_SHORTINFO
 {
-	char lead[4]; //ÿÿÿÿ
-	char leadData[1]; //n
-	char seperator[1];
-	char data[1];  //first server var
+	TCHAR lead[4]; //ÿÿÿÿ
+	TCHAR leadData[1]; //n
+	TCHAR seperator[1];
+	TCHAR data[1];  //first server var
 };
 
 void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index), long (*_Callback_CheckForBuddy)(PLAYERDATA *pPlayers, SERVER_INFO* pServerInfo),long (*Q3_InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI));
@@ -46,11 +46,11 @@ void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index), long (*_Callback
 
 void Q3_InitilizeRescan(GAME_INFO *pGI,bool (*filterServerItem)(LPARAM *lp,DWORD dwFilterFlags));
 DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI);
-SERVER_INFO *Q3_ParseServers(char * p, DWORD length, GAME_INFO *CV);
-char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetlen);
+SERVER_INFO *Q3_ParseServers(TCHAR * p, DWORD length, GAME_INFO *CV);
+TCHAR *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,TCHAR *p,DWORD packetlen);
 DWORD WINAPI  Q3_Get_ServerStatusThread(LPVOID lpParam);
 DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
-PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI, char *pointer,char *end, DWORD *numPlayers,char *szP=NULL);
-PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers);
+PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI, TCHAR *pointer,TCHAR *end, DWORD *numPlayers,TCHAR *szP=NULL);
+PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,TCHAR *pointer,TCHAR *end, DWORD *numPlayers);
 
 

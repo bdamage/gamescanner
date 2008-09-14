@@ -142,8 +142,8 @@ class MD5
 		/**
 		 *  @brief 	internal memory management
 		 *  @param	output OUT parameter where POINTER is an unsigned
-		 *  		char*
-		 *  @param	input Data to copy where POINTER is a unsigned char*
+		 *  		TCHAR*
+		 *  @param	input Data to copy where POINTER is a unsigned TCHAR*
 		 *  @param	len The length of the data
 		 */  
 		void MD5_memcpy (POINTER output, POINTER input, unsigned int len);
@@ -151,7 +151,7 @@ class MD5
 		/**
 		 *  @brief 	internal memory management
 		 *  @param 	output OUT parameter where POINTER is an unsigned
-		 *  		char*
+		 *  		TCHAR*
 		 *  @param	value Value to fill the memory with
 		 *  @param	len The length of the data
 		 *  

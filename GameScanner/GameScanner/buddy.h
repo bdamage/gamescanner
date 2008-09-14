@@ -6,12 +6,12 @@
 
 //Buddy functions
 void Buddy_Add(bool manually);					
-BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,char *szName,SERVER_INFO *pServer);
+BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,TCHAR *szName,SERVER_INFO *pServer);
 void Buddy_UpdateList(BUDDY_INFO *pBI);
 void Buddy_Remove();
-void Buddy_ChangeName(char *newname);
+void Buddy_ChangeName(TCHAR *newname);
 long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo);
-void Buddy_InsertToList(char* szPlayerName,char *szPlayerColorEncoded);
+void Buddy_InsertToList(TCHAR* szPlayerName,TCHAR *szPlayerColorEncoded);
 void Buddy_Save(BUDDY_INFO *pBI);
 int Buddy_Load(LPBUDDY_INFO &pBI);
 void Buddy_Clear(LPBUDDY_INFO pBI);

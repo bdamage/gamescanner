@@ -13,17 +13,18 @@ class CLanguage
 {
 	MessageMap DefaultLanguage;
 
-	const char *m_pszDirectory;
+	const TCHAR *m_pszDirectory;
 	CXmlFile xmlFile;
-	int AddFile(const char *filename);
+	int AddFile(const TCHAR *filename);
 public:
 	string m_strCurrentLang;
 	MessageMap m_Languages;
-	char m_szError[200];
+	TCHAR m_szError[200];
 	CLanguage(void);
 	~CLanguage(void);
-	int loadFile(const char *filename);
-	void SetPath(const char*pszDir);
-	const char* GetString(const char* szXmlTagName);
+	int loadFile(const TCHAR *filename);
+	void SetPath(const TCHAR*pszDir);
+	const TCHAR* GetString(const TCHAR* szXmlTagName);
+	//const TCHAR* GetString(const TCHAR* szXmlTagName);
 	int EnumerateLanguage(void);
 };

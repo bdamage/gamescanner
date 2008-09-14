@@ -1099,7 +1099,7 @@ void Show_ErrorDetails(LPTSTR lpszFunction)
     // Display the error message and exit the process
 
     lpDisplayBuf = (LPVOID)LocalAlloc(LMEM_ZEROINIT, 
-        (lstrlen((LPCTSTR)lpMsgBuf)+lstrlen((LPCTSTR)lpszFunction)+40)*sizeof(TCHAR)); 
+        (lstrlen((LPCTSTR)lpMsgBuf)+lstrlen((LPCTSTR)lpszFunction)+40)*sizeof(char)); 
     StringCchPrintf((LPTSTR)lpDisplayBuf, 
         LocalSize(lpDisplayBuf),
         TEXT("%s failed with error %d: %s"), 

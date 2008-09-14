@@ -8,8 +8,8 @@
 #pragma warning(disable : 4995)
 #pragma warning(disable : 4996)
 
-extern char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
-extern char USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
+extern TCHAR EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
+extern TCHAR USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
 extern HWND g_hwndListBuddy;
 extern HWND g_hwndListViewPlayers;
 extern HWND g_hWnd;
@@ -23,12 +23,12 @@ extern GamesMap GamesInfo;
 
 extern CLanguage lang;
 extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
-extern void ShowBalloonTip(char *title,char *message);
+extern void ShowBalloonTip(TCHAR *title,TCHAR *message);
 extern UINT Get_GameIcon(UINT GameIndex);
 extern void StartGame_ConnectToServer(bool connectFromBuddyList);
-extern const char * ReadCfgStr2(TiXmlElement* pNode, char *szParamName,char *szOutputBuffer,int iBuffSize);
-extern int ReadCfgInt2(TiXmlElement* pNode, char *szParamName, int& intVal);
-extern BOOL WINAPI EditCopy(char *pText);
+extern const TCHAR * ReadCfgStr2(TiXmlElement* pNode, TCHAR *szParamName,TCHAR *szOutputBuffer,int iBuffSize);
+extern int ReadCfgInt2(TiXmlElement* pNode, TCHAR *szParamName, int& intVal);
+extern BOOL WINAPI EditCopy(TCHAR *pText);
 extern PLAYERDATA *Get_PlayerBySelection();
 
 bool bEditBuddyname=false;
@@ -55,38 +55,36 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	case WM_INITDIALOG:
 		{
 			SetDlgItemText(hDlg,IDC_STATIC_BUDDY_NAME,lang.GetString("BuddyName"));
-		CenterWindow(hDlg);
-		if(bEditBuddyname)
-		{
-
-			if(pEditBuddy!=NULL)
+			CenterWindow(hDlg);
+			if(bEditBuddyname)
 			{
-				if(pEditBuddy->cMatchOnColorEncoded)
-					CheckDlgButton(hDlg,IDC_CHECK_NO_COLOR_MATCH,BST_CHECKED);
-				else			
-					CheckDlgButton(hDlg,IDC_CHECK_NO_COLOR_MATCH,BST_UNCHECKED);
 
-				if(pEditBuddy->cMatchExact)
-					CheckDlgButton(hDlg,IDC_CHECK_EXACT_MATCH,BST_CHECKED);
-				else
-					CheckDlgButton(hDlg,IDC_CHECK_EXACT_MATCH,BST_UNCHECKED);
+				if(pEditBuddy!=NULL)
+				{
+					if(pEditBuddy->cMatchOnColorEncoded)
+						CheckDlgButton(hDlg,IDC_CHECK_NO_COLOR_MATCH,BST_CHECKED);
+					else			
+						CheckDlgButton(hDlg,IDC_CHECK_NO_COLOR_MATCH,BST_UNCHECKED);
 
-				PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,0,strlen(pEditBuddy->szPlayerName));
-				PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,(WPARAM)-1,-1);
+					if(pEditBuddy->cMatchExact)
+						CheckDlgButton(hDlg,IDC_CHECK_EXACT_MATCH,BST_CHECKED);
+					else
+						CheckDlgButton(hDlg,IDC_CHECK_EXACT_MATCH,BST_UNCHECKED);
+
+					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,0,strlen(pEditBuddy->szPlayerName));
+					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,(WPARAM)-1,-1);
+				}
+				SetWindowText(hDlg,lang.GetString("TitleEditBuddy")); 
+				SetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,(PTCHAR)pEditBuddy->szPlayerName);
 			}
-
-			SetWindowText(hDlg,lang.GetString("TitleEditBuddy")); 
-			SetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,pEditBuddy->szPlayerName);
-
-		}
-		else
-			SetWindowText(hDlg,lang.GetString("TitleAddBuddy")); 
-		
+			else
+			{
+				SetWindowText(hDlg,lang.GetString("TitleAddBuddy")); 
+			}
 			SetFocus(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER));
-
-			
-		//return TRUE;
-		}
+				
+			//return TRUE;
+			}
 		break;
 	case WM_COMMAND:
 
@@ -94,8 +92,8 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 		{
 			if(LOWORD(wParam) == IDOK)
 			{
-				char szBuddy[100];
-
+				TCHAR szBuddy[100];
+			
 				GetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,szBuddy,sizeof(szBuddy)-1);
 				if(!bEditBuddyname)
 				{					
@@ -183,7 +181,7 @@ void Buddy_Save(BUDDY_INFO *pBI)
 			clan->LinkEndChild(new TiXmlText(pBI->szClan));
 			buddy->LinkEndChild(clan);	
 
-			char szBoolean[5];
+			TCHAR szBoolean[5];
 			TiXmlElement *EM = new TiXmlElement("ExactMatch");
 			if(pBI->cMatchExact)
 				strcpy(szBoolean,"1");
@@ -205,7 +203,7 @@ void Buddy_Save(BUDDY_INFO *pBI)
 			LSIP->LinkEndChild(new TiXmlText(pBI->szLastSeenIPaddress));
 			buddy->LinkEndChild(LSIP);	
 
-			char num[5];
+			TCHAR num[5];
 			
 			TiXmlElement *LSGI = new TiXmlElement("LastSeenGameIdx");
 			LSGI->LinkEndChild(new TiXmlText(_itoa(pBI->cGAMEINDEX,num,10)));
@@ -222,7 +220,7 @@ void Buddy_Save(BUDDY_INFO *pBI)
 
 	doc.SaveFile("Buddies.xml");
 
-	OutputDebugString("Saved buddylist.\n");
+	OutputDebugString(_T("Saved buddylist.\n"));
 }
 
 
@@ -261,7 +259,7 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 		// should always have a valid root but handle gracefully if it does
 		if (!pElem) 
 			return 1;
-		const char *szP;
+		const TCHAR *szP;
 		szP = pElem->Value(); //Should return BuddiesRoot
 
 		// save this for later
@@ -269,7 +267,7 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 
 		//Default values
 		TiXmlElement* pElement;
-		char szVersion[50];
+		TCHAR szVersion[50];
 
 		pElement=hRoot.FirstChild("Versions").ToElement();
 		pElement = pElement->FirstChild()->ToElement();
@@ -340,7 +338,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	HWND hwndLV = g_hwndListBuddy;
 
 	LV_FINDINFO lvfi;
-	char szText[100];
+	TCHAR szText[100];
 	memset(&lvfi,0,sizeof(LV_FINDINFO));
 	lvfi.flags = LVFI_PARAM;
 	lvfi.lParam = (LPARAM)pBI;
@@ -392,7 +390,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 				return 0;
 			if((pBI->cMatchExact) && (pBI->cMatchOnColorEncoded==0))
 			{
-				char cf[100],cf2[100];
+				TCHAR cf[100],cf2[100];
 
 				if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
 				{
@@ -439,7 +437,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 				} else
 				{
 					//Try without color codes
-					char cf[100],cf2[100];
+					TCHAR cf[100],cf2[100];
 
 					if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
 					{
@@ -465,7 +463,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 					{
 
 						//Try to find playername with lower case
-						char copy1[100],copy2[100];
+						TCHAR copy1[100],copy2[100];
 						strcpy(copy1,cf);
 						strcpy(copy2,cf2);
 						_strlwr_s( copy1 , 99);
@@ -510,7 +508,7 @@ BUDDY_INFO *Buddy_GetBuddyInfoBySelection()
 	return NULL;
 }
 
-BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,char *szName,SERVER_INFO *pServer)
+BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,TCHAR *szName,SERVER_INFO *pServer)
 {
 	BUDDY_INFO* pCurrentBI = NULL;
 	BUDDY_INFO* pTempBI = NULL;
@@ -538,7 +536,7 @@ BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,char *szName,SERVER_INFO *pServer)
 	
 	if(pServer!=NULL)
 	{
-		char szIP[MAX_IP_LEN];
+		TCHAR szIP[MAX_IP_LEN];
 		sprintf(szIP,"%s:%d",pServer->szIPaddress,pServer->dwPort);
 		strcpy(pCurrentBI->szServerName,pServer->szServerName);
 		strcpy(pCurrentBI->szIPaddress,szIP);
@@ -565,7 +563,7 @@ void Buddy_UpdateList(BUDDY_INFO *pBI)
 	{
 		if(pBI->bRemove == false)
 		{
-			char cf[100];
+			TCHAR cf[100];
 			ZeroMemory(&item, sizeof(LVITEM));
 			item.mask = LVIF_IMAGE | LVIF_TEXT | LVIF_PARAM ;
 			item.iSubItem = 0;
@@ -683,7 +681,7 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 				case IDM_COPYIP:
 					{
 						int n=-1;
-						char szIP[40];
+						TCHAR szIP[40];
 						n = ListView_GetSelectionMark(g_hwndListBuddy);
 						ListView_GetItemText(g_hwndListBuddy,n,2,szIP,sizeof(szIP)-1);
 						if(n!=-1)
