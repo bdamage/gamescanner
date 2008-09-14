@@ -453,6 +453,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_5BD51A127FF44AE995E3AFDC3AD96CDF"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5D2E6BB9B22ADE100E6545A405D88A30"
         "OwnerKey" = "8:_9572CAEE2F59444B8B9E89C61DF38097"
         "MsmSig" = "8:_UNDEFINED"
@@ -1180,6 +1186,12 @@
         "Entry"
         {
         "MsmKey" = "8:_E487EBF8D469446AA89D8EC0159F4AFD"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E4FB0CEBFCDF4B8493D40A241D3CD93B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2835,6 +2847,26 @@
             "TargetName" = "8:flag_zz.gif"
             "Tag" = "8:"
             "Folder" = "8:_C19AAD18D7144D37B7FB647A383D79DA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5BD51A127FF44AE995E3AFDC3AD96CDF"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\doom3.ico"
+            "TargetName" = "8:doom3.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5269,6 +5301,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E4FB0CEBFCDF4B8493D40A241D3CD93B"
+            {
+            "SourcePath" = "8:..\\..\\redist\\lang_es.xml"
+            "TargetName" = "8:lang_es.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_E568F36CB3C74822917CACBD2DF3E665"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_fi.gif"
@@ -5738,14 +5790,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{992C8633-388B-4108-80BE-E860BEBEECE8}"
-        "PackageCode" = "8:{4C0764BE-8E9E-479A-9B0B-59877C0F72E1}"
+        "ProductCode" = "8:{1895067B-2E48-4BAE-903A-B98F40CA0C5E}"
+        "PackageCode" = "8:{BDE4A281-5440-44AA-AC86-1AAB4BAF9552}"
         "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.1.1"
+        "ProductVersion" = "8:1.2.0"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"

@@ -16,7 +16,7 @@ version 1.20
 * All game icons is now loaded externally.
 * Simplified Master server settings, merged IP and port into one field.
 * Protocol settings is moved into games default XML file including Master Query string.
-* Spanish langauge  added into installer.
+* Spanish language  added into installer.
 
 +loads of other code changes/bug fixes has been done...
 
@@ -27,7 +27,11 @@ version 1.20
   - Team Fortress Classic  (tfc)
   - Day of Defeat (dod)
     much more... 
+
  
+NOTE 1! All country filter settings will be lost during the upgrade.
+NOTE 2! Game Scanner 1.11 and earlier versions will not start if you have installed this version. 
+              If you want to revert to a older version prior 1.20 delete the config.xml file as a work around.
 
 
 

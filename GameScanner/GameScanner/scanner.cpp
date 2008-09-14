@@ -178,6 +178,10 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 	SERVER_INFO pSI;
 	DWORD idx=0;
 	DWORD size = pGI->vRefScanSI.size();
+
+	char szScanStatus[256];  //cache local language status text
+	strcpy(szScanStatus,lang.GetString("ScanStatus"));
+
 	while(pGI->dwScanIdx<size)
 	{			
 		if(SCANNER_bCloseApp)
@@ -191,7 +195,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		EnterCriticalSection(&SCANNER_cs);
 		if(pGI->dwScanIdx<size)
 		{
-			SetStatusText(pGI->iIconIndex,lang.GetString("ScanStatus"),pGI->dwScanIdx,size);
+			SetStatusText(pGI->iIconIndex,szScanStatus,pGI->dwScanIdx,size);
 			pSI = pGI->vSI.at(pGI->vRefScanSI.at(pGI->dwScanIdx).dwIndex);
 			pGI->dwScanIdx++;
 		}
