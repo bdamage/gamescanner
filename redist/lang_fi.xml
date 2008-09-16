@@ -1,6 +1,6 @@
 <Language>
 <Name>Finnish</Name>
-<Version>1.0</Version>
+<Version>1.2</Version>
 <ErrorOpenFile></ErrorOpenFile>
 <ScanAll>Etsi uudet serverit ja päivitä kaikki serverit (F5).</ScanAll>
 <ScanFiltered>Päivitä vain suodatetut serverit.</ScanFiltered>
@@ -127,4 +127,28 @@ ennen yhdistämistä!
 <CFGAddInstall>Lisää uusi asennuspolku</CFGAddInstall>
 <CFGEditInstall>Editoi asennusta</CFGEditInstall>
 <CFGDeleteInstall>Poista asennus</CFGDeleteInstall>
+<Ok>OK</Ok>
+<Cancel>Peruuta</Cancel>
+<SetDefault>Aseta Oletukseksi</SetDefault>
+<TitleNewInstall>Pelin Asetukset</TitleNewInstall>
+<Save>Tallenna</Save>
+<AddNewInstall>Lisää uusi asennus</AddNewInstall>
+<CFGTextVersion>Käynnistä kun versio on:</CFGTextVersion>
+<CFGTextMod>Käynnistä kun modin nimi on:</CFGTextMod>
+<MessageInstance>Vain yksi Game Scanner voi olla käynnissä!</MessageInstance>
+<Ready>Valmis</Ready>
+<SavedServers>Serverilistat tallennettu.</SavedServers>
+<StoppingScanner>Pysäytetään skanneria!</StoppingScanner>
+<ScannerStopped>Skanneri pysäytetty!</ScannerStopped>
+<ScanStatus>Skannataan serveriä %d / %d</ScanStatus>
+<ScanWaitingForThreads>Odotetaan yhteyksien sulkemista!</ScanWaitingForThreads>
+<ValveMasterStatus>Vastaanotettu %d uusista %s master serverin servereistä(Region %s).</ValveMasterStatus>
+<NoName>Varmista että olet syöttänyt nimen.</NoName>
+<Add>Lisää</Add>
+<Remove>Poista</Remove>
+<Edit>Muokkaa</Edit>
 </Language>
+
+
+
+
