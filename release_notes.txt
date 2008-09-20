@@ -1,3 +1,12 @@
+
+version 1.21
+----------
+
+
+Updated language files for:
+ - Finnish 
+ - French 
+
 version 1.20
 ------------
 * Updated translation file to version 1.2, a bunch of new text fields/messageboxes can now be translated.

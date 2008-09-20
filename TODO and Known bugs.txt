@@ -4,8 +4,10 @@ Todo
 Add support for QW spectator?
 Add larger font support.
 Add support for Net Quake.
+Support for UNICODE
 
-Fix Delete serverlist during loading serverlist bug.
+
+
 
 
 
@@ -13,22 +15,11 @@ Fix Delete serverlist during loading serverlist bug.
 1 Clean up code
 2 only use XML_ functions in load and save configs
 3 Save listview and treeview window sizes
-5 splitt upp treeview XML  to Country, games & global filter?!?
-
-
-DONE List! 
-----------
- buddy file as xml 
- Create load function to support new CSV format
- columns save state
- No filter on favorites.
- Gametype, version, map & map add the filter settings/values into xml file (strlvalue="").
- Multithreaded Logger (string sLogger)
-FIXED: Copy IP address should be changed to get the IP and port from SERVER_INFO (NOT ListView)
 
 
 
-Known bugs
+
+known bugs
 ----------
 Buddy code can cause a crash during scanning.
 
