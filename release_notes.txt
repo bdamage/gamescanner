@@ -1,14 +1,14 @@
 
 version 1.21
 ----------
-
+*  This is a official public release of version 1.20.
 
 Updated language files for:
  - Finnish 
  - French 
 
-version 1.20
-------------
+version 1.20 beta
+--------------
 * Updated translation file to version 1.2, a bunch of new text fields/messageboxes can now be translated.
 * Fixed max player slot bug in ETQW (thanks to JBRAA for discovering this).
 * Improved ETQW player parsing with Clan tags, including a memory leak fix.
