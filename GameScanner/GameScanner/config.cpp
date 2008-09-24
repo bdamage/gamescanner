@@ -590,7 +590,8 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 
 						if(gameID!=-1)
 						{
-							ofn.lpstrInitialDir = GamesInfoCFG[gameID].vGAME_INST[CFG_editexeIdx].szGAME_PATH.c_str();
+							if(GamesInfoCFG[gameID].vGAME_INST.size()>0)
+								ofn.lpstrInitialDir = GamesInfoCFG[gameID].vGAME_INST[CFG_editexeIdx].szGAME_PATH.c_str();
 						}
 						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 
@@ -690,7 +691,8 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 
 						if(gameID!=-1)
 						{
-								ofn.lpstrInitialDir = GamesInfoCFG[gameID].vGAME_INST[CFG_editexeIdx].szGAME_PATH.c_str();
+								if(GamesInfoCFG[gameID].vGAME_INST.size()>0)
+									ofn.lpstrInitialDir = GamesInfoCFG[gameID].vGAME_INST[CFG_editexeIdx].szGAME_PATH.c_str();
 						}
 						ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
 

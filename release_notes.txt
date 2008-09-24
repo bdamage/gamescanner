@@ -1,4 +1,11 @@
 
+version 1.22
+----------
+* Fixed a crash bug when trying to add a new executable (thanks to esreality guys for finding this) :) 
+* Added German language translation (thanks hst).
+
+
+
 version 1.21
 ----------
 *  This is a official public release of version 1.20.
