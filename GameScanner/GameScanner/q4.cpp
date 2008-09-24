@@ -347,6 +347,10 @@ Quake 4 Responses
 				strncpy(pSI->szServerName, Get_RuleValue("si_name",pServRules),99);
 			if(Get_RuleValue("si_map",pServRules)!=NULL)
 				strncpy(pSI->szMap, Get_RuleValue("si_map",pServRules),39);
+
+			if(Get_RuleValue("fs_game",pServRules)!=NULL)
+				strncpy(pSI->szFS_GAME, Get_RuleValue("fs_game",pServRules),39);
+
 			if(Get_RuleValue("gamename",pServRules)!=NULL)
 			{
 				strncpy(pSI->szMod, Get_RuleValue("gamename",pServRules),24);
@@ -451,8 +455,11 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 			pSI->cRanked = 1;   //ETQW
 		}
 	}
-
-	if(packet[0]==0 || packet[0]==1)
+/*
+bot_minplayers 
+*/
+	//if(packet[0]==0 || packet[0]==1)
+	if(packet[0]!=32)// || packet[0]==1)
 	{
 		//Parseplayers
 	
@@ -482,11 +489,16 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 			player->szPlayerName = _strdup(packet);
 			packet+=strlen(packet)+1;
 			
-			if(pSI->cGAMEINDEX==Q4_SERVERLIST) //Is it Quake 4
+			if(pSI->cGAMEINDEX==Q4_SERVERLIST) //Is it Quake 4?
 			{	
 				if(strlen(packet)>0)
 					player->szClanTag = _strdup(packet);
 				packet+=strlen(packet)+1;
+
+				if(player->szClanTag!=NULL)
+					if((player->rate==50000) && (strcmp("[BOT]",player->szClanTag)==0))
+						pSI->cBots++;
+
 			} 
 			else if(pSI->cGAMEINDEX==ETQW_SERVERLIST)//Otherwise go for ETQW
 			{

@@ -1,11 +1,15 @@
 
 version 1.23
 ----------
-* Added new game default for Quake 4 installs (+fs_game %MODNAME% )
+* Added new game default for Quake 4 installs (+fs_game %FS_GAME% )
 * Fixed Version filtering for games using Doom 3 protocol (Q4, ETQW).
 * Added new version filter string for Q4 (v.1.4.2)
 * Added new filteritem into Quake 4, you can now Show/Hide TV servers.
-
+* Fixed a bug with Quake 4 player parsing code.
+* Added when displaying colors that clan tag is drawn.
+* Fixed a bug with Quake 4 names when using upper ASCII chars not displaying properly in color encoding mode.
+* Added bot field is now officially support in Quake 4. A bot is detected when  Rate = 50000 & Clantag = [BOT]  (not sure if you can rename on bot clantag in Quake 4).
+* Also as a bonus, you can now hide Quake 4 servers with bots from filter settings.
 
 version 1.22
 ----------
