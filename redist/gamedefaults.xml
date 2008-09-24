@@ -121,7 +121,7 @@
 		<Installs>
 				<Install name="Name" value="Default" />
 				<Install name="Path" value="" />
-				<Install name="Cmd" value="+seta com_allowconsole 1 +fs_game %FS_GAME%" />
+				<Install name="Cmd" value="+seta com_allowconsole 1 +seta fs_game %FS_GAME%" />
 				<Install name="LaunchByMod" value="" />
 				<Install name="LaunchByVer" value="" />
 		</Installs>	
