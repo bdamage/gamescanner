@@ -1,4 +1,12 @@
 
+version 1.23
+----------
+* Added new game default for Quake 4 installs (+fs_game %MODNAME% )
+* Fixed Version filtering for games using Doom 3 protocol (Q4, ETQW).
+* Added new version filter string for Q4 (v.1.4.2)
+* Added new filteritem into Quake 4, you can now Show/Hide TV servers.
+
+
 version 1.22
 ----------
 * Fixed a crash bug when trying to add a new executable (thanks to esreality guys for finding this) :) 

@@ -393,7 +393,9 @@ Quake 4 Responses
 			}
 			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap);
 
-			
+			if(pSI->szVersion!=NULL)
+				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+
 			if(Get_RuleValue("net_serverPunkbusterEnabled",pServRules)!=NULL)
 				pSI->bPunkbuster = (char)atoi(Get_RuleValue("net_serverPunkbusterEnabled",pServRules));
 			else if(Get_RuleValue("sv_punkbuster",pServRules)!=NULL)
@@ -406,7 +408,9 @@ Quake 4 Responses
 			
 			if(Get_RuleValue("si_maxPlayers",pServRules)!=NULL)
 				pSI->nMaxPlayers = atoi(Get_RuleValue("si_maxPlayers",pServRules));
-			
+
+			if(Get_RuleValue("si_tv",pServRules)!=NULL)
+				pSI->bTV = atoi(Get_RuleValue("si_tv",pServRules));		
 			
 			if(Get_RuleValue("si_privatePlayers",pServRules)!=NULL)
 				pSI->nPrivateClients = atoi(Get_RuleValue("si_privatePlayers",pServRules));
