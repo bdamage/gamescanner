@@ -528,7 +528,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 
 	ptempSI.dwPing = 9999;
 	ptempSI.cGAMEINDEX = pGI->cGAMEINDEX;
-	ptempSI.bNeedToUpdateServerInfo = true;			
+	ptempSI.bNeedToUpdateServerInfo = 1;			
 	strcpy(ptempSI.szShortCountryName,"zz");
 
 	while(p<(endAddress)) 
@@ -642,7 +642,7 @@ retry:
 		resp = (STEAM_SERVER_RESPONSE *)packet;
 
 		pSI->dwPing = (GetTickCount() - dwStartTick);
-		pSI->bNeedToUpdateServerInfo = false;
+		pSI->bNeedToUpdateServerInfo = 0;
 		pSI->bUpdated = true;
 		
 		//dbg_dumpbuf("dump.bin", packet, packetlen);

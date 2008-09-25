@@ -43,6 +43,8 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	vSRV_INF::iterator  iLst;
 	pGI->vRefScanSI.clear();
 
+	pGI->dwViewFlags  |= SCAN_SERVERLIST;
+
 	for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 	{	
 		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
@@ -61,6 +63,9 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 			pGI->vRefScanSI.push_back(refSI);  		
 		}
 	}
+	if(pGI->dwViewFlags & SCAN_SERVERLIST)
+		pGI->dwViewFlags ^= SCAN_SERVERLIST;
+
 	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->vRefScanSI.size(),pGI->vSI.size());
 
 	if(pGI->dwViewFlags & FORCE_SCAN_FILTERED)
@@ -185,7 +190,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 	{			
 		if(SCANNER_bCloseApp)
 		{
-			dbg_print("Closing down SIGNALED!");
+			dbg_print("Stop scanning SIGNALED!");
 			break;
 		}
 		

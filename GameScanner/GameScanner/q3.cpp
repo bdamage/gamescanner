@@ -181,7 +181,7 @@ retry:
 			//-----------------------------------
 			//Update server info from rule values
 			//-----------------------------------
-			pSI->bNeedToUpdateServerInfo = false;
+			pSI->bNeedToUpdateServerInfo = 0;
 			pSI->bUpdated = true;
 			pSI->nCurrentPlayers = nPlayers;
 			char *szVarValue=NULL;
@@ -382,7 +382,14 @@ retry:
 
 			szVarValue = Get_RuleValue("sv_maxclients",pServRules);
 			if(szVarValue!=NULL)
-				pSI->nMaxPlayers = atoi(szVarValue)-pSI->nPrivateClients;
+			{
+				int maxClient = atoi(szVarValue);
+				if(maxClient>pSI->nPrivateClients)
+					pSI->nMaxPlayers = maxClient-pSI->nPrivateClients;
+				else
+					pSI->nMaxPlayers = pSI->nPrivateClients-maxClient;
+
+			}
 			else
 			{ //for QW
 				szVarValue = Get_RuleValue("maxclients",pServRules);
@@ -474,7 +481,7 @@ CoD 4                                                                           
 	ptempSI.dwPing = 9999;
 	ptempSI.cGAMEINDEX = (char) pGI->cGAMEINDEX;
 	strcpy(ptempSI.szShortCountryName,"zz");
-	ptempSI.bNeedToUpdateServerInfo = true;
+	ptempSI.bNeedToUpdateServerInfo = 1;
 
 	int hash = 0;
 	while(p<end) 
@@ -506,7 +513,6 @@ CoD 4                                                                           
 			ptempSI.dwIndex = idx++;
 			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 			pGI->vSI.push_back(ptempSI);
-
 			Q3_dwNewTotalServers++;
 		} //end serverexsist
 
@@ -997,7 +1003,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	if(INVALID_SOCKET==ConnectSocket)
 	{
 
-		dbg_print("Error connecting to socket!");
+		AddLogInfo(ETSV_ERROR,"Error connecting to socket!");
 		return 1;
 	}
 
@@ -1005,7 +1011,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	hEvent = WSACreateEvent();
 	if (hEvent == WSA_INVALID_EVENT)
 	{
-		dbg_print("WSACreateEvent()");
+		AddLogInfo(ETSV_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
 		closesocket(ConnectSocket);
 		return 1;
 	}
@@ -1018,7 +1024,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	nRet = WSAEventSelect(ConnectSocket, hEvent,FD_READ|FD_CONNECT|FD_CLOSE);
 	if (nRet == SOCKET_ERROR)
 	{
-		dbg_print("EventSelect()");
+		AddLogInfo(ETSV_ERROR,"EventSelect() = SOCKET_ERROR");
 		closesocket(ConnectSocket);
 		WSACloseEvent(hEvent);
 		return 5;
@@ -1050,7 +1056,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		dwRet = WSAWaitForMultipleEvents(1, &hEvent, FALSE,4000,FALSE);
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
-			dbg_print("Connection timed out!");
+			AddLogInfo(ETSV_ERROR,"WSAWaitForMultipleEvents = WSA_WAIT_TIMEOUT");
 			break;
 		}
 
@@ -1061,7 +1067,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		nRet = WSAEnumNetworkEvents(ConnectSocket, hEvent, &events);
 		if (nRet == SOCKET_ERROR)
 		{
-			dbg_print("WSAEnumNetworkEvents()");
+			AddLogInfo(ETSV_ERROR,"WSAEnumNetworkEvents() = SOCKET_ERROR");
 			break;
 		}
 
@@ -1073,14 +1079,14 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		if (events.lNetworkEvents & FD_CONNECT)
 		{
 			//AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
-			dbg_print("Master server %s:%d",pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
-			dbg_print("Sending command %s Len: %d",sendbuf,len);
+			AddLogInfo(0,"Master server %s:%d",pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
+			AddLogInfo(0,"Sending command [%s] (%s) Len: %d",sendbuf,pGI->szMasterQueryString,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
 				Q3_bScanningInProgress = FALSE;
 				WSACloseEvent(hEvent);
 				closesocket(ConnectSocket);		
-				dbg_print("Error sending packet!");
+				AddLogInfo(ETSV_ERROR,"Error sending master query packet!");
 				return 2;
 			}
 		}

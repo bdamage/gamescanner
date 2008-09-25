@@ -171,7 +171,8 @@ SERVER_INFO* Q4_ParseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 	tempSI.pServerRules = NULL;
 	strcpy(tempSI.szShortCountryName,"zz");
 	tempSI.cGAMEINDEX =  pGI->cGAMEINDEX;
-	tempSI.bNeedToUpdateServerInfo = true;
+	tempSI.bNeedToUpdateServerInfo = 1;
+	tempSI.dwPing = 9999;
 
 	int hash = 0;
 	while(p<end) 
@@ -338,7 +339,7 @@ Quake 4 Responses
 			//-----------------------------------
 			//Update server info from rule values
 			//-----------------------------------
-			pSI->bNeedToUpdateServerInfo = false;
+			pSI->bNeedToUpdateServerInfo = 0;
 			pSI->bUpdated = true;
 			pSI->nCurrentPlayers = nPlayers;
 			

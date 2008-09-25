@@ -12,7 +12,8 @@ version 1.23
 * Also as a bonus, you can now hide Quake 4 servers with bots from filter settings.
 * Added bot detection for Quake 3 using following server variable bot_minplayers.
 * Added new bot filter option for Quake 3.
-
+* Hide Offline Servers filter should now work again.
+* Added more log info for troubleshooting.
 
 version 1.22
 ----------
