@@ -309,11 +309,19 @@ retry:
 						}
 					}		
 				break;
+				case NEXUIZ_SERVERLIST:
 				case WARSOW_SERVERLIST:
 					{
 						szVarValue = Get_RuleValue("bots",pServRules); //Warsow specific
 						if(szVarValue!=NULL)
 							pSI->cBots = atoi(szVarValue);
+					}
+				case Q3_SERVERLIST:
+					{
+						szVarValue = Get_RuleValue("bot_minplayers",pServRules); //Warsow specific
+						if(szVarValue!=NULL)
+							pSI->cBots = atoi(szVarValue);
+
 					}
 				case ET_SERVERLIST:
 					{

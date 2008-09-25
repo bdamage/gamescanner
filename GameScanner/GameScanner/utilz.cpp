@@ -287,23 +287,22 @@ void LOGGER_DeInit()
 
 void AddGetLastErrorIntoLog(char* lpszFunction)
 {
-	
-			LPVOID lpMsgBuf;
-			DWORD dw = GetLastError(); 
+	LPVOID lpMsgBuf;
+	DWORD dw = GetLastError(); 
 
-			FormatMessage(
-				FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-				FORMAT_MESSAGE_FROM_SYSTEM |
-				FORMAT_MESSAGE_IGNORE_INSERTS,
-				NULL,
-				dw,
-				MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-				(LPTSTR) &lpMsgBuf,
-				0, NULL );
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		dw,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR) &lpMsgBuf,
+		0, NULL );
 
-			AddLogInfo(1,"GetLastError from func %s Info: %s",lpszFunction,lpMsgBuf);
+	AddLogInfo(1,"GetLastError from func %s Info: %s",lpszFunction,lpMsgBuf);
 
-			LocalFree(lpMsgBuf);	
+	LocalFree(lpMsgBuf);	
 }
 
 void AddLogInfo(int color, char *lpszText, ...)
@@ -422,20 +421,15 @@ char *colorfilterNEXUIZ(const char* name,char *namefilter,int len)
 	{
 		memset(namefilter,0,len);
 		for(int i=0;i<strlen(name);i++)
-		{
-			
+		{			
 			if(name[i]=='^')
 			{
 				i++;
 				if(name[i]!='^') // this fixes these kind of names with double ^^
 					continue;
-			}
-			
+			}			
 			namefilter[n] = NexuizASCII[name[i]];		
 			n++;
-			
-			
-
 		}
 	}
 	return namefilter;
@@ -729,7 +723,7 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 {
 	int i=0;
 	int len=0;
-	char xFF=255;
+	char xFF=0xFF;
 	char x0A=10;
 	char x00=0;
 	char n = 13;

@@ -300,7 +300,7 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 						ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)ptempBI->cMatchOnColorEncoded);
 						ReadCfgInt2(pBud , "ExactMatch",(int&)ptempBI->cMatchExact);
 						
-						ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)ptempBI->sIndex);
+						ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)ptempBI->cGAMEINDEX);
 						
 						ptempBI->sIndex = -1;  //reset
 
@@ -338,7 +338,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	HWND hwndLV = g_hwndListBuddy;
 
 	LV_FINDINFO lvfi;
-	TCHAR szText[100];
+	TCHAR szText[250];
 	memset(&lvfi,0,sizeof(LV_FINDINFO));
 	lvfi.flags = LVFI_PARAM;
 	lvfi.lParam = (LPARAM)pBI;
@@ -350,9 +350,22 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		item.mask = LVIF_TEXT | LVIF_IMAGE;
 		item.iItem = index;
 		memset(szText,0,sizeof(szText));
-		colorfilter(pBI->szServerName,szText,99);
-		item.pszText = szText;
-		item.cchTextMax = strlen(szText);
+	
+		if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
+		{					
+			GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szServerName,szText,249);
+			item.pszText = szText;
+			item.cchTextMax = (int)strlen(szText);
+		}
+		else
+		{
+			item.pszText = pBI->szServerName;
+			item.cchTextMax = (int)strlen(pBI->szServerName);
+		}
+
+	//	colorfilter(pBI->szServerName,szText,99);
+	//	item.pszText = szText;
+	//	item.cchTextMax = strlen(szText);
 		item.iSubItem = 1;
 		item.iImage = Get_GameIcon(pBI->cGAMEINDEX);
 		ListView_SetItem(g_hwndListBuddy,&item);
@@ -362,14 +375,13 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		strcpy(pBI->szIPaddress,szText);
 		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
 	}
-	if(pBI->cGAMEINDEX != CSS_SERVERLIST)
-	{
-		colorfilter(pBI->szPlayerName,szText,99);
-		ShowBalloonTip("A buddy is online!",szText);		
-	}else
-	{
-		ShowBalloonTip("A buddy is online!",pBI->szPlayerName);
-	}
+	if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
+		GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szServerName,szText,249);
+	else
+		strcpy(szText,pBI->szPlayerName);
+
+	//colorfilter(pBI->szPlayerName,szText,99);
+	ShowBalloonTip("A buddy is online!",szText);		
 }
 
 long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
@@ -571,8 +583,7 @@ void Buddy_UpdateList(BUDDY_INFO *pBI)
 			item.iItem = i;
 			
 			if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
-			{
-			
+			{					
 				GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szPlayerName,cf,99);
 				item.pszText = cf;
 				item.cchTextMax = (int)strlen(cf);

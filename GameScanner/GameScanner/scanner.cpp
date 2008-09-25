@@ -124,12 +124,13 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	DWORD i=0;
 	//Wait for all threads to finish...
 	AddLogInfo(ETSV_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
+
 	while(iWaitIndex<dwMaxThreads)
 	{
 	
 		DWORD max = ((dwMaxThreads-iWaitIndex)<MAXIMUM_WAIT_OBJECTS)?(dwMaxThreads-iWaitIndex):MAXIMUM_WAIT_OBJECTS;		
 
-	//	AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
+		AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
 		DWORD dwEvent = WaitForMultipleObjects(max, &hThreadIndex[iWaitIndex], TRUE, INFINITE);
 		//AddLogInfo(ETSV_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
 	
@@ -139,14 +140,14 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 				//dbg_print("First event was signaled.\n");
 				break; 
 			case WAIT_TIMEOUT:
-				dbg_print("Wait timed out.\n");
+				AddLogInfo(ETSV_DEBUG,"Wait timed out.\n");
 				break;
 			// Return value is invalid.
 			default: 
 				{
-					DebugBreak();
-					Show_ErrorDetails("Error at waiting threads!");
-					dbg_print("Wait error\n"); 
+					//DebugBreak();
+					AddLogInfo(ETSV_DEBUG,"Error at waiting threads!");
+					//dbg_print("Wait error\n"); 
 				}         
 		}
 
@@ -165,8 +166,6 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	DWORD dwEndTick = GetTickCount();
 	AddLogInfo(0,"All servers is now scanned...%d sec",(dwEndTick-dwStartTick)/1000);
 	pGI->vRefScanSI.clear();
-
-
 	CloseHandle(SCAN_hContinueEvent);
 }
 
