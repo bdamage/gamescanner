@@ -324,10 +324,10 @@ retry:
 
 					}*/
 				case ET_SERVERLIST:
-					{
-						szVarValue = Get_RuleValue("omnibot_enable",pServRules); //ET specific
-						if(szVarValue!=NULL)
-							pSI->cBots = atoi(szVarValue);
+					{//Below code removed since v1.24
+					//	szVarValue = Get_RuleValue("omnibot_enable",pServRules); //ET specific
+					//	if(szVarValue!=NULL)
+					//		pSI->cBots = atoi(szVarValue);
 					} //Fall through and continue on default...
 				default:
 					{						
@@ -802,6 +802,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 
 				switch(pSI->cGAMEINDEX)
 				{
+					
 					case Q3_SERVERLIST:
 						{
 							if(player->ping == 0)
@@ -811,6 +812,9 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 						break;
 					case ET_SERVERLIST: //ETpro for retrieving player status (connecting, spectating, allies & axis)
 					{
+						if(player->ping == 0)
+							pSI->cBots ++;
+
 						if(szP!=NULL)
 						{
 							int l = strlen(szP);
