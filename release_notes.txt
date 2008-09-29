@@ -1,6 +1,7 @@
 version 1.24
 ----------
- * n/a
+ * Changed Q3 bot detection, if player has zero ping GS will asume this as a Bot.
+
 
 
 version 1.23

@@ -316,13 +316,13 @@ retry:
 						if(szVarValue!=NULL)
 							pSI->cBots = atoi(szVarValue);
 					}
-				case Q3_SERVERLIST:
+			/*	case Q3_SERVERLIST:
 					{
 						szVarValue = Get_RuleValue("bot_minplayers",pServRules); //Warsow specific
 						if(szVarValue!=NULL)
 							pSI->cBots = atoi(szVarValue);
 
-					}
+					}*/
 				case ET_SERVERLIST:
 					{
 						szVarValue = Get_RuleValue("omnibot_enable",pServRules); //ET specific
@@ -733,6 +733,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 	int Pindex =0;
 	PLAYERDATA *pQ3Players=NULL;
 	BOOL bGTVBug=FALSE;
+	pSI->cBots = 0;
 	if(pointer[0]!=0)
 	{
 		//Parseplayers	
@@ -801,6 +802,13 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 
 				switch(pSI->cGAMEINDEX)
 				{
+					case Q3_SERVERLIST:
+						{
+							if(player->ping == 0)
+								pSI->cBots ++;
+
+						}
+						break;
 					case ET_SERVERLIST: //ETpro for retrieving player status (connecting, spectating, allies & axis)
 					{
 						if(szP!=NULL)
