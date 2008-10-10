@@ -3,6 +3,9 @@ version 1.24
  * Changed Q3 bot detection, if player has zero ping GS will asume this as a Bot.
  * Added ET bot detection same as Q3.
 
+ * New Language translation:
+   - Norwiegen
+ 
 
 
 version 1.23
