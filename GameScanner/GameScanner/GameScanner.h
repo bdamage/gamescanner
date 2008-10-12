@@ -66,7 +66,7 @@ LRESULT CALLBACK PRIVPASS_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 int SetCurrentActiveGame(int index);
 int FindFirstActiveGame();
 void RefreshServerList();
-void OnSize(HWND hwndParent, BOOL bRepaint=TRUE);
+void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint=TRUE);
 //void ResizeListView(HWND g_hwndListViewPlayers, HWND hwndListViewVars, HWND hwndParent, BOOL bRepaint=TRUE);
 void tryToMinimizeGame();
 
