@@ -38,7 +38,7 @@ void dbg_print(char *szMsg, ...)
 	OutputDebugString("\n");
 
 
-	UTILZ_sLogger.append(szBuffer);
+/*	UTILZ_sLogger.append(szBuffer);
 	UTILZ_sLogger.append("\r\n");
 	
 	if(UTILZ_sLogger.length()>100)
@@ -47,7 +47,7 @@ void dbg_print(char *szMsg, ...)
 	
 	SetWindowText(g_hwndLogger,UTILZ_sLogger.c_str());
 	SendMessage(g_hwndLogger,WM_VSCROLL,LOWORD(SB_BOTTOM),NULL);
-
+*/
 
 	va_end(argList);
 	free(szBuffer);	

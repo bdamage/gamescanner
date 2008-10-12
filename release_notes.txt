@@ -2,6 +2,7 @@ version 1.24
 ----------
  * Changed Q3 bot detection, if player has zero ping GS will asume this as a Bot.
  * Added ET bot detection same as Q3.
+ * Fixed a deadlock when closing GS to quickly after after minimizing.
 
  * New Language translation:
    - Norwiegen
