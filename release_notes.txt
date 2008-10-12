@@ -5,8 +5,7 @@ version 1.24
  * Fixed a deadlock when closing GS to quickly after after minimizing.
 
  * New Language translation:
-   - Norwiegen
- 
+   - Norwegian 
 
 
 version 1.23
