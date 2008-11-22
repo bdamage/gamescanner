@@ -645,5 +645,37 @@
 				<InstallSuffix></InstallSuffix>
 			</Registry>
 		</Detection>
+	</Game>	
+	<Game>
+		<GameIndex>20</GameIndex>
+		<Name>Call of Duty 5 - World at War</Name>
+		<ShortName>CoD 5</ShortName>
+		<Filename>cod5.servers</Filename>
+		<NetEngine>Q3</NetEngine>
+		<WebProtocol>cod5</WebProtocol>
+		<MapPreviewPath>cod5maps</MapPreviewPath>
+		<Icon>CoDWaW.ico</Icon>
+		<MasterServers>
+			<MasterServer>cod5master.activision.com:20810</MasterServer>
+			<UseHTTP>0</UseHTTP>
+		</MasterServers>
+		<ServerDefaultPort>28960</ServerDefaultPort>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers empty full</MasterQueryString>
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
+				<RegKey>SOFTWARE\Activision\Call of Duty 5</RegKey>
+				<RegItem>EXEStringM</RegItem>
+				<InstallSuffix></InstallSuffix>
+			</Registry>
+		</Detection>
+		<Installs>
+				<Install name="Name" value="Default" />
+				<Install name="Path" value="" />
+				<Install name="Cmd" value="+set cl_playintro 0 +set ui_skip_titlescreen 1 +set ui_skip_legalscreen 1" />
+				<Install name="LaunchByMod" value="" />
+				<Install name="LaunchByVer" value="" />
+		</Installs>	
 	</Game>		
 </Games>

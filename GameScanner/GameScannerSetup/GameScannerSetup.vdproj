@@ -123,6 +123,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_1870AE04DD3646BA9E50F640C4DF9127"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_192B161107AF459F83FDAC06ABEA5B4A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1759,6 +1765,26 @@
             "TargetName" = "8:lang_fi.xml"
             "Tag" = "8:"
             "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_1870AE04DD3646BA9E50F640C4DF9127"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\CoDWaW.ico"
+            "TargetName" = "8:CoDWaW.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"

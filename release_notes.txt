@@ -1,3 +1,9 @@
+version 1.26 (work in progress)
+----------
+* Added Call of Duty: World at War only server query (no master server support).
+
+
+
 version 1.25
 ----------
 * Fixed a buffer overflow bug when doing fast connect from the search field, this could freeze game scanner and in worst case the OS aswell. (Thanks T0rkel for finding this! )
