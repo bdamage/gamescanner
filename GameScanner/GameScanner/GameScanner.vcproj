@@ -265,6 +265,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\unreal.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\utilz.cpp"
 				>
 			</File>
@@ -340,6 +344,10 @@
 			</File>
 			<File
 				RelativePath="..\..\tinyxml\tinyxml.h"
+				>
+			</File>
+			<File
+				RelativePath=".\unreal.h"
 				>
 			</File>
 			<File
@@ -465,11 +473,11 @@
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\Kjell\Pictures\GSOrg32.ico"
+				RelativePath=".\res\GSOrg32.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\GSOrg32.ico"
+				RelativePath="C:\Users\Kjell\Pictures\GSOrg32.ico"
 				>
 			</File>
 			<File
@@ -621,11 +629,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\small.ico"
+				RelativePath=".\small.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\small.ico"
+				RelativePath=".\res\small.ico"
 				>
 			</File>
 			<File

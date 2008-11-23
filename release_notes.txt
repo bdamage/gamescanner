@@ -1,7 +1,7 @@
-version 1.26 (work in progress)
-----------
-* Added Call of Duty: World at War only server query (no master server support).
-
+version 1.26 beta
+--------------
+* Added Call of Duty: World at War but only server query (no master server support, there is a static master as a temporary solution).
+* Master server IP can't be changed from the Settings (only visible for reading), if needed change these stuff in the file gamedefaults.xml.
 
 
 version 1.25

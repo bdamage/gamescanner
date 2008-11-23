@@ -595,7 +595,7 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 			// information about the host
 			if ((retVal = getaddrinfo(host_name, port, &aiHints, &aiList)) != 0) 
 			{
-				AddLogInfo(ETSV_WARNING,"getaddrinfo() failed.\n");
+				AddLogInfo(ETSV_WARNING,"getaddrinfo() failed. IP: %s\n",host_name);
 				return 0;
 			}
 
@@ -632,8 +632,12 @@ char *SplitIPandPORT(char *szIPport,DWORD &port)
 		char *p=NULL,*r=NULL;
 	
 		p = strchr(szIPport,':');
-		
-		//Added since v5.41
+
+		char *space = strchr(szIPport,' '); //Added since v1.26
+		if(space!=NULL)//Added since v1.26
+			space[0]=0;//Added since v1.26
+
+		//Added since <1.0
 		r = strrchr(szIPport,'/');  //reverse find
 		if(r!=NULL)
 			r[0]=0;
@@ -723,7 +727,7 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 {
 	int i=0;
 	int len=0;
-	char xFF=0xFF;
+	char xFF=-1;
 	char x0A=10;
 	char x00=0;
 	char n = 13;

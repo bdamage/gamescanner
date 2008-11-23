@@ -19,12 +19,10 @@ char Q3_unkown[]={"????"};
 extern CLanguage lang;
 extern bool g_bCancel;
 extern GamesMap GamesInfo;
-//extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 extern APP_SETTINGS_NEW AppCFG;
 bool Q3_bCloseApp=false;
 
 long (*Q3_UpdateServerListView)(DWORD index);
-//bool (*Q3_FilterServerItem)(LPARAM *lp,DWORD dwFilterFlags);
 long (*Callback_CheckForBuddy)(PLAYERDATA *pPlayers, SERVER_INFO* pServerInfo);
 long (*Q3_InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI);
 
