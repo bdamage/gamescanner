@@ -35,7 +35,7 @@ extern TCHAR EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this pa
 extern TCHAR USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
 extern TCHAR COMMON_SAVE_PATH[_MAX_PATH+_MAX_FNAME];   //Used for downloading app update and preview images - purpose to share the same data between users.
 extern TCHAR EXE_PATH_OLD[_MAX_PATH+_MAX_FNAME];
-extern CLanguage lang;
+extern CLanguage g_lang;
 
 typedef struct tag_dlghdr { 
     HWND hwndTab;       // tab control 
@@ -235,14 +235,14 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 
 			SendMessage(g_hwndTree, TVM_SETIMAGELIST , TVSIL_NORMAL, (LPARAM)g_hImageListIcons);
 			HTREEITEM hNewItem;
-			hNewItem = TreeView_AddItem(27,lang.GetString("ConfigGeneral"));
-			hNewItem = TreeView_AddItem(15,lang.GetString("ConfigMinimizer"));
+			hNewItem = TreeView_AddItem(27,g_lang.GetString("ConfigGeneral"));
+			hNewItem = TreeView_AddItem(15,g_lang.GetString("ConfigMinimizer"));
 			hNewItem = TreeView_AddItem(28,"mIRC");
-			hNewItem = TreeView_AddItem(16,lang.GetString("ConfigExtExe"));
+			hNewItem = TreeView_AddItem(16,g_lang.GetString("ConfigExtExe"));
 
-			hNewItem = TreeView_AddItem(25,lang.GetString("ConfigGraphic"));
-			hNewItem = TreeView_AddItem(13,lang.GetString("ConfigNetwork"));
-			hNewItem = TreeView_AddItem(20 ,lang.GetString("ConfigGames"));
+			hNewItem = TreeView_AddItem(25,g_lang.GetString("ConfigGraphic"));
+			hNewItem = TreeView_AddItem(13,g_lang.GetString("ConfigNetwork"));
+			hNewItem = TreeView_AddItem(20 ,g_lang.GetString("ConfigGames"));
 			if (hNewItem)
 				TreeView_Select(g_hwndTree, hNewItem, TVGN_CARET);
 
@@ -262,9 +262,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			}
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
 			CFG_g_sMIRCoutputTemp = g_sMIRCoutput;
-			SetDlgItemText(hDlg,IDOK,lang.GetString("Ok"));
-			SetDlgItemText(hDlg,IDC_BUTTON_DEFAULT,lang.GetString("SetDefault"));
-			SetDlgItemText(hDlg,IDCANCEL,lang.GetString("Cancel"));
+			SetDlgItemText(hDlg,IDOK,g_lang.GetString("Ok"));
+			SetDlgItemText(hDlg,IDC_BUTTON_DEFAULT,g_lang.GetString("SetDefault"));
+			SetDlgItemText(hDlg,IDCANCEL,g_lang.GetString("Cancel"));
 			
 			CenterWindow(hDlg);
 			CFG_OnTabbedDialogInit(hDlg) ;
@@ -320,7 +320,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 						if (!RegisterHotKey(NULL, HOTKEY_ID, AppCFGtemp.dwMinimizeMODKey ,AppCFGtemp.cMinimizeKey))
 						{
 							//probably already registred
-							MessageBox(NULL,lang.GetString("ErrorRegHotkey"),"Hotkey error",NULL);
+							MessageBox(NULL,g_lang.GetString("ErrorRegHotkey"),"Hotkey error",NULL);
 						}
 					}else
 					{
@@ -547,7 +547,7 @@ LRESULT CALLBACK  CFG_EditInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LPAR
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
 							if(strlen(szTemp)==0)
 							{
-								MessageBox(hDlg,lang.GetString("NoName"),"Error saving",MB_OK);
+								MessageBox(hDlg,g_lang.GetString("NoName"),"Error saving",MB_OK);
 								return TRUE;
 							}
 
@@ -616,14 +616,14 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 	{
 		case WM_INITDIALOG:
 			{
-				SetWindowText(hDlg,lang.GetString("TitleNewInstall"));
-				SetDlgItemText(hDlg,IDC_BUTTON_EXE_CFG_OK,lang.GetString("Save"));
-				SetDlgItemText(hDlg,IDC_BUTTON_CFG_EXE_CANCEL,lang.GetString("Cancel"));
-				SetDlgItemText(hDlg,IDC_STATIC_ADDNEWINSTALL,lang.GetString("AddNewInstall"));
-				SetDlgItemText(hDlg,IDC_STATIC_EXE,lang.GetString("ColumnExePath"));
-				SetDlgItemText(hDlg,IDC_STATIC_COMMAND,lang.GetString("ColumnCommand"));
-				SetDlgItemText(hDlg,IDC_STATIC_VERSION,lang.GetString("CFGTextVersion"));
-				SetDlgItemText(hDlg,IDC_STATIC_MOD,lang.GetString("CFGTextMod"));
+				SetWindowText(hDlg,g_lang.GetString("TitleNewInstall"));
+				SetDlgItemText(hDlg,IDC_BUTTON_EXE_CFG_OK,g_lang.GetString("Save"));
+				SetDlgItemText(hDlg,IDC_BUTTON_CFG_EXE_CANCEL,g_lang.GetString("Cancel"));
+				SetDlgItemText(hDlg,IDC_STATIC_ADDNEWINSTALL,g_lang.GetString("AddNewInstall"));
+				SetDlgItemText(hDlg,IDC_STATIC_EXE,g_lang.GetString("ColumnExePath"));
+				SetDlgItemText(hDlg,IDC_STATIC_COMMAND,g_lang.GetString("ColumnCommand"));
+				SetDlgItemText(hDlg,IDC_STATIC_VERSION,g_lang.GetString("CFGTextVersion"));
+				SetDlgItemText(hDlg,IDC_STATIC_MOD,g_lang.GetString("CFGTextMod"));
 				SetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,"Default");
 				int gameID = CFG_GetGameID(g_currSelCfg);
 				if(GamesInfo[gameID].vGAME_INST_DEFAULT.size()>0)
@@ -648,7 +648,7 @@ LRESULT CALLBACK  CFG_AddNewInstall_Proc(HWND hDlg, UINT uMsg, WPARAM wParam, LP
 							GetDlgItemText(hDlg,IDC_EDIT_CFG_PROPNAME,szTemp,MAX_PATH);
 							if(strlen(szTemp)==0)
 							{
-								MessageBox(hDlg,lang.GetString("NoName"),"Error saving",MB_OK);
+								MessageBox(hDlg,g_lang.GetString("NoName"),"Error saving",MB_OK);
 								return TRUE;
 							}
 							gi.sName = szTemp;
@@ -793,17 +793,17 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				hwndLVexes = GetDlgItem(hDlg,IDC_LIST_CFG_EXES);
 
 				lvColumn.cx = 80;
-				lvColumn.pszText = (LPSTR)lang.GetString("ColumnName");
+				lvColumn.pszText = (LPSTR)g_lang.GetString("ColumnName");
 				ListView_InsertColumn(hwndLVexes, 0, &lvColumn);
 				lvColumn.cx = 120;
-				lvColumn.pszText = (LPSTR)lang.GetString("ColumnLaunchByVer");
+				lvColumn.pszText = (LPSTR)g_lang.GetString("ColumnLaunchByVer");
 				ListView_InsertColumn(hwndLVexes, 1, &lvColumn);
-				lvColumn.pszText = (LPSTR)lang.GetString("ColumnLaunchByMod");
+				lvColumn.pszText = (LPSTR)g_lang.GetString("ColumnLaunchByMod");
 				ListView_InsertColumn(hwndLVexes, 2, &lvColumn);
 				lvColumn.cx = 180;
-				lvColumn.pszText =  (LPSTR)lang.GetString("ColumnExePath"); 
+				lvColumn.pszText =  (LPSTR)g_lang.GetString("ColumnExePath"); 
 				ListView_InsertColumn(hwndLVexes, 3, &lvColumn);
-				lvColumn.pszText =  (LPSTR)lang.GetString("ColumnCommand"); 
+				lvColumn.pszText =  (LPSTR)g_lang.GetString("ColumnCommand"); 
 				ListView_InsertColumn(hwndLVexes, 4, &lvColumn);
 
 				DWORD dwExStyle=0;
@@ -842,20 +842,20 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				CheckDlgButton(hDlg,IDC_CHECK_MIRC,BST_UNCHECKED);
 
 
-		   lang.EnumerateLanguage();
-		   for( map<string,string>::iterator ii=lang.m_Languages.begin(); ii!=lang.m_Languages.end(); ++ii)
+		   g_lang.EnumerateLanguage();
+		   for( map<string,string>::iterator ii=g_lang.m_Languages.begin(); ii!=g_lang.m_Languages.end(); ++ii)
 		   {			   
 			   const TCHAR *psz = (*ii).first.c_str() ;
 			   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_ADDSTRING, 0, (LPARAM)psz );  			
 		   }
 		   
-		   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_SELECTSTRING, 0, (LPARAM)lang.m_strCurrentLang.c_str() );  			
+		   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_SELECTSTRING, 0, (LPARAM)g_lang.m_strCurrentLang.c_str() );  			
 		
 			int gameID=-1;
 			gameID = CFG_GetGameID(g_currSelCfg);
 			if(gameID!=-1)
 			{
-				sprintf(szText,lang.GetString("CFGSettingsTitle"),GamesInfoCFG[gameID].szGAME_NAME);
+				sprintf(szText,g_lang.GetString("CFGSettingsTitle"),GamesInfoCFG[gameID].szGAME_NAME);
 				SetWindowText(GetDlgItem(hDlg,IDC_STATIC_GAME_NAME),szText);
 				
 				TCHAR szTempMaster[200];
@@ -879,9 +879,9 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 
 				CFG_Enumerate_installations(hDlg,gameID);
 			}
-			SetDlgItemText(hDlg,IDC_BUTTON_ADD_INSTALL,lang.GetString("CFGAddInstall"));
-			SetDlgItemText(hDlg,IDC_BUTTON_EDIT_INSTALL,lang.GetString("CFGEditInstall"));
-			SetDlgItemText(hDlg,IDC_BUTTON_DELETE_INSTALL,lang.GetString("CFGDeleteInstall"));
+			SetDlgItemText(hDlg,IDC_BUTTON_ADD_INSTALL,g_lang.GetString("CFGAddInstall"));
+			SetDlgItemText(hDlg,IDC_BUTTON_EDIT_INSTALL,g_lang.GetString("CFGEditInstall"));
+			SetDlgItemText(hDlg,IDC_BUTTON_DELETE_INSTALL,g_lang.GetString("CFGDeleteInstall"));
 
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_EXE,AppCFGtemp.szEXT_EXE_PATH);
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_CMD,AppCFGtemp.szEXT_EXE_CMD);
@@ -948,9 +948,9 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 							TCHAR sztemp[200];
 							int idx=   SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETCURSEL, 0, (LPARAM)0 );  
 							SendMessage(GetDlgItem(hDlg,IDC_COMBO_LANG),   (UINT) CB_GETLBTEXT, idx, (LPARAM)sztemp );
-							strcpy(AppCFGtemp.szLanguageFilename,lang.m_Languages[sztemp].c_str());
-							lang.loadFile(lang.m_Languages[sztemp].c_str());
-							MessageBox(NULL,lang.GetString("AlertRestartRequired"),"Alert!",MB_OK);							 
+							strcpy(AppCFGtemp.szLanguageFilename,g_lang.m_Languages[sztemp].c_str());
+							g_lang.loadFile(g_lang.m_Languages[sztemp].c_str());
+							MessageBox(NULL,g_lang.GetString("AlertRestartRequired"),"Alert!",MB_OK);							 
 						}
 					}
 					break;

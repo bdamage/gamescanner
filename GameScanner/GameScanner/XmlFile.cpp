@@ -86,7 +86,6 @@ GetInteger Returns
   0 Successfull parse
  -1 Unsuccessfull parse
 
-
 ****************************/
 int CXmlFile::GetInteger(TiXmlElement *pElm,TCHAR * pszElementName,long *lOut)
 {

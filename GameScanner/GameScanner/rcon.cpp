@@ -21,7 +21,7 @@ extern HINSTANCE g_hInst;
 extern SERVER_INFO g_CurrentSelServer;
 extern GamesMap GamesInfo;
 //extern GAME_INFO GamesInfo[GamesInfo.size()+1];
-extern CLanguage lang;
+extern CLanguage g_lang;
 
 char szRCON_CMD_BACKLOG[MAX_BACKLOG][80];
 
@@ -199,7 +199,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 							if(g_CurrentSelServer.dwIP==0)
 							{
-								MessageBox(hDlg,lang.GetString("SelectServerAtConnectionRCON"),"Error",MB_OK);
+								MessageBox(hDlg,g_lang.GetString("SelectServerAtConnectionRCON"),"Error",MB_OK);
 								return TRUE;
 							}
 							g_RCONServer = &g_CurrentSelServer;

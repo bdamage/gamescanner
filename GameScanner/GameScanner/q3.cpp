@@ -16,7 +16,7 @@ HWND hwndLVserverlist=NULL;
 
 char Q3_unkown[]={"????"};
 
-extern CLanguage lang;
+extern CLanguage g_lang;
 extern bool g_bCancel;
 extern GamesMap GamesInfo;
 extern APP_SETTINGS_NEW AppCFG;
@@ -1139,7 +1139,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		    Q3_ParseServers((char*)packet[i],packet_len[i],pGI);
 			free(packet[i]);			
 			packet[i]=NULL;
-			SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q3_dwNewTotalServers,pGI->szGAME_NAME);
+			SetStatusText(pGI->iIconIndex,g_lang.GetString("StatusReceivingMaster"),Q3_dwNewTotalServers,pGI->szGAME_NAME);
 			if(g_bCancel)
 			{
 				//ensure to clean up

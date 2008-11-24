@@ -19,7 +19,7 @@ DWORD Q4_dwTotalServers=0;
 DWORD Q4_dwNewTotalServers=0;
 extern HWND g_hwndProgressBar;
 extern APP_SETTINGS_NEW AppCFG;
-extern CLanguage lang;
+extern CLanguage g_lang;
 BOOL Q4_bScanningInProgress = FALSE;
 
 void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),
@@ -138,7 +138,7 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI)
 		if(packet[i]==NULL) //End of packets
 			break;  	
 		Q4_ParseServers((char*)packet[i],packetlen,pGI,Q4_InsertServerItem);
-		SetStatusText(pGI->iIconIndex,lang.GetString("StatusReceivingMaster"),Q4_dwNewTotalServers,pGI->szGAME_NAME);		
+		SetStatusText(pGI->iIconIndex,g_lang.GetString("StatusReceivingMaster"),Q4_dwNewTotalServers,pGI->szGAME_NAME);		
 		free(packet[i]);
 	}
 	

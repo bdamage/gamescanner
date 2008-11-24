@@ -7,7 +7,7 @@
 extern APP_SETTINGS_NEW AppCFG;
 extern HWND g_hwndProgressBar;
 extern HWND g_hWnd;
-extern CLanguage lang;
+extern CLanguage g_lang;
 
 LPSERVERINFO		SCANNER_pSI_rescan = NULL;
 extern CRITICAL_SECTION	SCANNER_cs,SCANNER_CSthreadcounter; 
@@ -184,7 +184,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 	DWORD size = pGI->vRefScanSI.size();
 
 	char szScanStatus[256];  //cache local language status text
-	strcpy(szScanStatus,lang.GetString("ScanStatus"));
+	strcpy(szScanStatus,g_lang.GetString("ScanStatus"));
 
 	while(pGI->dwScanIdx<size)
 	{			
@@ -241,7 +241,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		
 	}
 
-	SetStatusText(pGI->iIconIndex, lang.GetString("ScanWaitingForThreads") );
+	SetStatusText(pGI->iIconIndex, g_lang.GetString("ScanWaitingForThreads") );
 	
 	//This ensures that all threads has been created properly and thread count critical sections works correctly
 	//dbg_print("Waiting for all threads to finish the loop!\n");

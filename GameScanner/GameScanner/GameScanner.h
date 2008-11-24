@@ -1,9 +1,14 @@
 #pragma once
 
 #include "resource.h"
-#include "structs_defines.h"
+
 #include "..\..\tinyxml\tinyxml.h"
 
+
+
+
+BOOL				InitInstance(HINSTANCE, int);
+LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 void UpdateTabControl();
 void ClearServerList(int i);
 void ListView_InitilizeColumns();

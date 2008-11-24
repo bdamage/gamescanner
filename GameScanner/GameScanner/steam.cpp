@@ -15,7 +15,7 @@
 extern bool g_bCancel;
 extern HWND g_hWnd;
 extern APP_SETTINGS_NEW AppCFG;
-extern CLanguage lang;
+extern CLanguage g_lang;
 #pragma pack(1)
 
 
@@ -424,7 +424,7 @@ nextRegion3:
 			pGI->dwTotalServers += dwNewSrv;
 			dwNewServers += dwNewSrv;
 			free(packet);
-			SetStatusText(pGI->iIconIndex,lang.GetString("ValveMasterStatus"),dwNewServers,pGI->szGAME_NAME,REGIONS[cRegionCodeIndex].szName);
+			SetStatusText(pGI->iIconIndex,g_lang.GetString("ValveMasterStatus"),dwNewServers,pGI->szGAME_NAME,REGIONS[cRegionCodeIndex].szName);
 			packet=NULL;
 			i++;
 			if(dwLastPort==0) //End of server list

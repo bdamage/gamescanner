@@ -1,8 +1,11 @@
 
+#include "stdafx.h"
 #include "structs_defines.h"
 #include "utilz.h"
 
+#ifndef _Q3_HEADER_
 
+#define  _Q3_HEADER_
 
 struct Q3DATA
 {
@@ -54,3 +57,4 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI, TCHAR *pointer,TCHAR *end, DWORD *
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,TCHAR *pointer,TCHAR *end, DWORD *numPlayers);
 
 
+#endif

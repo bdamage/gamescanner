@@ -21,7 +21,7 @@ extern SERVER_INFO g_tmpSRV;
 extern GamesMap GamesInfo;
 //extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 
-extern CLanguage lang;
+extern CLanguage g_lang;
 extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(TCHAR *title,TCHAR *message);
 extern UINT Get_GameIcon(UINT GameIndex);
@@ -54,7 +54,7 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 	{
 	case WM_INITDIALOG:
 		{
-			SetDlgItemText(hDlg,IDC_STATIC_BUDDY_NAME,lang.GetString("BuddyName"));
+			SetDlgItemText(hDlg,IDC_STATIC_BUDDY_NAME,g_lang.GetString("BuddyName"));
 			CenterWindow(hDlg);
 			if(bEditBuddyname)
 			{
@@ -74,12 +74,12 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,0,strlen(pEditBuddy->szPlayerName));
 					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,(WPARAM)-1,-1);
 				}
-				SetWindowText(hDlg,lang.GetString("TitleEditBuddy")); 
+				SetWindowText(hDlg,g_lang.GetString("TitleEditBuddy")); 
 				SetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,(PTCHAR)pEditBuddy->szPlayerName);
 			}
 			else
 			{
-				SetWindowText(hDlg,lang.GetString("TitleAddBuddy")); 
+				SetWindowText(hDlg,g_lang.GetString("TitleAddBuddy")); 
 			}
 			SetFocus(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER));
 				
@@ -700,7 +700,7 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 							EditCopy(szIP);
 						}
 						else
-							MessageBox(hwnd,lang.GetString("ErrorServerCopyToClipBoard"),NULL,MB_OK);
+							MessageBox(hwnd,g_lang.GetString("ErrorServerCopyToClipBoard"),NULL,MB_OK);
 					}
 				break;
 				case IDM_CONNECT:
@@ -724,13 +724,13 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 			{
 				//place the window/menu there if needed 						
 				
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_CONNECT,lang.GetString("MenuConnect"));				
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE,lang.GetString("Remove"));
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_EDIT_BUDDY,lang.GetString("Edit"));
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPYIP,lang.GetString("MenuCopyIP"));
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_CONNECT,g_lang.GetString("MenuConnect"));				
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_DELETE,g_lang.GetString("Remove"));
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_EDIT_BUDDY,g_lang.GetString("Edit"));
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_COPYIP,g_lang.GetString("MenuCopyIP"));
 			}
 						
-				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADD,lang.GetString("Add"));			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_ADD,g_lang.GetString("Add"));			
 				//InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,IDM_REFRESH,"&Refresh");
 												
 				//workaround for microsoft bug, to hide menu w/o selecting

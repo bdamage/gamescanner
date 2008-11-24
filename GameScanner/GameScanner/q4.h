@@ -1,7 +1,8 @@
 
-#include "structs_defines.h"
-#include "utilz.h"
+#include "stdafx.h"
 
+#ifndef _Q4_HEADER_
+#define _Q4_HEADER_
 
 struct Q4DATA
 {
@@ -31,6 +32,4 @@ SERVER_INFO *Q4_ParseServers(char * p, DWORD length, GAME_INFO *pGI,long (*Inser
 DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *q4players),long (*UpdateRulesListView)(SERVER_RULES *pServRules));
 PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI, char *pointer,char *end, DWORD *numPlayers);
 
-/*void Q4_CleanUp_PlayerList(LPPLAYERDATA &pPL);
-void Q4_CleanUp_ServerRules(LPSERVER_RULES &pSR);
-*/
+#endif

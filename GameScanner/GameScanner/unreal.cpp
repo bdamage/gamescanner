@@ -7,7 +7,7 @@
 #include "..\..\iptocountry\iptocountry.h"
 
 
-extern CLanguage lang;
+extern CLanguage g_lang;
 extern bool g_bCancel;
 extern GamesMap GamesInfo;
 extern APP_SETTINGS_NEW AppCFG;

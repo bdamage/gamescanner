@@ -69,9 +69,17 @@
 #include <objbase.h>
 #include <ole2.h>
 #include <iphlpapi.h>
-#include <icmpapi.h>
+#include <icmpapi.h>  //ping
 
+
+#include "structs_defines.h"
+#include "utilz.h"
+#include "q3.h"
+#include "q4.h"
+
+#include "Xmlconfig.h"
 #include "language.h"
+
 #include "..\..\HttpFileDownload\HttpFileDownload.h"
 #include "..\..\IPtoCountry\IPtoCountry.h"
 #include "..\..\FreeImage\freeimage.h"

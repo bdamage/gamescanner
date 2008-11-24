@@ -1,3 +1,5 @@
+#include "stdafx.h"
+
 #ifndef _COUNTRY_CODES_DEF
 
 #define _COUNTRY_CODES_DEF
