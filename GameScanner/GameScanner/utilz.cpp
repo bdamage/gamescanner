@@ -666,7 +666,7 @@ BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 		//	if( pGI->vSI.size()>0)  //commented for optimization
 			{
 				SERVER_INFO  pSI = (SERVER_INFO) pGI->vSI.at(idx.second);
-				if((dwIP == pSI.dwIP) && (dwPort == pSI.dwPort))
+				if((dwIP == pSI.dwIP) && (dwPort == pSI.usPort))
 					return TRUE;
 				
 			}

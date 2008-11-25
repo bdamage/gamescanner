@@ -2,7 +2,7 @@
 // or project specific include files that are used frequently, but
 // are changed infrequently
 //
-#define  APP_VERSION "1.26"
+#define  APP_VERSION "1.27"
 
 #pragma once
 #define _SECURE_SCL 0
@@ -76,6 +76,7 @@
 #include "utilz.h"
 #include "q3.h"
 #include "q4.h"
+#include "unreal.h"
 
 #include "Xmlconfig.h"
 #include "language.h"

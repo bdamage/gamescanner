@@ -1,3 +1,11 @@
+
+version 1.27
+---------
+* Fixed a bug with color encoding draw code
+* Fixed XP bug when restoring the window from task tray
+
+
+
 version 1.26 beta
 --------------
 * Added Call of Duty: World at War but only server query (no master server support, there is a static master as a temporary solution).

@@ -371,7 +371,7 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		ListView_SetItem(g_hwndListBuddy,&item);
 
 		//ListView_SetItemText(g_hwndListBuddy,index ,1,szText);
-		sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->dwPort);
+		sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
 		strcpy(pBI->szIPaddress,szText);
 		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
 	}
@@ -549,7 +549,7 @@ BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,TCHAR *szName,SERVER_INFO *pServer
 	if(pServer!=NULL)
 	{
 		TCHAR szIP[MAX_IP_LEN];
-		sprintf(szIP,"%s:%d",pServer->szIPaddress,pServer->dwPort);
+		sprintf(szIP,"%s:%d",pServer->szIPaddress,pServer->usPort);
 		strcpy(pCurrentBI->szServerName,pServer->szServerName);
 		strcpy(pCurrentBI->szIPaddress,szIP);
 		strcpy(pCurrentBI->szLastSeenIPaddress,szIP);

@@ -16,6 +16,36 @@ long (*UT_UpdateServerListView)(DWORD index);
 long (*UT_Callback_CheckForBuddy)(PLAYERDATA *pPlayers, SERVER_INFO* pServerInfo)=NULL;
 long (*UT_InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI);
 
+//comments is expected static data
+struct init_request
+{
+	BYTE req_string[3]; //FE FD 09
+	DWORD dwSequence;
+};
+
+struct first_response
+{
+	BYTE reply_identification; //0x09	
+	DWORD dwSequence;	
+	BYTE data[12];
+};
+
+struct second_request
+{
+	BYTE init[2]; //FE FD	
+	BYTE request; //00 = server info
+	DWORD dwSequence;
+	BYTE bChallenge[4];
+	BYTE end[4]; //FF FF FF 01
+};
+
+
+struct server_info_response
+{
+	BYTE reply_identification; //0x00	
+	DWORD dwSequence;	
+	BYTE *data;
+};
 
 DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *pPlayers),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
 {
@@ -26,7 +56,7 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	dwStartTick=0;	
 	if(pSI==NULL)
 	{
-		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
+		dbg_print("Invalid SERVER_INFO argument @ UT_Get_ServerStatus!\n");
 		return (DWORD)0xFFFFFFF;
 	}
 
@@ -38,13 +68,23 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		CleanUp_ServerRules(pSI->pServerRules);
 	pSI->pServerRules = NULL;
 
+	int idxPortStep=0;
+	unsigned short port = pSI->usPort+10;//pSI->usPort;//6500;
+port_Step:
+	
 
-	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->dwPort); 
+	pSocket =  getsockudp(pSI->szIPaddress ,port); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
+		idxPortStep++;
+		port+=100;
 	  dbg_print("Error at getsockudp()\n");
-	  return 0xFFFFFF;
+	  if(idxPortStep>5)
+		return 0xFFFFFF;
+	  else
+		  goto port_Step;
+
 	}
 
 	size_t packetlen = 0;
@@ -63,13 +103,19 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	int len = 0; //(int)strlen(sendbuf);
 	char sendbuf[80];
 	ZeroMemory(sendbuf,sizeof(sendbuf));
-	len = UTILZ_ConvertEscapeCodes(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
-retry:
-	if(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
-		packetlen = send(pSocket, sendbuf, len+1, 0);
-	else
-		packetlen=SOCKET_ERROR;
+	//len = UTILZ_ConvertEscapeCodes(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
 
+	
+//http://wiki.unrealadmin.org/index.php?title=UT3_query_protocol
+	init_request iReq;
+	first_response *fr;
+
+	iReq.req_string[0] = 0xFE;
+	iReq.req_string[1] = 0xFD;
+	iReq.req_string[2] = 0x09;
+	iReq.dwSequence = GetTickCount();
+retry:
+	packetlen = send(pSocket, (const char*)&iReq,sizeof(iReq), 0);
 		
 	if(packetlen==SOCKET_ERROR) 
 	{
@@ -79,20 +125,81 @@ retry:
 		return -1;
 	}
 	dwStartTick = GetTickCount();
+
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
-	if(packet==NULL)
+	if((packet==NULL) || packetlen<5)
 	{
 		if(dwRetries<AppCFG.dwRetries)
 		{
 			dwRetries++;
-			goto retry;
+			goto port_Step;
 		}
 	}
+
+
+	if(packet)
+	{
+		fr = (first_response *)packet;
+		second_request sr;
+		sr.init[0] = 0xFE;
+		sr.init[1] = 0xFD;
+		sr.request = 0;
+		sr.dwSequence = GetTickCount();
+		
+		dbg_print("Response challenge %d \n",fr->dwSequence);
+
+		long challenge = atol((const char*)&fr->data);
+		if(challenge<0)
+			challenge = challenge - 4294967296;
+
+		DWORD chal = challenge;
+
+		sr.bChallenge[0] = (challenge >> 24);
+		sr.bChallenge[1] = (challenge >> 16);
+		sr.bChallenge[2] = (challenge >> 8);
+		sr.bChallenge[3] = (challenge >> 0);
+
+
+		sr.end[0] = 0xFF;
+		sr.end[1] = 0xFF;
+		sr.end[2] = 0xFF;
+		sr.end[3] = 0x01;
+	
+		free(packet);
+		packetlen = send(pSocket, (const char*)&sr,sizeof(second_request), 0);
+			
+		if(packetlen==SOCKET_ERROR) 
+		{
+			dbg_print("Error at send()\n");
+			closesocket(pSocket);		
+			return -1;
+		}
+		
+		packetlen = 0;
+		packet=(unsigned char*)getpacket(pSocket, &packetlen);
+		if(packet==NULL)
+		{
+		}
+		else
+		{
+			server_info_response *sir = (server_info_response *)packet;
+			sir->data;
+
+			free(packet);
+
+		}
+	
+		
+	}
+
+
+	closesocket(pSocket);
+	return 0;
 
 	if(packet) 
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);
-		//dbg_dumpbuf("dump.bin", packet, packetlen);
+		dbg_dumpbuf("dump.bin", packet, packetlen);
 		SERVER_RULES *pServRules=NULL;
 		char *end = (char*)((packet)+packetlen);
 		

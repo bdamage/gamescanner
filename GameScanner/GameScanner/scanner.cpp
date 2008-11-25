@@ -206,7 +206,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		LeaveCriticalSection(&SCANNER_cs);
 		
 		//Is there any more server to scan?
-		if(pSI.dwPort==0) //if the port is zero then no equal empty SERVER_INFO structure, (Ugly hack but  itworks :))
+		if(pSI.usPort==0) //if the port is zero then no equal empty SERVER_INFO structure, (Ugly hack but  itworks :))
 		{
 			//OutputDebugString(">>>>ERROR? Breaked scanning thread\n");
 			break;

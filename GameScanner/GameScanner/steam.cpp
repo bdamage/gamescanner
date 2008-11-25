@@ -104,7 +104,7 @@ DWORD STEAM_GetChallenge(SERVER_INFO *pSI, DWORD &dwChallenge)
 		return 1;
 	}
 
-	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->dwPort); 
+	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
@@ -163,7 +163,7 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 		return 1;
 	}
 
-	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->dwPort); 
+	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
@@ -544,13 +544,13 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 			break;
 		}
 		p+=4;
-		ptempSI.dwPort = 0;
-		ptempSI.dwPort  = ((p[0])<<8);
-		ptempSI.dwPort |=(unsigned char)(p[1]);
+		ptempSI.usPort = 0;
+		ptempSI.usPort  = ((p[0])<<8);
+		ptempSI.usPort |=(unsigned char)(p[1]);
 		p+=2;
 
-		hash = ptempSI.dwIP + ptempSI.dwPort;
-		if(UTILZ_checkforduplicates(pGI,hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
+		hash = ptempSI.dwIP + ptempSI.usPort;
+		if(UTILZ_checkforduplicates(pGI,hash,ptempSI.dwIP, ptempSI.usPort)==FALSE)
 		{					
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
 
@@ -566,7 +566,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 	char *szNewIP = DWORD_IP_to_szIP(ptempSI.dwIP);
 	if(szNewIP!=NULL)
 		strcpy(szLastIP,szNewIP); 
-	dwLastPort = ptempSI.dwPort;
+	dwLastPort = ptempSI.usPort;
 
 //	AddLogInfo(0,"Parsed %d servers Last IP seen is %s:%d",i,szLastIP,dwLastPort);
 
@@ -586,7 +586,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 		return 1;
 	}
 
-	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->dwPort); 
+	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{

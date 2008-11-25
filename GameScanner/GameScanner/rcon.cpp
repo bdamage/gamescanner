@@ -297,7 +297,7 @@ DWORD RCON_Connect(SERVER_INFO *pServer)
 		return 1;
 	}
 
-	RCON_ConnectSocket = getsockudp(pServer->szIPaddress ,(unsigned short)pServer->dwPort); 
+	RCON_ConnectSocket = getsockudp(pServer->szIPaddress ,(unsigned short)pServer->usPort); 
  
 	if(INVALID_SOCKET==RCON_ConnectSocket)
 	{

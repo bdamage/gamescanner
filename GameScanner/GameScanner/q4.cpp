@@ -179,12 +179,12 @@ SERVER_INFO* Q4_ParseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 	{	
 		dwIP = (DWORD*)&p[0];
 		tempSI.dwIP = ntohl((DWORD)*dwIP); 
-		tempSI.dwPort  = ((p[5])<<8);
-		tempSI.dwPort |=(unsigned char)(p[4]);
+		tempSI.usPort  = ((p[5])<<8);
+		tempSI.usPort |=(unsigned char)(p[4]);
 	
-		 hash = tempSI.dwIP + tempSI.dwPort;
+		 hash = tempSI.dwIP + tempSI.usPort;
 		
-		if(UTILZ_checkforduplicates(pGI,  hash,tempSI.dwIP, tempSI.dwPort)==FALSE)	
+		if(UTILZ_checkforduplicates(pGI,  hash,tempSI.dwIP, tempSI.usPort)==FALSE)	
 		{		
 			sprintf_s(tempSI.szIPaddress,sizeof(tempSI.szIPaddress),"%d.%d.%d.%d",(unsigned char)p[0],(unsigned char)p[1],(unsigned char)p[2],(unsigned char)p[3]);
 			tempSI.dwIndex = idx++;
@@ -223,7 +223,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	pSI->pServerRules = NULL;
 
 	SOCKET pSocket;
-	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->dwPort); 
+	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{

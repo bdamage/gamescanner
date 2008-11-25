@@ -69,7 +69,7 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	pSI->pServerRules = NULL;
 
 
-	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->dwPort); 
+	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
@@ -494,18 +494,18 @@ CoD 4                                                                           
 		ptempSI.dwIP = ntohl((DWORD)*dwIP); 
 	
 		p+=4;
-		ptempSI.dwPort  = ((p[0])<<8);
-		ptempSI.dwPort |=(unsigned char)(p[1]);
-		//ptempSI.dwPort &= 0x0000FFFF;	//safe, ensure max port value
+		ptempSI.usPort  = ((p[0])<<8);
+		ptempSI.usPort |=(unsigned char)(p[1]);
+		//ptempSI.usPort &= 0x0000FFFF;	//safe, ensure max port value
 		
 		if(pGI->cGAMEINDEX == Q2_SERVERLIST)
 			p+=2; //q2
 		else
 			p+=3; //q3
 		
-		hash = ptempSI.dwIP + ptempSI.dwPort;
+		hash = ptempSI.dwIP + ptempSI.usPort;
 
-		if(UTILZ_checkforduplicates(pGI,  hash,ptempSI.dwIP, ptempSI.dwPort)==FALSE)
+		if(UTILZ_checkforduplicates(pGI,  hash,ptempSI.dwIP, ptempSI.usPort)==FALSE)
 		{	
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
 			ptempSI.dwIndex = idx++;
