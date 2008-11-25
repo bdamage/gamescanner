@@ -5,6 +5,9 @@ version 1.27
 * Fixed XP bug when restoring the window from task tray
 
 
+work in progress
+* Unreal Tournament 3 query (Gamespy)
+
 
 version 1.26 beta
 --------------
