@@ -44,7 +44,8 @@ struct server_info_response
 {
 	BYTE reply_identification; //0x00	
 	DWORD dwSequence;	
-	BYTE *data;
+	BYTE junk[11];
+	BYTE data;
 };
 
 DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *pPlayers),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
@@ -68,26 +69,7 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		CleanUp_ServerRules(pSI->pServerRules);
 	pSI->pServerRules = NULL;
 
-	int idxPortStep=0;
-	unsigned short port = pSI->usPort+10;//pSI->usPort;//6500;
-port_Step:
-	
-
-	pSocket =  getsockudp(pSI->szIPaddress ,port); 
- 
-	if(pSocket==INVALID_SOCKET)
-	{
-		idxPortStep++;
-		port+=100;
-	  dbg_print("Error at getsockudp()\n");
-	  if(idxPortStep>5)
-		return 0xFFFFFF;
-	  else
-		  goto port_Step;
-
-	}
-
-	size_t packetlen = 0;
+		size_t packetlen = 0;
 
 	//Some default values
 	pSI->dwPing = 9999;
@@ -100,12 +82,28 @@ port_Step:
 	}
 
 	DWORD dwRetries=0;
-	int len = 0; //(int)strlen(sendbuf);
-	char sendbuf[80];
-	ZeroMemory(sendbuf,sizeof(sendbuf));
-	//len = UTILZ_ConvertEscapeCodes(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
 
+
+
+	int idxPortStep=0;
+	unsigned short port = pSI->usQueryPort;//pSI->usPort;//6500;
+port_Step:
 	
+
+	pSocket =  getsockudp(pSI->szIPaddress ,port); 
+ 
+	if(pSocket==INVALID_SOCKET)
+	{
+	  idxPortStep++;
+	  port+=100;
+	  dbg_print("Error at getsockudp()\n");
+	  if(idxPortStep>5)
+		return 0xFFFFFF;
+	  else
+		  goto port_Step;
+
+	}
+
 //http://wiki.unrealadmin.org/index.php?title=UT3_query_protocol
 	init_request iReq;
 	first_response *fr;
@@ -166,27 +164,69 @@ retry:
 		sr.end[3] = 0x01;
 	
 		free(packet);
+
+		dwStartTick = GetTickCount();
+
 		packetlen = send(pSocket, (const char*)&sr,sizeof(second_request), 0);
 			
 		if(packetlen==SOCKET_ERROR) 
 		{
-			dbg_print("Error at send()\n");
+			dbg_print("Error at send() second_request\n");
 			closesocket(pSocket);		
 			return -1;
 		}
 		
 		packetlen = 0;
 		packet=(unsigned char*)getpacket(pSocket, &packetlen);
-		if(packet==NULL)
+		if(packet!=NULL)
 		{
-		}
-		else
-		{
+			pSI->dwPing = (GetTickCount() - dwStartTick);
+
 			server_info_response *sir = (server_info_response *)packet;
 			sir->data;
+			UT_ParseServerRules(pSI->pServerRules,(char*)&sir->data,packetlen);
+
+			char *pValue = Get_RuleValue("hostname",pSI->pServerRules); 
+			if(pValue!=NULL)
+				strncpy(pSI->szServerName,pValue ,sizeof(pSI->szServerName)-1);
+
+			pValue = Get_RuleValue("hostport",pSI->pServerRules); 
+			if(pValue!=NULL)
+				pSI->usPort = atoi(pValue);
+
+			pValue = Get_RuleValue("maxplayers",pSI->pServerRules); 
+			if(pValue!=NULL)
+				pSI->nMaxPlayers = atoi(pValue);
+
+			pValue = Get_RuleValue("numplayers",pSI->pServerRules); 
+			if(pValue!=NULL)
+				pSI->nCurrentPlayers = atoi(pValue);
+
+			int npub = 0;
+
+			pValue = Get_RuleValue("NumPublicConnections",pSI->pServerRules); 
+			if(pValue!=NULL)
+				npub = atoi(pValue);
+
+			pSI->nPrivateClients = pSI->nMaxPlayers - npub;
+			pSI->nMaxPlayers-= pSI->nPrivateClients;
+
+			pValue = Get_RuleValue("gamemode",pSI->pServerRules); 
+			if(pValue!=NULL)
+				strncpy(pSI->szGameTypeName,pValue ,sizeof(pSI->szGameTypeName)-1);
+
+			pValue = Get_RuleValue("p1073741825",pSI->pServerRules); 
+			if(pValue!=NULL)
+				strncpy(pSI->szMap,pValue ,sizeof(pSI->szMap)-1);
+
+			pValue = Get_RuleValue("p268435703",pSI->pServerRules); 
+			if(pValue!=NULL)
+				pSI->cBots = atoi(pValue);			
+	
+			pSI->bNeedToUpdateServerInfo = false;
+			pSI->bUpdated = true;
 
 			free(packet);
-
 		}
 	
 		
@@ -196,275 +236,67 @@ retry:
 	closesocket(pSocket);
 	return 0;
 
-	if(packet) 
+}
+/*
+0x02DBBDC8  00 20 8f 3e 02 73 70 6c 69 74 6e 75 6d 00 80 00 68 6f 73 74 6e 61 6d 65 00 45 70 69 63 20 4d 69 64 77 61 79 20 57 61 72  . .>.splitnum.€.hostname.Epic Midway War
+0x02DBBDF0  66 61 72 65 20 23 31 35 20 28 31 36 20 50 6c 61 79 65 72 29 00 68 6f 73 74 70 6f 72 74 00 37 38 37 37 00 6e 75 6d 70 6c  fare #15 (16 Player).hostport.7877.numpl
+0x02DBBE18  61 79 65 72 73 00 30 00 6d 61 78 70 6c 61 79 65 72 73 00 31 36 00 67 61 6d 65 6d 6f 64 65 00 6f 70 65 6e 70 6c 61 79 69  ayers.0.maxplayers.16.gamemode.openplayi
+0x02DBBE40  6e 67 00 6d 61 70 6e 61 6d 65 00 4f 77 6e 69 6e 67 50 6c 61 79 65 72 49 64 3d 31 31 35 39 36 34 34 33 38 2c 4e 75 6d 50  ng.mapname.OwningPlayerId=115964438,NumP
+0x02DBBE68  75 62 6c 69 63 43 6f 6e 6e 65 63 74 69 6f 6e 73 3d 31 36 2c 62 55 73 65 73 53 74 61 74 73 3d 54 72 75 65 2c 62 49 73 44  ublicConnections=16,bUsesStats=True,bIsD
+0x02DBBE90  65 64 69 63 61 74 65 64 3d 54 72 75 65 2c 4f 77 6e 69 6e 67 50 6c 61 79 65 72 4e 61 6d 65 3d 45 70 69 63 20 4d 69 64 77  edicated=True,OwningPlayerName=Epic Midw
+0x02DBBEB8  61 79 20 57 61 72 66 61 72 65 20 23 31 35 20 28 31 36 20 50 6c 61 79 65 72 29 2c 41 76 65 72 61 67 65 53 6b 69 6c 6c 52  ay Warfare #15 (16 Player),AverageSkillR
+0x02DBBEE0  61 74 69 6e 67 3d 31 30 30 30 2e 30 30 30 30 30 30 2c 45 6e 67 69 6e 65 56 65 72 73 69 6f 6e 3d 33 36 31 34 2c 4d 69 6e  ating=1000.000000,EngineVersion=3614,Min
+0x02DBBF08  4e 65 74 56 65 72 73 69 6f 6e 3d 33 34 36 37 2c 73 33 32 37 37 39 3d 32 2c 73 30 3d 35 2c 73 31 3d 30 2c 73 36 3d 31 2c  NetVersion=3467,s32779=2,s0=5,s1=0,s6=1,
+0x02DBBF30  73 37 3d 30 2c 73 38 3d 30 2c 73 39 3d 30 2c 73 31 30 3d 30 2c 73 31 31 3d 30 2c 73 31 32 3d 30 2c 73 31 33 3d 31 2c 73  s7=0,s8=0,s9=0,s10=0,s11=0,s12=0,s13=1,s
+0x02DBBF58  31 34 3d 31 2c 70 31 30 37 33 37 34 31 38 32 35 3d 57 41 52 2d 44 6f 77 6e 74 6f 77 6e 2c 70 31 30 37 33 37 34 31 38 32  14=1,p1073741825=WAR-Downtown,p107374182
+0x02DBBF80  36 3d 55 54 47 61 6d 65 43 6f 6e 74 65 6e 74 2e 55 54 4f 6e 73 6c 61 75 67 68 74 47 61 6d 65 5f 43 6f 6e 74 65 6e 74 2c  6=UTGameContent.UTOnslaughtGame_Content,
+0x02DBBFA8  70 32 36 38 34 33 35 37 30 34 3d 35 2c 70 32 36 38 34 33 35 37 30 35 3d 32 30 2c 70 32 36 38 34 33 35 37 30 33 3d 33 2c  p268435704=5,p268435705=20,p268435703=3,
+0x02DBBFD0  70 31 30 37 33 37 34 31 38 32 37 3d 2c 70 32 36 38 34 33 35 37 31 37 3d 30 2c 70 31 30 37 33 37 34 31 38 32 38 3d 52 33  p1073741827=,p268435717=0,p1073741828=R3
+0x02DBBFF8  50 4f 52 54 45 52 1c 53 65 72 76 65 72 20 41 64 76 65 72 74 69 73 65 6d 65 6e 74 73 20 28 50 72 6f 67 72 65 73 73 69 76  PORTER.Server Advertisements (Progressiv
+0x02DBC020  65 29 00 4f 77 6e 69 6e 67 50 6c 61 79 65 72 49 64 00 31 31 35 39 36 34 34 33 38 00 4e 75 6d 50 75 62 6c 69 63 43 6f 6e  e).OwningPlayerId.115964438.NumPublicCon
+0x02DBC048  6e 65 63 74 69 6f 6e 73 00 31 36 00 62 55 73 65 73 53 74 61 74 73 00 54 72 75 65 00 62 49 73 44 65 64 69 63 61 74 65 64  nections.16.bUsesStats.True.bIsDedicated
+0x02DBC070  00 54 72 75 65 00 4f 77 6e 69 6e 67 50 6c 61 79 65 72 4e 61 6d 65 00 45 70 69 63 20 4d 69 64 77 61 79 20 57 61 72 66 61  .True.OwningPlayerName.Epic Midway Warfa
+0x02DBC098  72 65 20 23 31 35 20 28 31 36 20 50 6c 61 79 65 72 29 00 41 76 65 72 61 67 65 53 6b 69 6c 6c 52 61 74 69 6e 67 00 31 30  re #15 (16 Player).AverageSkillRating.10
+0x02DBC0C0  30 30 2e 30 30 30 30 30 30 00 45 6e 67 69 6e 65 56 65 72 73 69 6f 6e 00 33 36 31 34 00 4d 69 6e 4e 65 74 56 65 72 73 69  00.000000.EngineVersion.3614.MinNetVersi
+0x02DBC0E8  6f 6e 00 33 34 36 37 00 73 33 32 37 37 39 00 32 00 73 30 00 35 00 73 31 00 30 00 73 36 00 31 00 73 37 00 30 00 73 38 00  on.3467.s32779.2.s0.5.s1.0.s6.1.s7.0.s8.
+0x02DBC110  30 00 73 39 00 30 00 73 31 30 00 30 00 73 31 31 00 30 00 73 31 32 00 30 00 73 31 33 00 31 00 73 31 34 00 31 00 70 31 30  0.s9.0.s10.0.s11.0.s12.0.s13.1.s14.1.p10
+0x02DBC138  37 33 37 34 31 38 32 35 00 57 41 52 2d 44 6f 77 6e 74 6f 77 6e 00 70 31 30 37 33 37 34 31 38 32 36 00 55 54 47 61 6d 65  73741825.WAR-Downtown.p1073741826.UTGame
+0x02DBC160  43 6f 6e 74 65 6e 74 2e 55 54 4f 6e 73 6c 61 75 67 68 74 47 61 6d 65 5f 43 6f 6e 74 65 6e 74 00 70 32 36 38 34 33 35 37  Content.UTOnslaughtGame_Content.p2684357
+0x02DBC188  30 34 00 35 00 70 32 36 38 34 33 35 37 30 35 00 32 30 00 70 32 36 38 34 33 35 37 30 33 00 33 00 70 31 30 37 33 37 34 31  04.5.p268435705.20.p268435703.3.p1073741
+0x02DBC1B0  38 32 37 00 00 70 32 36 38 34 33 35 37 31 37 00 30 00 70 31 30 37 33 37 34 31 38 32 38 00 52 33 50 4f 52 54 45 52 1c 53  827..p268435717.0.p1073741828.R3PORTER.S
+0x02DBC1D8  65 72 76 65 72 20 41 64 76 65 72 74 69 73 65 6d 65 6e 74 73 20 28 50 72 6f 67 72 65 73 73 69 76 65 29 00 00 01 70 6c 61  erver Advertisements (Progressive)...pla
+0x02DBC200  79 65 72 5f 00 00 00 73 63 6f 72 65 5f 00 00 00 70 69 6e 67 5f 00 00 00 74 65 61 6d 5f 00 00 00 64 65 61 74 68 73 5f 00  yer_...score_...ping_...team_...deaths_.
+0x02DBC228  00 00 70 69 64 5f 00 00 00 00 02 74 65 61 6d 5f 74 00 00 54 65 61 6d 00 54 65 61 6d 00 00 73 63 6f 72 65 5f 74 00 00 32  ..pid_.....team_t..Team.Team..score_t..2
+0x02DBC250  00 34 00 00 00 00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 00 00 4a 81 f0 84 d9 e2 1c 00  .4....
+*/
+
+
+char *UT_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *packet,DWORD packetlen)
+{
+	SERVER_RULES *pSR=NULL;
+	SERVER_RULES *pCurrentSR=NULL;
+	pLinkedListStart = NULL;
+
+	char *end = &packet[packetlen];
+	while(packet<end)
 	{
-		pSI->dwPing = (GetTickCount() - dwStartTick);
-		dbg_dumpbuf("dump.bin", packet, packetlen);
-		SERVER_RULES *pServRules=NULL;
-		char *end = (char*)((packet)+packetlen);
+		if(pSR==NULL)
+		{
+			pSR = (SERVER_RULES *)calloc(1,sizeof(SERVER_RULES));			
+			pLinkedListStart = (SERVER_RULES *) pCurrentSR = pSR;			
+		}else
+		{
+			pCurrentSR->pNext = (SERVER_RULES *)calloc(1,sizeof(SERVER_RULES));
+			pCurrentSR = pCurrentSR->pNext;					
+		}
 		
-		char *pCurrPointer=NULL; //will contain the start address for the player data
-
-		//pCurrPointer = UT_ParseServerRules(pServRules,(char*)packet,packetlen);
-		pSI->pServerRules = pServRules;
-		if(pServRules!=NULL)
-		{		
-		
-			char szP_ET[150];
-			if(pSI->cGAMEINDEX == ET_SERVERLIST)
-			{			
-				ZeroMemory(&szP_ET,sizeof(szP_ET));			
-				char *szPVarValue=NULL;
-				szPVarValue = Get_RuleValue("P",pServRules);
-				if(szPVarValue!=NULL)
-					strcpy(szP_ET,szPVarValue);
-			}
-
-
-			PLAYERDATA *pQ3Players=NULL;
-			DWORD nPlayers=0;
-			//---------------------------------
-			//Retrieve players if any exsist...
-			//---------------------------------
-			switch(pSI->cGAMEINDEX)
-			{
-				case QW_SERVERLIST:
-				case Q2_SERVERLIST:
-				//	pPlayers = QW_ParsePlayers(pSI,pCurrPointer,end,&nPlayers);
-					break;
-				default:
-				//	pPlayers = Q3_ParsePlayers(pSI,pCurrPointer,end,&nPlayers,szP_ET);
-				break;
-			}
-			
 	
-			pSI->pPlayerData = pQ3Players;
-			//if(pQ3Players!=NULL) //removed since ver 1.08
-			{
-				if(UpdatePlayerListView!=NULL)
-					UpdatePlayerListView(pQ3Players);
-				
-			//	Callback_CheckForBuddy(pQ3Players,pSI);
-			}
-			if(UpdateRulesListView!=NULL)
-				UpdateRulesListView(pServRules);
-			//-----------------------------------
-			//Update server info from rule values
-			//-----------------------------------
-			pSI->bNeedToUpdateServerInfo = 0;
-			pSI->bUpdated = true;
-			pSI->nCurrentPlayers = nPlayers;
-			char *szVarValue=NULL;
-			char *pVarValue = NULL;
-			pVarValue = Get_RuleValue("sv_hostname",pServRules);
-			if(pVarValue!=NULL)
-			{
-				strncpy(pSI->szServerName,pVarValue ,99);
-			}
-			else  //QW
-			{
-				pVarValue = Get_RuleValue("hostname",pServRules);
-				if(pVarValue!=NULL)
-					strncpy(pSI->szServerName,pVarValue ,99);
-			}
-			//getting status value
-	
+		pCurrentSR->name = _strdup(packet);
+		packet+=(int)strlen(packet)+1;
 
-			pVarValue = Get_RuleValue("mapname",pServRules);
-			if(pVarValue!=NULL)
-				strncpy(pSI->szMap,pVarValue ,39);
-			else
-			{ //for QW
-				pVarValue = Get_RuleValue("map",pServRules);
-				if(pVarValue!=NULL)
-					strncpy(pSI->szMap,pVarValue ,39);
+		pCurrentSR->value = _strdup(packet);
+		packet+=strlen(packet)+1;			
 
-			}
-			
-			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pVarValue);
-
-
-			switch(pSI->cGAMEINDEX)	 //MODS
-			{
-
-				case COD4_SERVERLIST :
-					{
-						pVarValue = Get_RuleValue("mod",pServRules);			
-						if(pVarValue!=NULL)
-						{
-							pSI->dwMod = 1;
-							if(strcmp(pVarValue,"1")==0)
-							{	
-								char *mod;
-								mod = Get_RuleValue("fs_game",pServRules);
-								if(mod!=NULL)
-								{
-									strncpy(pSI->szMod, mod,MAX_MODNAME_LEN-1);									
-								}
-							}
-						}
-						break;
-					}
-					default:
-					{
-						//Fall through and do some guessing...
-						pVarValue = Get_RuleValue("gamename",pServRules);			
-						if(pVarValue==NULL)
-						{
-							pVarValue = Get_RuleValue("*gamedir",pServRules); //Normal QW
-							if(pVarValue==NULL)							
-							{
-								pVarValue = Get_RuleValue("gamename",pServRules); //Normal Q2
-								if(pVarValue==NULL)
-									pVarValue = Get_RuleValue("*progs",pServRules); //Is it QW with Qizmo proxy
-								if(pVarValue!=NULL)
-									if(strcmp(pVarValue,"666")==0)
-										pVarValue="Qizmo";
-									else
-										pVarValue=NULL;
-							}
-						}
-						
-						if(pVarValue!=NULL)                   
-							strncpy(pSI->szMod, pVarValue,MAX_MODNAME_LEN-1);
-						
-					}
-			}
-			pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
-			
-			switch(pSI->cGAMEINDEX)
-			{			
-				case COD_SERVERLIST :
-				case COD2_SERVERLIST :
-				case COD4_SERVERLIST :
-					{
-						szVarValue = Get_RuleValue("pswrd",pServRules);  //CoD & Cod2
-						if(szVarValue!=NULL)
-							pSI->bPrivate = atoi(szVarValue);
-
-						szVarValue = Get_RuleValue("shortversion",pServRules);
-						if(szVarValue!=NULL)
-						{
-							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
-							strncpy(pSI->szVersion,szVarValue,49);
-						}
-					}		
-				break;
-				case NEXUIZ_SERVERLIST:
-				case WARSOW_SERVERLIST:
-					{
-						szVarValue = Get_RuleValue("bots",pServRules); //Warsow specific
-						if(szVarValue!=NULL)
-							pSI->cBots = atoi(szVarValue);
-					}
-			/*	case Q3_SERVERLIST:
-					{
-						szVarValue = Get_RuleValue("bot_minplayers",pServRules); //Warsow specific
-						if(szVarValue!=NULL)
-							pSI->cBots = atoi(szVarValue);
-
-					}*/
-				case ET_SERVERLIST:
-					{//Below code removed since v1.24
-					//	szVarValue = Get_RuleValue("omnibot_enable",pServRules); //ET specific
-					//	if(szVarValue!=NULL)
-					//		pSI->cBots = atoi(szVarValue);
-					} //Fall through and continue on default...
-				default:
-					{						
-						szVarValue = Get_RuleValue("g_needpass",pServRules);
-						if(szVarValue!=NULL)
-							pSI->bPrivate = (char)atoi(szVarValue);
-						else
-						{
-							szVarValue = Get_RuleValue("needpass",pServRules);
-							if(szVarValue!=NULL)
-							{
-								pSI->bPrivate = (char)atoi(szVarValue);
-								
-								if(pSI->bPrivate==4) //Quake World fix
-									pSI->bPrivate = 0;
-
-							}
-						}
-						ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
-						szVarValue = Get_RuleValue("version",pServRules);
-						if(szVarValue==NULL)
-							szVarValue = Get_RuleValue("*version",pServRules); // QuakeWorld
-								if(szVarValue==NULL)
-									szVarValue = Get_RuleValue("gameversion",pServRules); // Nexuiz
-						
-						if(szVarValue!=NULL)
-							strncpy(pSI->szVersion,szVarValue,MAX_VERSION_LEN-1);
-					}
-					break;
-			}
-			if(pSI->szVersion!=NULL)
-				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
-
-			szVarValue = Get_RuleValue("sv_pure",pServRules);
-			if(szVarValue!=NULL)
-				pSI->cPure = atoi(szVarValue);
-			
-			szVarValue = Get_RuleValue("g_gametype",pServRules);
-			pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
-
-			szVarValue = Get_RuleValue("sv_punkbuster",pServRules);
-			if(szVarValue==NULL)
-				szVarValue = Get_RuleValue("sv_battleye",pServRules); //Warsow
-			
-			if(szVarValue!=NULL)
-				pSI->bPunkbuster = (char)atoi(szVarValue);
-
-
-			szVarValue = Get_RuleValue("sv_privateClients",pServRules);
-			if(szVarValue!=NULL)
-				pSI->nPrivateClients = atoi(szVarValue);
-
-			szVarValue = Get_RuleValue("sv_maxclients",pServRules);
-			if(szVarValue!=NULL)
-			{
-				int maxClient = atoi(szVarValue);
-				if(maxClient>pSI->nPrivateClients)
-					pSI->nMaxPlayers = maxClient-pSI->nPrivateClients;
-				else
-					pSI->nMaxPlayers = pSI->nPrivateClients-maxClient;
-
-			}
-			else
-			{ //for QW
-				szVarValue = Get_RuleValue("maxclients",pServRules);
-				if(szVarValue!=NULL)
-					pSI->nMaxPlayers = atoi(szVarValue)-pSI->nPrivateClients;
-			}
-
-
-			if(UT_Callback_CheckForBuddy!=NULL)
-				UT_Callback_CheckForBuddy(pQ3Players,pSI);
-			//Debug purpose
-			if(pServRules!=pSI->pServerRules)
-			{
-				AddLogInfo(ETSV_ERROR,"Error at pServRules!=pSI->pServerRules");
-				DebugBreak();
-			} 
-			else
-			{
-				CleanUp_ServerRules(pSI->pServerRules);
-				pSI->pServerRules = NULL;	
-			}
-
-			CleanUp_PlayerList(pQ3Players);
-			pSI->pPlayerData = NULL;
-			
-
-		} //end if(pServRules!=NULL)
-
-		free(packet);
-
-	} //end if(packet)
-	else
-		pSI->cPurge++;   //increase purge counter when the server is not responding
-
-	closesocket(pSocket);
-	return 0;
+	}
+	return packet;
 }
