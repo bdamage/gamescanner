@@ -867,8 +867,6 @@ char *getpacket(SOCKET s, size_t *len) {
 	socktimeout.tv_sec = AppCFG.socktimeout.tv_sec; //3;
 	socktimeout.tv_usec  =  AppCFG.socktimeout.tv_usec;
 
-
-
 	if(select(FD_SETSIZE, &set, NULL, NULL, &socktimeout)>0) 
 	{
 		
@@ -877,11 +875,6 @@ char *getpacket(SOCKET s, size_t *len) {
 			dbg_print("Error allocating memory!\n");
 	
 		int ret=recv(s, buf, 18048, 0);
-
-	//	if(memcmp("\xFF\xFF\xFF\xFE",buf,4)==0)
-	//	{
-	//		DebugBreak();
-	//	}
 
 		if(ret!=SOCKET_ERROR && ret!=0) {
 			*len=ret;
@@ -1109,3 +1102,28 @@ void Show_ErrorDetails(LPTSTR lpszFunction)
 
 }
 
+
+
+
+
+BOOL Set_RuleStr(SERVER_RULES *pServerRules, TCHAR *szRuleName, TCHAR *StrOut, size_t OutbufferSize)
+{
+	TCHAR *pValue = Get_RuleValue(szRuleName,pServerRules); 
+	if(pValue!=NULL)
+	{
+		strncpy(StrOut,pValue ,OutbufferSize);
+		return TRUE;
+	}
+	return FALSE;
+}
+
+BOOL Set_RuleInt(SERVER_RULES *pServerRules, TCHAR *szRuleName, int *IntOut)
+{
+	TCHAR *pValue = Get_RuleValue(szRuleName,pServerRules); 
+	if(pValue!=NULL)
+	{
+		*IntOut = atoi(pValue);	
+		return TRUE;
+	}
+	return FALSE;
+}

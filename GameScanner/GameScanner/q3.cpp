@@ -200,26 +200,18 @@ retry:
 			{	
 				case QW_SERVERLIST:
 					{
-						pVarValue = Get_RuleValue("status",pServRules); //QW
-						if(pVarValue!=NULL)
-								strncpy(pSI->szSTATUS,pVarValue ,39);
+						Set_RuleStr(pSI->pServerRules,"status", pSI->szSTATUS,sizeof(pSI->szSTATUS)-1);
+
 					}
 				break;
 				case Q2_SERVERLIST:
 					{
-						pVarValue = Get_RuleValue("time_remaining",pServRules); //Q2
-						if(pVarValue!=NULL)
-								strncpy(pSI->szSTATUS,pVarValue ,39);
-						else
+						//Lets enumerate through vars for the best match...
+						if(Set_RuleStr(pSI->pServerRules,"time_remaining", pSI->szSTATUS,sizeof(pSI->szSTATUS)-1)==FALSE)						
 						{
-							pVarValue = Get_RuleValue("#time_left",pServRules); //Q2
-							if(pVarValue!=NULL)
-									strncpy(pSI->szSTATUS,pVarValue ,39);
-							else
+							if(Set_RuleStr(pSI->pServerRules,"#time_left", pSI->szSTATUS,sizeof(pSI->szSTATUS)-1)==FALSE)
 							{
-								pVarValue = Get_RuleValue("gamestats",pServRules); //Q2
-								if(pVarValue!=NULL)
-									strncpy(pSI->szSTATUS,pVarValue ,39);
+								Set_RuleStr(pSI->pServerRules,"gamestats", pSI->szSTATUS,sizeof(pSI->szSTATUS)-1);	
 
 							}
 						}
@@ -227,18 +219,12 @@ retry:
 				break;
 			}
 
-			pVarValue = Get_RuleValue("mapname",pServRules);
-			if(pVarValue!=NULL)
-				strncpy(pSI->szMap,pVarValue ,39);
-			else
-			{ //for QW
-				pVarValue = Get_RuleValue("map",pServRules);
-				if(pVarValue!=NULL)
-					strncpy(pSI->szMap,pVarValue ,39);
-
+			if(Set_RuleStr(pSI->pServerRules,"mapname", pSI->szMap,sizeof(pSI->szMap)-1)==FALSE)
+			{
+				Set_RuleStr(pSI->pServerRules,"map", pSI->szMap,sizeof(pSI->szMap)-1);	//for Quake World
 			}
 			
-			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pVarValue);
+			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap); //get quick lookup DWORD value for filtering
 
 
 			switch(pSI->cGAMEINDEX)	 //MODS

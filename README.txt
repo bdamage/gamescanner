@@ -51,7 +51,7 @@ Visual Studio 2008 has been used but should compile fine on VS2005 also.
 
 
 After a compilation you need the files inside the redist folder.
-You can copy them to Release or/and Debug folder.
+You can copy them to Release or/and the Debug folders.
 
 
 Directories global vars
