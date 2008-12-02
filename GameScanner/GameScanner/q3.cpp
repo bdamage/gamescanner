@@ -20,7 +20,9 @@ extern CLanguage g_lang;
 extern bool g_bCancel;
 extern GamesMap GamesInfo;
 extern APP_SETTINGS_NEW AppCFG;
+extern HWND g_hWnd;
 bool Q3_bCloseApp=false;
+
 
 long (*Q3_UpdateServerListView)(DWORD index);
 long (*Callback_CheckForBuddy)(PLAYERDATA *pPlayers, SERVER_INFO* pServerInfo);
@@ -991,6 +993,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	SOCKET ConnectSocket;
 
+	UINT_PTR timerProgressWait = SetTimer(g_hWnd,IDT_TIMER_1SECOND,100,NULL);
 
 	int len = 0;//(int)strlen(sendbuf);
 	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));

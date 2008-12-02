@@ -1,8 +1,10 @@
 
-version 1.27
----------
+version 1.27 beta
+--------------
 * Fixed a bug with color encoding draw code
 * Fixed XP bug when restoring the window from task tray
+* Fixed to support Gold Source (Counter Strike) games since the update that was done by Valve/Steam(?). 
+* Added support for player time column for Gold Source and Source engine based games.
 
 
 work in progress

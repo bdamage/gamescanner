@@ -50,7 +50,9 @@ struct STEAM_SERVER_RESPONSE
 
 char A2S_MASTER_REPLY[] =  {"\xFF\xFF\xFF\xFF\x66\x0A"};
 
-#define A2S_GETCHALLENGE	  "\xFF\xFF\xFF\xFF\x57"
+#define S2C_CHALLENGE 0x41
+#define A2S_GETCHALLENGE_GOLDSRC	  "\xFF\xFF\xFF\xFF"  //bug fix for protocol 48 since 2 Nov 2008, more details see http://developer.valvesoftware.com/wiki/Source_Server_Query_Protocol
+#define A2S_GETCHALLENGE	  "\xFF\xFF\xFF\xFF\x57" 
 #define A2S_CHALLENGERESPONSE 0x41
 #define A2S_INFO			  "\xFF\xFF\xFF\xFF\x54Source Engine Query"
 #define A2S_INFORESPONSE_HL1  0x6D
@@ -130,32 +132,22 @@ DWORD STEAM_GetChallenge(SERVER_INFO *pSI, DWORD &dwChallenge)
 		data = (A2S_CHALLANGE_RESPONSE_DATA	*)packet;
 		dwChallenge = data->dwChallenge;
 		free(packet);
+		closesocket(pSocket);
+		return 0;
 	}
 	closesocket(pSocket);
 	
-	return 0;
+	return 1;
 }
 
-char *STEAM_GetString(char *pointer, DWORD &dwLen)
-{
-	char *l = pointer;
-	DWORD i=0;
-	while(l[i]!=0)
-		i++;
-	dwLen = i+1;
-	char *str = (char*)calloc(1,i+1);
-
-	memcpy(str,pointer,i);
-	return str;
-}
-DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
+DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
 {
 	SOCKET pSocket = NULL;
 	unsigned char *packet=NULL;
-	char sendbuf[80];
+	char sendbuf[20];
 	size_t packetlen = 0;
-	PLAYERDATA *pQ3Players=NULL;
-	PLAYERDATA *pQ3CurrentPlayer=NULL;
+
+	dwChallenge = 0;
 	
 	if(pSI==NULL)
 	{
@@ -173,19 +165,157 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	strcpy_s(sendbuf,sizeof(sendbuf),A2S_PLAYER);
-	DWORD dwtmp = dwChallenge;
-	memcpy(&sendbuf[5],(DWORD*)&dwtmp,sizeof(DWORD));
+	DWORD dwDefaultChallenge = 0xFFFFFFFF;
+	memcpy(&sendbuf[5],(DWORD*)&dwDefaultChallenge,sizeof(DWORD));
+
 
 	packetlen = send(pSocket, sendbuf, 9, 0);
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
 		closesocket(pSocket);		
-		
 		return 1;
 	}
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
-	char *pEndAddress = ( char*)packet + packetlen;
+
+	if(packet) 
+	{
+		DWORD dwReturn = 1;
+		if(packet[4]==S2C_CHALLENGE)
+		{
+			A2S_CHALLANGE_RESPONSE_DATA	*data;
+			data = (A2S_CHALLANGE_RESPONSE_DATA	*)packet;
+			dwChallenge = data->dwChallenge;
+			dwReturn =  0;
+		}else if(packet[4]==A2S_PLAYERRESPONSE)
+		{
+			STEAM_ParsePlayers(pSI, (char*) packet,packetlen);
+			dwReturn =  A2S_PLAYERRESPONSE;
+		}
+
+		free(packet);
+		closesocket(pSocket);
+		return dwReturn;
+	}
+	closesocket(pSocket);
+	
+	return 1;
+}
+char *STEAM_GetString(char *pointer, DWORD &dwLen)
+{
+	char *l = pointer;
+	DWORD i=0;
+	while(l[i]!=0)
+		i++;
+	dwLen = i+1;
+	char *str = (char*)calloc(1,i+1);
+
+	memcpy(str,pointer,i);
+	return str;
+}
+DWORD STEAM_ParsePlayers(SERVER_INFO *pSI, char *packet,DWORD dwLength)
+{
+	PLAYERDATA *pPlayers=NULL;
+	PLAYERDATA *pCurrentPlayer=NULL;
+	char *pEndAddress = ( char*)packet + dwLength;
+	if(packet) 
+	{
+		A2S_PLAYER_RESPONSE_DATA	*data = (A2S_PLAYER_RESPONSE_DATA*)packet;
+		char *p = (char*)&data->playerData;
+
+		int i=0;
+		if(data->response != A2S_PLAYERRESPONSE)
+			return (DWORD)data->response;
+
+		while(p<pEndAddress)
+		{
+		//	if(pSI->nCurrentPlayers!=data->numPlayers)
+		//		DebugBreak();
+
+			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
+			if(player==NULL) //Out of memory
+				break;
+			player->pNext = NULL;
+			player->szClanTag = NULL;
+			player->cGAMEINDEX = pSI->cGAMEINDEX;
+			player->dwServerIndex = pSI->dwIndex;
+
+			p++; //player index
+
+			
+			DWORD dwLen =0;
+			
+ 			player->szPlayerName = STEAM_GetString(p, dwLen); //_strdup(p);
+			p+=dwLen; //strlen(p)+1;
+			//dbg_print(player->szPlayerName);
+			//dbg_print("\n");
+
+			DWORD *dwP;
+			dwP = (DWORD*)p;
+			player->rate = (DWORD)*dwP;  //kills
+			p+=4;
+			player->time = (DWORD)(*((float*)p));
+			p+=4; //time
+			
+
+			if(pPlayers==NULL)
+				pPlayers = pCurrentPlayer = player;
+			else 
+				pCurrentPlayer = pCurrentPlayer->pNext = player;
+			i++;
+			if((p[0]==0x00) && (p[1]==0xFD))
+				break;
+			if(p>pEndAddress)
+				DebugBreak();
+				
+		}
+	}
+	pSI->pPlayerData = pPlayers;	
+	return 0;
+}
+
+DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
+{
+	SOCKET pSocket = NULL;
+	unsigned char *packet=NULL;
+	char sendbuf[80];
+	size_t packetlen = 0;
+
+	
+	if(pSI==NULL)
+	{
+		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
+		return 1;
+	}
+
+	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
+ 
+	if(pSocket==INVALID_SOCKET)
+	{
+	  dbg_print("Error at getsockudp()\n");
+	  return 1;
+	}
+
+	ZeroMemory(sendbuf,sizeof(sendbuf));
+	strcpy_s(sendbuf,sizeof(sendbuf),A2S_PLAYER);
+
+	memcpy(&sendbuf[5],(DWORD*)&dwChallenge,sizeof(DWORD));
+
+
+	packetlen = send(pSocket, sendbuf, 9, 0);
+	if(packetlen==SOCKET_ERROR) 
+	{
+		dbg_print("Error at send()\n");
+		closesocket(pSocket);		
+		return 1;
+	}
+	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(packet)
+	{
+		STEAM_ParsePlayers(pSI, (char*) packet,packetlen);
+		free(packet);
+	}
+/*	char *pEndAddress = ( char*)packet + packetlen;
 	if(packet) 
 	{
 		A2S_PLAYER_RESPONSE_DATA	*data = (A2S_PLAYER_RESPONSE_DATA*)packet;
@@ -228,10 +358,10 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 			p+=4; //time
 
 
-			if(pQ3Players==NULL)
-				pQ3Players = pQ3CurrentPlayer = player;
+			if(pPlayers==NULL)
+				pPlayers = pCurrentPlayer = player;
 			else 
-				pQ3CurrentPlayer = pQ3CurrentPlayer->pNext = player;
+				pCurrentPlayer = pCurrentPlayer->pNext = player;
 			i++;
 			if((p[0]==0x00) || (p[1]==0xFD))
 				break;
@@ -239,10 +369,10 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 				DebugBreak();
 				
 		}
-		pSI->pPlayerData = pQ3Players;	
+		pSI->pPlayerData = pPlayers;	
 		free(packet);
 	}
-
+*/
 	closesocket(pSocket);
 	
 	return 0;
@@ -568,7 +698,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		strcpy(szLastIP,szNewIP); 
 	dwLastPort = ptempSI.usPort;
 
-//	AddLogInfo(0,"Parsed %d servers Last IP seen is %s:%d",i,szLastIP,dwLastPort);
+	AddLogInfo(0,"Parsed %d servers Last IP seen is %s:%d",i,szLastIP,dwLastPort);
 
 	return dwNewTotalServers;
 }
@@ -617,7 +747,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 		}
 	DWORD dwRetries=0;
 retry:
-	packetlen = send(pSocket, sendbuf, strlen(A2S_INFO), 0);
+	packetlen = send(pSocket, sendbuf, strlen(A2S_INFO)+1, 0);
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
@@ -626,6 +756,7 @@ retry:
 		return 1;
 	}
 
+	packetlen = 0;
 	dwStartTick = GetTickCount();
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
 	if(packet==NULL)
@@ -677,7 +808,10 @@ retry:
 		p+=strlen(p)+1;  //Game name
 		
 		if(*resp->type == A2S_INFORESPONSE_HL2)  
-			p+=2;  //Skip AppID
+		{
+			pSI->STEAM_AppId = *(short*)p;
+			p+=2;  // AppID
+		}
 
 		pSI->nCurrentPlayers = p[0];
 		p++;
@@ -700,7 +834,7 @@ retry:
 		p++; //OS
 		pSI->bPrivate = p[0];  
 		p++; 
-		if(*resp->type == A2S_INFORESPONSE_HL1)
+		if((*resp->type == A2S_INFORESPONSE_HL1))
 		{
 			if(p[0]==1)  //modinfo?
 			{
@@ -723,28 +857,35 @@ retry:
 		pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX, pSI->szMod);
 		pSI->dwGameType = pSI->dwMod ; //For sorting
 	
-		DWORD dwChallenge;
-		if(STEAM_GetChallenge(pSI,dwChallenge)==0)
+		DWORD dwChallenge=0;
+		DWORD dwRet=1;
+		
+		if((*resp->type == A2S_INFORESPONSE_HL1) || (pSI->STEAM_AppId<200)) //Added to handle the Gold Source games reporting HL2 protocol
+			dwRet = STEAM_GetChallengeGoldSrc(pSI,dwChallenge);
+		else
+			dwRet = STEAM_GetChallenge(pSI,dwChallenge);
+		
+		if(dwRet==0)
 		{
 			pSI->pPlayerData = NULL;
 			STEAM_GetPlayers(pSI,dwChallenge);
+		} 
+		if(pSI->pPlayerData!=NULL)
+		{
+			//AddLogInfo(0,"%d %s",pSI->dwIndex,pSI->pPlayerData->szPlayerName);			
 
-			if(pSI->pPlayerData!=NULL)
+			if(UpdatePlayerListView!=NULL)
+				UpdatePlayerListView(pSI->pPlayerData);
+		
+			if(CALLBACK_CheckForBuddy!=NULL)
 			{
-				//AddLogInfo(0,"%d %s",pSI->dwIndex,pSI->pPlayerData->szPlayerName);			
-
-				if(UpdatePlayerListView!=NULL)
-					UpdatePlayerListView(pSI->pPlayerData);
-			
-				if(CALLBACK_CheckForBuddy!=NULL)
-				{
-					CALLBACK_CheckForBuddy(pSI->pPlayerData,pSI);
-				}
-				
-				CleanUp_PlayerList(pSI->pPlayerData);
-				pSI->pPlayerData = NULL;
+				CALLBACK_CheckForBuddy(pSI->pPlayerData,pSI);
 			}
+			
+			CleanUp_PlayerList(pSI->pPlayerData);
+			pSI->pPlayerData = NULL;
 		}
+
 		free(packet);
 
 	} //end if(packet)
@@ -753,13 +894,6 @@ retry:
 
 	closesocket(pSocket);
 	return 0;
-}
-
-void STEAM_OnServerSelection(SERVER_INFO* pServerInfo,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesList)(SERVER_RULES*pServer_Rules) )
-{
-	if(pServerInfo==NULL)
-		return;
-	STEAM_Get_ServerStatus(pServerInfo,UpdatePlayerListView,UpdateRulesList);
 }
 
 void STEAM_SetCallbacks(long (*UpdateServerListView)(DWORD index), 
