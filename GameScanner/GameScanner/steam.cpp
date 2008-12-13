@@ -37,7 +37,8 @@ struct A2S_CHALLANGE_RESPONSE_DATA
 
 struct STEAM_MASTER_LEADDATA
 {
-	char leadData[6]; //FF FF FF FF 66 0A
+	DWORD dwInit;
+	char leadData[2]; //FF FF FF FF 66 0A
 	char data[1];
 } ;
 
@@ -395,6 +396,7 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 		val = val *2;
 	}
 
+	char appid[]={"\napp\240"};
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); 
    
 	if(INVALID_SOCKET==ConnectSocket)
@@ -587,6 +589,8 @@ nextRegion2:
 			ZeroMemory(sendbuf,sizeof(sendbuf));
 			_itoa(dwLastPort,szPort,10);
 			sprintf_s(sendbuf,sizeof(sendbuf), "1%c%s:%d\x00\x00",REGIONS[cRegionCodeIndex].cCode,szLastIP,dwLastPort);
+			AddLogInfo(0,"Sending %s (1REGION%s:%d) to master server...",sendbuf,szLastIP,dwLastPort);
+
 			int len = 2;
 			len += strlen(szLastIP);
 			len += strlen(szPort)+2;
@@ -651,6 +655,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 	char *p = leaddata->data;
 	endAddress = packet+length; 
 	
+	AddLogInfo(0,"First 4 bytes %X",leaddata->dwInit);
 
 	int i=1;
 	int hash=0;
@@ -666,6 +671,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 		//Parse and initialize server info
 		dwIP = (DWORD*)&p[0];
 		ptempSI.dwIP = 0;
+		ptempSI.usPort = 0;
 		ptempSI.dwIP = ntohl((DWORD)*dwIP); 
 		
 		if(ptempSI.dwIP==0) 
@@ -674,7 +680,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 			break;
 		}
 		p+=4;
-		ptempSI.usPort = 0;
+		
 		ptempSI.usPort  = ((p[0])<<8);
 		ptempSI.usPort |=(unsigned char)(p[1]);
 		p+=2;

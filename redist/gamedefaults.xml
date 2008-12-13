@@ -677,5 +677,37 @@
 				<Install name="LaunchByMod" value="" />
 				<Install name="LaunchByVer" value="" />
 		</Installs>	
-	</Game>		
+	</Game>	
+	<Game>
+		<GameIndex>21</GameIndex>
+		<Name>Unreal Tournament 3</Name>
+		<ShortName>UT3</ShortName>
+		<Filename>ut3.servers</Filename>
+		<NetEngine>GS4</NetEngine>
+		<WebProtocol>ut3</WebProtocol>
+		<MapPreviewPath>ut3maps</MapPreviewPath>
+		<Icon>unrealtournament3.ico</Icon>
+		<MasterServers>
+			<MasterServer>http://www.cludden.se/braindamage/download/ut3.txt</MasterServer>
+			<UseHTTP>1</UseHTTP>
+		</MasterServers>
+		<ServerDefaultPort>28960</ServerDefaultPort>
+		<ServerInfoQuery></ServerInfoQuery>
+		<MasterQueryString></MasterQueryString>
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
+				<RegKey>SOFTWARE\Microsoft\Windows\CurrentVersion\Installer\UserData\S-1-5-18\Products\90209AFBFFA76BD4E8B45E375057A17D\InstallProperties</RegKey>
+				<RegItem>InstallLocation</RegItem>
+				<InstallSuffix>Binaries\UT3.exe</InstallSuffix>
+			</Registry>
+		</Detection>
+		<Installs>
+				<Install name="Name" value="Default" />
+				<Install name="Path" value="" />
+				<Install name="Cmd" value="" />
+				<Install name="LaunchByMod" value="" />
+				<Install name="LaunchByVer" value="" />
+		</Installs>	
+	</Game>			
 </Games>

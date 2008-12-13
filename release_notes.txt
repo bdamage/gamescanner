@@ -5,9 +5,10 @@ version 1.27 beta
 * Fixed XP bug when restoring the window from task tray
 * Fixed to support Gold Source (Counter Strike) games since the update that was done by Valve/Steam(?). 
 * Added support for player time column for Gold Source and Source engine based games.
+* Fixed a bug when parsing Half-Life server, now HF1 servers should be received properly.
 
 
-work in progress
+work in progress (may not fully implemented)
 * Unreal Tournament 3 query (Gamespy)
 
 

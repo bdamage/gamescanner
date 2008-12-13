@@ -994,7 +994,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	SOCKET ConnectSocket;
 
 	UINT_PTR timerProgressWait = SetTimer(g_hWnd,IDT_TIMER_1SECOND,100,NULL);
-
+	
 	int len = 0;//(int)strlen(sendbuf);
 	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); // etmaster.idsoftware.com"27950 master server
@@ -1002,6 +1002,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	if(INVALID_SOCKET==ConnectSocket)
 	{
 
+		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
 		AddLogInfo(ETSV_ERROR,"Error connecting to socket!");
 		return 1;
 	}
@@ -1010,6 +1011,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	hEvent = WSACreateEvent();
 	if (hEvent == WSA_INVALID_EVENT)
 	{
+		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
 		AddLogInfo(ETSV_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
 		closesocket(ConnectSocket);
 		return 1;
@@ -1023,6 +1025,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	nRet = WSAEventSelect(ConnectSocket, hEvent,FD_READ|FD_CONNECT|FD_CLOSE);
 	if (nRet == SOCKET_ERROR)
 	{
+		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
 		AddLogInfo(ETSV_ERROR,"EventSelect() = SOCKET_ERROR");
 		closesocket(ConnectSocket);
 		WSACloseEvent(hEvent);
@@ -1082,6 +1085,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 			AddLogInfo(0,"Sending command [%s] (%s) Len: %d",sendbuf,pGI->szMasterQueryString,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
+				KillTimer(g_hWnd,IDT_TIMER_1SECOND);
 				Q3_bScanningInProgress = FALSE;
 				WSACloseEvent(hEvent);
 				closesocket(ConnectSocket);		
@@ -1147,6 +1151,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		}
 	}
 
+	KillTimer(g_hWnd,IDT_TIMER_1SECOND);
 	pGI->dwTotalServers += Q3_dwNewTotalServers;
 	Q3_bScanningInProgress = FALSE;
 
