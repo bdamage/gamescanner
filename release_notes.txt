@@ -6,6 +6,8 @@ version 1.27 beta
 * Fixed to support Gold Source (Counter Strike) games since the update that was done by Valve/Steam(?). 
 * Added support for player time column for Gold Source and Source engine based games.
 * Fixed a bug when parsing Half-Life server, now HF1 servers should be received properly.
+* Added gametype for Quake 2 servers.
+* Changed how Quake 2 recieves it servers (now you should see approx 278 servers), thanks to Worm for pointing this out.
 
 
 work in progress (may not fully implemented)

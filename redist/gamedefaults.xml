@@ -428,9 +428,9 @@
 		<MapPreviewPath>quake2maps</MapPreviewPath>
 		<Icon>q2.ico</Icon>
 		<MasterServers>
-			<MasterServer>master.q2servers.com:27900</MasterServer>
+			<MasterServer>http://q2servers.com/?raw=1</MasterServer>
 			<ServerProtocol>34</ServerProtocol>
-			<UseHTTP>0</UseHTTP>
+			<UseHTTP>1</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFstatus\n</ServerInfoQuery>

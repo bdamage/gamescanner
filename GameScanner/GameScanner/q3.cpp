@@ -217,6 +217,11 @@ retry:
 
 							}
 						}
+							szVarValue = Get_RuleValue("game",pServRules);
+							if(szVarValue!=NULL)
+								strcpy(pSI->szGameTypeName,szVarValue);
+							pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
+						
 					}
 				break;
 			}
@@ -454,13 +459,16 @@ CoD 4                                                                           
 
 
 */
+	int pbytes=0;
 	//Scan to start
 	while((p[0]!=0x5c) && (p[0]!=0x20))
 	{
+		pbytes++;
 		p++;
 		if(p>end)
 			break;
 	}
+	end = p+(length-pbytes);
 	p++;
 	
 	ZeroMemory(&ptempSI,sizeof(SERVER_INFO));
@@ -500,7 +508,8 @@ CoD 4                                                                           
 			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );
 			pGI->vSI.push_back(ptempSI);
 			Q3_dwNewTotalServers++;
-		} //end serverexsist
+		}
+		//end serverexsist
 
 	} //end while
 	return NULL;
@@ -993,11 +1002,34 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	SOCKET ConnectSocket;
 
-	UINT_PTR timerProgressWait = SetTimer(g_hWnd,IDT_TIMER_1SECOND,100,NULL);
+//	UINT_PTR timerProgressWait = SetTimer(g_hWnd,IDT_TIMER_1SECOND,100,NULL);
 	
+	int i = 0;
+	unsigned char *packet[MAX_PACKETS];
+	size_t packet_len[MAX_PACKETS];
+
+	Q3_dwTotalServers=0;
+	Q3_dwNewTotalServers = 0;
+	for(i=0; i<MAX_PACKETS;i++)
+		packet[i] = NULL;
+
+	i = 0;
+
+	int numMasterServers=0;
+	char szIP[260];
+	strcpy(szIP,pGI->szMasterServerIP);
+
+
+
+NextMaster:
+	if(numMasterServers==1)
+		strcpy(szIP,"netdome.biz");
+	else if(numMasterServers==2)
+		strcpy(szIP,"masterserver.exhale.de");
+
 	int len = 0;//(int)strlen(sendbuf);
 	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
-	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); // etmaster.idsoftware.com"27950 master server
+	ConnectSocket = getsockudp(szIP,(unsigned short)pGI->dwMasterServerPORT); // etmaster.idsoftware.com"27950 master server
   
 	if(INVALID_SOCKET==ConnectSocket)
 	{
@@ -1033,16 +1065,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	}
 
 
-	int i = 0;
-	unsigned char *packet[MAX_PACKETS];
-	size_t packet_len[MAX_PACKETS];
 
-	Q3_dwTotalServers=0;
-	Q3_dwNewTotalServers = 0;
-	for(i=0; i<MAX_PACKETS;i++)
-		packet[i] = NULL;
-
-	i = 0;
 	//
 	// Handle async network events
 	//
@@ -1102,6 +1125,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 			packet[i]=(unsigned char*)ReadPacket(ConnectSocket, &packetlen);
 			packet_len[i] = packetlen;
 			i++;
+
 			if(i>=MAX_PACKETS)
 				break;
 	
@@ -1124,6 +1148,11 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 	
 	closesocket(ConnectSocket);
 	WSACloseEvent(hEvent);
+	numMasterServers++;
+	if((pGI->cGAMEINDEX == Q2_SERVERLIST) && numMasterServers<3)
+	{
+		goto NextMaster;
+	}
 
 	for(i=0; i<MAX_PACKETS;i++)
 	{
@@ -1151,7 +1180,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 		}
 	}
 
-	KillTimer(g_hWnd,IDT_TIMER_1SECOND);
+//	KillTimer(g_hWnd,IDT_TIMER_1SECOND);
 	pGI->dwTotalServers += Q3_dwNewTotalServers;
 	Q3_bScanningInProgress = FALSE;
 
