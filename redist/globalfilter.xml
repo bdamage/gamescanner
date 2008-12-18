@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<Globalfilter version="1.0">
+<Globalfilter version="1.1">
     <TreeItems>
 		<Item name="Global filter" strval="" value="0" compare="0" icon="17" expanded="0" type="0" state="0" game="-25" action="0">
 			<FilterItem name="Hide offline servers" strval="" value="0" compare="0" icon="9" expanded="0" type="16" state="0" game="-25" action="8" />
@@ -19,7 +19,6 @@
 				<Country name="South Africa" strval="za" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 				<Country name="Tanzania" strval="tz" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 				<Country name="Tunisia" strval="tn" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
-				<Country name="Uruguay" strval="uy" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 			</Continent>
 			<Continent name="Australasia" strval="0" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10">
 				<Country name="Australia" strval="au" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
@@ -63,6 +62,7 @@
 					<Country name="Chile" strval="cl" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 					<Country name="Colombia" strval="co" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 					<Country name="Brazil" strval="br" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
+					<Country name="Uruguay" strval="uy" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 					<Country name="Venezuela" strval="ve" value="0" compare="0" icon="9" expanded="0" type="0" state="0" game="-25" action="10" />
 				</Region>
 			</Continent>
