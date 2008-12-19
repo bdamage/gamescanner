@@ -23,11 +23,12 @@ void CLanguage::SetPath(const TCHAR *pszDir)
 int CLanguage::loadFile(const TCHAR *filename)
 {
 
-	TCHAR sztemp[200];
+	TCHAR sztemp[512];
 	ZeroMemory(sztemp,sizeof(sztemp));
 	SetCurrentDirectory(m_pszDirectory);	
 	if(xmlFile.load(filename)!=XMLFILE_ERROR_LOADING)
 	{
+		
 		TiXmlElement *pElement = xmlFile.m_pRootElement;  
 		const TCHAR* pLangTag = pElement->Value();
 		pElement= pElement->FirstChildElement();
@@ -59,7 +60,7 @@ int CLanguage::AddFile(const TCHAR *filename)
 		pElement= pElement->NextSiblingElement();
 		const TCHAR* pVersion = pElement->Value();
 		pElement= pElement->NextSiblingElement();
-	
+		return 1;
 	}
 	return 0;
 }
@@ -84,7 +85,9 @@ int CLanguage::EnumerateLanguage(void)
    else
    {
       do {
-		 AddFile(lang_file.name);
+		// AddLogInfo(0, "Detected translation file %s ",lang_file.name );
+		 if(AddFile(lang_file.name)==0)
+			AddLogInfo(0, "Error reading translation file %s ",lang_file.name );
       } while( _findnext( hFile, &lang_file ) == 0 );
       _findclose( hFile );
    }

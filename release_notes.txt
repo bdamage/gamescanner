@@ -4,7 +4,7 @@ version 1.28
 * Added language support for Italian and Portugese and Brazil.
 * Improved the language code support , including some minor gui fixes.
 * Corrected Uruguay, it now moved into the right continent.
-
+* When trying to start a new instance, old instance of Game Scanner will be brought to front of the windows.
 
 
 version 1.27 

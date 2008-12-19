@@ -29,6 +29,8 @@ int CXmlFile::load(const TCHAR* pszFilename)
 	if (m_pDocument->LoadFile(pszFilename)==false) 
 		return XMLFILE_ERROR_LOADING;
 
+
+
 	m_pRootElement=m_pHandleDoc->FirstChildElement().Element();
 	// should always have a valid root but handle gracefully if it does
 	if (m_pRootElement==NULL) 
