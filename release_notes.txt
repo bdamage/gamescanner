@@ -1,5 +1,13 @@
+version 1.28
+----------
+* Fixed quake world mod (qw) filter to lower case.
+* Added language support for Italian and Portugese and Brazil.
+* Improved the language code support , including some minor gui fixes.
+* Corrected Uruguay, it now moved into the right continent.
 
-version 1.27 beta
+
+
+version 1.27 
 --------------
 * Fixed a bug with color encoding draw code
 * Fixed XP bug when restoring the window from task tray
@@ -10,7 +18,7 @@ version 1.27 beta
 * Changed how Quake 2 recieves it servers (now you should see approx 278 servers), thanks to Worm for pointing this out.
 
 
-work in progress (may not fully implemented)
+work in progress (may not be fully implemented)
 * Unreal Tournament 3 query (Gamespy)
 
 
