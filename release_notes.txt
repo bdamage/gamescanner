@@ -6,7 +6,8 @@ version 1.28
 * Corrected Uruguay, it now moved into the right continent.
 * When trying to start a new instance, old instance of Game Scanner will be brought to front of the windows.
 * RCON now works on Call of Duty 4 (but should work for any Quake 3 engine based game).
-
+* Open Arena protocol change to 71.
+* Added a new Quake 3 CMPA mode filtering.
 
 version 1.27 
 --------------

@@ -211,6 +211,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
 								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 
+								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 
 								EnableWindow( GetDlgItem(hDlg, IDOK),TRUE);  //Join button
 								SetWindowText(GetDlgItem(hDlg, ID_RCON_CONNECT),"Disconnect");
 							}
@@ -405,6 +406,9 @@ DWORD RCON_Read()
 	return 0;
 }
 
+
+
+
 DWORD RCON_SendCmd(char *szPassword,char *szCmd)
 {
 	size_t packetlen=0;
@@ -421,10 +425,10 @@ DWORD RCON_SendCmd(char *szPassword,char *szCmd)
 	if(g_RCONServer==NULL)
 		return 2;
 
-	if(g_RCONServer->cGAMEINDEX==0)
-		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //%s", protocol, filterextra);
+	if(g_RCONServer->cGAMEINDEX==1)
+		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFFrcon\xFF%s\xFF%s\xFF",szPassword,szCmd); //ETQW (might work for Doom 3)
 	else
-		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFFrcon\xFF%s\xFF%s\xFF",szPassword,szCmd); //%s", protocol, filterextra);
+		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //Tested on ET and Cod4 but should work any Quake 3 servers
 	
 	//AddLogInfo("Sending :%s",sendbuf);
 

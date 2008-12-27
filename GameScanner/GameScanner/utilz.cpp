@@ -974,6 +974,28 @@ DWORD Get_GameTypeByName(int gameIdx, char *szGameType)
 
 }
 
+DWORD Get_ModeByName(int gameIdx, char *szMode)
+{
+	if(szMode==NULL)
+		return GAMETYPE_UNKNOWN;
+
+	for(unsigned int i=0;i<GamesInfo[gameIdx].vFilterMode.size();i++)
+	{
+		GAMEFILTER gf = GamesInfo[gameIdx].vFilterMode.at(i);
+		if(gf.dwExactMatch==0)
+		{
+			if(strstr(szMode,gf.sStrValue.c_str())!=NULL)
+				return gf.dwValue;		
+		}else
+		{
+			if(strcmp(szMode,gf.sStrValue.c_str())==0)
+				return gf.dwValue;
+		}
+	}
+	return GAMETYPE_UNKNOWN;
+
+}
+
 DWORD Get_ModByName(int gameIdx, char *szModName)
 {
 	if(szModName==NULL)

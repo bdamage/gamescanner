@@ -307,13 +307,20 @@ retry:
 						if(szVarValue!=NULL)
 							pSI->cBots = atoi(szVarValue);
 					}
-			/*	case Q3_SERVERLIST:
+				case Q3_SERVERLIST:
 					{
-						szVarValue = Get_RuleValue("bot_minplayers",pServRules); //Warsow specific
-						if(szVarValue!=NULL)
-							pSI->cBots = atoi(szVarValue);
+						if(pSI->szMod,"cpma")
+						{
+							szVarValue = Get_RuleValue("mode_current",pServRules);
+							if(szVarValue!=NULL)
+							{					
+								strncpy(pSI->szGameTypeName,szVarValue,sizeof(pSI->szGameTypeName)-1);
+								strncpy(pSI->szMode,szVarValue,sizeof(pSI->szMode)-1);
+								pSI->dwMode = Get_ModeByName(pSI->cGAMEINDEX, pSI->szGameTypeName);
+							}
+						}
 
-					}*/
+					}
 				case ET_SERVERLIST:
 					{//Below code removed since v1.24
 					//	szVarValue = Get_RuleValue("omnibot_enable",pServRules); //ET specific

@@ -466,7 +466,7 @@
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 69 openarena empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 71 openarena empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot></RegRoot>
@@ -555,9 +555,9 @@
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 68 empty full</MasterQueryString>
 		<Detection>
 			<Registry>
-				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
-				<RegKey>SOFTWARE\Id\Quake III Arena</RegKey>
-				<RegItem>INSTALLPATH</RegItem>
+				<RegRoot></RegRoot>
+				<RegKey></RegKey>
+				<RegItem></RegItem>
 				<InstallSuffix></InstallSuffix>
 			</Registry>
 		</Detection>

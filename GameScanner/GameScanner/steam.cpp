@@ -804,6 +804,9 @@ retry:
 		strncpy_s(pSI->szServerName,sizeof(pSI->szServerName),p,_TRUNCATE);
 		p+=strlen(p)+1;
 
+	//	WCHAR wOutBuff[512];
+	//	MultiByteToWideChar(CP_UTF8, MB_COMPOSITE, pSI->szServerName, -1, wOutBuff,  511 );
+
 		strncpy_s(pSI->szMap,sizeof(pSI->szMap),p,_TRUNCATE);
 		p+=strlen(p)+1;
 
