@@ -1,10 +1,11 @@
 
 Todo
 ---------
-Add support for QW spectator?
-Add larger font support.
-Add support for Net Quake.
-Support for UNICODE
+1) Add support for QW spectator?
+2) Add larger font support.
+3) Add support for Net Quake.
+4) Support for UNICODE / UTF-8.
+5) Gzip library to unpack ip to country database.
 
 
 

@@ -8,6 +8,7 @@ version 1.28
 * RCON now works on Call of Duty 4 (but should work for any Quake 3 engine based game).
 * Open Arena protocol change to 71.
 * Added a new Quake 3 CMPA mode filtering.
+* Fixed a critical bug when loading the serverlist that could crash the application after an upgrade.
 
 version 1.27 
 --------------
