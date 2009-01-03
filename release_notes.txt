@@ -1,7 +1,7 @@
 version 1.28
 ----------
 * Fixed quake world mod (qw) filter to lower case.
-* Added language support for Italian and Portugese and Brazil.
+* Added language support for Italian and Portugese / Brazil.
 * Improved the language code support , including some minor gui fixes.
 * Corrected Uruguay, it now moved into the right continent.
 * When trying to start a new instance, old instance of Game Scanner will be brought to front of the windows.
@@ -9,6 +9,9 @@ version 1.28
 * Open Arena protocol change to 71.
 * Added a new Quake 3 CMPA mode filtering.
 * Fixed a critical bug when loading the serverlist that could crash the application after an upgrade.
+* Fixed a bug when havin Country as the first Column under Windows XP, that could stop GS from starting up.
+
+
 
 version 1.27 
 --------------

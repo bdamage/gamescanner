@@ -459,6 +459,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_573FFEDCE55543888B23955EED00E128"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_59DC8B90ED1347CF9EE8F149CEC50FAB"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -586,6 +592,12 @@
         "Entry"
         {
         "MsmKey" = "8:_71DFD4910B4E4B169CF302C5502B57C2"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_7457B9703DC14839B33B91C80CB01952"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -2905,6 +2917,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_573FFEDCE55543888B23955EED00E128"
+            {
+            "SourcePath" = "8:..\\..\\redist\\lang_pt-br.xml"
+            "TargetName" = "8:lang_pt-br.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_59DC8B90ED1347CF9EE8F149CEC50FAB"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_zz.gif"
@@ -3331,6 +3363,26 @@
             "TargetName" = "8:cod4.ico"
             "Tag" = "8:"
             "Folder" = "8:_52B22F184C964B5AB5EAC5F19905881B"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_7457B9703DC14839B33B91C80CB01952"
+            {
+            "SourcePath" = "8:..\\..\\redist\\lang_it.xml"
+            "TargetName" = "8:lang_it.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -5894,14 +5946,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{880D5441-F714-4C56-B44B-1A452EA7E7E2}"
-        "PackageCode" = "8:{DC40EE34-692D-4DF5-95D1-FF1620FBAE7A}"
+        "ProductCode" = "8:{0106F8B8-5469-4733-9909-787544646A0E}"
+        "PackageCode" = "8:{2879F280-F173-424E-AA43-4943B67DB4AF}"
         "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.2.7"
+        "ProductVersion" = "8:1.2.8"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"
