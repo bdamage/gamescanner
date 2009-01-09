@@ -400,7 +400,7 @@
 			<UseHTTP>1</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
-		<ServerInfoQuery>\xFF\xFF\xFF\xFFstatus\n</ServerInfoQuery>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFstatus 15\n</ServerInfoQuery>
 		<MasterQueryString></MasterQueryString>
 		<Detection>
 			<Registry>

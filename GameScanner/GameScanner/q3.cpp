@@ -632,8 +632,15 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 				endOfString = strchr(pointer,' ');
 				if(endOfString!=NULL)
 				{
+
 					endOfString[0] = 0;
-					player->rate = atoi(pointer);				
+					if(pointer[0]!='S')
+					{
+						player->rate = atoi(pointer);				
+					} else
+					{
+						player->szTeam = strdup("Spectator");
+					}
 					pointer+=strlen(pointer)+1;
 				}
 				endOfString = strchr(pointer,' ');
@@ -906,12 +913,18 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 	pSR=NULL;
 
 	char *pointer=NULL;
+	
+
 	if(strncmp((char*)&Q3SI->leadData,"statusResponse",14)!=0)
 	{
 		if(strncmp((char*)&WSI->leadData,"infoResponse",12)!=0)
 		{
 			if (QWSI->leadData[0]=='n') //could it be a Quake world or
+			{
 				pointer=QWSI->data;
+				if(strncmp((char*)&QWSI->data,"banned",6)==0)
+					return NULL;
+			}
 			else
 			{
 				if(strncmp((char*)&Q2SI->leadData,"print",5)==0) // a  Quake 2 server?
