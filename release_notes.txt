@@ -1,6 +1,9 @@
 version 1.29
 ----------
 * Quake World servers now shows with spectators.
+* Bug fix when Quake World servers return only Banned as a server response.
+
+
 
 version 1.28
 ----------
