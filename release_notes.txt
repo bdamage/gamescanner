@@ -1,3 +1,7 @@
+version 1.29
+----------
+* Quake World servers now shows with spectators.
+
 version 1.28
 ----------
 * Fixed quake world mod (qw) filter to lower case.
