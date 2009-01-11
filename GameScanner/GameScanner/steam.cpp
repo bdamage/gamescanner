@@ -202,6 +202,9 @@ DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
 	
 	return 1;
 }
+
+
+
 char *STEAM_GetString(char *pointer, DWORD &dwLen)
 {
 	char *l = pointer;
@@ -210,7 +213,7 @@ char *STEAM_GetString(char *pointer, DWORD &dwLen)
 		i++;
 	dwLen = i+1;
 	char *str = (char*)calloc(1,i+1);
-
+//	UTF8toMB((LPCWSTR)pointer,str);
 	memcpy(str,pointer,i);
 	return str;
 }
@@ -396,7 +399,7 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 		val = val *2;
 	}
 
-	char appid[]={"\\napp\\240"};
+	char appid[]={"\\napp\\500"};
 	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); 
    
 	if(INVALID_SOCKET==ConnectSocket)
@@ -462,15 +465,16 @@ nextRegion:
 
 				//continue on the next region				
 				ZeroMemory(sendbuf,sizeof(sendbuf));
-				sprintf_s(sendbuf,sizeof(sendbuf), "1%c0.0.0.0:0\x00\x00",REGIONS[cRegionCodeIndex].cCode);
+				sprintf_s(sendbuf,sizeof(sendbuf), "1%c0.0.0.0:0\x00",REGIONS[cRegionCodeIndex].cCode);
 
 				memcpy(&sendbuf[12],pGI->szMasterQueryString,strlen(pGI->szMasterQueryString));
-				int len = 12;
+				int len = 11;
 				int len2 = (int)strlen(pGI->szMasterQueryString)+1;
 				len +=len2;
-				sendbuf[len-1]=0; //for debug purpose ensure to fill out with zeros
-				sendbuf[len]=0;
-				if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
+				sendbuf[len]=0; //for debug purpose ensure to fill out with zeros
+				sendbuf[len+1]=0;
+				
+				if(send(ConnectSocket, sendbuf, len+1 , 0)==SOCKET_ERROR) 
 				{
 
 					WSACloseEvent(hEvent);

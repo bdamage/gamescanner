@@ -4,9 +4,10 @@
 
 #include "..\..\tinyxml\tinyxml.h"
 
-
-
-
+void Load_WindowSizes();
+void XML_ReadWindow(TiXmlElement * pNode, _WINDOW_CONTAINER *wc) ;
+void XML_WriteWindow(TiXmlElement * parent, char *szParentName, _WINDOW_CONTAINER *wc) ;
+char *UTF8toMB(char* inUtf8, char* outStr);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 void UpdateTabControl();
@@ -24,6 +25,7 @@ LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *psz
 LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
 LRESULT Draw_ColorEncodedTextNexuiz(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
 LRESULT Draw_ColorEncodedTextUNICODE(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
+LRESULT Draw_UTF8Text(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText);
 DWORD MyPing(TCHAR *ipaddress, DWORD & dwPing);
 int LoadConfig(APP_SETTINGS_NEW &appSettings);
 int CALLBACK MyCompareFunc(LPARAM lParam1, LPARAM lParam2, LPARAM lParamSort); 
