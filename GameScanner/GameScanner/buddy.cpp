@@ -244,12 +244,14 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 	Buddy_Clear(pBI);
 	pBI = NULL;
 
-	AddLogInfo(ETSV_INFO,"Loading buddies.xml info.");
 	SetCurrentDirectory(USER_SAVE_PATH);
 	
 	TiXmlDocument doc("Buddies.xml");
 	if (!doc.LoadFile()) 
+	{
+		AddLogInfo(ETSV_INFO,"Error loading buddies.xml file or file didn't exsist.");
 		return 1;
+	}
 
 
 		TiXmlHandle hDoc(&doc);

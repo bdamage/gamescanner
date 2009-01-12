@@ -128,14 +128,14 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	DWORD iWaitIndex = 0;
 	DWORD i=0;
 	//Wait for all threads to finish...
-	AddLogInfo(ETSV_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
+	//AddLogInfo(ETSV_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
 
 	while(iWaitIndex<dwMaxThreads)
 	{
 	
 		DWORD max = ((dwMaxThreads-iWaitIndex)<MAXIMUM_WAIT_OBJECTS)?(dwMaxThreads-iWaitIndex):MAXIMUM_WAIT_OBJECTS;		
 
-		AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
+	//	AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
 		DWORD dwEvent = WaitForMultipleObjects(max, &hThreadIndex[iWaitIndex], TRUE, INFINITE);
 		//AddLogInfo(ETSV_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
 	

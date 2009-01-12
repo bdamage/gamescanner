@@ -2,8 +2,8 @@ version 1.29
 ----------
 * Quake World servers now shows with spectators.
 * Bug fix when Quake World servers return only Banned as a server response.
-* Window sizes now save's (still broken under XP).
-
+* Window sizes and position does now save.
+* Added a new setting to "Close on Connect".
 
 version 1.28
 ----------

@@ -50,6 +50,15 @@ HWND hwndConfDialog=NULL;
 
 void CFG_Apply_General(HWND hDlg)
 {
+	
+
+	if(IsDlgButtonChecked(hDlg,IDC_CHECK_CONNECT_CLOSE)==BST_CHECKED)
+		AppCFGtemp.bCloseOnConnect=true;
+	else
+		AppCFGtemp.bCloseOnConnect=false;
+
+
+
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK1)==BST_CHECKED)
 		AppCFGtemp.bAutostart=true;
 	else
@@ -773,16 +782,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				SetDlgItemText(hDlg,IDC_EDIT_KEY,tmp);
 				SendDlgItemMessage (hDlg,IDC_EDIT_KEY, EM_SETLIMITTEXT,1, 0);  
 
-
-				if(AppCFGtemp.bAutostart)
-					CheckDlgButton(hDlg,IDC_CHECK1,BST_CHECKED);
-				else			
-					CheckDlgButton(hDlg,IDC_CHECK1,BST_UNCHECKED);
-
-				if(AppCFGtemp.bUseShortCountry)
-					CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,BST_CHECKED);
-				else			
-					CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,BST_UNCHECKED);
+		
+				CheckDlgButton(hDlg,IDC_CHECK_CONNECT_CLOSE,AppCFGtemp.bCloseOnConnect);
+				CheckDlgButton(hDlg,IDC_CHECK1,AppCFGtemp.bAutostart);
+				CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,AppCFGtemp.bUseShortCountry);
 				
 				LVCOLUMN lvColumn;
 				//initialize the columns

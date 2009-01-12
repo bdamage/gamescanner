@@ -124,7 +124,7 @@ void EnableButtons(bool active);
 DWORD	WINAPI  MainDlgThread(LPVOID lpParam);
 
 void Initialize_WindowSizes();
-void Update_WindowSizes();
+void Update_WindowSizes(RECT *pRC=NULL);
 
 LRESULT APIENTRY ListViewPlayerSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY ComboCountriesSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

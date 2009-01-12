@@ -245,6 +245,7 @@
 #define IDC_SLIDER_SLEEP_VAL            1207
 #define IDC_STATIC_SLEEP_VAL            1208
 #define IDC_STATIC_ABC123               1209
+#define IDC_CHECK_CONNECT_CLOSE         1210
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -331,7 +332,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1109
 #define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1210
+#define _APS_NEXT_CONTROL_VALUE         1211
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif
