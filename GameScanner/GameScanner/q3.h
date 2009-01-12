@@ -48,7 +48,7 @@ void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index), long (*_Callback
 
 
 void Q3_InitilizeRescan(GAME_INFO *pGI,bool (*filterServerItem)(LPARAM *lp,DWORD dwFilterFlags));
-DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI);
+DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int nMasterIdx=0);
 SERVER_INFO *Q3_ParseServers(TCHAR * p, DWORD length, GAME_INFO *CV);
 TCHAR *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,TCHAR *p,DWORD packetlen);
 DWORD WINAPI  Q3_Get_ServerStatusThread(LPVOID lpParam);

@@ -7,7 +7,7 @@
 void Load_WindowSizes();
 void XML_ReadWindow(TiXmlElement * pNode, _WINDOW_CONTAINER *wc) ;
 void XML_WriteWindow(TiXmlElement * parent, char *szParentName, _WINDOW_CONTAINER *wc) ;
-char *UTF8toMB(char* inUtf8, char* outStr);
+
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 void UpdateTabControl();

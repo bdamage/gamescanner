@@ -18,6 +18,7 @@ extern char NexuizASCII[];
 
 
 
+
 //Debug OFF!!!
 #ifndef _DEBUG
 #define dbg_print(exp) ((void)0)
@@ -80,6 +81,17 @@ void SetDlgTrans(HWND hwnd,int trans)
 	pSetLayeredWindowAttributes(hwnd, 0, (255 * (BYTE)trans) / 100, LWA_ALPHA);
 }
 
+char *UTF8toMB(const char* inUtf8, char* outStr)
+{
+
+	int len = strlen((char*)inUtf8);
+	WCHAR* pwcbuff = (WCHAR*)calloc(len,sizeof(WCHAR));
+
+    MultiByteToWideChar(CP_UTF8,0,         inUtf8, len,       pwcbuff,  len*2        );
+	WideCharToMultiByte(CP_ACP,0, pwcbuff, len, outStr, len, NULL, NULL);
+	free(pwcbuff);
+	return outStr;
+}
 
 BOOL CenterWindow(HWND hwnd)
 {
@@ -553,6 +565,15 @@ char * colorfilterQW(const char *szInText,char *namefilter, int len)
 	return namefilter;
 }
 
+//This does only convert UTF-8 to ANSI
+char * colorfilterUTF8(const char *szInText,char *namefilter, int len)
+{
+	int i=0;
+	memset(namefilter,0,len);
+	
+	UTF8toMB(szInText,namefilter);
+	return namefilter;
+}
 
 
 char * DWORD_IP_to_szIP(DWORD dwIP)

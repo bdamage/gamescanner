@@ -13,8 +13,7 @@
 		<MapPreviewPath>etmaps</MapPreviewPath>
 		<Icon>et.ico</Icon>
 		<MasterServers>
-			<MasterServer>etmaster.idsoftware.com:27950</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0" protocol="84">etmaster.idsoftware.com:27950</MasterServer>		
 		</MasterServers>
 		<Detection>
 			<Registry>
@@ -43,8 +42,8 @@
 		<MasterQueryString></MasterQueryString>
 		<MapPreviewPath>etqwmaps</MapPreviewPath>
 		<MasterServers>
-			<MasterServer>http://etqw-ipgetter.demonware.net/ipgetter/</MasterServer>
-			<UseHTTP>1</UseHTTP>
+			<MasterServer http="1" >http://etqw-ipgetter.demonware.net/ipgetter/</MasterServer>
+			
 		</MasterServers>
 		<Detection>
 			<Registry>
@@ -71,8 +70,7 @@
 		<MapPreviewPath>q3maps</MapPreviewPath>
 		<Icon>q3.ico</Icon>
 		<MasterServers>
-			<MasterServer>monster.idsoftware.com:27950</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0" protocol="68">monster.idsoftware.com:27950</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -136,9 +134,7 @@
 		<MapPreviewPath>rtcwmaps</MapPreviewPath>
 		<Icon>rtcw.ico</Icon>
 		<MasterServers>
-			<MasterServer>wolfmotd.idsoftware.com:27950</MasterServer>
-			<ServerProtocol>60</ServerProtocol>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0" protocol="60">wolfmotd.idsoftware.com:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -234,8 +230,7 @@
 		<MapPreviewPath>cod4maps</MapPreviewPath>
 		<Icon>cod4.ico</Icon>
 		<MasterServers>
-			<MasterServer>cod4master.activision.com:20810</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">cod4master.activision.com:20810</MasterServer>	
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -266,9 +261,7 @@
 		<MapPreviewPath>warsowmaps</MapPreviewPath>
 		<Icon>warsow.ico</Icon>
 		<MasterServers>
-			<MasterServer>dpmaster.deathmask.net:27950</MasterServer>
-			<ServerProtocol>10</ServerProtocol>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer protocol="10">dpmaster.deathmask.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
@@ -300,6 +293,9 @@
 		<Icon>cstrike.ico</Icon>
 		<MasterServers>
 			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
+			<MasterServer>68.142.72.250:27010</MasterServer>
+			<MasterServer>72.165.61.189:27010</MasterServer>
+			<MasterServer>69.28.151.162:27010</MasterServer>
 			<UseHTTP>0</UseHTTP>
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
@@ -331,8 +327,7 @@
 		<MapPreviewPath>csczmaps</MapPreviewPath>
 		<Icon>cstrikezero.ico</Icon>
 		<MasterServers>
-			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">hl1master.steampowered.com:27010</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -363,8 +358,13 @@
 		<MapPreviewPath>cssmaps</MapPreviewPath>
 		<Icon>css.ico</Icon>
 		<MasterServers>
-			<MasterServer>hl2master.steampowered.com:27011</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">hl2master.steampowered.com:27011</MasterServer>
+			<MasterServer http="0">68.142.72.250:27011</MasterServer>
+			<MasterServer http="0">69.28.140.247:27011</MasterServer>
+			<MasterServer http="0">69.28.151.162:27011</MasterServer>
+			<MasterServer http="0">68.142.72.250:27011</MasterServer>
+			<MasterServer http="0">72.165.61.189:27011</MasterServer>
+			<MasterServer http="0">69.28.140.246:27011</MasterServer>				
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -396,8 +396,7 @@
 		<ColorEncoding>QW</ColorEncoding>
 		<Icon>qw.ico</Icon>
 		<MasterServers>
-			<MasterServer>http://www.quakeservers.net/lists/servers/global.txt</MasterServer>		
-			<UseHTTP>1</UseHTTP>
+			<MasterServer http="1">http://www.quakeservers.net/lists/servers/global.txt</MasterServer>					
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFstatus 15\n</ServerInfoQuery>
@@ -427,10 +426,11 @@
 		<WebProtocol>q2</WebProtocol>
 		<MapPreviewPath>quake2maps</MapPreviewPath>
 		<Icon>q2.ico</Icon>
-		<MasterServers>
-			<MasterServer>http://q2servers.com/?raw=1</MasterServer>
-			<ServerProtocol>34</ServerProtocol>
-			<UseHTTP>1</UseHTTP>
+		<MasterServers>			
+			<MasterServer http="1" protocol="" >http://q2servers.com/?raw=1</MasterServer>
+			<!--<MasterServer http="0" protocol="34" >masterserver.exhale.de:27900</MasterServer>
+			<MasterServer http="0" protocol="34">netdome.biz:27900</MasterServer>
+			<MasterServer http="0" protocol="34">master.planetgloom.com:27900</MasterServer>-->
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFstatus\n</ServerInfoQuery>
@@ -493,8 +493,13 @@
 		<MapPreviewPath>hf2maps</MapPreviewPath>
 		<Icon>hf2.ico</Icon>
 		<MasterServers>
-			<MasterServer>hl2master.steampowered.com:27011</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">hl2master.steampowered.com:27011</MasterServer>
+			<MasterServer http="0">68.142.72.250:27011</MasterServer>
+			<MasterServer http="0">69.28.140.247:27011</MasterServer>
+			<MasterServer http="0">69.28.151.162:27011</MasterServer>
+			<MasterServer http="0">68.142.72.250:27011</MasterServer>
+			<MasterServer http="0">72.165.61.189:27011</MasterServer>
+			<MasterServer http="0">69.28.140.246:27011</MasterServer>	
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -547,8 +552,7 @@
 		<MapPreviewPath>urbantmaps</MapPreviewPath>
 		<Icon>urbanterror.ico</Icon>
 		<MasterServers>
-			<MasterServer>master.urbanterror.net:27950</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">master.urbanterror.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -580,8 +584,7 @@
 		<MapPreviewPath>Nexuizmaps</MapPreviewPath>
 		<Icon>Nexuiz.ico</Icon>
 		<MasterServers>
-			<MasterServer>dpmaster.deathmask.net:27950</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">dpmaster.deathmask.net:27950</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -605,8 +608,7 @@
 		<MapPreviewPath>hlmaps</MapPreviewPath>
 		<Icon>hl.ico</Icon>
 		<MasterServers>
-			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">hl1master.steampowered.com:27010</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -631,8 +633,7 @@
 		<MapPreviewPath>doom3maps</MapPreviewPath>
 		<Icon>doom3.ico</Icon>
 		<MasterServers>
-			<MasterServer>idnet.ua-corp.com:27650</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">idnet.ua-corp.com:27650</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>27666</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>		
@@ -656,8 +657,7 @@
 		<MapPreviewPath>codwawmaps</MapPreviewPath>
 		<Icon>CoDWaW.ico</Icon>
 		<MasterServers>
-			<MasterServer>http://www.cludden.se/braindamage/download/codwaw.txt</MasterServer>
-			<UseHTTP>1</UseHTTP>
+			<MasterServer http="1">http://www.cludden.se/braindamage/download/codwaw.txt</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -688,8 +688,7 @@
 		<MapPreviewPath>ut3maps</MapPreviewPath>
 		<Icon>unrealtournament3.ico</Icon>
 		<MasterServers>
-			<MasterServer>http://www.cludden.se/braindamage/download/ut3.txt</MasterServer>
-			<UseHTTP>1</UseHTTP>
+			<MasterServer http="1">http://www.cludden.se/braindamage/download/ut3.txt</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>

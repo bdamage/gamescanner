@@ -269,8 +269,7 @@ DWORD STEAM_ParsePlayers(SERVER_INFO *pSI, char *packet,DWORD dwLength)
 			i++;
 			if((p[0]==0x00) && (p[1]==0xFD))
 				break;
-			if(p>pEndAddress)
-				DebugBreak();
+
 				
 		}
 	}
@@ -382,7 +381,7 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 	return 0;
 }
 
-DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
+DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 {
 	size_t packetlen=0;
 	char sendbuf[100];
@@ -400,7 +399,10 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI)
 	}
 
 	char appid[]={"\\napp\\500"};
-	ConnectSocket = getsockudp(pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT); 
+	char szIP[256];
+	strcpy(szIP,pGI->szMasterServerIP[iMasterIdx]);
+	SplitIPandPORT(szIP,pGI->dwMasterServerPORT);
+	ConnectSocket = getsockudp(szIP,(unsigned short)pGI->dwMasterServerPORT); 
    
 	if(INVALID_SOCKET==ConnectSocket)
 	{
@@ -593,7 +595,7 @@ nextRegion2:
 			ZeroMemory(sendbuf,sizeof(sendbuf));
 			_itoa(dwLastPort,szPort,10);
 			sprintf_s(sendbuf,sizeof(sendbuf), "1%c%s:%d\x00\x00",REGIONS[cRegionCodeIndex].cCode,szLastIP,dwLastPort);
-			AddLogInfo(0,"Sending %s (1REGION%s:%d) to master server...",sendbuf,szLastIP,dwLastPort);
+			AddLogInfo(0,"Sending %s (1REGION%s:%d) to master server %s.",sendbuf,szLastIP,dwLastPort,&pGI->szMasterServerIP[iMasterIdx]);
 
 			int len = 2;
 			len += strlen(szLastIP);

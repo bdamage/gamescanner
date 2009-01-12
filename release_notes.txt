@@ -2,8 +2,13 @@ version 1.29
 ----------
 * Quake World servers now shows with spectators.
 * Bug fix when Quake World servers return only Banned as a server response.
+* Fixed so Half-Life 2 servers now display server and player names in UTF-8 format.
 * Window sizes and position does now save.
 * Added a new setting to "Close on Connect".
+* Added support for multiple master servers.
+* Updated IP to Country database.
+* Fixed some Quake 3 Arena filterings suggested by Alien.
+
 
 version 1.28
 ----------

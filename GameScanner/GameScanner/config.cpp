@@ -96,15 +96,15 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 		else
 			GamesInfoCFG[gameID].bActive=false;
 
-		if(IsDlgButtonChecked(hDlg,IDC_CHECK_USE_HTTP)==BST_CHECKED)
-			GamesInfoCFG[gameID].bUseHTTPServerList = TRUE;
+/*		if(IsDlgButtonChecked(hDlg,IDC_CHECK_USE_HTTP)==BST_CHECKED)
+			GamesInfoCFG[gameID].bUseHTTPServerList[0] = TRUE;
 		else
-			GamesInfoCFG[gameID].bUseHTTPServerList = FALSE;
-
-		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GamesInfoCFG[gameID].szMasterServerIP,MAX_PATH);						
+			GamesInfoCFG[gameID].bUseHTTPServerList[0] = FALSE;
+*/
+		GetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,GamesInfoCFG[gameID].szMasterServerIP[0],MAX_PATH);						
 
 		if(GamesInfoCFG[gameID].bUseHTTPServerList==FALSE)
-			SplitIPandPORT(GamesInfoCFG[gameID].szMasterServerIP,GamesInfoCFG[gameID].dwMasterServerPORT);
+			SplitIPandPORT(GamesInfoCFG[gameID].szMasterServerIP[0],GamesInfoCFG[gameID].dwMasterServerPORT);
 	}
 }
 
@@ -263,10 +263,10 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			for(UINT i=0; i<GamesInfo.size();i++)
 			{
 					GamesInfoCFG[i].bActive = GamesInfo[i].bActive;
-					GamesInfoCFG[i].bUseHTTPServerList = GamesInfo[i].bUseHTTPServerList;
+					GamesInfoCFG[i].bUseHTTPServerList[0] = GamesInfo[i].bUseHTTPServerList[0];
 					GamesInfoCFG[i].dwMasterServerPORT = GamesInfo[i].dwMasterServerPORT;
 					strcpy(GamesInfoCFG[i].szGAME_NAME, GamesInfo[i].szGAME_NAME);
-					strcpy(GamesInfoCFG[i].szMasterServerIP, GamesInfo[i].szMasterServerIP);
+					strcpy(GamesInfoCFG[i].szMasterServerIP[0], GamesInfo[i].szMasterServerIP[0]);
 					GamesInfoCFG[i].vGAME_INST = GamesInfo[i].vGAME_INST;								
 			}
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
@@ -340,9 +340,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					for(UINT i=0; i<GamesInfo.size();i++)
 					{
 						GamesInfo[i].bActive = GamesInfoCFG[i].bActive;
-						GamesInfo[i].bUseHTTPServerList = GamesInfoCFG[i].bUseHTTPServerList;
+						GamesInfo[i].bUseHTTPServerList[0] = GamesInfoCFG[i].bUseHTTPServerList[0];
 						GamesInfo[i].dwMasterServerPORT = GamesInfoCFG[i].dwMasterServerPORT;					
-						strcpy(GamesInfo[i].szMasterServerIP, GamesInfoCFG[i].szMasterServerIP);
+						strcpy(GamesInfo[i].szMasterServerIP[0], GamesInfoCFG[i].szMasterServerIP[0]);
 						GamesInfo[i].vGAME_INST = GamesInfoCFG[i].vGAME_INST;	
 					}
 
@@ -863,11 +863,11 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				
 				TCHAR szTempMaster[200];
 				if(GamesInfoCFG[gameID].bUseHTTPServerList==FALSE)
-					sprintf(szTempMaster,"%s:%d",GamesInfoCFG[gameID].szMasterServerIP,GamesInfoCFG[gameID].dwMasterServerPORT);
+					sprintf(szTempMaster,"%s:%d",GamesInfoCFG[gameID].szMasterServerIP[0],GamesInfoCFG[gameID].dwMasterServerPORT);
 				else
-					sprintf(szTempMaster,"%s",GamesInfoCFG[gameID].szMasterServerIP);
+					sprintf(szTempMaster,"%s",GamesInfoCFG[gameID].szMasterServerIP[0]);
 	
-				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,szTempMaster);//GamesInfoCFG[gameID].szMasterServerIP);
+				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,szTempMaster);//GamesInfoCFG[gameID].szMasterServerIP[0]);
 
 				if(GamesInfoCFG[gameID].bUseHTTPServerList)
 					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);

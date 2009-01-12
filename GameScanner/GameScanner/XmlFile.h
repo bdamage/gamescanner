@@ -23,4 +23,5 @@ public:
 	int GetInteger(TiXmlElement *pElm,TCHAR * pszElementName,long *lOut);
 	void SetPath(const TCHAR *pszDir);
 	TCHAR *GetAttribute(TiXmlElement* pNode, TCHAR *szParamName,TCHAR *szOutputBuffer,int iBuffSize);
+	TCHAR * CXmlFile::GetCustomAttribute(TiXmlElement* pNode, TCHAR *szAttributeName,TCHAR *szOutputBuffer,int iBuffSize);
 };

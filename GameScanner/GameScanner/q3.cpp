@@ -1015,7 +1015,7 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 }
 
 
-DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
+DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 {
 	size_t packetlen=0;
 	char sendbuf[80];
@@ -1035,17 +1035,10 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI)
 
 	i = 0;
 
-	int numMasterServers=0;
 	char szIP[260];
-	strcpy(szIP,pGI->szMasterServerIP);
-
-
-
-NextMaster:
-	if(numMasterServers==1)
-		strcpy(szIP,"netdome.biz");
-	else if(numMasterServers==2)
-		strcpy(szIP,"masterserver.exhale.de");
+	strcpy(szIP,pGI->szMasterServerIP[iMasterIdx]);
+	
+	SplitIPandPORT(szIP,pGI->dwMasterServerPORT);
 
 	int len = 0;//(int)strlen(sendbuf);
 	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
@@ -1124,7 +1117,7 @@ NextMaster:
 		if (events.lNetworkEvents & FD_CONNECT)
 		{
 			//AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
-			AddLogInfo(0,"Master server %s:%d",pGI->szMasterServerIP,(unsigned short)pGI->dwMasterServerPORT);
+			AddLogInfo(0,"Master server %s   (%d)",pGI->szMasterServerIP[0],(unsigned short)pGI->dwMasterServerPORT);
 			AddLogInfo(0,"Sending command [%s] (%s) Len: %d",sendbuf,pGI->szMasterQueryString,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
@@ -1168,11 +1161,7 @@ NextMaster:
 	
 	closesocket(ConnectSocket);
 	WSACloseEvent(hEvent);
-	numMasterServers++;
-	if((pGI->cGAMEINDEX == Q2_SERVERLIST) && numMasterServers<3)
-	{
-		goto NextMaster;
-	}
+
 
 	for(i=0; i<MAX_PACKETS;i++)
 	{

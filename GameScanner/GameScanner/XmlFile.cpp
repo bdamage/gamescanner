@@ -108,6 +108,25 @@ int CXmlFile::GetInteger(TiXmlElement *pElm,TCHAR * pszElementName,long *lOut)
 	return -1;
 }
 
+TCHAR * CXmlFile::GetCustomAttribute(TiXmlElement* pNode, TCHAR *szAttributeName,TCHAR *szOutputBuffer,int iBuffSize)
+{
+	if(szOutputBuffer==NULL)
+		return NULL;
+	ZeroMemory(szOutputBuffer,iBuffSize);
+	for( pNode; pNode; pNode=pNode->NextSiblingElement())
+	{
+
+		const TCHAR *pValue = pNode->Attribute(szAttributeName); 
+		if(pValue!=NULL)
+		{		
+			strncpy(szOutputBuffer,pValue,iBuffSize);
+			return szOutputBuffer;		
+		}
+		
+	}
+		return NULL;
+		
+}
 
 TCHAR * CXmlFile::GetAttribute(TiXmlElement* pNode, TCHAR *szParamName,TCHAR *szOutputBuffer,int iBuffSize)
 {
