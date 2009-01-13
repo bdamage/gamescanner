@@ -147,7 +147,7 @@ void Buddy_Save()
 	root->LinkEndChild( buddies );  
 	
 
-	for(int i=0; i<BuddyList.size();i++)
+	for(unsigned int i=0; i<BuddyList.size();i++)
 	//	while(pBI!=NULL)
 	{		
 		BUDDY_INFO BI = BuddyList.at(i);
@@ -186,7 +186,7 @@ void Buddy_Save()
 			LSIP->LinkEndChild(new TiXmlText(BI.szLastSeenIPaddress));
 			buddy->LinkEndChild(LSIP);	
 
-			TCHAR num[5];
+			TCHAR num[10];
 			
 			TiXmlElement *LSGI = new TiXmlElement("LastSeenGameIdx");
 			LSGI->LinkEndChild(new TiXmlText(_itoa(BI.cGAMEINDEX,num,10)));
@@ -308,7 +308,8 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		strcpy_s(it->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
 		it->cGAMEINDEX = pServerInfo->cGAMEINDEX;
 		it->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
-	}
+	} else
+		return;
 	HWND hwndLV = g_hwndListBuddy;
 
 	LV_FINDINFO lvfi;
@@ -325,29 +326,32 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		item.iItem = index;
 		memset(szText,0,sizeof(szText));
 	
-		if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
+		if(GamesInfo[it->cGAMEINDEX].colorfilter!=NULL)
 		{					
-			GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szServerName,szText,249);
+			GamesInfo[it->cGAMEINDEX].colorfilter(it->szServerName,szText,249);
 			item.pszText = szText;
 			item.cchTextMax = (int)strlen(szText);
 		}
 		else
 		{
-			item.pszText = pBI->szServerName;
-			item.cchTextMax = (int)strlen(pBI->szServerName);
+			item.pszText = it->szServerName;
+			item.cchTextMax = (int)strlen(it->szServerName);
 		}
 
-		item.iSubItem = 1;
-		item.iImage = Get_GameIcon(pBI->cGAMEINDEX);
-		ListView_SetItem(g_hwndListBuddy,&item);
-		sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
-		strcpy(pBI->szIPaddress,szText);
-		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
+
+			item.iSubItem = 1;
+			item.iImage = Get_GameIcon(it->cGAMEINDEX);
+			ListView_SetItem(g_hwndListBuddy,&item);
+
+			sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
+			strcpy(it->szIPaddress,szText);
+			ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
+
 	}
-	if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
-		GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szServerName,szText,249);
+	if(GamesInfo[it->cGAMEINDEX].colorfilter!=NULL)
+		GamesInfo[it->cGAMEINDEX].colorfilter(it->szServerName,szText,249);
 	else
-		strcpy(szText,pBI->szPlayerName);
+		strcpy(szText,it->szPlayerName);
 
 	ShowBalloonTip("A buddy is online!",szText);		
 }
@@ -374,15 +378,19 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 				break;
 			if(pPlayers->szPlayerName==NULL)
 				return 0;
+
 			if((BI.cMatchExact) && (BI.cMatchOnColorEncoded==0))
 			{
 				TCHAR cf[100],cf2[100];
 
-				if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
+//				if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
+//				{
+				if(GamesInfo[pServerInfo->cGAMEINDEX].colorfilter!=NULL)
 				{
-					colorfilter(pPlayers->szPlayerName,cf,sizeof(cf));
-					colorfilter(BI.szPlayerName,cf2,sizeof(cf2));
-				}else
+					GamesInfo[pServerInfo->cGAMEINDEX].colorfilter(BI.szPlayerName,cf,sizeof(cf));					
+					GamesInfo[pServerInfo->cGAMEINDEX].colorfilter(pPlayers->szPlayerName,cf2,sizeof(cf2));
+				}
+				else
 				{
 					ZeroMemory(cf,sizeof(cf));
 					ZeroMemory(cf2,sizeof(cf2));
@@ -408,7 +416,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 			{
 			//	dbg_print("%s == %s",BI.szPlayerName,pPlayers->szPlayerName);
 				
-				if(strstr(BI.szPlayerName,pPlayers->szPlayerName)!=NULL)
+				if(strstr(pPlayers->szPlayerName,BI.szPlayerName)!=NULL)
 				{
 					Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 					return 1;
@@ -425,10 +433,13 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 					//Try without color codes
 					TCHAR cf[100],cf2[100];
 
-					if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
+//					if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
+//					{
+					if(GamesInfo[pServerInfo->cGAMEINDEX].colorfilter!=NULL)
 					{
-						colorfilter(pPlayers->szPlayerName,cf,sizeof(cf));
-						colorfilter(BI.szPlayerName,cf2,sizeof(cf2));
+						GamesInfo[pServerInfo->cGAMEINDEX].colorfilter(BI.szPlayerName,cf,sizeof(cf));					
+						GamesInfo[pServerInfo->cGAMEINDEX].colorfilter(pPlayers->szPlayerName,cf2,sizeof(cf2));
+
 					}else
 					{
 						ZeroMemory(cf,sizeof(cf));
@@ -436,12 +447,13 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 						strncpy(cf,BI.szPlayerName,sizeof(cf)-1);
 						strncpy(cf2,pPlayers->szPlayerName,sizeof(cf2)-1);
 					}
+
 					if(_stricmp(cf,cf2)==0)
 					{
 						Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 						return 1;
 					}//Try to find FILTERED name of the current online FILTERED playername
-					else if (strstr(cf,cf2)!=NULL)
+					else if (strstr(cf2,cf)!=NULL)
 					{
 						Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 						return 1;
@@ -456,7 +468,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 						if(strlen(copy2)>0)
 							_strlwr_s( copy2 , 99);
 
-						if(strstr(copy1,copy2)!=NULL)
+						if(strstr(copy2,copy1)!=NULL)
 						{
 							Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);				
 							return 1;
@@ -509,7 +521,7 @@ BOOL Buddy_AddToList(TCHAR *szName,SERVER_INFO *pServer)
 	BUDDY_INFO BI;
 	ZeroMemory(&BI,sizeof(BUDDY_INFO));
 	strcpy(BI.szPlayerName,szName);
-
+	BI.dwID = BuddyList.size()+1;
 	if(pServer!=NULL)
 	{
 		TCHAR szIP[MAX_IP_LEN];
@@ -519,6 +531,7 @@ BOOL Buddy_AddToList(TCHAR *szName,SERVER_INFO *pServer)
 		strcpy(BI.szLastSeenIPaddress,szIP);
 		BI.cGAMEINDEX = pServer->cGAMEINDEX;
 		BI.sIndex = pServer->dwIndex;
+		
 	}
 
 	BuddyList.push_back(BI);
