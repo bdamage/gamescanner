@@ -401,7 +401,7 @@ retry:
 			//Debug purpose
 			if(pServRules!=pSI->pServerRules)
 			{
-				AddLogInfo(ETSV_ERROR,"Error at pServRules!=pSI->pServerRules");
+				AddLogInfo(GS_LOG_ERROR,"Error at pServRules!=pSI->pServerRules");
 				DebugBreak();
 			} 
 			else
@@ -1048,7 +1048,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	{
 
 		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
-		AddLogInfo(ETSV_ERROR,"Error connecting to socket!");
+		AddLogInfo(GS_LOG_ERROR,"Error connecting to socket!");
 		return 1;
 	}
 
@@ -1057,7 +1057,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	if (hEvent == WSA_INVALID_EVENT)
 	{
 		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
-		AddLogInfo(ETSV_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
+		AddLogInfo(GS_LOG_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
 		closesocket(ConnectSocket);
 		return 1;
 	}
@@ -1071,7 +1071,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	if (nRet == SOCKET_ERROR)
 	{
 		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
-		AddLogInfo(ETSV_ERROR,"EventSelect() = SOCKET_ERROR");
+		AddLogInfo(GS_LOG_ERROR,"EventSelect() = SOCKET_ERROR");
 		closesocket(ConnectSocket);
 		WSACloseEvent(hEvent);
 		return 5;
@@ -1094,7 +1094,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		dwRet = WSAWaitForMultipleEvents(1, &hEvent, FALSE,4000,FALSE);
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
-			AddLogInfo(ETSV_ERROR,"WSAWaitForMultipleEvents = WSA_WAIT_TIMEOUT");
+			AddLogInfo(GS_LOG_ERROR,"WSAWaitForMultipleEvents = WSA_WAIT_TIMEOUT");
 			break;
 		}
 
@@ -1105,7 +1105,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		nRet = WSAEnumNetworkEvents(ConnectSocket, hEvent, &events);
 		if (nRet == SOCKET_ERROR)
 		{
-			AddLogInfo(ETSV_ERROR,"WSAEnumNetworkEvents() = SOCKET_ERROR");
+			AddLogInfo(GS_LOG_ERROR,"WSAEnumNetworkEvents() = SOCKET_ERROR");
 			break;
 		}
 
@@ -1125,7 +1125,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 				Q3_bScanningInProgress = FALSE;
 				WSACloseEvent(hEvent);
 				closesocket(ConnectSocket);		
-				AddLogInfo(ETSV_ERROR,"Error sending master query packet!");
+				AddLogInfo(GS_LOG_ERROR,"Error sending master query packet!");
 				return 2;
 			}
 		}

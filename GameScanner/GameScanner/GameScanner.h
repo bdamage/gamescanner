@@ -108,7 +108,6 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 
 void InitShowServer();
 
-int StrSorter(TCHAR *a, TCHAR *b);
 int GetPingFilter();
 void SetPingFilter();
 bool IsServerAlive(TCHAR *host);

@@ -2,8 +2,8 @@
 #include "structs_defines.h"
 #include "utilz.h"
 
-#ifndef __ETSV_SCANNER__
-#define __ETSV_SCANNER__
+#ifndef __GS_LOG_SCANNER__
+#define __GS_LOG_SCANNER__
 
 
 #endif

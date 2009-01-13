@@ -37,7 +37,7 @@ void SCAN_Set_CALLBACKS(DWORD (*_Get_ServerStatus)(SERVER_INFO *pSI, long (*Upda
 //Create scanning threads
 void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME_INFO *pGI))
 {
-	AddLogInfo(ETSV_DEBUG,"Entering Initialize_Rescan2 function.");
+	AddLogInfo(GS_LOG_DEBUG,"Entering Initialize_Rescan2 function.");
 	SCAN_FilterServerItem = filterServerItem;
 
 	vSRV_INF::iterator  iLst;
@@ -66,7 +66,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	if(pGI->dwViewFlags & SCAN_SERVERLIST)
 		pGI->dwViewFlags ^= SCAN_SERVERLIST;
 
-	AddLogInfo(ETSV_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->vRefScanSI.size(),pGI->vSI.size());
+	AddLogInfo(GS_LOG_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->vRefScanSI.size(),pGI->vSI.size());
 
 	if(pGI->dwViewFlags & FORCE_SCAN_FILTERED)
 		pGI->dwViewFlags = 0;
@@ -91,10 +91,10 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	//Create and setup Continue Event, this is important! Otherwise ETSV can crash.
 	SCAN_hContinueEvent = CreateEvent(NULL,TRUE,TRUE,"ScanContinueEvent"); 
     if (SCAN_hContinueEvent == NULL) 
-        AddLogInfo(ETSV_DEBUG,"CreateEvent failed (%d)\n", GetLastError());
+        AddLogInfo(GS_LOG_DEBUG,"CreateEvent failed (%d)\n", GetLastError());
 
 	if (! ResetEvent(SCAN_hContinueEvent) ) 
-        AddLogInfo(ETSV_DEBUG,"ResetEvent failed (%d)\n", GetLastError());
+        AddLogInfo(GS_LOG_DEBUG,"ResetEvent failed (%d)\n", GetLastError());
 
 	DWORD dwMaxThreads = (AppCFG.dwThreads>pGI->vRefScanSI.size())?pGI->vRefScanSI.size():AppCFG.dwThreads;
 
@@ -112,7 +112,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 		}
 		else 
 		{	
-			//AddLogInfo(ETSV_INFO,"Thread created! %d",i);					
+			//AddLogInfo(GS_LOG_INFO,"Thread created! %d",i);					
 			EnterCriticalSection( &SCANNER_CSthreadcounter ); 
 			SCANNER_dwThreadCounter++;  
 			LeaveCriticalSection( &SCANNER_CSthreadcounter ); 
@@ -128,16 +128,16 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 	DWORD iWaitIndex = 0;
 	DWORD i=0;
 	//Wait for all threads to finish...
-	//AddLogInfo(ETSV_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
+	//AddLogInfo(GS_LOG_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
 
 	while(iWaitIndex<dwMaxThreads)
 	{
 	
 		DWORD max = ((dwMaxThreads-iWaitIndex)<MAXIMUM_WAIT_OBJECTS)?(dwMaxThreads-iWaitIndex):MAXIMUM_WAIT_OBJECTS;		
 
-	//	AddLogInfo(ETSV_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
+	//	AddLogInfo(GS_LOG_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
 		DWORD dwEvent = WaitForMultipleObjects(max, &hThreadIndex[iWaitIndex], TRUE, INFINITE);
-		//AddLogInfo(ETSV_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
+		//AddLogInfo(GS_LOG_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
 	
 		switch (dwEvent) 
 		{
@@ -145,13 +145,13 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 				//dbg_print("First event was signaled.\n");
 				break; 
 			case WAIT_TIMEOUT:
-				AddLogInfo(ETSV_DEBUG,"Wait timed out.\n");
+				AddLogInfo(GS_LOG_DEBUG,"Wait timed out.\n");
 				break;
 			// Return value is invalid.
 			default: 
 				{
 					//DebugBreak();
-					AddLogInfo(ETSV_DEBUG,"Error at waiting threads!");
+					AddLogInfo(GS_LOG_DEBUG,"Error at waiting threads!");
 					//dbg_print("Wait error\n"); 
 				}         
 		}

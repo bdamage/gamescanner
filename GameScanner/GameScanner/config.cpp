@@ -355,7 +355,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					hThread = CreateThread( NULL, 0, &CFG_Save,(LPVOID)0 ,0, &dwThreadIdBrowser);                
 					if (hThread == NULL) 
 					{
-						AddLogInfo(ETSV_WARNING, "CreateThread CFG_Save failed (%d)\n", GetLastError() ); 
+						AddLogInfo(GS_LOG_WARNING, "CreateThread CFG_Save failed (%d)\n", GetLastError() ); 
 					} else
 					{
 						CloseHandle( hThread );

@@ -230,7 +230,7 @@ DEVMODE GetScreenResolution(VOID)
 {
 	DEVMODE mySettings;
   	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mySettings);
-	AddLogInfo(ETSV_INFO,"Screen resolution detected: %d x %d @ %d",mySettings.dmPelsWidth,mySettings.dmPelsHeight,mySettings.dmBitsPerPel );
+	AddLogInfo(GS_LOG_INFO,"Screen resolution detected: %d x %d @ %d",mySettings.dmPelsWidth,mySettings.dmPelsHeight,mySettings.dmBitsPerPel );
 
   return mySettings;
 }
@@ -326,11 +326,11 @@ void AddLogInfo(int color, char *lpszText, ...)
 		char szColor[10];
 		strcpy_s(szColor,sizeof(szColor),"000000");	  //Default
 
-		if(color==ETSV_WARNING)
+		if(color==GS_LOG_WARNING)
 			strcpy_s(szColor,sizeof(szColor),"99dd00");
-		else if(color==ETSV_DEBUG)
+		else if(color==GS_LOG_DEBUG)
 			strcpy_s(szColor,sizeof(szColor),"0000FF");
-		else if(color==ETSV_ERROR)
+		else if(color==GS_LOG_ERROR)
 			strcpy_s(szColor,sizeof(szColor),"FF0000");
 
 		char time[64], date[64];
@@ -616,7 +616,7 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 			// information about the host
 			if ((retVal = getaddrinfo(host_name, port, &aiHints, &aiList)) != 0) 
 			{
-				AddLogInfo(ETSV_WARNING,"getaddrinfo() failed. IP: %s\n",host_name);
+				AddLogInfo(GS_LOG_WARNING,"getaddrinfo() failed. IP: %s\n",host_name);
 				return 0;
 			}
 
@@ -633,7 +633,7 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 		addr = inet_addr(host_name);
 		if(addr== INADDR_NONE)
 		{
-			AddLogInfo(ETSV_WARNING,"getaddrinfo() failed at %d.\n",__LINE__);
+			AddLogInfo(GS_LOG_WARNING,"getaddrinfo() failed at %d.\n",__LINE__);
 			return 0;
 		}
 		test2 = ntohl(addr);
@@ -672,6 +672,56 @@ char *SplitIPandPORT(char *szIPport,DWORD &port)
 		return szIPport;
 	}
 	return NULL;
+}
+
+//custom str compare
+int CustomStrCmp(char *a, char *b)
+{
+	int i=0,i2=0;
+	char upperA;
+	char upperB;
+
+	while(a[i]==32) //trim spaces
+		i++;
+
+	while(b[i2]==32)  //trim spaces
+		i2++;
+
+	if(a==NULL)
+		return 0;
+
+	while(a[i]!=0)
+	{
+		if(a[i]==0 && b[i2]==0)
+			return 0;
+		else if(a[i]==0)
+			return -1;
+		else if(b[i2]==0)
+			return 1;
+
+
+		upperA = a[i];
+
+		if(__isascii(a[i]))
+			if(islower(a[i]))
+				upperA =_toupper(a[i]);
+		
+		upperB = b[i2];
+
+		if(__isascii(b[i2]))
+			if(islower(b[i2]))
+				upperB = _toupper(b[i2]);
+
+		if(upperA> upperB)
+			return 1;
+		else if(upperA < upperB)
+			return -1;
+		
+		i++;
+		i2++;
+	}
+
+	return 0;
 }
 
 
@@ -870,7 +920,7 @@ void CleanUp_ServerRules(LPSERVER_RULES &pSR)
 		__except(GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION)
 		{
 			// exception handling code
-			AddLogInfo(ETSV_ERROR,"Access Violation!!! @ CleanUp_ServerList(...)\n");
+			AddLogInfo(GS_LOG_ERROR,"Access Violation!!! @ CleanUp_ServerList(...)\n");
 			DebugBreak();
 		}
 		

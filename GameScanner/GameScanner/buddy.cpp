@@ -14,13 +14,12 @@ extern HWND g_hwndListBuddy;
 extern HWND g_hwndListViewPlayers;
 extern HWND g_hWnd;
 extern LONG_PTR g_wpOrigListBuddyProc;
-extern BUDDY_INFO *g_pBIStart;
 extern SERVER_INFO *g_CurrentSRV;
 extern HINSTANCE g_hInst;
 extern SERVER_INFO g_tmpSRV;
 extern GamesMap GamesInfo;
-//extern GAME_INFO GamesInfo[GamesInfo.size()+1];
-
+extern vecBI BuddyList;
+extern APP_SETTINGS_NEW AppCFG;
 extern CLanguage g_lang;
 extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(TCHAR *title,TCHAR *message);
@@ -30,9 +29,12 @@ extern const TCHAR * ReadCfgStr2(TiXmlElement* pNode, TCHAR *szParamName,TCHAR *
 extern int ReadCfgInt2(TiXmlElement* pNode, TCHAR *szParamName, int& intVal);
 extern BOOL WINAPI EditCopy(TCHAR *pText);
 extern PLAYERDATA *Get_PlayerBySelection();
+extern _CUSTOM_COLUMN BUDDY_CUSTCOLUMNS[MAX_COLUMNS];
 
 bool bEditBuddyname=false;
-BUDDY_INFO *pEditBuddy;
+//BUDDY_INFO *pEditBuddy;
+
+vecBI::iterator itBuddyEdit;
 
 void OnAddSelectedPlayerToBuddyList()
 {
@@ -40,8 +42,8 @@ void OnAddSelectedPlayerToBuddyList()
 	if(pPly!=NULL)
 	{
 		SERVER_INFO srv = Get_ServerInfoByIndex(&GamesInfo[pPly->cGAMEINDEX],pPly->dwServerIndex);
-		Buddy_AddToList(g_pBIStart,pPly->szPlayerName,&srv);
-		Buddy_UpdateList(g_pBIStart);
+		Buddy_AddToList(pPly->szPlayerName,&srv);
+		Buddy_UpdateList();
 	}													
 }
 
@@ -59,23 +61,23 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 			if(bEditBuddyname)
 			{
 
-				if(pEditBuddy!=NULL)
+			//	if(pEditBuddy!=NULL)
 				{
-					if(pEditBuddy->cMatchOnColorEncoded)
+					if(itBuddyEdit->cMatchOnColorEncoded)
 						CheckDlgButton(hDlg,IDC_CHECK_NO_COLOR_MATCH,BST_CHECKED);
 					else			
 						CheckDlgButton(hDlg,IDC_CHECK_NO_COLOR_MATCH,BST_UNCHECKED);
 
-					if(pEditBuddy->cMatchExact)
+					if(itBuddyEdit->cMatchExact)
 						CheckDlgButton(hDlg,IDC_CHECK_EXACT_MATCH,BST_CHECKED);
 					else
 						CheckDlgButton(hDlg,IDC_CHECK_EXACT_MATCH,BST_UNCHECKED);
 
-					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,0,strlen(pEditBuddy->szPlayerName));
+					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,0,strlen(itBuddyEdit->szPlayerName));
 					PostMessage(GetDlgItem(hDlg,IDC_EDIT_NICKNAME_FILTER),EM_SETSEL,(WPARAM)-1,-1);
 				}
 				SetWindowText(hDlg,g_lang.GetString("TitleEditBuddy")); 
-				SetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,(PTCHAR)pEditBuddy->szPlayerName);
+				SetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,(PTCHAR)itBuddyEdit->szPlayerName);
 			}
 			else
 			{
@@ -97,24 +99,15 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 				GetDlgItemText(hDlg,IDC_EDIT_NICKNAME_FILTER,szBuddy,sizeof(szBuddy)-1);
 				if(!bEditBuddyname)
 				{					
-					Buddy_AddToList(g_pBIStart,szBuddy,NULL);
-					Buddy_UpdateList(g_pBIStart);
+					Buddy_AddToList(szBuddy,NULL);
+					Buddy_UpdateList();
 				}else if(bEditBuddyname)
 				{
-					strcpy(pEditBuddy->szPlayerName,szBuddy);
-					if(IsDlgButtonChecked(hDlg,IDC_CHECK_NO_COLOR_MATCH)==BST_CHECKED)
-						pEditBuddy->cMatchOnColorEncoded=1;
-					else
-						pEditBuddy->cMatchOnColorEncoded=0;
-
-					if(IsDlgButtonChecked(hDlg,IDC_CHECK_EXACT_MATCH)==BST_CHECKED)
-						pEditBuddy->cMatchExact=1;
-					else
-						pEditBuddy->cMatchExact=0;
+					strcpy(itBuddyEdit->szPlayerName,szBuddy);
+					itBuddyEdit->cMatchOnColorEncoded = IsDlgButtonChecked(hDlg,IDC_CHECK_NO_COLOR_MATCH);
+					itBuddyEdit->cMatchExact = IsDlgButtonChecked(hDlg,IDC_CHECK_EXACT_MATCH);
 				}
 
-				pEditBuddy =NULL;
-			
 			}
 			EndDialog(hDlg, LOWORD(wParam));
 			return TRUE;
@@ -126,25 +119,12 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 
 
 
-void Buddy_Save(BUDDY_INFO *pBI)
+void Buddy_Save()
 {
-	if(pBI==NULL)
+	if(BuddyList.size()==0)
 		return;
 
 	SetCurrentDirectory(USER_SAVE_PATH);
-	//FILE *fp=fopen("buddies.dat", "wb");
-	//if(fp!=NULL)
-	//{
-	//	while(pBI!=NULL)
-	//	{		
-	//		if(pBI->bRemove==false)
-	//			fwrite((const void*)pBI, sizeof(BUDDY_INFO), 1, fp);
-
-	//		pBI = pBI->pNext;
-	//	}
-	//	fclose(fp);
-	//}
-
 
 	TiXmlDocument doc;  
 	TiXmlElement  *MainVersion;
@@ -166,24 +146,27 @@ void Buddy_Save(BUDDY_INFO *pBI)
 	TiXmlElement * buddies = new TiXmlElement( "Buddies" );  
 	root->LinkEndChild( buddies );  
 	
-	while(pBI!=NULL)
+
+	for(int i=0; i<BuddyList.size();i++)
+	//	while(pBI!=NULL)
 	{		
-		if(pBI->bRemove==false)
+		BUDDY_INFO BI = BuddyList.at(i);
+		if(BI.bRemove==false)
 		{
 			TiXmlElement * buddy = new TiXmlElement( "Buddy" );
 			buddies->LinkEndChild( buddy ); 
 		
 			TiXmlElement *name = new TiXmlElement("Name");
-			name->LinkEndChild(new TiXmlText(pBI->szPlayerName));
+			name->LinkEndChild(new TiXmlText(BI.szPlayerName));
 			buddy->LinkEndChild(name);	
 
 			TiXmlElement *clan = new TiXmlElement("Clan");
-			clan->LinkEndChild(new TiXmlText(pBI->szClan));
+			clan->LinkEndChild(new TiXmlText(BI.szClan));
 			buddy->LinkEndChild(clan);	
 
 			TCHAR szBoolean[5];
 			TiXmlElement *EM = new TiXmlElement("ExactMatch");
-			if(pBI->cMatchExact)
+			if(BI.cMatchExact)
 				strcpy(szBoolean,"1");
 			else
 				strcpy(szBoolean,"0");
@@ -192,7 +175,7 @@ void Buddy_Save(BUDDY_INFO *pBI)
 			buddy->LinkEndChild(EM);	
 
 			TiXmlElement *MONCE = new TiXmlElement("MatchOnColorEncoded");
-			if(pBI->cMatchOnColorEncoded)
+			if(BI.cMatchOnColorEncoded)
 				strcpy(szBoolean,"1");
 			else
 				strcpy(szBoolean,"0");
@@ -200,22 +183,22 @@ void Buddy_Save(BUDDY_INFO *pBI)
 			buddy->LinkEndChild(MONCE);	
 
 			TiXmlElement *LSIP = new TiXmlElement("LastSeenIP");
-			LSIP->LinkEndChild(new TiXmlText(pBI->szLastSeenIPaddress));
+			LSIP->LinkEndChild(new TiXmlText(BI.szLastSeenIPaddress));
 			buddy->LinkEndChild(LSIP);	
 
 			TCHAR num[5];
 			
 			TiXmlElement *LSGI = new TiXmlElement("LastSeenGameIdx");
-			LSGI->LinkEndChild(new TiXmlText(_itoa(pBI->cGAMEINDEX,num,10)));
+			LSGI->LinkEndChild(new TiXmlText(_itoa(BI.cGAMEINDEX,num,10)));
 			buddy->LinkEndChild(LSGI);	
 
 
 			TiXmlElement *LSSN = new TiXmlElement("LastSeenServerName");
-			LSSN->LinkEndChild(new TiXmlText(pBI->szLastSeenServerName));
+			LSSN->LinkEndChild(new TiXmlText(BI.szLastSeenServerName));
 			buddy->LinkEndChild(LSSN);	
 		
 		}
-		pBI = pBI->pNext;
+		
 	}
 
 	doc.SaveFile("Buddies.xml");
@@ -224,32 +207,21 @@ void Buddy_Save(BUDDY_INFO *pBI)
 }
 
 
-void Buddy_Clear(LPBUDDY_INFO pBI)
+void Buddy_Clear()
 {
-	if(pBI==NULL)
-		return;
-	if(pBI->pNext !=NULL)
-		Buddy_Clear(pBI->pNext);
-
-	free(pBI);
-	pBI = NULL;
+	BuddyList.clear();
 }
 
-int Buddy_Load(LPBUDDY_INFO &pBI)
+int Buddy_Load()
 {
-	BUDDY_INFO *pCurrentBI=NULL;
-	BUDDY_INFO *pFirstBI=NULL;
-	BUDDY_INFO *ptempBI=NULL;
-	
-	Buddy_Clear(pBI);
-	pBI = NULL;
 
+	DWORD dwBuddyID = 0;
 	SetCurrentDirectory(USER_SAVE_PATH);
 	
 	TiXmlDocument doc("Buddies.xml");
 	if (!doc.LoadFile()) 
 	{
-		AddLogInfo(ETSV_INFO,"Error loading buddies.xml file or file didn't exsist.");
+		AddLogInfo(GS_LOG_INFO,"Error loading buddies.xml file or file didn't exsist.");
 		return 1;
 	}
 
@@ -291,36 +263,35 @@ int Buddy_Load(LPBUDDY_INFO &pBI)
 
 					if(pBuddy!=NULL)
 					{
+						BUDDY_INFO bi;
+						ZeroMemory(&bi,sizeof(BUDDY_INFO));
 						TiXmlElement* pBud = pBuddy->FirstChild()->ToElement();
-						ptempBI = (BUDDY_INFO*)malloc(sizeof(BUDDY_INFO));	
-						ZeroMemory(ptempBI,sizeof(BUDDY_INFO));
-						
-						ReadCfgStr2(pBud , "Name",ptempBI->szPlayerName,sizeof(ptempBI->szPlayerName));				
-						ReadCfgStr2(pBud , "Clan",ptempBI->szClan,sizeof(ptempBI->szClan));
-						ReadCfgStr2(pBud , "LastSeenServerName",ptempBI->szLastSeenServerName,sizeof(ptempBI->szLastSeenServerName));
-						ReadCfgStr2(pBud , "LastSeenIP",ptempBI->szLastSeenIPaddress,sizeof(ptempBI->szLastSeenIPaddress));
-						ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)ptempBI->cMatchOnColorEncoded);
-						ReadCfgInt2(pBud , "ExactMatch",(int&)ptempBI->cMatchExact);
-						
-						ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)ptempBI->cGAMEINDEX);
-						
-						ptempBI->sIndex = -1;  //reset
 
-						if(pFirstBI==NULL)
-							pFirstBI = pCurrentBI = ptempBI;
-						else
-							pCurrentBI = pCurrentBI->pNext = ptempBI;
+						ReadCfgStr2(pBud , "Name",bi.szPlayerName,sizeof(bi.szPlayerName));				
+						ReadCfgStr2(pBud , "Clan",bi.szClan,sizeof(bi.szClan));
+						ReadCfgStr2(pBud , "LastSeenServerName",bi.szLastSeenServerName,sizeof(bi.szLastSeenServerName));
+						ReadCfgStr2(pBud , "LastSeenIP",bi.szLastSeenIPaddress,sizeof(bi.szLastSeenIPaddress));
+						ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)bi.cMatchOnColorEncoded);
+						ReadCfgInt2(pBud , "ExactMatch",(int&)bi.cMatchExact);						
+						ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)bi.cGAMEINDEX);
+
+						bi.dwID = dwBuddyID++;
+					
+						bi.sIndex = -1;  //reset
+
+						BuddyList.push_back(bi);
+
 					}
 					pBuddy = pBuddy->NextSiblingElement();
 				}
 			}else
 			{
-				AddLogInfo(ETSV_ERROR,"No buddies found.");
+				AddLogInfo(GS_LOG_ERROR,"No buddies found.");
 			}
 		}else
-			AddLogInfo(ETSV_ERROR,"Error loading buddy xml data.");
+			AddLogInfo(GS_LOG_ERROR,"Error loading buddy xml data.");
 
-	pBI = pFirstBI;
+	//pBI = pFirstBI;
 	return 0;
 }
 
@@ -331,19 +302,20 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	if(pServerInfo==NULL)
 		return;
 
-	strcpy_s(pBI->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
-	
-	pBI->pSERVER = NULL; //pServerInfo;
-	pBI->cGAMEINDEX = pServerInfo->cGAMEINDEX;
-	pBI->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
-	
+	vecBI::iterator it = Buddy_FindBuddyInfoByID(pBI->dwID);
+	if(it!=BuddyList.end())
+	{	
+		strcpy_s(it->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
+		it->cGAMEINDEX = pServerInfo->cGAMEINDEX;
+		it->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+	}
 	HWND hwndLV = g_hwndListBuddy;
 
 	LV_FINDINFO lvfi;
 	TCHAR szText[250];
 	memset(&lvfi,0,sizeof(LV_FINDINFO));
 	lvfi.flags = LVFI_PARAM;
-	lvfi.lParam = (LPARAM)pBI;
+	lvfi.lParam = (LPARAM)pBI->dwID;
 	int index = ListView_FindItem(hwndLV , -1,  &lvfi); 
 
 	if(index!=-1)
@@ -365,14 +337,9 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 			item.cchTextMax = (int)strlen(pBI->szServerName);
 		}
 
-	//	colorfilter(pBI->szServerName,szText,99);
-	//	item.pszText = szText;
-	//	item.cchTextMax = strlen(szText);
 		item.iSubItem = 1;
 		item.iImage = Get_GameIcon(pBI->cGAMEINDEX);
 		ListView_SetItem(g_hwndListBuddy,&item);
-
-		//ListView_SetItemText(g_hwndListBuddy,index ,1,szText);
 		sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
 		strcpy(pBI->szIPaddress,szText);
 		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
@@ -382,96 +349,101 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	else
 		strcpy(szText,pBI->szPlayerName);
 
-	//colorfilter(pBI->szPlayerName,szText,99);
 	ShowBalloonTip("A buddy is online!",szText);		
 }
 
 long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 {
-	BUDDY_INFO *pBI = g_pBIStart;
+	//BUDDY_INFO *pBI = g_pBIStart;
 	PLAYERDATA *pStart = pPlayers;
-	if(pBI==NULL)
+
+	if(BuddyList.size()==0)
 		return 0;
+
 	while(pPlayers!=NULL)
 	{
-		pBI = g_pBIStart;
-		while(pBI!=NULL)
+		//&BI = g_&BIStart;
+		
+		//while(&BI!=NULL)
+		for(unsigned int i=0;i<BuddyList.size();i++)
 		{			
+			
+			BUDDY_INFO BI = BuddyList.at(i);
 
-			if(pBI->bRemove)
+			if(BI.bRemove)
 				break;
 			if(pPlayers->szPlayerName==NULL)
 				return 0;
-			if((pBI->cMatchExact) && (pBI->cMatchOnColorEncoded==0))
+			if((BI.cMatchExact) && (BI.cMatchOnColorEncoded==0))
 			{
 				TCHAR cf[100],cf2[100];
 
-				if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
+				if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
 				{
 					colorfilter(pPlayers->szPlayerName,cf,sizeof(cf));
-					colorfilter(pBI->szPlayerName,cf2,sizeof(cf2));
+					colorfilter(BI.szPlayerName,cf2,sizeof(cf2));
 				}else
 				{
 					ZeroMemory(cf,sizeof(cf));
 					ZeroMemory(cf2,sizeof(cf2));
-					strncpy(cf,pBI->szPlayerName,sizeof(cf)-1);
+					strncpy(cf,BI.szPlayerName,sizeof(cf)-1);
 					strncpy(cf2,pPlayers->szPlayerName,sizeof(cf2)-1);
 				}
 
 				if(strcmp(cf,cf2)==0)
 				{
-					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+					Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 					return 1;
 				}
-			}else if((pBI->cMatchExact) && (pBI->cMatchOnColorEncoded))
+			}else if((BI.cMatchExact) && (BI.cMatchOnColorEncoded))
 			{
-			//	dbg_print("%s == %s",pBI->szPlayerName,pPlayers->szPlayerName);
+			//	dbg_print("%s == %s",BI.szPlayerName,pPlayers->szPlayerName);
 				
-				if(strcmp(pBI->szPlayerName,pPlayers->szPlayerName)==0)
+				if(strcmp(BI.szPlayerName,pPlayers->szPlayerName)==0)
 				{
-					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+					Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 					return 1;
 				} 			
-			}else if(pBI->cMatchOnColorEncoded)
+			}else if(BI.cMatchOnColorEncoded)
 			{
-			//	dbg_print("%s == %s",pBI->szPlayerName,pPlayers->szPlayerName);
+			//	dbg_print("%s == %s",BI.szPlayerName,pPlayers->szPlayerName);
 				
-				if(strstr(pBI->szPlayerName,pPlayers->szPlayerName)!=NULL)
+				if(strstr(BI.szPlayerName,pPlayers->szPlayerName)!=NULL)
 				{
-					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+					Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 					return 1;
 				} 			
 			}
 			else
 			{
-				if(_stricmp(pBI->szPlayerName,pPlayers->szPlayerName)==0)
+				if(_stricmp(BI.szPlayerName,pPlayers->szPlayerName)==0)
 				{
-					Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+					Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 					return 1;
 				} else
 				{
 					//Try without color codes
 					TCHAR cf[100],cf2[100];
 
-					if(pServerInfo->cGAMEINDEX!=CSS_SERVERLIST)
+					if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
 					{
 						colorfilter(pPlayers->szPlayerName,cf,sizeof(cf));
-						colorfilter(pBI->szPlayerName,cf2,sizeof(cf2));
+						colorfilter(BI.szPlayerName,cf2,sizeof(cf2));
 					}else
 					{
 						ZeroMemory(cf,sizeof(cf));
 						ZeroMemory(cf2,sizeof(cf2));
-						strncpy(cf,pBI->szPlayerName,sizeof(cf)-1);
+						strncpy(cf,BI.szPlayerName,sizeof(cf)-1);
 						strncpy(cf2,pPlayers->szPlayerName,sizeof(cf2)-1);
 					}
 					if(_stricmp(cf,cf2)==0)
 					{
-						Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+						Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 						return 1;
 					}//Try to find FILTERED name of the current online FILTERED playername
 					else if (strstr(cf,cf2)!=NULL)
 					{
-						Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);
+						Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 						return 1;
 					} else
 					{
@@ -486,13 +458,13 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 
 						if(strstr(copy1,copy2)!=NULL)
 						{
-							Buddy_AdvertiseBuddyIsOnline(pBI, pServerInfo);				
+							Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);				
 							return 1;
 						}
 					}
 				}
 			}
-			pBI = pBI->pNext;
+		
 		}
 		pPlayers = pPlayers->pNext;
 	}
@@ -503,67 +475,57 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 
 
 
-BUDDY_INFO *Buddy_GetBuddyInfoBySelection()
+//returns anything between 0 - 0xFFFFFFFF-1
+//0xFFFFFFFF = unsuccessfull
+DWORD Buddy_GetBuddyIDBySelection()
 {
 	int n = ListView_GetSelectionMark(g_hwndListBuddy);
 	if(n != -1)
 	{
 		LVITEM lvItem;
 		memset(&lvItem,0,sizeof(LVITEM));
-		lvItem.mask =  LVIF_PARAM ;//LVIF_PARAM | LVIF_TEXT | LVIF_IMAGE ;
+		lvItem.mask =  LVIF_PARAM ;
 		lvItem.iItem = n;
 		lvItem.iSubItem = 0;
 		if(ListView_GetItem( g_hwndListBuddy, &lvItem))
 		{
-			return (BUDDY_INFO*)lvItem.lParam;
+			return (DWORD)lvItem.lParam;
 			
 		}
 	}
-	return NULL;
+	return 0xFFFFFFFF;
 }
 
-BUDDY_INFO *Buddy_AddToList(LPBUDDY_INFO &pBI,TCHAR *szName,SERVER_INFO *pServer)
+//verify with iterator with vecBI_it!=BuddyList.end() to check if it exsist
+vecBI::iterator Buddy_FindBuddyInfoByID(DWORD dwID)
 {
-	BUDDY_INFO* pCurrentBI = NULL;
-	BUDDY_INFO* pTempBI = NULL;
-	pTempBI = pBI;
+	vecBI::iterator vecBI_it = find(BuddyList.begin(),BuddyList.end(),(DWORD)dwID);
+	return vecBI_it;
+}
+			
 
-	//Move to the last server and continue from there
-	while(pTempBI!=NULL)
-	{
-		if(pTempBI->pNext!=NULL)
-			pTempBI = pTempBI->pNext;
-		else
-			break;		
-	}
-	
-	pCurrentBI = (BUDDY_INFO*)malloc(sizeof(BUDDY_INFO));
-	ZeroMemory(pCurrentBI,sizeof(BUDDY_INFO));
+BOOL Buddy_AddToList(TCHAR *szName,SERVER_INFO *pServer)
+{
+	BUDDY_INFO BI;
+	ZeroMemory(&BI,sizeof(BUDDY_INFO));
+	strcpy(BI.szPlayerName,szName);
 
-	if(pTempBI!=NULL)
-		pTempBI->pNext = pCurrentBI;
-	else
-		pBI = pTempBI = pCurrentBI; //Ok we had to create a startSI
-
-	strcpy(pCurrentBI->szPlayerName,szName);
-	pCurrentBI->pSERVER = pServer;
-	
 	if(pServer!=NULL)
 	{
 		TCHAR szIP[MAX_IP_LEN];
 		sprintf(szIP,"%s:%d",pServer->szIPaddress,pServer->usPort);
-		strcpy(pCurrentBI->szServerName,pServer->szServerName);
-		strcpy(pCurrentBI->szIPaddress,szIP);
-		strcpy(pCurrentBI->szLastSeenIPaddress,szIP);
-
-		pCurrentBI->cGAMEINDEX = pServer->cGAMEINDEX;
-		pCurrentBI->sIndex = pServer->dwIndex;
-
+		strcpy(BI.szServerName,pServer->szServerName);
+		strcpy(BI.szIPaddress,szIP);
+		strcpy(BI.szLastSeenIPaddress,szIP);
+		BI.cGAMEINDEX = pServer->cGAMEINDEX;
+		BI.sIndex = pServer->dwIndex;
 	}
-	return pBI;
+
+	BuddyList.push_back(BI);
+	return TRUE;
 }
 
-void Buddy_UpdateList(BUDDY_INFO *pBI)
+void Buddy_UpdateList()
 {
 	
 	ListView_DeleteAllItems(g_hwndListBuddy);
@@ -572,61 +534,54 @@ void Buddy_UpdateList(BUDDY_INFO *pBI)
 	ZeroMemory(&item, sizeof(LVITEM));
 	item.mask = LVIF_IMAGE | LVIF_TEXT | LVIF_PARAM ;
 
-	int i=0;
-	while(pBI!=NULL)
+	int n=0;
+	for(unsigned int i=0; i<BuddyList.size();i++)
 	{
-		if(pBI->bRemove == false)
+		BUDDY_INFO BI = BuddyList.at(i);
+
+		if(BI.bRemove == false)
 		{
 			TCHAR cf[100];
 			ZeroMemory(&item, sizeof(LVITEM));
 			item.mask = LVIF_IMAGE | LVIF_TEXT | LVIF_PARAM ;
 			item.iSubItem = 0;
 			item.iImage = 3;
-			item.iItem = i;
+			item.iItem = n;
 			
-			if(GamesInfo[pBI->cGAMEINDEX].colorfilter!=NULL)
+			if(GamesInfo[BI.cGAMEINDEX].colorfilter!=NULL)
 			{					
-				GamesInfo[pBI->cGAMEINDEX].colorfilter(pBI->szPlayerName,cf,99);
+				GamesInfo[BI.cGAMEINDEX].colorfilter(BI.szPlayerName,cf,99);
 				item.pszText = cf;
 				item.cchTextMax = (int)strlen(cf);
 			}
 			else
 			{
-				item.pszText = pBI->szPlayerName;
-				item.cchTextMax = (int)strlen(pBI->szPlayerName);
+				item.pszText = BI.szPlayerName;
+				item.cchTextMax = (int)strlen(BI.szPlayerName);
 
 			}
-
-			//colorfilter(pBI->szPlayerName,cf,99);			
 			
-			item.lParam = (LPARAM)pBI;
+			item.lParam = (LPARAM)BI.dwID;
 			ListView_InsertItem( g_hwndListBuddy,&item);
 			
 			//BUG!!
-			if(strlen(pBI->szServerName)>0)
+			if(strlen(BI.szServerName)>0)
 			{
 				ZeroMemory(&item, sizeof(LVITEM));
 				item.mask = LVIF_IMAGE | LVIF_TEXT; 
-				colorfilter(pBI->szServerName,cf,99);
+				GamesInfo[BI.cGAMEINDEX].colorfilter(BI.szServerName,cf,sizeof(cf));
 				//ListView_SetItemText(g_hwndListBuddy,item.iItem ,1,cf);
-				item.iItem = i;
+				item.iItem = n;
 				item.iSubItem = 1;
 				item.pszText = cf;
 				item.cchTextMax = (int)strlen(cf);
-				item.iImage = Get_GameIcon(pBI->cGAMEINDEX);
-				if(pBI->pSERVER!=NULL)
-				{
-//				
-				}
+				item.iImage = Get_GameIcon(BI.cGAMEINDEX);
+
 				ListView_SetItem(g_hwndListBuddy,&item);
-				ListView_SetItemText(g_hwndListBuddy,item.iItem ,2,pBI->szIPaddress);
+				ListView_SetItemText(g_hwndListBuddy,item.iItem ,2,BI.szIPaddress);
 			}
-			
-			
-			i++;
-		}	
-		pBI = pBI->pNext;
-		
+			n++;
+		}		
 	}
 	ListView_SetColumnWidth(g_hwndListBuddy,0,LVSCW_AUTOSIZE);
 	ListView_SetColumnWidth(g_hwndListBuddy,1,100);
@@ -651,9 +606,13 @@ Remove buddy by listview index.
 ********************************/
 void Buddy_Remove()
 {
-	pEditBuddy = Buddy_GetBuddyInfoBySelection();
-	pEditBuddy->bRemove = true;
-	Buddy_UpdateList(g_pBIStart);
+	
+	vecBI::iterator it = Buddy_FindBuddyInfoByID(Buddy_GetBuddyIDBySelection());
+	if(it!=BuddyList.end())
+		it->bRemove = true;
+//	pEditBuddy = Buddy_GetBuddyInfoBySelection();
+//	pEditBuddy->bRemove = true;
+	Buddy_UpdateList();
 
 }
 
@@ -675,12 +634,15 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
 				case IDM_EDIT_BUDDY:
 					{
 						bEditBuddyname=true;
-						pEditBuddy = Buddy_GetBuddyInfoBySelection();
-						if(pEditBuddy!=NULL)
+						//pEditBuddy = Buddy_GetBuddyInfoBySelection();
+						itBuddyEdit = Buddy_FindBuddyInfoByID(Buddy_GetBuddyIDBySelection());
+						if(itBuddyEdit!=BuddyList.end())
+						{						
 							DialogBox(g_hInst, (LPCTSTR)IDD_DLG_ADD_BUDDY, g_hWnd, (DLGPROC)Buddy_AddBuddyProc);
+						}
 						
 						bEditBuddyname=false;
-						Buddy_UpdateList(g_pBIStart);
+						Buddy_UpdateList();
 					}
 				break;
 				case IDM_REFRESH:				
@@ -745,3 +707,20 @@ LRESULT APIENTRY Buddy_ListViewSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,
     return CallWindowProc((WNDPROC)g_wpOrigListBuddyProc, hwnd, uMsg,  wParam, lParam); 
 } 
 
+bool Buddy_Sort_Name(BUDDY_INFO BIa, BUDDY_INFO BIb)
+{
+	if(AppCFG.bSortBuddyAsc)
+		return (CustomStrCmp(BIa.szPlayerName,BIb.szPlayerName)>0);
+	else
+		return (CustomStrCmp(BIa.szPlayerName,BIb.szPlayerName)<0);
+
+}
+
+bool Buddy_Sort_ServerName(BUDDY_INFO BIa, BUDDY_INFO BIb)
+{
+	if(AppCFG.bSortBuddyAsc)
+		return (CustomStrCmp(BIa.szServerName,BIb.szServerName)>0);
+	else
+		return (CustomStrCmp(BIa.szServerName,BIb.szServerName)<0);
+
+}
