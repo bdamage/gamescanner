@@ -789,6 +789,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_9FEA22D5B23E4F5FB8D018B27887EB04"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_A03FB14E770C4D55AE34DAEDC2210812"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -3997,6 +4003,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_9FEA22D5B23E4F5FB8D018B27887EB04"
+            {
+            "SourcePath" = "8:..\\..\\redist\\lang_kr.xml"
+            "TargetName" = "8:lang_kr.xml"
+            "Tag" = "8:"
+            "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_A03FB14E770C4D55AE34DAEDC2210812"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\flag_gd.gif"
@@ -5947,7 +5973,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
         "ProductCode" = "8:{8162E1B9-ABC6-4F28-B479-8983ACF37FE9}"
-        "PackageCode" = "8:{DB17690E-AC01-44B3-B34A-429A411C6AB6}"
+        "PackageCode" = "8:{77923B7C-E3B2-4328-BC21-CD77EAB270FC}"
         "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"

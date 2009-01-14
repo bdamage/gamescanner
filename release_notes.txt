@@ -9,6 +9,8 @@ version 1.29
 * Updated IP to Country database.
 * Fixed some Quake 3 Arena filterings suggested by Alien.
 * Fixed a bug with Buddy detection code (if none of the exact or color matches was selected for the buddy), this means less server spam should occur in the Buddy list.
+* Added Korean language.
+
 
 version 1.28
 ----------
