@@ -42,8 +42,7 @@
 		<MasterQueryString></MasterQueryString>
 		<MapPreviewPath>etqwmaps</MapPreviewPath>
 		<MasterServers>
-			<MasterServer http="1" >http://etqw-ipgetter.demonware.net/ipgetter/</MasterServer>
-			
+			<MasterServer http="1" >http://etqw-ipgetter.demonware.net/ipgetter/</MasterServer>			
 		</MasterServers>
 		<Detection>
 			<Registry>
@@ -102,8 +101,7 @@
 		<MapPreviewPath>q4maps</MapPreviewPath>
 		<Icon>q4.ico</Icon>
 		<MasterServers>
-			<MasterServer>q4master.idsoftware.com:27650</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">q4master.idsoftware.com:27650</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>28004</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -165,8 +163,7 @@
 		<MapPreviewPath>codmaps</MapPreviewPath>
 		<Icon>cod.ico</Icon>
 		<MasterServers>
-			<MasterServer>codmaster.activision.com:20510</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">codmaster.activision.com:20510</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n\x00</ServerInfoQuery>
@@ -198,8 +195,7 @@
 		<MapPreviewPath>cod2maps</MapPreviewPath>
 		<Icon>callofduty2.ico</Icon>
 		<MasterServers>
-			<MasterServer>cod2master.activision.com:20710</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">cod2master.activision.com:20710</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -261,7 +257,7 @@
 		<MapPreviewPath>warsowmaps</MapPreviewPath>
 		<Icon>warsow.ico</Icon>
 		<MasterServers>
-			<MasterServer protocol="10">dpmaster.deathmask.net:27950</MasterServer>
+			<MasterServer http="0" protocol="10">dpmaster.deathmask.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
@@ -292,11 +288,10 @@
 		<MapPreviewPath>csmaps</MapPreviewPath>
 		<Icon>cstrike.ico</Icon>
 		<MasterServers>
-			<MasterServer>hl1master.steampowered.com:27010</MasterServer>
-			<MasterServer>68.142.72.250:27010</MasterServer>
-			<MasterServer>72.165.61.189:27010</MasterServer>
-			<MasterServer>69.28.151.162:27010</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">hl1master.steampowered.com:27010</MasterServer>
+			<MasterServer http="0">68.142.72.250:27010</MasterServer>
+			<MasterServer http="0">72.165.61.189:27010</MasterServer>
+			<MasterServer http="0">69.28.151.162:27010</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -427,7 +422,7 @@
 		<MapPreviewPath>quake2maps</MapPreviewPath>
 		<Icon>q2.ico</Icon>
 		<MasterServers>			
-			<MasterServer http="1" protocol="" >http://q2servers.com/?raw=1</MasterServer>
+			<MasterServer http="1" protocol="34" >http://q2servers.com/?raw=1</MasterServer>
 			<!--<MasterServer http="0" protocol="34" >masterserver.exhale.de:27900</MasterServer>
 			<MasterServer http="0" protocol="34">netdome.biz:27900</MasterServer>
 			<MasterServer http="0" protocol="34">master.planetgloom.com:27900</MasterServer>-->
@@ -461,8 +456,7 @@
 		<MapPreviewPath>openarenawmaps</MapPreviewPath>
 		<Icon>openarena.ico</Icon>
 		<MasterServers>
-			<MasterServer>dpmaster.deathmask.net:27950</MasterServer>
-			<UseHTTP>0</UseHTTP>
+			<MasterServer http="0">dpmaster.deathmask.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
