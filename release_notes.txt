@@ -1,3 +1,9 @@
+version 1.30
+----------
+* RCON bugs when setting vars is now fixed for Quake 3 baed games.
+* Other minor changes when RCON connecting to other servers without disconnect will auto disconnect old server then conenct to the new server.
+
+
 version 1.29
 ----------
 * Quake World servers now shows with spectators.

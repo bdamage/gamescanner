@@ -194,8 +194,8 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 						char szWinName[40];
 						GetWindowText(GetDlgItem(hDlg, ID_RCON_CONNECT),szWinName,39);
-						if(strcmp(szWinName,"Connect")==0)
-						{
+//						if(strcmp(szWinName,"Connect")==0)
+//						{
 
 							if(g_CurrentSelServer.dwIP==0)
 							{
@@ -211,17 +211,17 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
 								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 
-								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 
 								EnableWindow( GetDlgItem(hDlg, IDOK),TRUE);  //Join button
 								SetWindowText(GetDlgItem(hDlg, ID_RCON_CONNECT),"Disconnect");
 							}
-						} else
+/*							}
+					else
 						{
 							EnableWindow( GetDlgItem(hDlg, IDOK),FALSE); 
 							SetWindowText(GetDlgItem(hDlg, ID_RCON_CONNECT),"Connect");
 							RCON_Disconnect();
 						}
-
+*/
 					break;
 					}
 				case IDOK:
@@ -298,6 +298,9 @@ DWORD RCON_Connect(SERVER_INFO *pServer)
 		return 1;
 	}
 
+	if(RCON_ConnectSocket!=NULL)
+		RCON_Disconnect();
+
 	RCON_ConnectSocket = getsockudp(pServer->szIPaddress ,(unsigned short)pServer->usPort); 
  
 	if(INVALID_SOCKET==RCON_ConnectSocket)
@@ -320,7 +323,7 @@ DWORD RCON_WriteToConsole(int index, const char *szMessage)
 {
 	if(szMessage==NULL)
 	{
-		SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) index, (LPARAM) "Unknown command");
+		//SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) index, (LPARAM) "");
 		return 1;
 	}
 
@@ -431,8 +434,9 @@ DWORD RCON_SendCmd(char *szPassword,char *szCmd)
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //Tested on ET and Cod4 but should work any Quake 3 servers
 	
 	//AddLogInfo("Sending :%s",sendbuf);
+	int len = strlen(sendbuf)+1;
 
-	if(send(RCON_ConnectSocket, sendbuf, (int)strlen(sendbuf), 0)==SOCKET_ERROR) 
+	if(send(RCON_ConnectSocket, sendbuf, (int)len, 0)==SOCKET_ERROR) 
 	{
 		RCON_Disconnect();
 		return 2;
