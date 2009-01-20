@@ -2,7 +2,9 @@ version 1.30
 ----------
 * RCON bugs when setting vars is now fixed for Quake 3 baed games.
 * Other minor changes when RCON connecting to other servers without disconnect will auto disconnect old server then conenct to the new server.
-
+* Added a new feature to direct edit Rules value from rules list.
+* Copy rule name and value to clipboard is now possible.
+* Web protocol registration added back into Game Scanner, this is now as an optional settings.
 
 version 1.29
 ----------

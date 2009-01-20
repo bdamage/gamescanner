@@ -7,7 +7,7 @@
 void Load_WindowSizes();
 void XML_ReadWindow(TiXmlElement * pNode, _WINDOW_CONTAINER *wc) ;
 void XML_WriteWindow(TiXmlElement * parent, char *szParentName, _WINDOW_CONTAINER *wc) ;
-
+LRESULT CALLBACK EnumerateGames_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 void UpdateTabControl();
@@ -125,6 +125,7 @@ DWORD	WINAPI  MainDlgThread(LPVOID lpParam);
 void Initialize_WindowSizes();
 void Update_WindowSizes(RECT *pRC=NULL);
 
+LRESULT APIENTRY ListView_Rules_SubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY ListViewPlayerSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY ComboCountriesSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY ComboListCountriesSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);

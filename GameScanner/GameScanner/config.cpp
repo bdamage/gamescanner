@@ -57,7 +57,7 @@ void CFG_Apply_General(HWND hDlg)
 	else
 		AppCFGtemp.bCloseOnConnect=false;
 
-
+	AppCFGtemp.bRegisterWebProtocols = IsDlgButtonChecked(hDlg,IDC_CHECK_REG_WEB_PROTOCOLS);
 
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK1)==BST_CHECKED)
 		AppCFGtemp.bAutostart=true;
@@ -266,7 +266,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					GamesInfoCFG[i].bUseHTTPServerList[0] = GamesInfo[i].bUseHTTPServerList[0];
 					GamesInfoCFG[i].dwMasterServerPORT = GamesInfo[i].dwMasterServerPORT;
 					strcpy(GamesInfoCFG[i].szGAME_NAME, GamesInfo[i].szGAME_NAME);
-					strcpy(GamesInfoCFG[i].szMasterServerIP[0], GamesInfo[i].szMasterServerIP[0]);
+					strcpy(GamesInfoCFG[i].szMasterServerIP[0], GamesInfo[i].szMasterServerIP[0]);					
 					GamesInfoCFG[i].vGAME_INST = GamesInfo[i].vGAME_INST;								
 			}
 			memcpy(&AppCFGtemp,&AppCFG,sizeof(APP_SETTINGS_NEW));
@@ -324,7 +324,6 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					
 					if(AppCFGtemp.bUse_minimize)
 					{	
-						//removed since 2.2.0 beta added back since 3.0.1
 						UnregisterHotKey(NULL, HOTKEY_ID);
 						if (!RegisterHotKey(NULL, HOTKEY_ID, AppCFGtemp.dwMinimizeMODKey ,AppCFGtemp.cMinimizeKey))
 						{
@@ -786,7 +785,9 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				CheckDlgButton(hDlg,IDC_CHECK_CONNECT_CLOSE,AppCFGtemp.bCloseOnConnect);
 				CheckDlgButton(hDlg,IDC_CHECK1,AppCFGtemp.bAutostart);
 				CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,AppCFGtemp.bUseShortCountry);
+				CheckDlgButton(hDlg,IDC_CHECK_REG_WEB_PROTOCOLS,AppCFGtemp.bRegisterWebProtocols);
 				
+
 				LVCOLUMN lvColumn;
 				//initialize the columns
 				lvColumn.mask = LVCF_FMT | LVCF_WIDTH | LVCF_TEXT | LVCF_SUBITEM ;
@@ -830,6 +831,7 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			sprintf(szText,"%d",AppCFGtemp.dwRetries);
 			SetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szText);
 
+		
 
 			SetDlgItemText(hDlg,IDC_EDIT_MIRC,g_sMIRCoutput.c_str());
 		
@@ -878,6 +880,9 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_CHECKED);
 				else
 					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_UNCHECKED);
+
+				sprintf(szText,"Example web protocol: %s://10.0.0.1:%d",GamesInfo[gameID].szWebProtocolName,GamesInfo[gameID].dwDefaultPort);
+				SetDlgItemText(hDlg,IDC_STATIC_WEB_PROTOCOL,szText);
 
 
 				CFG_Enumerate_installations(hDlg,gameID);

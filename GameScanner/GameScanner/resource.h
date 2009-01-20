@@ -58,6 +58,7 @@
 #define IDD_CFG4                        205
 #define IDD_CFG5                        206
 #define IDD_DLG_MAXMIN_PLY              207
+#define ID_DLG_ENUMERATE_GAMES          207
 #define IDD_CFG3_ET2                    208
 #define IDD_CFG6                        208
 #define IDD_CFG_NET                     208
@@ -137,6 +138,7 @@
 #define IDC_COMBO_MOD                   1017
 #define IDC_COMBO1                      1017
 #define IDC_COMBO_PING                  1017
+#define IDC_COMBO_GAMES                 1017
 #define IDC_EDIT_KEY                    1018
 #define IDC_CHECK_FILTER_FAVORITES      1019
 #define IDC_EDIT_SOCK_TIMEOUT_S         1020
@@ -218,6 +220,7 @@
 #define IDD_DIALOG_STATS                1077
 #define IDD_CFG3_NEW                    1078
 #define IDD_CFG_MIRC                    1079
+#define IDD_DLG_MINMAX_PLY              1080
 #define IDI_ICON_STATS                  1082
 #define IDI_ICON_PAINT                  1083
 #define IDI_ICON_LOGGER                 1084
@@ -235,6 +238,8 @@
 #define IDC_CHECK_USE_HTTP              1105
 #define IDC_COMBO_LANG                  1106
 #define IDI_ICON_MIRC                   1107
+#define IDI_ICON4                       1109
+#define IDI_ICON_NEW_GS_LOGO            1109
 #define IDC_STATIC_BUDDY_NAME           1200
 #define IDC_TAB1                        1201
 #define IDC_STATIC_EXE                  1202
@@ -246,6 +251,10 @@
 #define IDC_STATIC_SLEEP_VAL            1208
 #define IDC_STATIC_ABC123               1209
 #define IDC_CHECK_CONNECT_CLOSE         1210
+#define IDC_STATIC_EDIT_LABEL           1211
+#define IDC_STATIC_WEB_PROTOCOL         1212
+#define IDC_CHECK_REG_WEB_PROTOCOLS     1213
+#define IDC_STATIC_LABEL                1214
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -256,10 +265,14 @@
 #define ID_FOO2_SERVER3                 32776
 #define ID_BUDDY_REMOVESELECTEDBUDDY    32776
 #define ID_FOO2_SERVER4                 32777
+#define ID_FILE_EXPORT                  32777
 #define IDM_DELETE                      32778
+#define ID_EXPORT_ALL                   32778
 #define IDM_CONNECT                     32779
+#define ID_EXPORT_FAVORITES             32779
 #define ID_FILE_OPEN                    32780
 #define ID_TT_SERVER3                   32780
+#define ID_EXPORT_ALL_SERVERS           32780
 #define ID_OPTIONS_BROWSESERVERS        32781
 #define ID_TT_SERVER4                   32781
 #define ID_HELP_GOTOSPLATTERLADDER      32782
@@ -322,6 +335,8 @@
 #define IDM_FONT_COLOR                  32902
 #define IDM_COPY_VERSION                32903
 #define IDM_COPY_MODNAME                32904
+#define IDM_EDIT_RULE                   32905
+#define IDM_COPY_RULE                   32906
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 
@@ -330,9 +345,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1109
-#define _APS_NEXT_COMMAND_VALUE         32777
-#define _APS_NEXT_CONTROL_VALUE         1211
+#define _APS_NEXT_RESOURCE_VALUE        1110
+#define _APS_NEXT_COMMAND_VALUE         32781
+#define _APS_NEXT_CONTROL_VALUE         1215
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

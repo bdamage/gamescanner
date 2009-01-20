@@ -33,7 +33,7 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_GAMESCANNER         ICON                    "GameScanner.ico"
+IDI_GAMESCANNER         ICON                    "res\\icon4.ico"
 IDI_ICON_PB             ICON                    "res\\pb.ico"
 IDI_ICON_FAVORITES      ICON                    "res\\favorites.ico"
 IDI_ICON_BUDDY          ICON                    "res\\user.ico"
@@ -68,6 +68,11 @@ BEGIN
     BEGIN
         MENUITEM "Settings",                    IDM_SETTINGS
         MENUITEM "Delete ALL  servers",         ID_SERVERLIST_PURGEPUBLICSERVLIST
+        MENUITEM SEPARATOR
+        POPUP "Export"
+        BEGIN
+            MENUITEM "Servers",                     ID_EXPORT_ALL_SERVERS
+        END
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       IDM_EXIT
     END
@@ -157,11 +162,13 @@ IDD_CFG1 DIALOGEX 0, 0, 355, 205
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    CONTROL         "Auto Start on boot up.",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,17,191,12
-    CONTROL         "Use short country name.",IDC_CHECK_SHORTNAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,32,191,12
+    CONTROL         "Auto Start on boot up.",IDC_CHECK1,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,16,191,12
+    CONTROL         "Use short country name.",IDC_CHECK_SHORTNAME,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,31,191,12
     GROUPBOX        "Language",IDC_STATIC,9,104,338,41
     COMBOBOX        IDC_COMBO_LANG,22,120,178,15,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
     CONTROL         "Close on connect",IDC_CHECK_CONNECT_CLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,186,12
+    CONTROL         "Reigster web protocls to Game Scanner on start up.",IDC_CHECK_REG_WEB_PROTOCOLS,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,64,337,10
 END
 
 IDD_CFG2 DIALOGEX 0, 0, 360, 186
@@ -227,18 +234,18 @@ BEGIN
     LTEXT           "Fastest possible scanning (highest CPU usage).\n\n\n\nNormal scanning (mid CPU usage).\n\n\n\n\nSlow scanning (less CPU usage).",IDC_STATIC,164,27,155,87
 END
 
-IDD_ABOUTBOX DIALOGEX 22, 17, 160, 223
+IDD_ABOUTBOX DIALOGEX 22, 17, 259, 237
 STYLE DS_SETFONT | DS_MODALFRAME | WS_CAPTION | WS_SYSMENU
 CAPTION "About"
 FONT 10, "Verdana", 400, 0, 0x0
 BEGIN
-    CTEXT           "Game Scanner \nCopyright (C) 2008 Kjell 'bDamage' Lloyd\n\nThanks goes to Cloud & JBRAA\n\n",IDC_STATIC,7,7,152,36,SS_NOPREFIX
-    DEFPUSHBUTTON   "OK",IDOK,57,198,46,19,WS_GROUP
-    CONTROL         "<a id=""idHomePage"" href=""http://etsv.cludden.se"">Website</a>",IDC_CUSTOM1,
-                    "SysLink",LWS_IGNORERETURN | LWS_USEVISUALSTYLE,55,74,51,12
-    LTEXT           "This software uses the FreeImage open source image library. See http://freeimage.sourceforge.net for details.\nFreeImage is used under the (GNU GPL or FIPL), version (license version). ",IDC_STATIC,7,94,150,40
-    LTEXT           "hashlib++ - a simple hash library for C++\nCopyright (c) 2007 Benjamin Grüdelbach  ",IDC_STATIC,7,148,151,20
-    LTEXT           "TinyXML",IDC_STATIC,7,175,149,13
+    CTEXT           "Game Scanner \nCopyright (C) 2006-2009 Kjell 'bDamage' Lloyd\n\nThanks goes to Cloud & JBRAA\n\n",IDC_STATIC,7,7,241,36,SS_NOPREFIX
+    DEFPUSHBUTTON   "OK",IDOK,100,212,46,19,WS_GROUP
+    CONTROL         "<a id=""idHomePage"" href=""http://www.bdamage.se"">Game Scanner Official Website</a>",IDC_CUSTOM1,
+                    "SysLink",LWS_IGNORERETURN | LWS_USEVISUALSTYLE,67,55,107,12
+    LTEXT           "This software uses the FreeImage open source image library. See http://freeimage.sourceforge.net for details.\nFreeImage is used under the (GNU GPL or FIPL), version (license version). ",IDC_STATIC,7,94,241,40
+    LTEXT           "hashlib++ - a simple hash library for C++\nCopyright (c) 2007 Benjamin Grüdelbach  ",IDC_STATIC,7,148,241,20
+    LTEXT           "TinyXML www.sourceforge.net/projects/tinyxml\nOriginal code (2.0 and earlier )copyright (c) 2000-2006 Lee Thomason",IDC_STATIC,7,175,241,28
 END
 
 IDD_ADD_SERVER DIALOGEX 0, 0, 160, 67
@@ -312,16 +319,16 @@ BEGIN
     CONTROL         "",IDC_PROGRESS1,"msctls_progress32",WS_BORDER,7,39,174,12
 END
 
-IDD_DLG_MAXMIN_PLY DIALOGEX 0, 0, 186, 63
+ID_DLG_ENUMERATE_GAMES DIALOGEX 0, 0, 212, 166
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
-CAPTION "Minimum & Maximum Players"
+CAPTION "Game Scanner Export and Import title"
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    DEFPUSHBUTTON   "OK",IDOK,25,42,50,14
-    PUSHBUTTON      "Cancel",IDCANCEL,99,42,50,14
-    EDITTEXT        IDC_EDIT_MINMAX,35,22,112,14,ES_AUTOHSCROLL | ES_NUMBER
-    LTEXT           "Please enter a number (0 = ignore):",IDC_STATIC,7,7,172,8
+    DEFPUSHBUTTON   "Next",IDOK,113,134,56,21
+    PUSHBUTTON      "Cancel",IDCANCEL,35,134,55,21
+    LTEXT           "Export and import label",IDC_STATIC_LABEL,4,6,200,33
+    COMBOBOX        IDC_COMBO_GAMES,4,63,200,16,CBS_DROPDOWN | CBS_SORT | WS_VSCROLL | WS_TABSTOP
 END
 
 IDD_CFG3_NEW DIALOGEX 0, 0, 464, 249
@@ -332,12 +339,13 @@ BEGIN
     EDITTEXT        IDC_EDIT_MASTER_SERVER,80,191,361,14,ES_AUTOHSCROLL | ES_READONLY
     LTEXT           "Master server",-1,30,193,48,8
     CONTROL         "Activate game",IDC_CHECK_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,15,64,10
-    CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,175,245,10
+    CONTROL         "Use HTTP server list.",IDC_CHECK_USE_HTTP,"Button",BS_AUTOCHECKBOX | WS_DISABLED | WS_TABSTOP,17,175,245,10
     CONTROL         "",IDC_LIST_CFG_EXES,"SysListView32",LVS_REPORT | LVS_ALIGNLEFT | WS_BORDER | WS_TABSTOP,10,34,439,67
     PUSHBUTTON      "Edit installation settings",IDC_BUTTON_EDIT_INSTALL,159,108,135,21
     PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,19,108,129,21
     PUSHBUTTON      "Delete installation settings",IDC_BUTTON_DELETE_INSTALL,304,108,140,21
     GROUPBOX        "Game path for Enemy Territory",IDC_STATIC_GAME_NAME,4,5,455,131
+    LTEXT           "Static",IDC_STATIC_WEB_PROTOCOL,31,216,172,11
 END
 
 IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 445, 191
@@ -373,6 +381,18 @@ BEGIN
     GROUPBOX        "mIRC",-1,5,13,342,146
     EDITTEXT        IDC_EDIT_MIRC,16,52,322,15,ES_AUTOHSCROLL
     LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",-1,20,76,317,72
+END
+
+IDD_DLG_MINMAX_PLY DIALOGEX 0, 0, 186, 63
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+EXSTYLE WS_EX_TOOLWINDOW
+CAPTION "Minimum & Maximum Players"
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,25,42,50,14
+    PUSHBUTTON      "Cancel",IDCANCEL,99,42,50,14
+    EDITTEXT        IDC_EDIT_MINMAX,35,22,112,14,ES_AUTOHSCROLL | ES_NUMBER
+    LTEXT           "Please enter a number (0 = ignore):",IDC_STATIC_EDIT_LABEL,7,7,172,8
 END
 
 
@@ -433,9 +453,18 @@ BEGIN
     IDD_ABOUTBOX, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        VERTGUIDE, 156
+        RIGHTMARGIN, 248
+        VERTGUIDE, 119
         TOPMARGIN, 7
-        BOTTOMMARGIN, 217
+        BOTTOMMARGIN, 231
+    END
+
+    ID_DLG_ENUMERATE_GAMES, DIALOG
+    BEGIN
+        LEFTMARGIN, 4
+        RIGHTMARGIN, 204
+        TOPMARGIN, 6
+        BOTTOMMARGIN, 155
     END
 
     IDD_CFG3_NEW, DIALOG
@@ -554,6 +583,7 @@ IDI_ICON_FONT           ICON                    "res\\ico00003.ico"
 IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_MIRC           ICON                    "res\\mirc.ico"
+IDI_ICON_NEW_GS_LOGO    ICON                    "res\\icon4.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
