@@ -112,7 +112,7 @@ port_Step:
 
 	iReq.req_string[0] = 0xFE;
 	iReq.req_string[1] = 0xFD;
-	iReq.req_string[2] = 0x09;
+/	iReq.req_string[2] = 0x09;
 	
 retry:
 
@@ -176,10 +176,10 @@ retry:
 */
 		DWORD chal = challenge;
 
-		sr.bChallenge[0] = (challenge >> 24);
-		sr.bChallenge[1] = (challenge >> 16);
-		sr.bChallenge[2] = (challenge >> 8);
-		sr.bChallenge[3] = (challenge >> 0);
+		sr.bChallenge[0] = (BYTE)(challenge >> 24);
+		sr.bChallenge[1] = (BYTE)(challenge >> 16);
+		sr.bChallenge[2] = (BYTE)(challenge >> 8);
+		sr.bChallenge[3] = (BYTE)(challenge >> 0);
 
 		dbg_print("2b. Response new final converted challenge %X%X%X%X",sr.bChallenge[0],sr.bChallenge[2],sr.bChallenge[2],sr.bChallenge[3]);
 		dbg_print("2c. Response new converted challenge %X",challenge);

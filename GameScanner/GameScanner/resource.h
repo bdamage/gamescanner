@@ -275,7 +275,9 @@
 #define ID_EXPORT_ALL_SERVERS           32780
 #define ID_OPTIONS_BROWSESERVERS        32781
 #define ID_TT_SERVER4                   32781
+#define ID_FILE_IMPORT                  32781
 #define ID_HELP_GOTOSPLATTERLADDER      32782
+#define ID_IMPORT_SERVERS               32782
 #define ID_FILE_LOADSERVERLIST          32783
 #define ID_FILE_SAVESERVERLIST          32784
 #define IDM_PRIVPASS                    32784
@@ -346,7 +348,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1110
-#define _APS_NEXT_COMMAND_VALUE         32781
+#define _APS_NEXT_COMMAND_VALUE         32783
 #define _APS_NEXT_CONTROL_VALUE         1215
 #define _APS_NEXT_SYMED_VALUE           110
 #endif

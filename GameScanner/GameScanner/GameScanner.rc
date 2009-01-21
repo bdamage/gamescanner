@@ -73,6 +73,10 @@ BEGIN
         BEGIN
             MENUITEM "Servers",                     ID_EXPORT_ALL_SERVERS
         END
+        POPUP "Import"
+        BEGIN
+            MENUITEM "Servers",                     ID_IMPORT_SERVERS
+        END
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       IDM_EXIT
     END
