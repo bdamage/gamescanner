@@ -112,7 +112,7 @@ port_Step:
 
 	iReq.req_string[0] = 0xFE;
 	iReq.req_string[1] = 0xFD;
-/	iReq.req_string[2] = 0x09;
+	iReq.req_string[2] = 0x09;
 	
 retry:
 

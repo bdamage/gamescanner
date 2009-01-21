@@ -5,6 +5,8 @@ version 1.30
 * Added a new feature to direct edit Rules value from rules list.
 * Copy rule name and value to clipboard is now possible.
 * Web protocol registration added back into Game Scanner, this is now as an optional settings.
+* Import and end export of serverlist added.
+
 
 version 1.29
 ----------
