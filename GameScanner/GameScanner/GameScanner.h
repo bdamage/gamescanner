@@ -3,7 +3,7 @@
 #include "resource.h"
 
 #include "..\..\tinyxml\tinyxml.h"
-
+DWORD WINAPI StopScanningThread(LPVOID pvoid );
 void Load_WindowSizes();
 void XML_ReadWindow(TiXmlElement * pNode, _WINDOW_CONTAINER *wc) ;
 void XML_WriteWindow(TiXmlElement * parent, char *szParentName, _WINDOW_CONTAINER *wc) ;

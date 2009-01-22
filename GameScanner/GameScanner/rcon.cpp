@@ -52,8 +52,8 @@ LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 
 				char szCmd[128],sztempCmd[128];
 				GetDlgItemText(g_hRCONDlg,IDC_EDIT_CMD,szCmd,sizeof(szCmd)-1);
-				sprintf_s(sztempCmd,sizeof(sztempCmd),"%s\0x09",szCmd);
-				RCON_SendCmd(g_RCONServer->szRCONPASS,sztempCmd);
+				sprintf_s(sztempCmd,sizeof(sztempCmd),"%s\t",szCmd);
+				RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,sztempCmd);
 				return TRUE;
 			}
 			if(wParam==VK_RETURN)
@@ -72,7 +72,7 @@ LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 					if(dwRCONLOGStepper>MAX_BACKLOG)
 						dwRCONLOGStepper=0;
 
-					RCON_SendCmd(g_RCONServer->szRCONPASS,szCmd);
+					RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,szCmd);
 				}
 				return TRUE;
 
@@ -145,7 +145,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 			GetClientRect(hDlg,&rc);
 			GetClientRect(g_hwndRCONCmd,&item);
 			MoveWindow(g_hwndRCONOut,0,0,rc.right,rc.bottom-50,TRUE);
-			int x = (int)(rc.right * 0.6);
+			int x = (int)(rc.right * 0.4);
 			MoveWindow(g_hwndRCONCmd,0,rc.bottom-50,x,20,TRUE);
 
 			GetClientRect(GetDlgItem(hDlg, IDC_STATIC_RCON_INFO),&item);
@@ -210,7 +210,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 								GamesInfo[g_RCONServer->cGAMEINDEX].vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
-								RCON_SendCmd(g_RCONServer->szRCONPASS,"status"); 
+								RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,"status"); 
 								EnableWindow( GetDlgItem(hDlg, IDOK),TRUE);  //Join button
 								SetWindowText(GetDlgItem(hDlg, ID_RCON_CONNECT),"Disconnect");
 							}
@@ -235,7 +235,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 					SetDlgItemText(hDlg,IDC_EDIT_CMD,"");
 					if((szCmd!=NULL) && (strlen(szCmd)>0))
-						RCON_SendCmd(g_RCONServer->szRCONPASS,szCmd);
+						RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,szCmd);
 					return TRUE;
 				}	
 				
@@ -329,8 +329,9 @@ DWORD RCON_WriteToConsole(int index, const char *szMessage)
 
 	if(IsDlgButtonChecked(g_hRCONDlg,IDC_CHECK_COLFILTER)==BST_CHECKED)	
 	{
-		char* colorfiltered = (char*) calloc(1,strlen(szMessage));
-		SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) index, (LPARAM) colorfilter(szMessage,colorfiltered,sizeof(colorfiltered)));
+		char* colorfiltered = (char*) calloc(1,strlen(szMessage)+1);
+
+		SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) index, (LPARAM) colorfilter(szMessage,colorfiltered,sizeof(colorfiltered)-1));
 		free(colorfiltered);
 	}
 	else
@@ -412,7 +413,7 @@ DWORD RCON_Read()
 
 
 
-DWORD RCON_SendCmd(char *szPassword,char *szCmd)
+DWORD RCON_SendCmd(SERVER_INFO* pSI,char *szPassword,char *szCmd)
 {
 	size_t packetlen=0;
 	char sendbuf[512];
@@ -425,10 +426,10 @@ DWORD RCON_SendCmd(char *szPassword,char *szCmd)
 
 	//net_clientRemoteConsolePassword
 
-	if(g_RCONServer==NULL)
+	if(pSI==NULL)
 		return 2;
 
-	if(g_RCONServer->cGAMEINDEX==1)
+	if(pSI->cGAMEINDEX==1)
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFFrcon\xFF%s\xFF%s\xFF",szPassword,szCmd); //ETQW (might work for Doom 3)
 	else
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //Tested on ET and Cod4 but should work any Quake 3 servers

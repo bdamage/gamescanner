@@ -6,6 +6,7 @@ version 1.30
 * Copy rule name and value to clipboard is now possible.
 * Web protocol registration added back into Game Scanner, this is now as an optional settings.
 * Import and end export of serverlist added.
+* Open Arena now updates player info.
 
 
 version 1.29

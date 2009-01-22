@@ -57,8 +57,6 @@
 #define IDI_ICON_SLIDER                 204
 #define IDD_CFG4                        205
 #define IDD_CFG5                        206
-#define IDD_DLG_MAXMIN_PLY              207
-#define ID_DLG_ENUMERATE_GAMES          207
 #define IDD_CFG3_ET2                    208
 #define IDD_CFG6                        208
 #define IDD_CFG_NET                     208
@@ -221,6 +219,8 @@
 #define IDD_CFG3_NEW                    1078
 #define IDD_CFG_MIRC                    1079
 #define IDD_DLG_MINMAX_PLY              1080
+#define IDD_DLG_MINMAX_PLY_             1080
+#define IDD_DLG_SET_VALUE               1080
 #define IDI_ICON_STATS                  1082
 #define IDI_ICON_PAINT                  1083
 #define IDI_ICON_LOGGER                 1084
@@ -339,6 +339,7 @@
 #define IDM_COPY_MODNAME                32904
 #define IDM_EDIT_RULE                   32905
 #define IDM_COPY_RULE                   32906
+#define ID_DLG_ENUMERATE_GAMES          32907
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 

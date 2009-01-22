@@ -1,5 +1,5 @@
 <Games>
-	<Version>1.0</Version>
+	<Version>1.1</Version>
 	<Game>
 		<GameIndex>0</GameIndex>
 		<Name>Wolfenstein - Enemy Territory</Name>
@@ -452,6 +452,7 @@
 		<ShortName>Open Arena</ShortName>
 		<Filename>openarena.servers</Filename>
 		<NetEngine>Q3</NetEngine>
+		<ColorEncoding>Q3</ColorEncoding>
 		<WebProtocol>openarena</WebProtocol>
 		<MapPreviewPath>openarenawmaps</MapPreviewPath>
 		<Icon>openarena.ico</Icon>
@@ -459,7 +460,7 @@
 			<MasterServer http="0">dpmaster.deathmask.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
-		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus 123456789012</ServerInfoQuery>
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 71 openarena empty full</MasterQueryString>
 		<Detection>
 			<Registry>

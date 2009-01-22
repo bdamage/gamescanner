@@ -387,7 +387,7 @@ BEGIN
     LTEXT           "%SERVERNAME% - shows server name.\n%GAMENAME% - shows game name.\n%IP% - shows IP and port number.\n%PRIVATE% - shows if the server is public or private.",-1,20,76,317,72
 END
 
-IDD_DLG_MINMAX_PLY DIALOGEX 0, 0, 186, 63
+IDD_DLG_SET_VALUE DIALOGEX 0, 0, 186, 63
 STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
 EXSTYLE WS_EX_TOOLWINDOW
 CAPTION "Minimum & Maximum Players"
