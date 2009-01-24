@@ -84,13 +84,12 @@ net.jpg??
 
 
 
+Typical user save path are following 
 
-Typical user save path under Vista:
-
+for Vista:
 C:\Users\UserName\AppData\Roaming\GameScanner
 
-Under Windows XP:
-
+for Windows XP:
 C:\Documents and Settings\USERNAME\Application Data\GameScanner
 
 
