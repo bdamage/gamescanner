@@ -85,12 +85,9 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*Callback_UpdatePlayerListView)
 
 	DWORD dwRetries=0;
 
-
-
 	int idxPortStep=0;
 	unsigned short port = pSI->usQueryPort;//pSI->usPort;//6500;
 port_Step:
-	
 
 	pSocket =  getsockudp(pSI->szIPaddress ,port); 
  
@@ -163,14 +160,7 @@ port_Step:
 		dbg_print("2a. request new timestamp %d",sr.dwSequence);
 
 		long challenge = atol((const char*)&fr->data);
-		
 
-	/*	if(challenge<0)
-		{
-			dbg_print("- negative -");
-			challenge = challenge - 4294967296;
-		}
-*/
 		DWORD chal = challenge;
 
 		sr.bChallenge[0] = (BYTE)(challenge >> 24);
