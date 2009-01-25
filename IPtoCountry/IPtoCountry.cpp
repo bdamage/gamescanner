@@ -311,7 +311,7 @@ char * fnIPtoCountry(DWORD IP, char *szShortName)
 		return szShortName;	
 	} else
 	{
-		strcpy(szShortName,"ZZ");
+		strcpy(szShortName,"zz");
 	}
 	return szShortName;
 }

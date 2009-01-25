@@ -4,6 +4,12 @@ version 1.31
 * Optimized code and memory usage.
 * Updated IP to Country database
 * Updated treeview cfg so UT can be activated and visible.
+* Fixed export code to work as expected, GS supports now two output format:
+Generic plain text:
+ip:port 
+GS own format (nice for backup purpose):
+gameIndex,ipt:port,servername,password,RCONpassword,favoriteflag
+
 
 version 1.30
 ----------
