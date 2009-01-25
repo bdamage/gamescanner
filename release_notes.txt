@@ -1,3 +1,8 @@
+version 1.31
+----------
+* New complete country flag's  icons
+* Optimized code and memory usage
+
 version 1.30
 ----------
 * RCON bugs when setting vars is now fixed for Quake 3 based games.
