@@ -6,7 +6,7 @@ Todo
 3) Add support for Net Quake.
 4) Support for UNICODE / UTF-8.
 5) Gzip library to unpack ip to country database.
-
+6) Make function AddLogInfo thread safe.
 
 
 

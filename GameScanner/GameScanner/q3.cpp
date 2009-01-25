@@ -910,7 +910,7 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 	char *pointer=NULL;
 	
 
-	if(strncmp((char*)&Q3SI->leadData,"statusResponse",14)!=0)
+	if(strncmp((char*)&Q3SI->leadData,"statusResponse",14)!=0) //start detecting most common first
 	{
 		if(strncmp((char*)&WSI->leadData,"infoResponse",12)!=0)
 		{
@@ -1003,9 +1003,6 @@ char *Q3_ParseServerRules(SERVER_RULES* &pLinkedListStart,char *p,DWORD packetle
 			break;
 
 	}
-
-//	pointer++; //move to playerlist data (Q3)
-
 	return pointer;
 }
 

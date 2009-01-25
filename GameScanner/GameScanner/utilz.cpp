@@ -110,11 +110,9 @@ BOOL CenterWindow(HWND hwnd)
 	return TRUE;
 }
 
+//this is used by the minimzer code
 void ClickMouse() 
 {
- //mouse_event(          MOUSEEVENTF_LEFTDOWN,0,0,0,0);
- //mouse_event(          MOUSEEVENTF_LEFTUP,0,0,0,0);
-
   INPUT pInputs[1];
   MOUSEINPUT pMouseInput;
   
@@ -129,58 +127,10 @@ void ClickMouse()
   pMouseInput.dwFlags = MOUSEEVENTF_LEFTUP;
   pInputs[0].mi = pMouseInput;
   SendInput(1, pInputs, sizeof(INPUT));
-
-
 }
 
 
-bool IsInstalled(char *version)
-{
-	bool installed=false;
-	LONG ret;
-	char dump[10];
-	HKEY hkey;
-	DWORD dwDisposition;
-	ret = RegCreateKeyEx(HKEY_LOCAL_MACHINE , "SOFTWARE\\GameScanner\\", 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
-	DWORD cbData = sizeof(dump);
-	memset(dump,0,sizeof(dump));
-	ret = RegQueryValueEx( hkey,"version",NULL,NULL,(BYTE*)dump,&cbData);
-	
-	if(strcmp(dump,version)==0)
-		installed = true;
-	else
-	{
-		ret = RegSetValueEx( hkey, "version", 0, REG_SZ, (const unsigned char*)version,(DWORD) strlen(version)); 
-	}
-	RegCloseKey( hkey ); 
-	return installed;
-}
-void GetInstallPath(char *path)
-{
-	LONG ret;
-	HKEY hkey;
-	DWORD dwDisposition;
-	DWORD cbData;
-	ret = RegCreateKeyEx(HKEY_LOCAL_MACHINE , "SOFTWARE\\GameScanner\\", 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
-	cbData=_MAX_PATH;
-	ret = RegQueryValueEx( hkey,"installpath",NULL,NULL,(BYTE*)path,&cbData);
-	if(ret>0)
-		ret = RegSetValueEx( hkey, "installpath", 0, REG_SZ, (const unsigned char*)path, (DWORD)strlen(path)); 
-
-	RegCloseKey( hkey ); 
-}
-void SetInstallPath(char *path)
-{
-	LONG ret;
-	HKEY hkey;
-	DWORD dwDisposition;
-	ret = RegCreateKeyEx(HKEY_LOCAL_MACHINE , "SOFTWARE\\GameScanner\\", 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
-	ret = RegSetValueEx( hkey, "installpath", 0, REG_SZ, (const unsigned char*)path, (DWORD)strlen(path)); 
-	RegCloseKey( hkey ); 
-}
-
-
-void SelfInstall(char *path)
+void AddIntoAutoRun(char *path)
 {
 	LONG ret;
 	HKEY hkey;
@@ -204,16 +154,17 @@ void SelfInstall(char *path)
 	RegCloseKey( hkey ); 
 
 }
-void UnInstall()
+
+void RemoveAutoRun()
 {
 	HKEY hkey;
 	LONG ret;
 	DWORD dwDisposition;
 	ret = RegCreateKeyEx(HKEY_CURRENT_USER , "SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run", 0, NULL,REG_OPTION_NON_VOLATILE, KEY_ALL_ACCESS, NULL, &hkey, &dwDisposition ); 
-	ret = RegDeleteValue(hkey,"ETServerViewer");
 	ret = RegDeleteValue(hkey,"GameScanner");
 	RegCloseKey( hkey ); 
 }
+
 void dbg_dumpbuf(const char *file, const void *buf, size_t size) {
 	FILE *fp=fopen(file, "wb");
 	fwrite(buf, size, 1, fp);
@@ -317,6 +268,10 @@ void AddGetLastErrorIntoLog(char* lpszFunction)
 	LocalFree(lpMsgBuf);	
 }
 
+/*
+CAUTION: Try to avoid use AddLogInfo from the main application thread. Otherwise deadlock can occur!!
+TODO : make this function into a new thread on every call...
+*/
 void AddLogInfo(int color, char *lpszText, ...)
 {
 
@@ -656,7 +611,7 @@ char *SplitIPandPORT(char *szIPport,DWORD &port)
 
 		char *space = strchr(szIPport,' '); //Added since v1.26
 		if(space!=NULL)//Added since v1.26
-			space[0]=0;//Added since v1.26
+			space[0]=0;
 
 		//Added since <1.0
 		r = strrchr(szIPport,'/');  //reverse find
@@ -751,19 +706,6 @@ BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 	return FALSE;
 }
 
-/*
-//Check if the server exsist
-bool UTILZ_CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO pSI)
-{
-	vSRV_INF::iterator  iResult;	
-	iResult = find(pGI->vSI.begin(), pGI->vSI.end(),pSI);
-	
-	if(iResult == pGI->vSI.end())
-		 return false;
-
-	 return true;
-}
-*/
 
 void SetStatusText( int icon,const char *szMsg,...)
 {	
@@ -798,10 +740,7 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 {
 	int i=0;
 	int len=0;
-	char xFF=-1;
-	char x0A=10;
-	char x00=0;
-	char n = 13;
+	char CR = 13;
 	char backslash='\\';
 	while(pszInput[i]!=0)
 	{
@@ -809,7 +748,7 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 		char val;
 		if(c[0]=='\\')
 		{
-			if((c[1]=='x') )//&& (c[2]=='F')&& (c[3]=='F'))
+			if((c[1]=='x') )
 			{
 				char hex[4];
 				hex[0] = c[2];
@@ -817,28 +756,13 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 				hex[2] = 0;
 				char *End = &hex[2];
 				val = (char)strtol(hex,&End,16);
-				c = &val;//&xFF;			
+				c = &val;			
 				i+=3;
 			}
-/*			if((c[1]=='x') && (c[2]=='F')&& (c[3]=='F'))
-			{
-				c = &xFF;			
-				i+=3;
-			}
-			if((c[1]=='x') && (c[2]=='0')&& (c[3]=='A'))
-			{
-				c = &x0A;			
-				i+=3;
-			}
-			if((c[1]=='x') && (c[2]=='0') || (c[3]=='0'))
-			{
-				c = &x00;			
-				i+=3;
-			}*/
 			if((c[1]=='n'))
 			{
 				i++;
-				c = &n;
+				c = &CR;  //carriege return
 			}
 
 			else if((c[1]=='\\'))
@@ -857,6 +781,7 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 	pszOutput[dwMaxBuffer-1]=0;
 	return len;
 }
+
 char *Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
 {
 	while(pSR!=NULL)

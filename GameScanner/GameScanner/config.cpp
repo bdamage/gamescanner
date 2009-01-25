@@ -318,9 +318,9 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					CFG_ApplySettings();
 					
 					if(AppCFGtemp.bAutostart)
-						SelfInstall(EXE_PATH);
+						AddIntoAutoRun(EXE_PATH);
 					else
-						UnInstall();
+						RemoveAutoRun();
 					
 					if(AppCFGtemp.bUse_minimize)
 					{	
