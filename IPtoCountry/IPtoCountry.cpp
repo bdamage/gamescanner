@@ -344,12 +344,12 @@ char * fnIPtoCountry2(DWORD IP,  char *country,char *szShortName)
 	if(vIPCiter != vIPC.end())
 	{	
 		tmpIPC =  *vIPCiter;
-		strcpy(country,tmpIPC.COUNTRYNAME);
+		//strcpy(country,tmpIPC.COUNTRYNAME);
 		strcpy(szShortName,tmpIPC.COUNTRYNAME_SHORT);
 		return country;	
 	} else
 	{
-		strcpy(country,"unknown");
+		//strcpy(country,"unknown");
 		strcpy(szShortName,"zz");
 	}
 

@@ -242,8 +242,9 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	//If country shortname is EU or zz (Unknown) try to find a country based on the IP address.
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 	{
-	    char country[60],szShortName[8];
-		strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),fnIPtoCountry2(pSI->dwIP,country,szShortName),49);  //Update country info only when adding a new server						
+	    char /*country[60],*/szShortName[8];
+		fnIPtoCountry2(pSI->dwIP,NULL,szShortName);
+	//	strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),,49);  //Update country info only when adding a new server						
 		strcpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName);
 	}
 	DWORD dwRetries=0;

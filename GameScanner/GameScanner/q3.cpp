@@ -86,11 +86,13 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 		{
-	
-			char country[60],szShortName[4];
+			//optimized 1.31 
+			//-----------------------------
+			char /*country[60],*/szShortName[4];
 		//	ZeroMemory(szShortName,sizeof(szShortName));
 		//	dwStartTick = GetTickCount();
-			strncpy(pSI->szCountry,fnIPtoCountry2(pSI->dwIP,country,szShortName),49);  //Update country info only when adding a new server		
+			char *pCountryName = fnIPtoCountry2(pSI->dwIP,NULL,szShortName);
+			//strncpy(pSI->szCountry,pCountryName,49);  //Update country info only when adding a new server		
 			strcpy(pSI->szShortCountryName,szShortName);
 		//	sprintf(country,"IPGeo %d ms %s\n",(GetTickCount() - dwStartTick),pSI->szCountry);
 		//	dbg_print(country);				

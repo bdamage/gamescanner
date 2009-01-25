@@ -78,8 +78,9 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*Callback_UpdatePlayerListView)
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 	{
-		char country[60],szShortName[4];
-		strncpy(pSI->szCountry,fnIPtoCountry2(pSI->dwIP,country,szShortName),49);  //Update country info only when adding a new server		
+		char /*country[60],*/szShortName[4];
+		fnIPtoCountry2(pSI->dwIP,NULL,szShortName);
+		//strncpy(pSI->szCountry,,49);  //Update country info only when adding a new server		
 		strcpy(pSI->szShortCountryName,szShortName);
 	}
 
