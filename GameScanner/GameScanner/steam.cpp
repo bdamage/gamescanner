@@ -745,18 +745,11 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 	pSI->dwPing = 9999;
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
-		{
-			//DWORD dwSHORTNAME;
-			char /*country[60],*/szShortName[4];
-			
-			//ZeroMemory(szShortName,sizeof(szShortName));
-			//dwStartTick = GetTickCount();
-			fnIPtoCountry2(pSI->dwIP,NULL,szShortName);
-			//strncpy_s(pSI->szCountry,sizeof(pSI->szCountry),szNewCountryName,_TRUNCATE);  //Update country info only when adding a new server		
-			strncpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName,_TRUNCATE);
-			//sprintf(country,"IPGeo %d ms %s\n",(GetTickCount() - dwStartTick),pSI->szCountry);
-			//dbg_print(country);
-		}
+	{			
+		char szShortName[4];			
+		fnIPtoCountry(pSI->dwIP,szShortName);
+		strncpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName,_TRUNCATE);
+	}
 	DWORD dwRetries=0;
 retry:
 	packetlen = send(pSocket, sendbuf, strlen(A2S_INFO)+1, 0);

@@ -78,9 +78,8 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*Callback_UpdatePlayerListView)
 
 	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
 	{
-		char /*country[60],*/szShortName[4];
-		fnIPtoCountry2(pSI->dwIP,NULL,szShortName);
-		//strncpy(pSI->szCountry,,49);  //Update country info only when adding a new server		
+		char szShortName[4];
+		fnIPtoCountry(pSI->dwIP,szShortName);
 		strcpy(pSI->szShortCountryName,szShortName);
 	}
 
@@ -114,10 +113,7 @@ port_Step:
 	iReq.req_string[0] = 0xFE;
 	iReq.req_string[1] = 0xFD;
 	iReq.req_string[2] = 0x09;
-	
-retry:
 
-	
 	iReq.dwSequence = GetTickCount();
 	dbg_print("1. Request challenge %X",iReq.dwSequence );
 	packetlen = send(pSocket, (const char*)&iReq,sizeof(iReq), 0);

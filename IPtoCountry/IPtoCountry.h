@@ -11,10 +11,8 @@
 #endif
 
 
-extern IPTOCOUNTRY_API int nIPtoCountry;
-
 IPTOCOUNTRY_API int fnConvertDatabase(void);
 IPTOCOUNTRY_API bool IPC_SetPath(char *szPath);
 IPTOCOUNTRY_API DWORD fnIPtoCountryDeInit();
 IPTOCOUNTRY_API DWORD fnIPtoCountryInit();
-IPTOCOUNTRY_API char * fnIPtoCountry2(DWORD IP, char *country,char *szShortName);
+IPTOCOUNTRY_API char * fnIPtoCountry(DWORD IP, char *szShortName);

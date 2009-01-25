@@ -4,8 +4,6 @@
 #include "stdafx.h"
 #include "IPtoCountry.h"
 #include <list>
-//#include <fcntl.h>     /* for _O_TEXT and _O_BINARY */
-//#include <errno.h>     /* for EINVAL */
 
 using namespace std;
 
@@ -39,20 +37,12 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 #pragma managed(pop)
 #endif
 
-// This is an example of an exported variable
-IPTOCOUNTRY_API int nIPtoCountry=0;
-
-//00000000011111111112222222222333333333344444444445
-//12345678901234567890123456789012345678901234567890
-//THE DEMOCRATIC REPUBLIC OF THE CONGO
-//THE FORMER YUGOSLAV REPUBLIC OF MACEDONIA
 struct IPCOUNTRY
 {
 	DWORD startIP;
 	DWORD endIP;
-	char COUNTRYNAME_MID[4];
 	char COUNTRYNAME_SHORT[4];
-	char COUNTRYNAME[45];
+
 };
 struct LOOKUPTABLE
 {
@@ -71,26 +61,19 @@ public:
 	DWORD dwStartIP;
 	DWORD dwEndIP;
 	char COUNTRYNAME_SHORT[4];
-	char COUNTRYNAME_MID[4];
-	char COUNTRYNAME[45];
-	std::string strCountry;
 	CIPCountry& operator = (const CIPCountry &b)
 	{
 		dwStartIP = b.dwStartIP;
 		dwEndIP = b.dwEndIP;
-		strcpy_s(COUNTRYNAME,sizeof(COUNTRYNAME),b.COUNTRYNAME);
 		strcpy_s(COUNTRYNAME_SHORT,sizeof(COUNTRYNAME_SHORT),b.COUNTRYNAME_SHORT);
-		strcpy_s(COUNTRYNAME_MID,sizeof(COUNTRYNAME_MID),b.COUNTRYNAME_MID);
 		return *this;
 	}
 	CIPCountry& operator = (const IPCOUNTRY &other)
 	{
 		dwStartIP = other.startIP;
 		dwEndIP = other.endIP;
-		strcpy_s(COUNTRYNAME,sizeof(COUNTRYNAME),other.COUNTRYNAME);
-		strCountry = other.COUNTRYNAME;
 		strcpy_s(COUNTRYNAME_SHORT,sizeof(COUNTRYNAME_SHORT),other.COUNTRYNAME_SHORT);
-		strcpy_s(COUNTRYNAME_MID,sizeof(COUNTRYNAME_MID),other.COUNTRYNAME_MID);
+	
 		return *this;
 	}	
 };
@@ -190,8 +173,6 @@ $dotted_ip_address = long2ip($ip_number);
 
 		wsprintf(szBuf,TEXT(" failed with error %d: %s"), dw, lpMsgBuf); 
 	 
-		//MessageBox(NULL, szBuf, TEXT("Error"), MB_OK); 
-
 		LocalFree(lpMsgBuf);
 	//	MessageBox(NULL,TEXT("Error open new country CSV file! \nThis file may be placed in debug/release folder!"),NULL,MB_OK);
 		return -1;
@@ -231,20 +212,8 @@ $dotted_ip_address = long2ip($ip_number);
 
 						token3a = strtok_s( NULL, seps, &next_token1);  //short name 1
 						
-						token3 = strtok_s( NULL, seps, &next_token1);  //short name 2
-						
-						token4 = strtok_s( NULL, seps, &next_token1);  //longname name 
-						
 						strcpy_s(structIP.COUNTRYNAME_SHORT,sizeof(structIP.COUNTRYNAME_SHORT),token3a);
-						strcpy_s(structIP.COUNTRYNAME_MID,sizeof(structIP.COUNTRYNAME_MID),token3);
-						strcpy_s(structIP.COUNTRYNAME,sizeof(structIP.COUNTRYNAME),token4);
-
 						fwrite( &structIP, sizeof( IPCOUNTRY ), 1, fpNew );
-
-						
-						//reset and begin on next line
-						//memset(&buffer,0,sizeof(buffer));						
-						//i=-1;
 						lines++;
 						break;  //break the for loop
 					}
@@ -279,9 +248,7 @@ DWORD fnIPtoCountryInit()
 		{
 			if(fread(&g_structIP, sizeof(g_structIP), 1, fp)!=0)
 			{
-				strcpy_s(tmpipc.COUNTRYNAME,sizeof(tmpipc.COUNTRYNAME),g_structIP.COUNTRYNAME);
 				strcpy_s(tmpipc.COUNTRYNAME_SHORT,sizeof(tmpipc.COUNTRYNAME_SHORT),g_structIP.COUNTRYNAME_SHORT);
-				strcpy_s(tmpipc.COUNTRYNAME_MID,sizeof(tmpipc.COUNTRYNAME_MID),g_structIP.COUNTRYNAME_MID);
 				tmpipc.dwEndIP = g_structIP.endIP;
 				tmpipc.dwStartIP = g_structIP.startIP;
 				vIPC.push_back(tmpipc);
@@ -308,7 +275,6 @@ DWORD fnIPtoCountryInit()
 
 		LUT[i].dwIndex = dwIdx;
 		LUT[i].ipc.startIP = tmpIPC.dwStartIP;
-		tmpIPC.strCountry.clear();
 	}
 	return 0;
 }
@@ -320,7 +286,7 @@ DWORD fnIPtoCountryDeInit()
 }
 
 
-char * fnIPtoCountry2(DWORD IP,  char *country,char *szShortName)
+char * fnIPtoCountry(DWORD IP, char *szShortName)
 {
 	vecIPC::iterator vIPCiter;		
 	CIPCountry tmpIPC;
@@ -338,20 +304,14 @@ char * fnIPtoCountry2(DWORD IP,  char *country,char *szShortName)
 
 	}
 	vIPCiter  = std::find(vIPC.begin()+dwStartIdx,vIPC.end(),&tmpIPC);
-	// search_n(vIPC.begin(),vIPC.end(),1,inIP,insideiprange);
-	//vIPCiter = upper_bound(vIPC.begin(),vIPC.end(),inIP,insideiprange);
-
 	if(vIPCiter != vIPC.end())
 	{	
 		tmpIPC =  *vIPCiter;
-		//strcpy(country,tmpIPC.COUNTRYNAME);
 		strcpy(szShortName,tmpIPC.COUNTRYNAME_SHORT);
-		return country;	
+		return szShortName;	
 	} else
 	{
-		//strcpy(country,"unknown");
-		strcpy(szShortName,"zz");
+		strcpy(szShortName,"ZZ");
 	}
-
-	return country;
+	return szShortName;
 }
