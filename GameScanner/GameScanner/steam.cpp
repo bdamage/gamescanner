@@ -697,8 +697,11 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 			strcpy_s(ptempSI.szIPaddress,sizeof(ptempSI.szIPaddress),DWORD_IP_to_szIP(ptempSI.dwIP));
 
 			ptempSI.dwIndex = idx++;
+			SERVER_INFO *pNewSrv = (SERVER_INFO*)calloc(1,sizeof(SERVER_INFO));
+			memcpy(pNewSrv,&ptempSI,sizeof(SERVER_INFO));
+
 			pGI->shash.insert(Int_Pair(hash,ptempSI.dwIndex) );		
-			pGI->vSI.push_back(ptempSI);
+			pGI->vSI.push_back(pNewSrv);
 
 			dwNewTotalServers++;
 		} //end serverexsist

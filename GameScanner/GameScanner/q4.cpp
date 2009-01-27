@@ -188,8 +188,11 @@ SERVER_INFO* Q4_ParseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 		{		
 			sprintf_s(tempSI.szIPaddress,sizeof(tempSI.szIPaddress),"%d.%d.%d.%d",(unsigned char)p[0],(unsigned char)p[1],(unsigned char)p[2],(unsigned char)p[3]);
 			tempSI.dwIndex = idx++;
+			SERVER_INFO *pNewSrv = (SERVER_INFO*)calloc(1,sizeof(SERVER_INFO));
+			memcpy(pNewSrv,&tempSI,sizeof(SERVER_INFO));
+
 			pGI->shash.insert(Int_Pair(hash,tempSI.dwIndex));
-			pGI->vSI.push_back(tempSI);
+			pGI->vSI.push_back(pNewSrv);
 			Q4_dwNewTotalServers++;
 		} //end serverexsist
 		p+=6;			

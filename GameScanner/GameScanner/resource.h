@@ -162,7 +162,6 @@
 #define IDC_STATIC_RSS_TITLE            1035
 #define IDC_COMBOBOXEX_CMD              1036
 #define IDC_BUTTON_QUICK_CONNECT        1037
-#define IDC_EDIT_QUICK_PASSWORD         1038
 #define IDC_CHECK_EXT_MIN               1039
 #define IDC_CHECK_EXT_CLOSE             1040
 #define IDC_CHECK_FAVORITES             1040

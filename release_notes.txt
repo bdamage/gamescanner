@@ -1,7 +1,7 @@
 version 1.31
 ----------
 * New complete country flag's  icons
-* Optimized code and memory usage.
+* Optimized scanning speed and memory usage.
 * Updated IP to Country database
 * Updated treeview cfg so UT can be activated and visible.
 * Fixed export code to work as expected, GS supports now two output format:

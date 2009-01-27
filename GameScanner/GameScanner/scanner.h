@@ -19,5 +19,5 @@ void SCAN_Set_CALLBACKS(DWORD (*Get_ServerStatus)(SERVER_INFO *pSI,
 DWORD WINAPI  Get_ServerStatusThread(LPVOID lpParam);
 */
 
-void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME_INFO *pGI));
+void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp,GAME_INFO *pGI));
 DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam);

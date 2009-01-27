@@ -22,7 +22,7 @@ long (*SCANNER_UpdateServerListView)(DWORD idx);
 
 DWORD (*Get_ServerStatus)(SERVER_INFO *pSI,long (*UpdatePlayerListView)(LPPLAYERDATA pPlayers),long (*UpdateRulesListView)(LPSERVER_RULES pServerRules));
 
-bool (*SCAN_FilterServerItem)(LPARAM *lp,GAME_INFO *pGI);
+bool (*SCAN_FilterServerItem)(SERVER_INFO *lp,GAME_INFO *pGI);
 
 
 void SCAN_Set_CALLBACKS(DWORD (*_Get_ServerStatus)(SERVER_INFO *pSI, long (*UpdatePlayerListView)(LPPLAYERDATA pPlayers),long (*UpdateRulesListView)(LPSERVER_RULES pServerRules)),
@@ -35,7 +35,7 @@ void SCAN_Set_CALLBACKS(DWORD (*_Get_ServerStatus)(SERVER_INFO *pSI, long (*Upda
 
 
 //Create scanning threads
-void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME_INFO *pGI))
+void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp,GAME_INFO *pGI))
 {
 	AddLogInfo(GS_LOG_DEBUG,"Entering Initialize_Rescan2 function.");
 	SCAN_FilterServerItem = filterServerItem;
@@ -47,13 +47,14 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 
 	for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 	{	
-		SERVER_INFO pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
+		SERVER_INFO *pSI = *iLst;//currCV->vSI.at((int)pLVItem->iItem);
 		REF_SERVER_INFO refSI;
-		refSI.dwIndex = pSI.dwIndex;
-		refSI.cGAMEINDEX = pSI.cGAMEINDEX;
+	//	refSI.dwIndex = pSI->dwIndex;
+	//	refSI.cGAMEINDEX = pSI->cGAMEINDEX;
+		refSI.pServerInfo = pSI;
 		if(filterServerItem!=NULL)
 		{
-			if(filterServerItem((LPARAM*)&pSI,pGI))
+			if(filterServerItem((SERVER_INFO*)pSI,pGI))
 			{
 				pGI->vRefScanSI.push_back(refSI);		
 			}
@@ -179,7 +180,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(LPARAM *lp,GAME
 DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 {
 	GAME_INFO *pGI = (GAME_INFO *)lpParam;
-	SERVER_INFO pSI;
+	SERVER_INFO *pSI=NULL;
 	DWORD idx=0;
 	DWORD size = pGI->vRefScanSI.size();
 
@@ -194,42 +195,44 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 			break;
 		}
 		
-		memset(&pSI,0,sizeof(SERVER_INFO));
-		
+	//	memset(&pSI,0,sizeof(SERVER_INFO));
+		pSI=NULL;
+
 		EnterCriticalSection(&SCANNER_cs);
 		if(pGI->dwScanIdx<size)
 		{
 			SetStatusText(pGI->iIconIndex,szScanStatus,pGI->dwScanIdx,size);
-			pSI = pGI->vSI.at(pGI->vRefScanSI.at(pGI->dwScanIdx).dwIndex);
+			pSI = pGI->vRefScanSI.at(pGI->dwScanIdx).pServerInfo; //pGI->vSI.at(pGI->vRefScanSI.at(pGI->dwScanIdx).dwIndex);
 			pGI->dwScanIdx++;
 		}
 		LeaveCriticalSection(&SCANNER_cs);
 		
 		//Is there any more server to scan?
-		if(pSI.usPort==0) //if the port is zero then no equal empty SERVER_INFO structure, (Ugly hack but  itworks :))
+		if(pSI==NULL) //if(pSI->usPort==0) //if the port is zero then no equal empty SERVER_INFO structure, (Ugly hack but  itworks :))
 		{
 			//OutputDebugString(">>>>ERROR? Breaked scanning thread\n");
 			break;
 		}
 
-		if(SCAN_FilterServerItem!=NULL)
+	/*	if(SCAN_FilterServerItem!=NULL)
 		{
 			//Only scan filtered servers
-			 if(SCAN_FilterServerItem((LPARAM *)&pSI,pGI))
+			 if(SCAN_FilterServerItem((SERVER_INFO *)pSI,pGI))
 			 {
-				 Get_ServerStatus(&pSI,NULL,NULL);	
-				 pGI->vSI.at((int)pSI.dwIndex) = pSI;
+				 Get_ServerStatus(pSI,NULL,NULL);	
+				// pGI->vSI.at((int)pSI.dwIndex) = pSI;
 			 }
 		}
 		else
+		*/
 		{
 			//Do non-filtered scan of all servers
-			Get_ServerStatus(&pSI,NULL,NULL);			
-			pGI->vSI.at((int)pSI.dwIndex) = pSI;
+			Get_ServerStatus(pSI,NULL,NULL);			
+			//pGI->vSI.at((int)pSI.dwIndex) = pSI;
 		}
 			
 		if(SCANNER_UpdateServerListView!=NULL)
-			SCANNER_UpdateServerListView(pSI.dwLVIndex);
+			SCANNER_UpdateServerListView(pSI->dwLVIndex);
 
 		if(g_hwndProgressBar!=NULL)
 				SendMessage(g_hwndProgressBar, PBM_STEPIT, (WPARAM) 0, 0);

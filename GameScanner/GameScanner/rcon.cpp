@@ -18,7 +18,7 @@ LONG_PTR wpOrigEditProc=NULL;
 HWND g_hwndRCONCmd=NULL,g_hwndRCONOut=NULL,g_hRCONDlg=NULL;
 char cGAMEINDEX=0;
 extern HINSTANCE g_hInst;
-extern SERVER_INFO g_CurrentSelServer;
+extern SERVER_INFO *g_CurrentSRV;
 extern GamesMap GamesInfo;
 //extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 extern CLanguage g_lang;
@@ -197,17 +197,17 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 //						if(strcmp(szWinName,"Connect")==0)
 //						{
 
-							if(g_CurrentSelServer.dwIP==0)
+							if(g_CurrentSRV != NULL)
 							{
 								MessageBox(hDlg,g_lang.GetString("SelectServerAtConnectionRCON"),"Error",MB_OK);
 								return TRUE;
 							}
-							g_RCONServer = &g_CurrentSelServer;
+							g_RCONServer = g_CurrentSRV;
 							int ret =(int) DialogBox(g_hInst, (LPCTSTR)IDD_DLG_RCON_PASS, hDlg, (DLGPROC)RCON_AskPasswordProc);					
 
 							if(ret == IDOK)
 							{
-								GamesInfo[g_RCONServer->cGAMEINDEX].vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
+							//	GamesInfo[g_RCONServer->cGAMEINDEX].vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
 								RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,"status"); 

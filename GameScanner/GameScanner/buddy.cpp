@@ -16,12 +16,11 @@ extern HWND g_hWnd;
 extern LONG_PTR g_wpOrigListBuddyProc;
 extern SERVER_INFO *g_CurrentSRV;
 extern HINSTANCE g_hInst;
-extern SERVER_INFO g_tmpSRV;
 extern GamesMap GamesInfo;
 extern vecBI BuddyList;
 extern APP_SETTINGS_NEW AppCFG;
 extern CLanguage g_lang;
-extern SERVER_INFO Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
+extern SERVER_INFO *Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 extern void ShowBalloonTip(TCHAR *title,TCHAR *message);
 extern UINT Get_GameIcon(UINT GameIndex);
 extern void StartGame_ConnectToServer(bool connectFromBuddyList);
@@ -41,8 +40,8 @@ void OnAddSelectedPlayerToBuddyList()
 	PLAYERDATA * pPly = Get_PlayerBySelection();
 	if(pPly!=NULL)
 	{
-		SERVER_INFO srv = Get_ServerInfoByIndex(&GamesInfo[pPly->cGAMEINDEX],pPly->dwServerIndex);
-		Buddy_AddToList(pPly->szPlayerName,&srv);
+		SERVER_INFO *srv = Get_ServerInfoByIndex(&GamesInfo[pPly->cGAMEINDEX],pPly->dwServerIndex);
+		Buddy_AddToList(pPly->szPlayerName,srv);
 		Buddy_UpdateList();
 	}													
 }
