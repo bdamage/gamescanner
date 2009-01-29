@@ -63,6 +63,13 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*Callback_UpdatePlayerListView)
 		return (DWORD)0xFFFFFFF;
 	}
 
+	if(pSI->bLocked)
+	{
+		dbg_print("Server locked @Get_ServerStatus!\n");
+		return 3;
+	}
+	pSI->bLocked = TRUE;
+
 	if(pSI->pPlayerData!=NULL)
 		CleanUp_PlayerList(pSI->pPlayerData);
 	pSI->pPlayerData = NULL;
@@ -120,6 +127,7 @@ port_Step:
 		dbg_print("Error at send()\n");
 		closesocket(pSocket);		
 		pSI->cPurge++;
+		pSI->bLocked = FALSE;
 		return -1;
 	}
 
@@ -187,6 +195,8 @@ port_Step:
 		{
 			dbg_print("Error at send() second_request\n");
 			closesocket(pSocket);		
+			pSI->bLocked = FALSE;
+			pSI->cPure++;
 			return -1;
 		}
 		
@@ -196,6 +206,7 @@ port_Step:
 		{
 			DWORD numPlayers=0;
 			pSI->dwPing = (GetTickCount() - dwStartTick);
+			pSI->cPure=0;
 
 			server_info_response *sir = (server_info_response *)packet;
 			dbg_print("3a.Response challenge %2.2X %2.2X %2.2X %2.2X %2.2X",packet[0],packet[1],packet[2],packet[3],packet[4]);
@@ -244,6 +255,7 @@ port_Step:
 			
 	}
 	closesocket(pSocket);
+	pSI->bLocked = FALSE;
 	return 0;
 
 }
@@ -370,6 +382,7 @@ PLAYERDATA *UT_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 			player->pNext = NULL;							
 			player->szClanTag = NULL;	
 			player->szTeam = NULL;	
+			player->pServerInfo = pSI;
 			player->cGAMEINDEX = pSI->cGAMEINDEX;
 			player->dwServerIndex = pSI->dwIndex;
 

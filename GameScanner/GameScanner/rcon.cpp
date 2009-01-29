@@ -134,7 +134,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 					if(errCode == WSAENETDOWN)
 						return (FALSE);
 				
-					RCON_Read();
+					RCON_Read(g_RCONServer);
 					  return(0);
 				}
 			}
@@ -343,7 +343,7 @@ DWORD RCON_WriteToConsole(int index, const char *szMessage)
 }
 
 
-DWORD RCON_Parse(unsigned char *Buff, size_t dwPacketLen)
+DWORD RCON_Parse(SERVER_INFO *pServer,unsigned char *Buff, size_t dwPacketLen)
 {
 		 char *pEndAddress = (char*)Buff+dwPacketLen;
 		//Buff[dwPacketLen-1]=0; //add string termination
@@ -357,21 +357,24 @@ DWORD RCON_Parse(unsigned char *Buff, size_t dwPacketLen)
 
 		pBuf2 = (char*)&Buff[i];
 
-		switch(g_RCONServer->cGAMEINDEX)
+		if(pServer!=NULL)
 		{
-			
-			case Q4_SERVERLIST :
-			case ETQW_SERVERLIST:
-				pBuf2 =&pBuf2[10];  
-			break;
-			case COD_SERVERLIST:
-			case COD2_SERVERLIST:
-			case COD4_SERVERLIST:
-				//nada
+			switch(pServer->cGAMEINDEX)
+			{
+				
+				case Q4_SERVERLIST :
+				case ETQW_SERVERLIST:
+					pBuf2 =&pBuf2[10];  
 				break;
-			case ET_SERVERLIST:
-				pBuf2 =&pBuf2[5]; 
-				break;
+				case COD_SERVERLIST:
+				case COD2_SERVERLIST:
+				case COD4_SERVERLIST:
+					//nada
+					break;
+				case ET_SERVERLIST:
+					pBuf2 =&pBuf2[5]; 
+					break;
+			}
 		}
 		pBuf2 = strtok( (char*)pBuf2, "\\\n" );
             
@@ -394,7 +397,7 @@ DWORD RCON_Parse(unsigned char *Buff, size_t dwPacketLen)
 	   return 0;
 }
 
-DWORD RCON_Read()
+DWORD RCON_Read(SERVER_INFO *pServer)
 {
 	unsigned char* pckt = NULL;
 	size_t packetlen=0;
@@ -403,8 +406,8 @@ DWORD RCON_Read()
 	
 	if(pckt!=NULL)
 	{
-		AddLogInfo(0,"Recv packl %d", packetlen);
-		RCON_Parse(pckt,packetlen);
+		//AddLogInfo(0,"Recv packl %d", packetlen);
+		RCON_Parse(pServer,pckt,packetlen);
 		free(pckt);
 	}	
 	return 0;
@@ -434,6 +437,7 @@ DWORD RCON_SendCmd(SERVER_INFO* pSI,char *szPassword,char *szCmd)
 	else
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //Tested on ET and Cod4 but should work any Quake 3 servers
 	
+	RCON_WriteToConsole(0, szCmd);
 	//AddLogInfo("Sending :%s",sendbuf);
 	int len = strlen(sendbuf)+1;
 
@@ -448,7 +452,7 @@ DWORD RCON_SendCmd(SERVER_INFO* pSI,char *szPassword,char *szCmd)
 
 void RCON_Disconnect()
 {
-	SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) 0, (LPARAM) "Disconnected!");
+	//SendMessage(g_hwndRCONOut, LB_ADDSTRING, (WPARAM) 0, (LPARAM) "Disconnected!");
 	//AddLogInfo(0,"RCON_Disconnect()");
 	if(RCON_ConnectSocket!=NULL)
 		closesocket(RCON_ConnectSocket);

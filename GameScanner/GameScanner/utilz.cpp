@@ -796,7 +796,6 @@ char *Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
 
 void CleanUp_PlayerList(LPPLAYERDATA &pPL)
 {
-//	dbg_print("Enter Q3_CleanUp_PlayerList(...)\n");
 	if(pPL!=NULL)
 	{
 		

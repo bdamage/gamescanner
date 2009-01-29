@@ -21,6 +21,7 @@ extern bool g_bCancel;
 extern GamesMap GamesInfo;
 extern APP_SETTINGS_NEW AppCFG;
 extern HWND g_hWnd;
+extern SERVER_INFO *g_CurrentSRV;
 bool Q3_bCloseApp=false;
 
 
@@ -53,14 +54,22 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 {
 	SOCKET pSocket = NULL;
 	unsigned char *packet=NULL;
-	DWORD dwStartTick;
+	DWORD dwStartTick=0;
 
-	dwStartTick=0;	
 	if(pSI==NULL)
 	{
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
-		return (DWORD)0xFFFFFFF;
+		return (DWORD)0x000001;
 	}
+
+	if(pSI->bLocked)
+	{
+		dbg_print("Server locked @Get_ServerStatus!\n");
+		return 3;
+	}
+
+	pSI->bLocked = TRUE;
+
 
 	if(pSI->pPlayerData!=NULL)
 		CleanUp_PlayerList(pSI->pPlayerData);
@@ -76,7 +85,8 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
-	  return 0xFFFFFF;
+	  pSI->bLocked = FALSE;
+	  return 0x000002;
 	}
 
 	size_t packetlen = 0;
@@ -108,8 +118,10 @@ retry:
 		dbg_print("Error at send()\n");
 		closesocket(pSocket);		
 		pSI->cPurge++;
+		pSI->bLocked = FALSE;
 		return -1;
 	}
+
 	dwStartTick = GetTickCount();
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
 	if(packet==NULL)
@@ -164,13 +176,9 @@ retry:
 			
 	
 			pSI->pPlayerData = pQ3Players;
-			//if(pQ3Players!=NULL) //removed since ver 1.08
-			{
-				if(UpdatePlayerListView!=NULL)
-					UpdatePlayerListView(pQ3Players);
+			if(UpdatePlayerListView!=NULL) 
+				UpdatePlayerListView(pQ3Players);
 				
-			//	Callback_CheckForBuddy(pQ3Players,pSI);
-			}
 			if(UpdateRulesListView!=NULL)
 				UpdateRulesListView(pServRules);
 			//-----------------------------------
@@ -178,6 +186,7 @@ retry:
 			//-----------------------------------
 			pSI->bNeedToUpdateServerInfo = 0;
 			pSI->bUpdated = true;
+			pSI->cPurge = 0;
 			pSI->nCurrentPlayers = nPlayers;
 			char *szVarValue=NULL;
 			char *pVarValue = NULL;
@@ -418,6 +427,7 @@ retry:
 		pSI->cPurge++;   //increase purge counter when the server is not responding
 
 	closesocket(pSocket);
+	pSI->bLocked = FALSE;
 	return 0;
 }
 
@@ -523,87 +533,6 @@ CoD 4                                                                           
 }
 
 
-
-/*
-0x02845178  63 74 00 31 00 73 76 5f 61 6c 6c 6f 77 41 6e 6f 6e 79 6d 6f 75 73 00 30 00  ct.1.sv_allowAnonymous.0.
-
-0x02845191  30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61  0 0"n/a".0 0"n/a".0 0"n/a
-0x028451AA  22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e  ".0 0"n/a".0 0"n/a".0 0"n
-0x028451C3  2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30  /a".0 0"n/a".0 0"n/a".0 0
-0x028451DC  22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30  "n/a".0 0"n/a".0 0"n/a".0
-0x028451F5  20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22   0"n/a".0 0"n/a".0 0"n/a"
-0x0284520E  0a 30 20 30 22 6e 2f 61 22 0a 30 20 30 22 6e 2f 61 22 0a 00                 .0 0"n/a".0 0"n/a"..
-
-0x02A466C5  00 62 61 73 65 71 33 00 61 73 5f 76 65 72 73 69 6f 6e 00 31 2e 39 39 71 00  .baseq3.as_version.1.99q.
-
-0x02A466DE  35 32 20 30 20 22 50 61 74 72 69 6f 74 22 0a 33 35 20 30 20 22 52 61 6e 67  52 0 "Patriot".35 0 "Rang
-0x02A466F7  65 72 22 0a 33 36 20 30 20 22 48 75 6e 74 65 72 22 0a 37 20 30 20 22 42 69  er".36 0 "Hunter".7 0 "Bi
-0x02A46710  6b 65 72 22 0a 00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00  ker"..
-*/
-
-/* QW
-0x00EB4E55  37 37 20 30 20 31 20 35 39 20 22 70 6c 61 79 65 72 22 20  77 0 1 59 "player" 
-0x00EB4E68  22 62 61 73 65 22 20 31 31 20 32 0a 00 00 fd fd fd fd ab  "base" 11 2...ýýýý«
-0x00EB4E7B  ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00  «««««««............
-
-0x001B4E59  35 35 20 31 31 20 38 20 36 33 20 22 50 6f 77 64 65 72 20  55 11 8 63 "Powder 
-0x001B4E6C  4a 72 2e 22 20 22 22 20 34 20 34 0a 35 36 20 31 39 20 37  Jr." "" 4 4.56 19 7
-
-
-0x001B4E7F  20 36 36 20 22 4a 75 64 67 65 22 20 22 22 20 34 20 31 33   66 "Judge" "" 4 13
-0x001B4E92  0a 35 37 20 31 34 20 37 20 33 35 20 22 7a 61 70 69 61 74  .57 14 7 35 "zapiat
-0x001B4EA5  61 63 68 6b 61 21 22 20 22 22 20 34 20 31 31 0a 35 38 20  achka!" "" 4 11.58 
-0x001B4EB8  36 38 20 36 20 34 30 20 22 7a 6f 7a 6f 22 20 22 22 20 31  68 6 40 "zozo" "" 1
-0x001B4ECB  33 20 31 31 0a 35 39 20 32 34 20 35 20 31 36 20 22 44 72  3 11.59 24 5 16 "Dr
-0x001B4EDE  2e 50 61 76 6c 6f 66 66 22 20 22 62 61 73 65 22 20 33 20  .Pavloff" "base" 3 
-0x001B4EF1  33 0a 36 30 20 34 30 20 35 20 31 32 20 22 4d 6f 72 73 22  3.60 40 5 12 "Mors"
-0x001B4F04  20 22 22 20 31 33 20 31 33 0a 00 00 fd fd fd fd ab ab ab   "" 13 13...ýýýý«««
-0x001B4F17  ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 6f ba  «««««............oº
-
-player number, score, time, ping, name, skin, color1, color2
-55 11 8 63 "Powder Jr." "" 4 4
-56 19 7 66 "Judge" "" 4 13
-60 40 5 12 "Mors" "" 13 13    [0a]
-
-0x0392B2E4  20 30 20 30 20 31 32 34 20 22 50 61 7a 75 22 20 22 62 61 73 65 22 20 31 33 20 31 33 0a 35 35   0 0 124 "Pazu" "base" 13 13.55
-0x0392B303  20 31 20 30 20 37 37 20 22 28 31 29 70 6c 61 79 65 72 22 20 22 22 20 30 20 30 0a 35 34 20 30   1 0 77 "(1)player" "" 0 0.54 0
-0x0392B322  20 30 20 35 38 20 22 5a 65 65 44 22 20 22 62 61 73 65 22 20 34 20 34 0a 35 36 20 32 20 30 20   0 58 "ZeeD" "base" 4 4.56 2 0 
-0x0392B341  32 32 20 22 78 2b 79 3d 7a 22 20 22 22 20 31 33 20 39 0a 35 37 20 30 20 30 20 32 37 20 22 28  22 "x+y=z" "" 13 9.57 0 0 27 "(
-0x0392B360  32 29 70 6c 61 79 65 72 22 20 22 22 20 30 20 30 0a 00 00 fd fd fd fd ab ab ab ab ab ab ab ab  2)player" "" 0 0...ýýýý««««««««
-0x0392B37F  00 00 00 00 00 00 00 00 00 58 89 95 23 23 51 06 00 f8 62 90 03 58 9a 08 05
-
-
-0x0392B297  
-32 35 20             25
-34 20                4
-31 30 35 33 20       1053
-32 37 20             27
-22 f2 e5 e4 f2 f5 ed 22 20  "òåäòõí" == REDRUM
-22 32 39 22 20 34 20 34 0a   4 1053 27  "29" 4 4.
-0x0392B2B6  00 00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 73 89 95 08 36  ..
-
-
-0x0496B340  39 35 20 30 20 31 31 20 32 31 20 
-22 c6 72 e1 67 bc 4b be 22 20  "Ærág.K." Frag(K)
-22 24 22 20 31 31 20 33 0a 00  95 0 11 21  "$" 11 3..
-0x0496B35F  00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 30 1a d7 6d bb f7  .ýýýý««««««««.
-0x0496B329  34 35 20 30 20 32 20 34 31 20 22 49 6e 65 72 74 69 61 22 20 22 62 61 73 65 22 20 31 31 20 32  45 0 2 41 "Inertia" "base" 11 2
-0x0496B348  0a 
-34 36 20 32 20 
-32 20 33 38 20 
-22 e6 e9 e5 f2 f5 f3 22 20  "æéåòõó" =FIERUS
-22 22 20 34 20 34 0a 00 00 fd fd  .46 2 2 38 "" 4 4...ýý
-0x0496B367  fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 0f 1a d7 52 b8 f7  ýý««««««««
-
-0x0496B2F9  36 31 20 32 35 20 34 20 31 32 20 22 4d 6f 72 73 22 20 22 22 20 31 33 20 31 33 0a 36 32 20 38  61 25 4 12 "Mors" "" 13 13.62 8
-0x0496B318  20 34 20 33 38 20 
-22 2e 2f d2 92 c7 65 d2 2e cd 75 d2 22 20  "./Ò’ÇeÒ.ÍuÒ"  = ./RoGeR.MuR
-22 22 20 34 20 36 0a 35 34 20 38   4 38  "" 4 6.54 8
-0x0496B337  20 34 20 31 32 20 22 5a 65 65 44 22 20 22 62 61 73 65 22 20 34 20 34 0a 00 00 fd fd fd fd ab   4 12 "ZeeD" "base" 4 4..
-*/
-
-
-
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers)
 {
 	PLAYERDATA *pPlayers=NULL;
@@ -620,6 +549,7 @@ PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 			if(player==NULL) //Out of memory ?
 				return pPlayers;
 			player->pNext = NULL;
+			player->pServerInfo = pSI;
 			player->cGAMEINDEX = pSI->cGAMEINDEX;
 				
 			char *endOfString = strchr(pointer,' ');
@@ -756,6 +686,7 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 			player->szClanTag = NULL;	
 			player->szTeam = NULL;	
 			player->cGAMEINDEX = pSI->cGAMEINDEX;
+			player->pServerInfo = pSI;
 			player->dwServerIndex = pSI->dwIndex;
 
 			char *endString = strchr(pointer,' ');

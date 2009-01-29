@@ -217,6 +217,13 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
 		return -1;
 	}
+	if(pSI->bLocked)
+	{
+		dbg_print("Server locked @Get_ServerStatus!\n");
+		return 3;
+	}
+
+	pSI->bLocked = TRUE;
 	if(pSI->pPlayerData!=NULL)
 		CleanUp_PlayerList(pSI->pPlayerData);
 	pSI->pPlayerData = NULL;
@@ -231,6 +238,7 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
+	  pSI->bLocked = FALSE;
 	  return -1;
 	}
   
@@ -257,6 +265,7 @@ retry:
 		dbg_print("Error at send()\n");
 		closesocket(pSocket);
 		pSI->cPurge++;
+		pSI->bLocked = FALSE;
 		return -1;
 	}
 
@@ -304,6 +313,7 @@ Quake 4 Responses
 	if(packet) 
 	{
 		pSI->dwPing = (GetTickCount() - dwStartTick);
+		pSI->cPure=0;
 
 		//dbg_dumpbuf("dump.bin", packet, packetlen);
 		SERVER_RULES *pServRules=NULL;
@@ -442,6 +452,7 @@ Quake 4 Responses
 	else
 		pSI->cPurge++;
 
+	pSI->bLocked = FALSE;
 	closesocket(pSocket);
 	return 0;
 }

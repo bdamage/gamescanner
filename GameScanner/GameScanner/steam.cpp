@@ -242,6 +242,7 @@ DWORD STEAM_ParsePlayers(SERVER_INFO *pSI, char *packet,DWORD dwLength)
 			player->pNext = NULL;
 			player->szClanTag = NULL;
 			player->cGAMEINDEX = pSI->cGAMEINDEX;
+			player->pServerInfo = pSI;
 			player->dwServerIndex = pSI->dwIndex;
 
 			p++; //player index
@@ -730,12 +731,20 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
 		return 1;
 	}
+	if(pSI->bLocked)
+	{
+		dbg_print("Server locked @Get_ServerStatus!\n");
+		return 3;
+	}
+
+	pSI->bLocked = TRUE;
 
 	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
+	  pSI->bLocked = FALSE;
 	  return 1;
 	}
 	char sendbuf[80];
@@ -761,6 +770,7 @@ retry:
 		dbg_print("Error at send()\n");
 		closesocket(pSocket);		
 		pSI->cPurge++;
+		pSI->bLocked = FALSE;
 		return 1;
 	}
 
@@ -783,6 +793,7 @@ retry:
 		pSI->dwPing = (GetTickCount() - dwStartTick);
 		pSI->bNeedToUpdateServerInfo = 0;
 		pSI->bUpdated = true;
+		pSI->cPurge=0;
 		
 		//dbg_dumpbuf("dump.bin", packet, packetlen);
 
@@ -903,6 +914,7 @@ retry:
 	else
 		pSI->cPurge++;
 
+	pSI->bLocked = FALSE;
 	closesocket(pSocket);
 	return 0;
 }
