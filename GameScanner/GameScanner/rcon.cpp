@@ -197,7 +197,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 //						if(strcmp(szWinName,"Connect")==0)
 //						{
 
-							if(g_CurrentSRV != NULL)
+							if(g_CurrentSRV == NULL)
 							{
 								MessageBox(hDlg,g_lang.GetString("SelectServerAtConnectionRCON"),"Error",MB_OK);
 								return TRUE;
