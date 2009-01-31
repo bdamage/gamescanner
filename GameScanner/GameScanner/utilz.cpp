@@ -879,7 +879,7 @@ char *getpacket(SOCKET s, size_t *len) {
 			return (char*)realloc(buf, ret+1);
 		}
 		else {
-			dbg_print("getpacket err: %d\n", WSAGetLastError());
+		//	dbg_print("getpacket err: %d\n", WSAGetLastError());
 			free(buf);
 			return NULL;
 		}
@@ -902,12 +902,6 @@ char *	ReadPacket(SOCKET socket, size_t *len)
 		DebugBreak();
 	}	
 	int ret=recv(socket, buf, 10048, 0);
-
-	//	if(memcmp("\xFF\xFF\xFF\xFE",buf,4)==0)
-	//	{
-	//		DebugBreak();
-	//	}
-
 	if(ret!=SOCKET_ERROR && ret!=0) 
 	{
 		*len=ret;
@@ -917,7 +911,7 @@ char *	ReadPacket(SOCKET socket, size_t *len)
 	}
 	else 
 	{
-		dbg_print("getpacket err: %d\n", WSAGetLastError());
+		//dbg_print("getpacket err: %d\n", WSAGetLastError());
 		free(buf);		
 	}
 	return NULL;

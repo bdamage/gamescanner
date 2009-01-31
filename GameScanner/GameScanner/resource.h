@@ -148,9 +148,12 @@
 #define IDC_EXT_EXE                     1024
 #define IDC_STATIC_CS                   1024
 #define IDC_EDIT_CS_PASSWORD            1025
+#define IDC_EDIT_EXT_EXE2               1025
 #define IDC_LIST_SERVER                 1026
+#define IDC_EDIT_EXT_CMD2               1026
 #define IDC_EDIT_IP                     1027
 #define IDC_LIST_BUDDY                  1027
+#define IDC_EXT_EXE2                    1027
 #define IDC_EDIT_PORT                   1028
 #define IDC_STATIC_PASSWORD             1028
 #define IDC_BUTTON_OK                   1029
@@ -168,6 +171,7 @@
 #define IDC_EDIT_EXT_WINDOWNAME         1042
 #define IDC_BUTTON_CFG_MASTER_SRV       1043
 #define IDC_LIST_CONFIG                 1043
+#define IDC_EDIT_EXT_WINDOWNAME2        1043
 #define IDC_CHECK_EXACT_MATCH           1044
 #define IDC_STATIC_INSTALL_PATH         1045
 #define IDC_CHECK_NO_COLOR_MATCH        1045
@@ -177,6 +181,7 @@
 #define IDC_MAIN_TREE                   1047
 #define IDC_CHECK_EXT_ACTIVE            1048
 #define IDC_CHECK_SCR_RESTORE           1049
+#define IDC_CHECK_EXT_ACTIVE2           1049
 #define IDC_EDIT_NICKNAME_FILTER        1050
 #define IDC_STATIC_GAME_NAME            1050
 #define IDC_EDIT_NICKNAME_COLOR         1051

@@ -190,11 +190,11 @@ BEGIN
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,13,39,187,10
 END
 
-IDD_CFG4 DIALOGEX 0, 0, 400, 196
+IDD_CFG4 DIALOGEX 0, 0, 400, 267
 STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
 FONT 8, "MS Shell Dlg", 400, 0, 0x1
 BEGIN
-    GROUPBOX        "Custom exec to launch when joining a server (e.g. Ventrilo or TeamSpeak).",IDC_STATIC,4,9,381,101
+    GROUPBOX        "Custom event: Launch program when joining server ",IDC_STATIC,4,9,381,93
     EDITTEXT        IDC_EDIT_EXT_EXE,66,34,281,14,ES_AUTOHSCROLL
     LTEXT           "Exe file",IDC_STATIC,12,38,46,8
     LTEXT           "Command",IDC_STATIC,12,53,46,12
@@ -205,6 +205,13 @@ BEGIN
     EDITTEXT        IDC_EDIT_EXT_WINDOWNAME,66,66,281,14,ES_AUTOHSCROLL
     LTEXT           "Window Name",IDC_STATIC,12,68,46,10
     CONTROL         "Active",IDC_CHECK_EXT_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,20,106,10
+    GROUPBOX        "Custom event : Launch program when game has closed",IDC_STATIC,6,131,379,75
+    LTEXT           "Exe file",IDC_STATIC,17,160,46,8
+    LTEXT           "Command",IDC_STATIC,17,175,46,12
+    EDITTEXT        IDC_EDIT_EXT_EXE2,66,157,281,14,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_EXT_CMD2,66,173,281,14,ES_AUTOHSCROLL
+    PUSHBUTTON      "...",IDC_EXT_EXE2,358,150,20,14
+    CONTROL         "Active",IDC_CHECK_EXT_ACTIVE2,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,12,142,106,10
 END
 
 IDD_CFG5 DIALOGEX 0, 0, 355, 196
@@ -349,7 +356,7 @@ BEGIN
     PUSHBUTTON      "Add new installation",IDC_BUTTON_ADD_INSTALL,19,108,129,21
     PUSHBUTTON      "Delete installation settings",IDC_BUTTON_DELETE_INSTALL,304,108,140,21
     GROUPBOX        "Game path for Enemy Territory",IDC_STATIC_GAME_NAME,4,5,455,131
-    LTEXT           "Static",IDC_STATIC_WEB_PROTOCOL,31,216,172,11
+    LTEXT           "http web example...",IDC_STATIC_WEB_PROTOCOL,31,216,172,11
 END
 
 IDD_ADD_NEW_GAME_INSTALLATION DIALOGEX 0, 0, 445, 191
@@ -442,8 +449,11 @@ BEGIN
     IDD_CFG4, DIALOG
     BEGIN
         RIGHTMARGIN, 385
+        VERTGUIDE, 6
+        VERTGUIDE, 12
         VERTGUIDE, 66
         VERTGUIDE, 347
+        BOTTOMMARGIN, 259
     END
 
     IDD_CFG_NET, DIALOG

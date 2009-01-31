@@ -11,6 +11,7 @@ LRESULT CALLBACK EnumerateGames_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPAR
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 void UpdateTabControl();
+HWND FindGameWindow();
 void ClearServerList(int i);
 void ListView_InitilizeColumns();
 void TreeView_ReBuildList();
@@ -40,7 +41,7 @@ int AddServerToList(TCHAR *ip, TCHAR *port);
 void ClickMouse(VOID);
 void Parse_FileServerList(GAME_INFO *pGI,TCHAR *szFilename);
 void SetDlgTrans(HWND hwnd,int trans);
-void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx=0);
+void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx=0, char *szCustomCmd=NULL);
 TCHAR GetByCountryNameImageListIndex(TCHAR *szCountry);
 void CreateUpdateFile();
 LRESULT CALLBACK AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);

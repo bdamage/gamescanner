@@ -975,7 +975,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	if(INVALID_SOCKET==ConnectSocket)
 	{
 
-		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
+		KillTimer(g_hWnd,IDT_1SECOND);
 		AddLogInfo(GS_LOG_ERROR,"Error connecting to socket!");
 		return 1;
 	}
@@ -984,7 +984,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	hEvent = WSACreateEvent();
 	if (hEvent == WSA_INVALID_EVENT)
 	{
-		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
+		KillTimer(g_hWnd,IDT_1SECOND);
 		AddLogInfo(GS_LOG_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
 		closesocket(ConnectSocket);
 		return 1;
@@ -998,7 +998,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	nRet = WSAEventSelect(ConnectSocket, hEvent,FD_READ|FD_CONNECT|FD_CLOSE);
 	if (nRet == SOCKET_ERROR)
 	{
-		KillTimer(g_hWnd,IDT_TIMER_1SECOND);
+		KillTimer(g_hWnd,IDT_1SECOND);
 		AddLogInfo(GS_LOG_ERROR,"EventSelect() = SOCKET_ERROR");
 		closesocket(ConnectSocket);
 		WSACloseEvent(hEvent);
@@ -1049,7 +1049,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 			AddLogInfo(0,"Sending command [%s] (%s) Len: %d",sendbuf,pGI->szMasterQueryString,len);
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
-				KillTimer(g_hWnd,IDT_TIMER_1SECOND);
+				KillTimer(g_hWnd,IDT_1SECOND);
 				Q3_bScanningInProgress = FALSE;
 				WSACloseEvent(hEvent);
 				closesocket(ConnectSocket);		

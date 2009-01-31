@@ -1,5 +1,9 @@
+
 version 1.31
 ----------
+NOTE: This version will not be smoothly backward compatible, this due to the optimization of the IP to country detection.
+So if you install a previous version then you will have to do a full scan or even delete all servers view full country name (short name should be fine).
+
 * New complete country flag's  icons
 * Optimized scanning speed and memory usage.
 * Updated IP to Country database
@@ -11,6 +15,15 @@ version 1.31
 * Potential memory leak fixed during scanning servers.
 * Fixed a crash bug when using search field and server scanning at the same time.
 * Fixed a bug when Conencting from a online Buddy.
+* Added a new Event when game closes, GS can now launch a program automatic (games supported depending on what Window name field contains from minimizer settings).
+* Added support for the following types of fast connection in the search field (hopefully it covers most variations):
+
++connect 10.0.1.1:27960; +password abc123
+or
+server:10.23.28.14:27960 +password abc123
+whatevah: 1.1.1.1:1234
+etc...
+
 * Fixed export code to work as expected, GS supports now two output format:
 Generic plain text:
 ip:port 

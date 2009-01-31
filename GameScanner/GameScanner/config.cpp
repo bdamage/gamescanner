@@ -92,9 +92,9 @@ void CFG_Apply_Games(int gameID,HWND hDlg)
 	if(gameID!=-1)
 	{
 		if(IsDlgButtonChecked(hDlg,IDC_CHECK_ACTIVE)==BST_CHECKED)
-			GamesInfoCFG[gameID].bActive=true;
+			GamesInfoCFG[gameID].bActive=TRUE;
 		else
-			GamesInfoCFG[gameID].bActive=false;
+			GamesInfoCFG[gameID].bActive=FALSE;
 
 /*		if(IsDlgButtonChecked(hDlg,IDC_CHECK_USE_HTTP)==BST_CHECKED)
 			GamesInfoCFG[gameID].bUseHTTPServerList[0] = TRUE;
@@ -126,14 +126,18 @@ void CFG_Apply_Network(HWND hDlg)
 void CFG_Apply_Ext(HWND hDlg)
 {
 	g_bChanged = false;
-	if(IsDlgButtonChecked(hDlg,IDC_CHECK_EXT_ACTIVE)==BST_CHECKED)
-		AppCFGtemp.bUse_EXT_APP =true;
-	else
-		AppCFGtemp.bUse_EXT_APP=false;
+
+	AppCFGtemp.bUse_EXT_APP = IsDlgButtonChecked(hDlg,IDC_CHECK_EXT_ACTIVE);
 
 	GetDlgItemText(hDlg,IDC_EDIT_EXT_EXE,AppCFGtemp.szEXT_EXE_PATH,MAX_PATH);
 	GetDlgItemText(hDlg,IDC_EDIT_EXT_CMD,AppCFGtemp.szEXT_EXE_CMD,MAX_PATH);
 	GetDlgItemText(hDlg,IDC_EDIT_EXT_WINDOWNAME,AppCFGtemp.szEXT_EXE_WINDOWNAME,MAX_PATH);
+
+	AppCFGtemp.bUse_EXT_APP2 = IsDlgButtonChecked(hDlg,IDC_CHECK_EXT_ACTIVE2);
+	GetDlgItemText(hDlg,IDC_EDIT_EXT_EXE2,AppCFGtemp.szOnReturn_EXE_PATH,MAX_PATH);
+	GetDlgItemText(hDlg,IDC_EDIT_EXT_CMD2,AppCFGtemp.szOnReturn_EXE_CMD,MAX_PATH);
+
+
 }
 
 void CFG_Apply_Minimizer(HWND hDlg)
@@ -815,14 +819,9 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				dwExStyle |= LVS_EX_FULLROWSELECT |  LVS_EX_LABELTIP ;
 				ListView_SetExtendedListViewStyle(hwndLVexes,dwExStyle);			
 
-				if(AppCFGtemp.bUse_minimize)
-					CheckDlgButton(hDlg,IDC_CHECK2,BST_CHECKED);
-				else
-					CheckDlgButton(hDlg,IDC_CHECK2,BST_UNCHECKED);
-
-
-			if(AppCFGtemp.bUSE_SCREEN_RESTORE )
-				CheckDlgButton(hDlg,IDC_CHECK_SCR_RESTORE,BST_CHECKED);				
+			
+			CheckDlgButton(hDlg,IDC_CHECK2,AppCFGtemp.bUse_minimize);
+			CheckDlgButton(hDlg,IDC_CHECK_SCR_RESTORE,AppCFGtemp.bUSE_SCREEN_RESTORE );				
 
 			
 			sprintf(szText,"%d",(AppCFGtemp.socktimeout.tv_sec*1000)+AppCFGtemp.socktimeout.tv_usec);
@@ -834,18 +833,11 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 		
 
 			SetDlgItemText(hDlg,IDC_EDIT_MIRC,g_sMIRCoutput.c_str());
-		
-
-			if(AppCFGtemp.bUse_EXT_APP )
-				CheckDlgButton(hDlg,IDC_CHECK_EXT_ACTIVE,BST_CHECKED);
-			else
-				CheckDlgButton(hDlg,IDC_CHECK_EXT_ACTIVE,BST_UNCHECKED);
-
-			if(AppCFGtemp.bUseMIRC)
-				CheckDlgButton(hDlg,IDC_CHECK_MIRC,BST_CHECKED);
-			else			
-				CheckDlgButton(hDlg,IDC_CHECK_MIRC,BST_UNCHECKED);
-
+					
+			CheckDlgButton(hDlg,IDC_CHECK_EXT_ACTIVE,AppCFGtemp.bUse_EXT_APP);
+			CheckDlgButton(hDlg,IDC_CHECK_EXT_ACTIVE2,AppCFGtemp.bUse_EXT_APP2);
+			CheckDlgButton(hDlg,IDC_CHECK_MIRC,AppCFGtemp.bUseMIRC);
+	
 
 		   g_lang.EnumerateLanguage();
 		   for( map<string,string>::iterator ii=g_lang.m_Languages.begin(); ii!=g_lang.m_Languages.end(); ++ii)
@@ -871,15 +863,9 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 	
 				SetDlgItemText(hDlg,IDC_EDIT_MASTER_SERVER,szTempMaster);//GamesInfoCFG[gameID].szMasterServerIP[0]);
 
-				if(GamesInfoCFG[gameID].bUseHTTPServerList)
-					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_CHECKED);
-				else
-					CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,BST_UNCHECKED);
-				
-				if(GamesInfoCFG[gameID].bActive)
-					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_CHECKED);
-				else
-					CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,BST_UNCHECKED);
+			
+				CheckDlgButton(hDlg,IDC_CHECK_USE_HTTP,GamesInfoCFG[gameID].bUseHTTPServerList[0]);								
+				CheckDlgButton(hDlg,IDC_CHECK_ACTIVE,GamesInfoCFG[gameID].bActive);
 
 				sprintf(szText,"Example web protocol: %s://10.0.0.1:%d",GamesInfo[gameID].szWebProtocolName,GamesInfo[gameID].dwDefaultPort);
 				SetDlgItemText(hDlg,IDC_STATIC_WEB_PROTOCOL,szText);
@@ -895,6 +881,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_CMD,AppCFGtemp.szEXT_EXE_CMD);
 			SetDlgItemText(hDlg,IDC_EDIT_EXT_WINDOWNAME,AppCFGtemp.szEXT_EXE_WINDOWNAME);
 			SetDlgItemText(hDlg,IDC_EDIT_WINDOWNAME,AppCFGtemp.szET_WindowName);
+
+			SetDlgItemText(hDlg,IDC_EDIT_EXT_EXE2,AppCFGtemp.szOnReturn_EXE_PATH);
+			SetDlgItemText(hDlg,IDC_EDIT_EXT_CMD2,AppCFGtemp.szOnReturn_EXE_CMD);
+
 
 			SetDlgItemText(hDlg,IDC_STATIC_INSTALL_PATH,EXE_PATH);		
 
@@ -1051,6 +1041,30 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 					return TRUE;
 				}
 	
+				case IDC_EXT_EXE2:
+				{
+			
+					OPENFILENAME ofn;
+					memset(&ofn,0,sizeof(OPENFILENAME));
+					ofn.lStructSize = sizeof (OPENFILENAME);
+					ofn.hwndOwner = hDlg;
+					ofn.lpstrFilter = NULL;
+					ofn.lpstrFile = szFile;
+					ofn.lpstrFile[0] = '\0';
+					ofn.nMaxFile = sizeof(szFile);
+					ofn.lpstrFilter = "All\0*.*\0External exe\0*.exe\0";
+					ofn.nFilterIndex = 2;
+					ofn.lpstrFileTitle = NULL;
+					ofn.nMaxFileTitle = 0;
+					ofn.lpstrInitialDir = NULL;
+					ofn.lpstrInitialDir = AppCFGtemp.szOnReturn_EXE_PATH;
+					ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+					if(GetOpenFileName(&ofn))
+						SetDlgItemText(hDlg,IDC_EDIT_EXT_EXE2,ofn.lpstrFile);
+
+					return TRUE;
+				}
 	
 			}
 			break;
