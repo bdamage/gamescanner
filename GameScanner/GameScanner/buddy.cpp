@@ -29,8 +29,12 @@ extern int ReadCfgInt2(TiXmlElement* pNode, TCHAR *szParamName, int& intVal);
 extern BOOL WINAPI EditCopy(TCHAR *pText);
 extern PLAYERDATA *Get_PlayerBySelection();
 extern _CUSTOM_COLUMN BUDDY_CUSTCOLUMNS[MAX_COLUMNS];
+extern DWORD WINAPI PlayNotify(LPVOID lpParam );
+extern bool g_bRunningQueryServerList;
+extern bool g_bPlayedNotify;
 
 bool bEditBuddyname=false;
+
 //BUDDY_INFO *pEditBuddy;
 
 vecBI::iterator itBuddyEdit;
@@ -351,6 +355,9 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 		GamesInfo[it->cGAMEINDEX].colorfilter(it->szServerName,szText,249);
 	else
 		strcpy(szText,it->szPlayerName);
+
+	if(g_bRunningQueryServerList && g_bPlayedNotify==false)
+		PlayNotify(0 );
 
 	ShowBalloonTip("A buddy is online!",szText);		
 }

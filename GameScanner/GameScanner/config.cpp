@@ -51,6 +51,10 @@ HWND hwndConfDialog=NULL;
 void CFG_Apply_General(HWND hDlg)
 {
 	
+	AppCFGtemp.bUseBuddySndNotify = IsDlgButtonChecked(hDlg,IDC_CHECK_USE_WAV_FILE);
+
+	GetDlgItemText(hDlg,IDC_EDIT_WAV_FILE,AppCFGtemp.szNotifySoundWAVfile,MAX_PATH);						
+
 
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK_CONNECT_CLOSE)==BST_CHECKED)
 		AppCFGtemp.bCloseOnConnect=true;
@@ -830,7 +834,8 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			sprintf(szText,"%d",AppCFGtemp.dwRetries);
 			SetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szText);
 
-		
+			CheckDlgButton(hDlg,IDC_CHECK_USE_WAV_FILE,AppCFGtemp.bUseBuddySndNotify);
+			SetDlgItemText(hDlg,IDC_EDIT_WAV_FILE,AppCFGtemp.szNotifySoundWAVfile);						
 
 			SetDlgItemText(hDlg,IDC_EDIT_MIRC,g_sMIRCoutput.c_str());
 					
@@ -1065,7 +1070,31 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 
 					return TRUE;
 				}
-	
+
+				case IDC_BUTTON_WAV_FILE:
+				{
+			
+					OPENFILENAME ofn;
+					memset(&ofn,0,sizeof(OPENFILENAME));
+					ofn.lStructSize = sizeof (OPENFILENAME);
+					ofn.hwndOwner = hDlg;
+					ofn.lpstrFilter = NULL;
+					ofn.lpstrFile = szFile;
+					ofn.lpstrFile[0] = '\0';
+					ofn.nMaxFile = sizeof(szFile);
+					ofn.lpstrFilter = "All\0*.*\0Wav\0*.wav\0";
+					ofn.nFilterIndex = 2;
+					ofn.lpstrFileTitle = NULL;
+					ofn.nMaxFileTitle = 0;
+					ofn.lpstrInitialDir = NULL;
+					ofn.lpstrInitialDir = AppCFGtemp.szNotifySoundWAVfile;
+					ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+					if(GetOpenFileName(&ofn))
+						SetDlgItemText(hDlg,IDC_EDIT_WAV_FILE,ofn.lpstrFile);
+
+					return TRUE;
+				}
 			}
 			break;
 	}

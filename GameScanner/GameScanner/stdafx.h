@@ -70,7 +70,7 @@
 #include <ole2.h>
 #include <iphlpapi.h>
 #include <icmpapi.h>  //ping
-
+#include <Mmsystem.h>
 
 #include "structs_defines.h"
 #include "utilz.h"

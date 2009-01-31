@@ -171,7 +171,6 @@
 #define IDC_EDIT_EXT_WINDOWNAME         1042
 #define IDC_BUTTON_CFG_MASTER_SRV       1043
 #define IDC_LIST_CONFIG                 1043
-#define IDC_EDIT_EXT_WINDOWNAME2        1043
 #define IDC_CHECK_EXACT_MATCH           1044
 #define IDC_STATIC_INSTALL_PATH         1045
 #define IDC_CHECK_NO_COLOR_MATCH        1045
@@ -259,6 +258,10 @@
 #define IDC_STATIC_WEB_PROTOCOL         1212
 #define IDC_CHECK_REG_WEB_PROTOCOLS     1213
 #define IDC_STATIC_LABEL                1214
+#define IDC_EDIT1                       1215
+#define IDC_EDIT_WAV_FILE               1215
+#define IDC_CHECK_USE_WAV_FILE          1216
+#define IDC_BUTTON_WAV_FILE             1217
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -352,9 +355,9 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1110
+#define _APS_NEXT_RESOURCE_VALUE        1220
 #define _APS_NEXT_COMMAND_VALUE         32783
-#define _APS_NEXT_CONTROL_VALUE         1215
+#define _APS_NEXT_CONTROL_VALUE         1217
 #define _APS_NEXT_SYMED_VALUE           110
 #endif
 #endif

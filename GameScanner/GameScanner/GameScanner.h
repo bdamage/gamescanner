@@ -3,6 +3,7 @@
 #include "resource.h"
 
 #include "..\..\tinyxml\tinyxml.h"
+
 DWORD WINAPI StopScanningThread(LPVOID pvoid );
 void Load_WindowSizes();
 void XML_ReadWindow(TiXmlElement * pNode, _WINDOW_CONTAINER *wc) ;
@@ -48,6 +49,7 @@ LRESULT CALLBACK AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 BOOL ExecuteGame(GAME_INFO *pGI,TCHAR *szCmd,int GameInstallIdx=0);
 BOOL WINAPI EditCopy(TCHAR *pText);
 PLAYERDATA *Get_PlayerBySelection();
+DWORD WINAPI PlayNotify(LPVOID lpParam );
 void LoadImageList();
 void Load_CountryFlags();
 int Get_CountryFlagByShortName(const TCHAR *szCC);

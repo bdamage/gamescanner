@@ -1,5 +1,6 @@
 version 1.33
 ----------
+* Added buddy sound notification.
 
 version 1.32
 ----------
