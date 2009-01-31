@@ -9,6 +9,8 @@ version 1.31
 * Multiserver selection RCON support.
 * Country column now clips.
 * Potential memory leak fixed during scanning servers.
+* Fixed a crash bug when using search field and server scanning at the same time.
+* Fixed a bug when Conencting from a online Buddy.
 * Fixed export code to work as expected, GS supports now two output format:
 Generic plain text:
 ip:port 
