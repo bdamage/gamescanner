@@ -1,3 +1,10 @@
+version 1.33
+----------
+
+version 1.32
+----------
+* Fixed a bug with color encoded text overdraw some columns but now it clips if outside column rectangle.
+* Fixed cosmetical country filter selection during start up, now gray checkboxes appears correctly.
 
 version 1.31
 ----------
