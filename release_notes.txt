@@ -1,6 +1,7 @@
 version 1.33
 ----------
 * Added buddy sound notification.
+* Window resize bug aka "White screen of death" seems to be fixed now.
 
 version 1.32
 ----------
