@@ -496,7 +496,7 @@
 			<MasterServer http="0">72.165.61.189:27011</MasterServer>
 			<MasterServer http="0">69.28.140.246:27011</MasterServer>	
 		</MasterServers>
-		<ServerDefaultPort>28960</ServerDefaultPort>
+		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
 		<MasterQueryString></MasterQueryString>
 		<Detection>
