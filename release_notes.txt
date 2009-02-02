@@ -1,7 +1,8 @@
 version 1.34
 ----------
-
-* Added new menu item "Delete" which deletes server on the right click menu. 
+* Added support for Refresh only selected servers.
+* mIRC changed so you can initiate the message with /ame, /me, /msg or /amsg.
+* Added new menu item that deletes the server from the serverlist right click menu. 
 * Added server events following events is supported:
  - Auto join when free slots is available.
  - Notify on free slots available.

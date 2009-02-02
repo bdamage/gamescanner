@@ -352,6 +352,7 @@
 #define IDM_MONITOR_AUTO_JOIN			32908
 #define IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE 32909
 #define IDM_MONITOR_NOTIFY_WHEN_ACTIVITY 32910
+#define IDM_REFRESH_SELECTED			32911
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 
