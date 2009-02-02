@@ -1,3 +1,17 @@
+version 1.34
+----------
+
+* Added new menu item "Delete" which deletes server on the right click menu. 
+* Added server events following events is supported:
+ - Auto join when free slots is available.
+ - Notify on free slots available.
+ - Notify on server activity (it has players).
+
+NOTE: GS monitor all servers in 10 sec interval (including GS is minimized).
+
+
+
+
 version 1.33
 ----------
 * Added buddy sound notification.

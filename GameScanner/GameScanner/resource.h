@@ -262,6 +262,8 @@
 #define IDC_EDIT_WAV_FILE               1215
 #define IDC_CHECK_USE_WAV_FILE          1216
 #define IDC_BUTTON_WAV_FILE             1217
+#define IDI_ICON8                       1221
+#define IDI_ICON_ARROW_NET              1221
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -347,6 +349,9 @@
 #define IDM_EDIT_RULE                   32905
 #define IDM_COPY_RULE                   32906
 #define ID_DLG_ENUMERATE_GAMES          32907
+#define IDM_MONITOR_AUTO_JOIN			32908
+#define IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE 32909
+#define IDM_MONITOR_NOTIFY_WHEN_ACTIVITY 32910
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 
@@ -355,7 +360,7 @@
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
-#define _APS_NEXT_RESOURCE_VALUE        1220
+#define _APS_NEXT_RESOURCE_VALUE        1222
 #define _APS_NEXT_COMMAND_VALUE         32783
 #define _APS_NEXT_CONTROL_VALUE         1217
 #define _APS_NEXT_SYMED_VALUE           110

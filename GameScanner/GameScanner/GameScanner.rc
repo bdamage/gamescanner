@@ -603,6 +603,7 @@ IDI_ICON_RULES          ICON                    "res\\ico00004.ico"
 IDI_ICON_TASKTRAY       ICON                    "res\\icon9.ico"
 IDI_ICON_MIRC           ICON                    "res\\mirc.ico"
 IDI_ICON_NEW_GS_LOGO    ICON                    "res\\icon4.ico"
+IDI_ICON_ARROW_NET      ICON                    "res\\arrownet.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
