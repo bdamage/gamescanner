@@ -130,7 +130,7 @@ void ClickMouse()
 }
 
 
-void AddIntoAutoRun(char *path)
+void AddAutoRun(char *path)
 {
 	LONG ret;
 	HKEY hkey;

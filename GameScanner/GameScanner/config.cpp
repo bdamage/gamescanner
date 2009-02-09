@@ -326,7 +326,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					CFG_ApplySettings();
 					
 					if(AppCFGtemp.bAutostart)
-						AddIntoAutoRun(EXE_PATH);
+						AddAutoRun(EXE_PATH);
 					else
 						RemoveAutoRun();
 					
