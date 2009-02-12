@@ -22,6 +22,7 @@ extern GamesMap GamesInfo;
 extern APP_SETTINGS_NEW AppCFG;
 extern HWND g_hWnd;
 extern SERVER_INFO *g_CurrentSRV;
+extern BOOL ReplaceStrInStr(string &strToReplace,const char *szReplace,const char *szReplaceWith);
 bool Q3_bCloseApp=false;
 
 
@@ -969,9 +970,12 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	SplitIPandPORT(szIP,pGI->dwMasterServerPORT);
 
 	int len = 0;//(int)strlen(sendbuf);
-	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
+	string query;
+	query = pGI->szMasterQueryString;
+	ReplaceStrInStr(query,"%PROTOCOL%",pGI->szGameProtocol[iMasterIdx]);
+	len = UTILZ_ConvertEscapeCodes((TCHAR*)query.c_str(),sendbuf,sizeof(sendbuf));
+
 	ConnectSocket = getsockudp(szIP,(unsigned short)pGI->dwMasterServerPORT); // etmaster.idsoftware.com"27950 master server
-  
 	if(INVALID_SOCKET==ConnectSocket)
 	{
 
@@ -1047,6 +1051,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 			//AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
 			AddLogInfo(0,"Master server %s   (%d)",pGI->szMasterServerIP[0],(unsigned short)pGI->dwMasterServerPORT);
 			AddLogInfo(0,"Sending command [%s] (%s) Len: %d",sendbuf,pGI->szMasterQueryString,len);
+
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
 				KillTimer(g_hWnd,IDT_1SECOND);

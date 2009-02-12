@@ -2,7 +2,7 @@ version 1.35
 ---------
 * Improved server monitor code.
 * Fixed a bug with auto start up and GS never minimized automaticly.
-
+* Fixed so gamedefaults.xml now supports multiple master server and different protocols.
 
 version 1.34
 ----------

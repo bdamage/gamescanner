@@ -133,10 +133,12 @@
 		<Icon>rtcw.ico</Icon>
 		<MasterServers>
 			<MasterServer http="0" protocol="60">wolfmotd.idsoftware.com:27950</MasterServer>
+			<MasterServer http="0" protocol="59">wolfmotd.idsoftware.com:27950</MasterServer>
+			<MasterServer http="0" protocol="58">wolfmotd.idsoftware.com:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 60 empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers %PROTOCOL% empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot></RegRoot>

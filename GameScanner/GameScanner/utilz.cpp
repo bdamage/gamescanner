@@ -781,6 +781,27 @@ int UTILZ_ConvertEscapeCodes(char*pszInput,char*pszOutput,DWORD dwMaxBuffer)
 	pszOutput[dwMaxBuffer-1]=0;
 	return len;
 }
+/***************************************
+
+Usage: ReplaceStrInStr(myString,"%IP%","127.0.0.1");
+Return: TRUE if successfull.
+
+****************************************/
+BOOL ReplaceStrInStr(string &strToReplace,const char *szReplace,const char *szReplaceWith)
+{
+	string::size_type offset;
+	offset = strToReplace.find(szReplace);
+	if(offset!=-1)
+	{
+		strToReplace.insert(offset,szReplaceWith);
+		offset = strToReplace.find(szReplace);
+		strToReplace.erase(offset,strlen(szReplace));
+		return TRUE;
+	}
+	return FALSE;
+}
+
+
 
 char *Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
 {
