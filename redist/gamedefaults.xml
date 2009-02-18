@@ -1,5 +1,5 @@
 <Games>
-	<Version>1.1</Version>
+	<Version>1.2</Version>
 	<Game>
 		<GameIndex>0</GameIndex>
 		<Name>Wolfenstein - Enemy Territory</Name>
@@ -9,7 +9,7 @@
 		<NetEngine>Q3</NetEngine>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 84 empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers %PROTOCOL% empty full</MasterQueryString>
 		<MapPreviewPath>etmaps</MapPreviewPath>
 		<Icon>et.ico</Icon>
 		<MasterServers>
@@ -69,11 +69,12 @@
 		<MapPreviewPath>q3maps</MapPreviewPath>
 		<Icon>q3.ico</Icon>
 		<MasterServers>
-			<MasterServer http="0" protocol="68">monster.idsoftware.com:27950</MasterServer>			
+			<MasterServer http="0" protocol="48">monster.idsoftware.com:27950</MasterServer>			
+			<MasterServer http="0" protocol="68">monster.idsoftware.com:27950</MasterServer>	
 		</MasterServers>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 68 empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers %PROTOCOL% empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
@@ -459,11 +460,12 @@
 		<MapPreviewPath>openarenawmaps</MapPreviewPath>
 		<Icon>openarena.ico</Icon>
 		<MasterServers>
-			<MasterServer http="0">dpmaster.deathmask.net:27950</MasterServer>
+			<MasterServer http="0" protocol="68" >dpmaster.deathmask.net:27950</MasterServer>
+			<MasterServer http="0" protocol="71" >dpmaster.deathmask.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus 123456789012</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers 71 openarena empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers %PROTOCOL% openarena empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot></RegRoot>

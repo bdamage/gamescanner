@@ -743,7 +743,8 @@ PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *num
 
 				switch(pSI->cGAMEINDEX)
 				{
-					
+					case NEXUIZ_SERVERLIST:
+					case OPENARENA_SERVERLIST:
 					case Q3_SERVERLIST:
 						{
 							if(player->ping == 0)

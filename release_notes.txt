@@ -3,6 +3,9 @@ version 1.35
 * Improved server monitor code.
 * Fixed a bug with auto start up and GS never minimized automaticly.
 * Fixed so gamedefaults.xml now supports multiple master server and different protocols.
+* New protocols support for Open Arena protocol 68 & 71 and Quake 3 which is 48 (No Ghost)  & 68.
+* Added bot filtering for Nexeuiz and Open Arena.
+
 
 version 1.34
 ----------
