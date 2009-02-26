@@ -4,8 +4,9 @@ version 1.35
 * Fixed a bug with auto start up and GS never minimized automaticly.
 * Fixed so gamedefaults.xml now supports multiple master server and different protocols.
 * New protocols support for Open Arena protocol 68 & 71 and Quake 3 which is 48 (No Ghost)  & 68.
-* Added bot filtering for Nexeuiz and Open Arena.
-
+* Added bot filtering for Nexuiz and Open Arena.
+* Fixed a crash bug for all Doom 3, Quake 4 and ETQW, thanks JBRAA for reporting this.
+* Added new Mod filtering for Quake 2 and some common maps into Q2 treeview.
 
 version 1.34
 ----------

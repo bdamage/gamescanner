@@ -87,7 +87,7 @@ char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char 
 
 
 
-DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI, int nMasterIdx)
+DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 {
 	Q4_bScanningInProgress = TRUE;	
 	size_t packetlen=0;
@@ -97,11 +97,15 @@ DWORD Q4_ConnectToMasterServer(GAME_INFO *pGI, int nMasterIdx)
 	
 	int len = 0;
 	len = UTILZ_ConvertEscapeCodes(pGI->szMasterQueryString,sendbuf,sizeof(sendbuf));
+	char szIP[260];
+	strcpy(szIP,pGI->szMasterServerIP[iMasterIdx]);
+	
+	SplitIPandPORT(szIP,pGI->dwMasterServerPORT);
 
-	dbg_print("Master server %s:%d",pGI->szMasterServerIP[0],(unsigned short)pGI->dwMasterServerPORT);
+	dbg_print("Master server %s:%d",szIP,(unsigned short)pGI->dwMasterServerPORT);
 
 
-	ConnectSocket = getsockudp(pGI->szMasterServerIP[0],(unsigned short)pGI->dwMasterServerPORT);
+	ConnectSocket = getsockudp(szIP,(unsigned short)pGI->dwMasterServerPORT);
    
 	if(INVALID_SOCKET==ConnectSocket)
 	{
@@ -202,9 +206,6 @@ SERVER_INFO* Q4_ParseServers(char * p, DWORD length,  GAME_INFO *pGI,long (*Inse
 
 	return NULL;
 }
-
-
-
 
 
 
@@ -533,7 +534,7 @@ bot_minplayers
 
 				packet++;			
 			}
-
+			player->pServerInfo = pSI;
 			if(pQ4Players==NULL)
 				pQ4Players = pQ4CurrentPlayer = player;
 			else 

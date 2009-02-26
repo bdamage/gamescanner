@@ -628,7 +628,7 @@
 		<Filename>doom3.servers</Filename>
 		<NetEngine>Q4</NetEngine>
 		<ColorEncoding>Q4</ColorEncoding>
-		<WebProtocol>q4</WebProtocol>
+		<WebProtocol>doom3</WebProtocol>
 		<MapPreviewPath>doom3maps</MapPreviewPath>
 		<Icon>doom3.ico</Icon>
 		<MasterServers>

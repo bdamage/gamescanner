@@ -85,7 +85,7 @@
 #include "..\..\IPtoCountry\IPtoCountry.h"
 #include "..\..\FreeImage\freeimage.h"
 #include "..\..\hashlib\src\hashlibpp.h"
-#include <..\..\tinyxml\tinyxml.h>
+#include <tinyxml.h>
 
 // TODO: reference additional headers your program requires here
 
