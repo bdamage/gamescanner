@@ -87,7 +87,7 @@ char *UTF8toMB(const char* inUtf8, char* outStr)
 	int len = strlen((char*)inUtf8);
 	WCHAR* pwcbuff = (WCHAR*)calloc(len,sizeof(WCHAR));
 
-    MultiByteToWideChar(CP_UTF8,0,         inUtf8, len,       pwcbuff,  len*2        );
+    MultiByteToWideChar(CP_UTF8,0, inUtf8, len,  pwcbuff,  len*2);
 	WideCharToMultiByte(CP_ACP,0, pwcbuff, len, outStr, len, NULL, NULL);
 	free(pwcbuff);
 	return outStr;

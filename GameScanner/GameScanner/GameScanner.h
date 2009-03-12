@@ -11,7 +11,7 @@ void XML_WriteWindow(TiXmlElement * parent, char *szParentName, _WINDOW_CONTAINE
 LRESULT CALLBACK EnumerateGames_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
-void UpdateTabControl();
+void OnTabControlSelection(int iSelection=-1);
 HWND FindGameWindow();
 void ClearServerList(int i);
 void ListView_InitilizeColumns();

@@ -269,7 +269,7 @@
 #define IDM_HOMEPAGE                    32772
 #define ID_BUDDY_ADDNEW                 32772
 #define IDM_SETTINGS                    32773
-#define ID_TT_SERVER1                   32774
+#define IDM_PING_SERVER                   32774
 #define IDM_ADD                         32775
 #define ID_FOO2_SERVER3                 32776
 #define ID_BUDDY_REMOVESELECTEDBUDDY    32776
@@ -321,7 +321,7 @@
 #define ID_BUDDY_ADDFROMPLAYERLIST      32807
 #define ID_FAVORITES_REMOVE             32808
 #define ID_OPTIONS_RCON                 32809
-#define ID_TT_SERVER2                   32879
+#define IDM_TRACEROUTE_SERVER                   32879
 #define ID_YAWN_SERVER                  32880
 #define ID_YAWN_PLAYER                  32881
 #define ID_KICK_PLAYER                  32882
