@@ -1,6 +1,8 @@
 version 1.36
 ------------
-
+* Cosmetical fixes with ping graph.
+* Left 4 dead added into Half-life 2 mod filter.
+* Fixed a bug when selecting a server it didn't always update.
 
 
 version 1.35
