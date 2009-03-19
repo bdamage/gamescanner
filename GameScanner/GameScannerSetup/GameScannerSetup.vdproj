@@ -7951,14 +7951,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{410AAD30-6890-4413-905A-5D74C29B5D05}"
-        "PackageCode" = "8:{32FF595C-1F55-46BC-831E-9ECAF6935C8C}"
+        "ProductCode" = "8:{4D737C75-ECA3-49A1-BF2F-C8826BAF3CDE}"
+        "PackageCode" = "8:{75191330-B8B3-4477-BD8B-9A047F2763FE}"
         "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:1.3.5"
+        "ProductVersion" = "8:1.3.6"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"
@@ -8500,7 +8500,7 @@
         {
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_9572CAEE2F59444B8B9E89C61DF38097"
             {
-            "SourcePath" = "8:..\\Release x64\\GameScanner.exe"
+            "SourcePath" = "8:..\\Release\\GameScanner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_75818A3A19CB4600A3CB64B230DC31FB"

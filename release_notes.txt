@@ -2,8 +2,8 @@ version 1.36
 ------------
 * Cosmetical fixes with ping graph.
 * Left 4 dead added into Half-life 2 mod filter.
-* Fixed a bug when selecting a server it didn't always update.
-
+* Fixed a bug when selecting a server it didn't always update, this only occured in certain scenarios.
+* Fixed window resize bug during start up under Windows XP (atleast fixed and tested under my Win XP virtualization system).
 
 version 1.35
 ---------
