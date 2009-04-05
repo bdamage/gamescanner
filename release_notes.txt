@@ -1,9 +1,17 @@
+version 1.37
+------------
+* Fixed a bug with the montior code when you have set an event on specific server to auto join. 
+  GS could launch multiple instances of a game, now the monitor code will be terminated after a auto join event.
+
+
+
 version 1.36
 ------------
 * Cosmetical fixes with ping graph.
 * Left 4 dead added into Half-life 2 mod filter.
-* Fixed a bug when selecting a server it didn't always update, this only occured in certain scenarios.
-* Fixed window resize bug during start up under Windows XP (atleast fixed and tested under my Win XP virtualization system).
+* Fixed a bug when selecting a server it didn't always update.
+* Fixed cosmetical window resize bug during start up in Win XP (fixed at least under virtualization).
+
 
 version 1.35
 ---------
