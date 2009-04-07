@@ -2,7 +2,7 @@ version 1.37
 ------------
 * Fixed a bug with the montior code when you have set an event on specific server to auto join. 
   GS could launch multiple instances of the same game, now the monitor code will be terminated after joining a server from event trigger.
-* IP to country update
+* IP to country database update.
 * CoD 4 Hardcore and killcam(?) filter.
 * CoD WaW Hardcore and killcam(?) filter plus additional map and gametype filter.
 * Corrected Quake 2 and Quakeworld icons.

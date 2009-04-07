@@ -394,7 +394,7 @@
 		<ColorEncoding>QW</ColorEncoding>
 		<Icon>qw.ico</Icon>
 		<MasterServers>
-			<MasterServer http="1">http://www.quakeservers.net/lists/servers/global.txt</MasterServer>					
+			<MasterServer http="1">http://www.quakeservers.net/lists/servers/global.txt</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFstatus 15\n</ServerInfoQuery>
