@@ -807,8 +807,11 @@ char *Get_RuleValue(char *szRuleName,SERVER_RULES *pSR)
 {
 	while(pSR!=NULL)
 	{
-		if(_stricmp(pSR->name,szRuleName)==0)
-			return pSR->value;
+		if(pSR->name!=NULL)
+		{
+			if(_stricmp(pSR->name,szRuleName)==0)
+				return pSR->value;
+		}
 		pSR = pSR->pNext;
 
 	}

@@ -55,6 +55,6 @@ DWORD WINAPI  Q3_Get_ServerStatusThread(LPVOID lpParam);
 DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
 PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI, TCHAR *pointer,TCHAR *end, DWORD *numPlayers,TCHAR *szP=NULL);
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,TCHAR *pointer,TCHAR *end, DWORD *numPlayers);
-
+DWORD COD4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
 
 #endif

@@ -433,6 +433,273 @@ retry:
 }
 
 
+DWORD COD4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
+{
+	SOCKET pSocket = NULL;
+	unsigned char *packet=NULL;
+	DWORD dwStartTick=0;
+
+	if(pSI==NULL)
+	{
+		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
+		return (DWORD)0x000001;
+	}
+
+	if(pSI->bLocked)
+	{
+		dbg_print("Server locked @Get_ServerStatus!\n");
+		return 3;
+	}
+
+	pSI->bLocked = TRUE;
+
+
+	if(pSI->pPlayerData!=NULL)
+		CleanUp_PlayerList(pSI->pPlayerData);
+	pSI->pPlayerData = NULL;
+
+	if(pSI->pServerRules!=NULL)
+		CleanUp_ServerRules(pSI->pServerRules);
+	pSI->pServerRules = NULL;
+
+
+	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->usPort); 
+ 
+	if(pSocket==INVALID_SOCKET)
+	{
+	  dbg_print("Error at getsockudp()\n");
+	  pSI->bLocked = FALSE;
+	  return 0x000002;
+	}
+
+	size_t packetlen = 0;
+
+	//Some default values
+	pSI->dwPing = 9999;
+
+	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
+	{
+	
+		char szShortName[4];			
+		fnIPtoCountry(pSI->dwIP,szShortName);//optimized since v1.31 
+		strncpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName,_TRUNCATE);
+	}
+	DWORD dwRetries=0;
+	int len = 0; //(int)strlen(sendbuf);
+	char sendbuf[80];
+	ZeroMemory(sendbuf,sizeof(sendbuf));
+	len = UTILZ_ConvertEscapeCodes(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
+retry:
+	if(GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
+		packetlen = send(pSocket, sendbuf, len+1, 0);
+	else
+		packetlen=SOCKET_ERROR;
+
+		
+	if(packetlen==SOCKET_ERROR) 
+	{
+		dbg_print("Error at send()\n");
+		closesocket(pSocket);		
+		pSI->cPurge++;
+		pSI->bLocked = FALSE;
+		return -1;
+	}
+
+	dwStartTick = GetTickCount();
+	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(packet==NULL)
+	{
+		if(dwRetries<AppCFG.dwRetries)
+		{
+			dwRetries++;
+			goto retry;
+		}
+	}
+
+	if(packet) 
+	{
+		pSI->dwPing = (GetTickCount() - dwStartTick);
+		//dbg_dumpbuf("dump.bin", packet, packetlen);
+		SERVER_RULES *pServRules=NULL;
+		SERVER_RULES *pServRules2=NULL;
+		char *end = (char*)((packet)+packetlen);
+		
+		char *pCurrPointer=NULL; //will contain the start address for the player data
+
+		pCurrPointer = Q3_ParseServerRules(pServRules,(char*)packet,packetlen);
+		pSI->pServerRules = pServRules;
+
+		if(pServRules!=NULL)
+		{		
+		
+			PLAYERDATA *pQ3Players=NULL;
+			DWORD nPlayers=0;
+			//---------------------------------
+			//Retrieve players if any exsist...
+			//---------------------------------
+
+			pQ3Players = Q3_ParsePlayers(pSI,pCurrPointer,end,&nPlayers);
+
+	
+			pSI->pPlayerData = pQ3Players;
+
+			//-----------------------------------
+			//Update server info from rule values
+			//-----------------------------------
+			pSI->bNeedToUpdateServerInfo = 0;
+			pSI->bUpdated = true;
+			pSI->cPurge = 0;
+			pSI->nCurrentPlayers = nPlayers;
+			char *szVarValue=NULL;
+			char *pVarValue = NULL;
+			pVarValue = Get_RuleValue("sv_hostname",pServRules);
+			if(pVarValue!=NULL)
+			{
+				strncpy(pSI->szServerName,pVarValue ,99);
+			}
+			else  
+			{
+				pVarValue = Get_RuleValue("hostname",pServRules);
+				if(pVarValue!=NULL)
+					strncpy(pSI->szServerName,pVarValue ,99);
+			}
+
+			if(Set_RuleStr(pSI->pServerRules,"mapname", pSI->szMap,sizeof(pSI->szMap)-1)==FALSE)
+			{
+				Set_RuleStr(pSI->pServerRules,"map", pSI->szMap,sizeof(pSI->szMap)-1);	//for Quake World
+			}
+			
+			pSI->dwMap = Get_MapByName(pSI->cGAMEINDEX, pSI->szMap); //get quick lookup DWORD value for filtering
+
+
+			pVarValue = Get_RuleValue("mod",pServRules);			
+			if(pVarValue!=NULL)
+			{
+				pSI->dwMod = 1;
+				if(strcmp(pVarValue,"1")==0)
+				{	
+					char *mod;
+					mod = Get_RuleValue("fs_game",pServRules);
+					if(mod!=NULL)
+					{
+						strncpy(pSI->szMod, mod,MAX_MODNAME_LEN-1);									
+					}
+				}
+			}
+			pSI->dwMod = Get_ModByName(pSI->cGAMEINDEX,pSI->szMod);
+			
+			szVarValue = Get_RuleValue("pswrd",pServRules);  //CoD & Cod2
+			if(szVarValue!=NULL)
+				pSI->bPrivate = atoi(szVarValue);
+
+			szVarValue = Get_RuleValue("shortversion",pServRules);
+			if(szVarValue!=NULL)
+			{
+				ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
+				strncpy(pSI->szVersion,szVarValue,49);
+			}
+
+			if(pSI->szVersion!=NULL)
+				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+
+			szVarValue = Get_RuleValue("sv_pure",pServRules);
+			if(szVarValue!=NULL)
+				pSI->cPure = atoi(szVarValue);
+			
+			szVarValue = Get_RuleValue("g_gametype",pServRules);
+			pSI->dwGameType = Get_GameTypeByName(pSI->cGAMEINDEX, szVarValue);
+
+			szVarValue = Get_RuleValue("sv_punkbuster",pServRules);
+			if(szVarValue!=NULL)
+				pSI->bPunkbuster = (char)atoi(szVarValue);
+
+
+			szVarValue = Get_RuleValue("sv_privateClients",pServRules);
+			if(szVarValue!=NULL)
+				pSI->nPrivateClients = atoi(szVarValue);
+
+			szVarValue = Get_RuleValue("sv_maxclients",pServRules);
+			if(szVarValue!=NULL)
+			{
+				int maxClient = atoi(szVarValue);
+				if(maxClient>pSI->nPrivateClients)
+					pSI->nMaxPlayers = maxClient-pSI->nPrivateClients;
+				else
+					pSI->nMaxPlayers = pSI->nPrivateClients-maxClient;
+
+			}
+			free(packet);
+			packet =NULL;
+		//	pCurrPointer = Q3_ParseServerRules(pServRules,(char*)packet,packetlen);
+
+			ZeroMemory(sendbuf,sizeof(sendbuf));
+			len = UTILZ_ConvertEscapeCodes("\xFF\xFF\xFF\xFFgetinfo x73",sendbuf,sizeof(sendbuf));
+			Sleep(50);		
+			packetlen = send(pSocket, sendbuf, len+1, 0);
+			packet=(unsigned char*)getpacket(pSocket, &packetlen);
+
+			if(packet) 
+			{
+				pSI->dwPing = (GetTickCount() - dwStartTick);
+				//dbg_dumpbuf("dump.bin", packet, packetlen);
+				SERVER_RULES *pServRulestemp=NULL;
+				SERVER_RULES *pServRules2=NULL;
+				char *end = (char*)((packet)+packetlen);
+				
+				char *pCurrPointer2=NULL; //will contain the start address for the player data
+
+				pCurrPointer2 = Q3_ParseServerRules(pServRules2,(char*)packet,packetlen);
+				pServRulestemp = pSI->pServerRules ;
+				while(pServRulestemp!=NULL)
+				{
+					if(pServRulestemp->pNext==NULL)
+						break;
+					pServRulestemp = pServRulestemp->pNext;
+
+				}
+				
+				pServRulestemp->pNext = pServRules2;
+				szVarValue = Get_RuleValue("hc",pServRules);
+				if(szVarValue!=NULL)
+					pSI->bHardcore = (BYTE)atoi(szVarValue);
+
+				szVarValue = Get_RuleValue("kc",pServRules);
+				if(szVarValue!=NULL)
+					pSI->bHardcore = (BYTE)atoi(szVarValue);
+				free(packet);
+				packet = NULL;
+			}
+
+
+			if(UpdatePlayerListView!=NULL) 
+				UpdatePlayerListView(pQ3Players);
+				
+			if(UpdateRulesListView!=NULL)
+				UpdateRulesListView(pSI->pServerRules);
+
+			if(Callback_CheckForBuddy!=NULL)
+				Callback_CheckForBuddy(pQ3Players,pSI);
+
+			CleanUp_ServerRules(pSI->pServerRules);
+			pSI->pServerRules = NULL;	
+
+			CleanUp_PlayerList(pQ3Players);
+			pSI->pPlayerData = NULL;
+			
+
+		} //end if(pServRules!=NULL)
+
+		
+
+	} //end if(packet)
+	else
+		pSI->cPurge++;   //increase purge counter when the server is not responding
+
+	closesocket(pSocket);
+	pSI->bLocked = FALSE;
+	return 0;
+}
+
 
 
 SERVER_INFO* Q3_ParseServers(char * p, DWORD length, GAME_INFO *pGI)

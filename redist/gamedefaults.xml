@@ -224,7 +224,7 @@
 		<Name>Call of Duty 4 - Modern Warfare</Name>
 		<ShortName>CoD 4</ShortName>
 		<Filename>cod4.servers</Filename>
-		<NetEngine>Q3</NetEngine>
+		<NetEngine>COD4</NetEngine>
 		<WebProtocol>cod4</WebProtocol>
 		<MapPreviewPath>cod4maps</MapPreviewPath>
 		<Icon>cod4.ico</Icon>
@@ -628,7 +628,7 @@
 		<Filename>doom3.servers</Filename>
 		<NetEngine>Q4</NetEngine>
 		<ColorEncoding>Q4</ColorEncoding>
-		<WebProtocol>doom3</WebProtocol>
+		<WebProtocol>q4</WebProtocol>
 		<MapPreviewPath>doom3maps</MapPreviewPath>
 		<Icon>doom3.ico</Icon>
 		<MasterServers>
@@ -651,7 +651,7 @@
 		<Name>Call of Duty - World at War</Name>
 		<ShortName>CoD WaW</ShortName>
 		<Filename>codwaw.servers</Filename>
-		<NetEngine>Q3</NetEngine>
+		<NetEngine>COD4</NetEngine>
 		<WebProtocol>codwaw</WebProtocol>
 		<MapPreviewPath>codwawmaps</MapPreviewPath>
 		<Icon>CoDWaW.ico</Icon>
