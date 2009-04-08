@@ -401,7 +401,7 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 
 	char appid[]={"\\napp\\500"};
 	char szIP[256];
-	strcpy(szIP,pGI->szMasterServerIP[iMasterIdx]);
+	strcpy_s(szIP,_countof(szIP), pGI->szMasterServerIP[iMasterIdx]);
 	SplitIPandPORT(szIP,pGI->dwMasterServerPORT);
 	ConnectSocket = getsockudp(szIP,(unsigned short)pGI->dwMasterServerPORT); 
    
@@ -671,7 +671,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 	ptempSI.dwPing = 9999;
 	ptempSI.cGAMEINDEX = pGI->cGAMEINDEX;
 	ptempSI.bNeedToUpdateServerInfo = 1;			
-	strcpy(ptempSI.szShortCountryName,"zz");
+	strcpy_s(ptempSI.szShortCountryName,"zz");
 
 	while(p<(endAddress)) 
 	{	
@@ -712,6 +712,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 	char *szNewIP = DWORD_IP_to_szIP(ptempSI.dwIP);
 	if(szNewIP!=NULL)
 		strcpy(szLastIP,szNewIP); 
+
 	dwLastPort = ptempSI.usPort;
 
 	AddLogInfo(0,"Parsed %d servers Last IP seen is %s:%d",i,szLastIP,dwLastPort);

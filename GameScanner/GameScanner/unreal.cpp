@@ -87,7 +87,7 @@ DWORD UT_Get_ServerStatus(SERVER_INFO *pSI,long (*Callback_UpdatePlayerListView)
 	{
 		char szShortName[4];
 		fnIPtoCountry(pSI->dwIP,szShortName);
-		strcpy(pSI->szShortCountryName,szShortName);
+		strcpy_s(pSI->szShortCountryName,szShortName);
 	}
 
 	DWORD dwRetries=0;

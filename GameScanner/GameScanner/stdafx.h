@@ -53,6 +53,7 @@
 #include <shellapi.h>
 #include <direct.h>
 #include <string>
+#include <string.h>
 #include <vector>
 #include <queue>
 #include <deque>

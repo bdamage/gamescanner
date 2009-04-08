@@ -49,7 +49,7 @@ LRESULT CALLBACK AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 BOOL ExecuteGame(GAME_INFO *pGI,TCHAR *szCmd,int GameInstallIdx=0);
 BOOL WINAPI EditCopy(TCHAR *pText);
 PLAYERDATA *Get_PlayerBySelection();
-DWORD WINAPI PlayNotify(LPVOID lpParam );
+DWORD WINAPI PlayNotifySound(LPVOID lpParam );
 void LoadImageList();
 void Load_CountryFlags();
 int Get_CountryFlagByShortName(const TCHAR *szCC);
@@ -132,7 +132,7 @@ LRESULT APIENTRY ListView_Rules_SubclassProc( HWND hwnd, UINT uMsg, WPARAM wPara
 LRESULT APIENTRY ListViewPlayerSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY ComboCountriesSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY ComboListCountriesSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-LRESULT APIENTRY ListViewServerListSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
+LRESULT APIENTRY ListView_SL_SubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 LRESULT APIENTRY LV_SL_HeaderSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ;
 LRESULT APIENTRY ListViewBuddySubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam,     LPARAM lParam) ;
 LRESULT APIENTRY ButtonPaneVSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
