@@ -521,7 +521,6 @@ retry:
 		pSI->dwPing = (GetTickCount() - dwStartTick);
 		//dbg_dumpbuf("dump.bin", packet, packetlen);
 		SERVER_RULES *pServRules=NULL;
-		SERVER_RULES *pServRules2=NULL;
 		char *end = (char*)((packet)+packetlen);
 		
 		char *pCurrPointer=NULL; //will contain the start address for the player data
@@ -592,15 +591,36 @@ retry:
 			if(szVarValue!=NULL)
 				pSI->bPrivate = atoi(szVarValue);
 
-			szVarValue = Get_RuleValue("shortversion",pServRules);
-			if(szVarValue!=NULL)
-			{
-				ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
-				strncpy(pSI->szVersion,szVarValue,49);
-			}
+			switch(pSI->cGAMEINDEX)
+			{			
+				case COD4_SERVERLIST :
+					{
+						szVarValue = Get_RuleValue("shortversion",pServRules);
+						if(szVarValue!=NULL)
+						{
+							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
+							strncpy(pSI->szVersion,szVarValue,49);
+						} 
+	
+						if(pSI->szVersion!=NULL)
+							pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+					}
+					break;
+				case COD5_SERVERLIST:
+					{
 
-			if(pSI->szVersion!=NULL)
-				pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+						szVarValue = Get_RuleValue("protocol",pServRules);
+						if(szVarValue!=NULL)
+						{
+							ZeroMemory(pSI->szVersion,sizeof(pSI->szVersion));
+							strncpy(pSI->szVersion,szVarValue,49);
+						} 
+	
+						if(pSI->szVersion!=NULL)
+							pSI->dwVersion =  Get_FilterVersionByVersionString(pSI->cGAMEINDEX,pSI->szVersion);
+					}
+					break;
+			}
 
 			szVarValue = Get_RuleValue("sv_pure",pServRules);
 			if(szVarValue!=NULL)
@@ -640,7 +660,6 @@ retry:
 
 			if(packet) 
 			{
-				pSI->dwPing = (GetTickCount() - dwStartTick);
 				//dbg_dumpbuf("dump.bin", packet, packetlen);
 				SERVER_RULES *pServRulestemp=NULL;
 				SERVER_RULES *pServRules2=NULL;
@@ -666,6 +685,15 @@ retry:
 				szVarValue = Get_RuleValue("kc",pServRules);
 				if(szVarValue!=NULL)
 					pSI->bHardcore = (BYTE)atoi(szVarValue);
+
+				szVarValue = Get_RuleValue("ff",pServRules);
+				if(szVarValue!=NULL)
+					pSI->bFriendlyFire = (BYTE)atoi(szVarValue);
+				szVarValue = Get_RuleValue("hw",pServRules);
+				if(szVarValue!=NULL)
+					pSI->bVehicle = (BYTE)atoi(szVarValue);
+
+
 				free(packet);
 				packet = NULL;
 			}
