@@ -3,6 +3,8 @@ version 1.38 beta
 -----------------
 * Bug fix with columns order.
 * Additional filters added for CoD4 and CoD Waw.
+* Clean up CoD WaW filters
+* Added new CoD WaW maps and version filter (v 1.4)
 
 
 Known issue still when using servername as the first column.
