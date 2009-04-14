@@ -173,10 +173,12 @@ BEGIN
     CONTROL         "Close on connect",IDC_CHECK_CONNECT_CLOSE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,46,186,12
     CONTROL         "Reigster web protocls to Game Scanner on start up.",IDC_CHECK_REG_WEB_PROTOCOLS,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,64,337,10
-    GROUPBOX        "Buddy notification",IDC_STATIC,10,91,337,46
+    GROUPBOX        "Buddy notification",IDC_STATIC,10,80,337,57
     CONTROL         "Use sound notification",IDC_CHECK_USE_WAV_FILE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,102,212,12
     EDITTEXT        IDC_EDIT_WAV_FILE,18,118,295,12,ES_AUTOHSCROLL
     PUSHBUTTON      "...",IDC_BUTTON_WAV_FILE,319,118,26,14
+    CONTROL         "Notify when a buddy is online",IDC_CHECK_BUDDY_NOTIFY,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,90,212,12
 END
 
 IDD_CFG2 DIALOGEX 0, 0, 360, 186

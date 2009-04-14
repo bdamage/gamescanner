@@ -27,8 +27,7 @@ extern HIMAGELIST g_hImageListIcons;
 extern APP_SETTINGS_NEW AppCFG;
 extern GamesMap GamesInfo;
 GamesMap GamesInfoCFG;
-///extern GAME_INFO GamesInfo[GamesInfo.size()+1];
-//GAME_INFO GamesInfoCFG[GamesInfo.size()+1];
+
 
 extern HINSTANCE g_hInst;
 extern TCHAR EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
@@ -50,8 +49,11 @@ HWND hwndConfDialog=NULL;
 
 void CFG_Apply_General(HWND hDlg)
 {
+
 	
 	AppCFGtemp.bUseBuddySndNotify = IsDlgButtonChecked(hDlg,IDC_CHECK_USE_WAV_FILE);
+	
+	AppCFGtemp.bBuddyNotify = IsDlgButtonChecked(hDlg,IDC_CHECK_BUDDY_NOTIFY);
 
 	GetDlgItemText(hDlg,IDC_EDIT_WAV_FILE,AppCFGtemp.szNotifySoundWAVfile,MAX_PATH);						
 
@@ -833,6 +835,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			
 			sprintf(szText,"%d",AppCFGtemp.dwRetries);
 			SetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szText);
+
+			
+
+			CheckDlgButton(hDlg,IDC_CHECK_BUDDY_NOTIFY,AppCFGtemp.bBuddyNotify);
 
 			CheckDlgButton(hDlg,IDC_CHECK_USE_WAV_FILE,AppCFGtemp.bUseBuddySndNotify);
 			SetDlgItemText(hDlg,IDC_EDIT_WAV_FILE,AppCFGtemp.szNotifySoundWAVfile);						

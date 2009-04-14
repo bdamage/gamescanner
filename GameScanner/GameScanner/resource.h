@@ -262,6 +262,8 @@
 #define IDC_EDIT_WAV_FILE               1215
 #define IDC_CHECK_USE_WAV_FILE          1216
 #define IDC_BUTTON_WAV_FILE             1217
+#define IDC_CHECK_USE_WAV_FILE2         1218
+#define IDC_CHECK_BUDDY_NOTIFY          1218
 #define IDI_ICON8                       1221
 #define IDI_ICON_ARROW_NET              1221
 #define IDM_OPEN                        32771
@@ -269,7 +271,7 @@
 #define IDM_HOMEPAGE                    32772
 #define ID_BUDDY_ADDNEW                 32772
 #define IDM_SETTINGS                    32773
-#define IDM_PING_SERVER                   32774
+#define IDM_PING_SERVER                 32774
 #define IDM_ADD                         32775
 #define ID_FOO2_SERVER3                 32776
 #define ID_BUDDY_REMOVESELECTEDBUDDY    32776
@@ -321,7 +323,7 @@
 #define ID_BUDDY_ADDFROMPLAYERLIST      32807
 #define ID_FAVORITES_REMOVE             32808
 #define ID_OPTIONS_RCON                 32809
-#define IDM_TRACEROUTE_SERVER                   32879
+#define IDM_TRACEROUTE_SERVER           32879
 #define ID_YAWN_SERVER                  32880
 #define ID_YAWN_PLAYER                  32881
 #define ID_KICK_PLAYER                  32882
@@ -349,10 +351,10 @@
 #define IDM_EDIT_RULE                   32905
 #define IDM_COPY_RULE                   32906
 #define ID_DLG_ENUMERATE_GAMES          32907
-#define IDM_MONITOR_AUTO_JOIN			32908
+#define IDM_MONITOR_AUTO_JOIN           32908
 #define IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE 32909
 #define IDM_MONITOR_NOTIFY_WHEN_ACTIVITY 32910
-#define IDM_REFRESH_SELECTED			32911
+#define IDM_REFRESH_SELECTED            32911
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 

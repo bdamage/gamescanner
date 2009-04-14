@@ -20,5 +20,6 @@ void OnAddSelectedPlayerToBuddyList();
 vecBI::iterator Buddy_FindBuddyInfoByID(DWORD dwID);
 bool Buddy_Sort_Name(BUDDY_INFO BIa, BUDDY_INFO BIb);
 bool Buddy_Sort_ServerName(BUDDY_INFO BIa, BUDDY_INFO BIb);
+void Buddy_AdvertiseBuddyIsOffline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo);
 
 #endif

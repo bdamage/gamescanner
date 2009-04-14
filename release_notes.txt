@@ -2,6 +2,11 @@
 version 1.39
 ------------
 * Fixed a bug for map preview not showing maps (if maps is installed).
+* Added support for aspect ratio of maps image preview.
+* Added Buddy offline support (now the buddy attached server is released).
+* Added new setting to turn off "Buddy balloon notification" at the sys-tray icon.
+
++minor bug fixes...
 
 
 version 1.38 beta

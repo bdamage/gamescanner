@@ -308,9 +308,11 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 	vecBI::iterator it = Buddy_FindBuddyInfoByID(pBI->dwID);
 	if(it!=BuddyList.end())
 	{	
-		strcpy_s(it->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
-		it->cGAMEINDEX = pServerInfo->cGAMEINDEX;
-		it->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+			strcpy_s(it->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName);
+			it->cGAMEINDEX = pServerInfo->cGAMEINDEX;
+			it->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+			it->pSI = pServerInfo;
+		
 	} else
 		return;
 	HWND hwndLV = g_hwndListBuddy;
@@ -341,16 +343,19 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 			item.cchTextMax = (int)strlen(it->szServerName);
 		}
 
-
 			item.iSubItem = 1;
 			item.iImage = Get_GameIcon(it->cGAMEINDEX);
 			ListView_SetItem(g_hwndListBuddy,&item);
 
-			sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
-			strcpy(it->szIPaddress,szText);
+
+				sprintf(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
+				strcpy(it->szIPaddress,szText);
+			
 			ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
 
 	}
+
+
 	if(GamesInfo[it->cGAMEINDEX].colorfilter!=NULL)
 		GamesInfo[it->cGAMEINDEX].colorfilter(it->szServerName,szText,249);
 	else
@@ -358,9 +363,58 @@ void Buddy_AdvertiseBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
 
 	if(g_bRunningQueryServerList && g_bPlayedNotify==false)
 		PlayNotifySound(0 );
-
-	ShowBalloonTip("A buddy is online!",szText);		
+	
+	if(AppCFG.bBuddyNotify)
+		ShowBalloonTip("A buddy is online!",szText);		
 }
+
+void Buddy_AdvertiseBuddyIsOffline(BUDDY_INFO *pBI, SERVER_INFO *pServerInfo)
+{
+	if(pBI==NULL)
+		return;
+	if(pServerInfo==NULL)
+		return;
+
+	vecBI::iterator it = Buddy_FindBuddyInfoByID(pBI->dwID);
+	if(it!=BuddyList.end())
+	{	
+			strcpy_s(it->szServerName,sizeof(pBI->szServerName)," ");
+			it->sIndex = (int) -1;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+			it->pSI = NULL;
+		
+	} else
+		return;
+
+
+	LV_FINDINFO lvfi;
+	TCHAR szText[250];
+	memset(&lvfi,0,sizeof(LV_FINDINFO));
+	lvfi.flags = LVFI_PARAM;
+	lvfi.lParam = (LPARAM)pBI->dwID;
+	int index = ListView_FindItem(g_hwndListBuddy , -1,  &lvfi); 
+
+	if(index!=-1)
+	{
+		LVITEM item;
+		item.mask = LVIF_TEXT | LVIF_IMAGE ;
+		item.iItem = index;
+		memset(szText,0,sizeof(szText));
+		item.iImage = -1;
+		item.pszText = it->szServerName;
+		item.cchTextMax = (int)strlen(it->szServerName);
+			
+		item.iSubItem = 1;
+		ListView_SetItem(g_hwndListBuddy,&item);
+
+		strcpy(it->szIPaddress," ");
+		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
+
+	}
+
+}
+
+
+
 
 long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 {
@@ -385,12 +439,11 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 			if(pPlayers->szPlayerName==NULL)
 				return 0;
 
+
 			if((BI.cMatchExact) && (BI.cMatchOnColorEncoded==0))
 			{
 				TCHAR cf[100],cf2[100];
 
-//				if(GamesInfo[pServerInfo->cGAMEINDEX].GAME_ENGINE!= VALVE_ENGINE)
-//				{
 				if(GamesInfo[pServerInfo->cGAMEINDEX].colorfilter!=NULL)
 				{
 					GamesInfo[pServerInfo->cGAMEINDEX].colorfilter(BI.szPlayerName,cf,sizeof(cf));					
@@ -408,7 +461,7 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 				{
 					Buddy_AdvertiseBuddyIsOnline(&BI, pServerInfo);
 					return 1;
-				}
+				} 
 			}else if((BI.cMatchExact) && (BI.cMatchOnColorEncoded))
 			{
 			//	dbg_print("%s == %s",BI.szPlayerName,pPlayers->szPlayerName);
@@ -482,11 +535,18 @@ long Buddy_CheckForBuddies(PLAYERDATA *pPlayers, SERVER_INFO *pServerInfo)
 					}
 				}
 			}
-		
-		}
-		pPlayers = pPlayers->pNext;
-	}
+			if(BI.pSI==pPlayers->pServerInfo)
+			{
+				Buddy_AdvertiseBuddyIsOffline(&BI, pServerInfo);
+			}
 
+		
+		} //end for
+
+		pPlayers = pPlayers->pNext;
+	} //end while
+
+	
 	return 0;
 }
 
@@ -526,6 +586,8 @@ BOOL Buddy_AddToList(TCHAR *szName,SERVER_INFO *pServer)
 {
 	BUDDY_INFO BI;
 	ZeroMemory(&BI,sizeof(BUDDY_INFO));
+	if(szName==NULL)
+		return FALSE;
 	strcpy(BI.szPlayerName,szName);
 	BI.dwID = BuddyList.size()+1;
 	if(pServer!=NULL)
