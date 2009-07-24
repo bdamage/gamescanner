@@ -1,0 +1,739 @@
+<?xml version="1.0" ?>
+<TreeViewCFG version="5.201">
+    <!--
+	Settings for Game Scanner treeview structure.
+	
+	History
+	Date     	Ver   	Description
+	*****************************************************************************************
+	2009-07-16	5.198	Removed all empty filters and updated Region filters.
+	2009-07-17  5.200	Clean up filter and fixed Half-Life 1 & 2 mods.
+	2009-07-18  5.201	Updated CoD WaW for patch 1.5 support and Quake 2 mods is now added.
+	
+	-->
+    <TreeItems>
+        <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="0" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filters name="Filters" icon="18" expand="0" state="0" type="0">
+                <PB name="Punkbuster on" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                <PB name="Punkbuster off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
+                <Private name="No Private" icon="9" expand="0" state="0" type="15">if g_needpass == &quot;1&quot; remove</Private>
+                <Private name="Private Only" icon="9" expand="0" state="0" type="15">if g_needpass != &quot;1&quot; remove</Private>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoETTV name="No ETTV" icon="9" expand="0" state="1" type="13">if version == &quot;ETTV*&quot; remove</NoETTV>
+                <NoBots name="No Bots" icon="9" expand="0" state="1" type="15">if bots &gt;= &quot;1&quot; remove</NoBots>
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Campaign" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;4&quot; remove</GameType>
+                    <GameType name="Objective" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;2&quot; remove</GameType>
+                    <GameType name="Stop Watch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;3&quot; remove</GameType>
+                    <GameType name="Last Man Standing" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;5&quot; remove</GameType>
+                </GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="etmain" icon="9" expand="0" state="0" type="13">if modname != &quot;etmain&quot; remove</Mod>
+                    <Mod name="etpro" icon="9" expand="0" state="0" type="13">if modname != &quot;etpro&quot; remove</Mod>
+                    <Mod name="JayMod" icon="9" expand="0" state="0" type="13">if modname != &quot;jaymod&quot; remove</Mod>
+                    <Mod name="NoQuarter" icon="9" expand="0" state="0" type="13">if modname != &quot;noquarter&quot; remove</Mod>
+                    <Mod name="ETPub" icon="9" expand="0" state="0" type="13">if modname != &quot;etpub&quot; remove</Mod>
+                    <Mod name="True Combat: Elite" icon="9" expand="0" state="0" type="13">if mod != &quot;tcetest&quot; remove</Mod>
+                </Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="2.55" icon="9" expand="0" state="0" type="13">if version == &quot;ET 2.55*&quot; keep&#x0D;&#x0A;remove</Version>
+                    <Version name="2.60" icon="9" expand="0" state="0" type="13">if version == &quot;ET 2.60 *&quot; keep&#x0D;&#x0A;remove</Version>
+                    <Version name="2.60b" icon="9" expand="0" state="0" type="13">if version == &quot;ET 2.60b*&quot; keep&#x0D;&#x0A;remove</Version>
+                    <Version name="ETTV" icon="9" expand="0" state="0" type="13">if version == &quot;ETTV*&quot; keep&#x0D;&#x0A;remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="Oasis" icon="9" expand="0" state="0" type="13">if map != &quot;oasis&quot; remove</Map>
+                    <Map name="Battery" icon="9" expand="0" state="0" type="13">if map != &quot;battery&quot; remove</Map>
+                    <Map name="Goldrush" icon="9" expand="0" state="0" type="13">if map != &quot;*goldrush*&quot; remove</Map>
+                    <Map name="Fueldump" icon="9" expand="0" state="0" type="13">if map != &quot;fueldump&quot; remove</Map>
+                    <Map name="Railgun" icon="9" expand="0" state="0" type="13">if map != &quot;railgun&quot; remove</Map>
+                    <Map name="Radar" icon="9" expand="0" state="0" type="13">if map != &quot;radar&quot; remove</Map>
+                    <Map name="Frostbite" icon="9" expand="0" state="0" type="13">if map != &quot;frostbite&quot; remove</Map>
+                    <Map name="Supply Depot" icon="9" expand="0" state="0" type="13">if map != &quot;*supply*&quot; remove</Map>
+                    <Map name="Ice" icon="9" expand="0" state="0" type="13">if map != &quot;et_ice*&quot; remove</Map>
+                    <Map name="Braundorf" icon="9" expand="0" state="0" type="13">if map != &quot;braundorf*&quot; remove</Map>
+                    <Map name="Caen" icon="9" expand="0" state="0" type="13">if map != &quot;caen*&quot; remove</Map>
+                    <Map name="Adlernest" icon="9" expand="0" state="0" type="13">if map != &quot;adlernest&quot; remove</Map>
+                </Map>
+            </Filters>
+        </Game>
+        <Game name="Enemy Territory - Quake Wars" icon="31" expand="0" state="0" game="1" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="1" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <PB name="Punkbuster on" icon="9" expand="0" state="0" type="15">if net_serverPunkbusterEnabled != &quot;1&quot; remove</PB>
+                <PB name="Punkbuster off" icon="9" expand="0" state="0" type="15">if net_serverPunkbusterEnabled == &quot;1&quot; remove</PB>
+                <Private name="No Private" icon="9" expand="0" state="0" type="15">if si_needPass == &quot;1&quot; remove</Private>
+                <Private name="Private Only" icon="9" expand="0" state="0" type="15">if si_needPass != &quot;1&quot; remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots &gt; &quot;0&quot; remove</NoBots>
+                <Ranked name="Ranked" icon="9" expand="0" state="0" type="13">if ranked != &quot;1&quot; remove</Ranked>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="baseETQW-1" icon="9" expand="0" state="0" type="13">if modname != &quot;baseETQW-1&quot; remove</Mod>
+                    <Mod name="ETQWPro-1" icon="9" expand="0" state="0" type="13">if modname != &quot;ETQWPro-1&quot; remove</Mod>
+                </Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="1.4" icon="9" expand="0" state="0" type="13">if version != &quot;ETQW 1.4*&quot; remove</Version>
+                    <Version name="1.5" icon="9" expand="0" state="0" type="13">if version != &quot;ETQW 1.5*&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="Ark" icon="9" expand="0" state="0" type="13">if map != &quot;*ark&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Quake World" icon="32" expand="0" state="0" game="12" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="12" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <NoProxy name="No Qizmo and QTV etc" icon="9" expand="0" state="0" type="13">if version ~== &quot;*qwfwd*&quot; remove&#x0D;&#x0A;if version ~== &quot;*qtv*&quot; remove&#x0D;&#x0A;if hostname ~== &quot;*qizmo*&quot; remove</NoProxy>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>		
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>                
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0"></GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="QW" icon="9" expand="0" state="0" type="13">if modname != &quot;qw&quot; remove</Mod>
+                    <Mod name="Clan Arena" icon="9" expand="0" state="0" type="13">if modname != &quot;ca&quot; remove</Mod>
+                    <Mod name="Rocket Arena" icon="9" expand="0" state="0" type="13">if modname != &quot;arena&quot; remove</Mod>
+                    <Mod name="Team Fortress" icon="9" expand="0" state="0" type="13">if modname != &quot;fortress&quot; remove</Mod>
+                    <Mod name="CTF" icon="9" expand="0" state="0" type="13">if modname != &quot;ctf&quot; remove</Mod>
+                </Mod>
+            </Filter>
+        </Game>
+        <Game name="Quake 2" icon="33" expand="0" state="0" game="13" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="13" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+               <FilterItem name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</FilterItem>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>		
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>                     
+				<Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="baseq2" icon="9" expand="0" state="0" type="13">if modname != "baseq2" remove</Mod>
+                    <Mod name="OSP" icon="9" expand="0" state="0" type="13">if modname != "OSP*" remove</Mod>
+                    <Mod name="OpenTDM" icon="9" expand="0" state="0" type="13">if modname != "OpenTDM" remove</Mod>
+                    <Mod name="Quake2 Teamplay" icon="9" expand="0" state="0" type="13">if modname != "Quake2 TeamPlay*" remove</Mod>
+                    <Mod name="Quake2 Battleground" icon="9" expand="0" state="0" type="13">if modname != "Quake2 Battleground*" remove</Mod>
+                    <Mod name="Rocket Arena v2.25" icon="9" expand="0" state="0" type="13">if modname != "v2.25" remove</Mod>
+                </Mod>             
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="q2dm1" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm1&quot; remove</Map>
+                    <Map name="q2dm2" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm2&quot; remove</Map>
+                    <Map name="q2dm3" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm3&quot; remove</Map>
+                    <Map name="q2dm4" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm4&quot; remove</Map>
+                    <Map name="q2dm5" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm5&quot; remove</Map>
+                    <Map name="q2dm6" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm6&quot; remove</Map>
+                    <Map name="q2dm7" icon="9" expand="0" state="0" type="13">if map != &quot;q2dm7&quot; remove</Map>
+                    <Map name="q2ctf1" icon="9" expand="0" state="0" type="13">if map != &quot;q2ctf1&quot; remove</Map>
+                    <Map name="q2ctf2" icon="9" expand="0" state="0" type="13">if map != &quot;q2ctf2&quot; remove</Map>
+                    <Map name="q2duel1" icon="9" expand="0" state="0" type="13">if map != &quot;q2duel1&quot; remove</Map>
+                    <Map name="q2duel2" icon="9" expand="0" state="0" type="13">if map != &quot;q2duel2&quot; remove</Map>
+                    <Map name="q2duel3" icon="9" expand="0" state="0" type="13">if map != &quot;q2duel3&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Quake 3: Arena" icon="35" expand="0" state="0" game="2" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="2" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <Favorite name="CPMA mod" icon="2" expand="0" state="0" type="14">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <PB name="Punkbuster on" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                <PB name="Punkbuster off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
+                <Private name="No Private" icon="9" expand="0" state="0" type="15">if g_needpass == &quot;1&quot; remove</Private>
+                <Private name="Private Only" icon="9" expand="0" state="0" type="15">if g_needpass != &quot;1&quot; remove</Private>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>						
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Free For All" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;0&quot; remove</GameType>
+                    <GameType name="Tournament 1 on 1" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;1&quot; remove</GameType>
+                    <GameType name="Single Player" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;2&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;3&quot; remove</GameType>
+                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;4&quot; remove</GameType>
+                    <GameType name="Clan Arena" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;5&quot; remove</GameType>
+                    <GameType name="Overload" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;6&quot; remove</GameType>
+                    <GameType name="Harvester" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;7&quot; remove</GameType>
+                    <GameType name="Rocket Arena" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;8&quot; remove</GameType>
+                    <GameType name="Capture Strike (Three Wave)" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;9&quot; remove</GameType>
+                    <GameType name="Classic CTF (Three Wave)" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;10&quot; remove</GameType>
+                    <GameType name="Clan Arena (Three Wave)" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;11&quot; remove</GameType>
+                </GameType>
+                <GameModes name="CPMA Modes" icon="18" expand="0" state="0" type="0">
+                    <GameModeItems name="Duel" icon="9" expand="0" state="0" type="13">if mode_current != &quot;1V1&quot; remove</GameModeItems>
+                    <GameModeItems name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;TDM&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Capture The Flag" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;CTF&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Clan Arena" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;CA&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="FreezeTag" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;FTAG&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Capture Strike" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;CTFS&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Not Team Fortress" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;NTF&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="2v2" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;2v2&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Duel Arena" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;DA&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Advanced Duel Arena" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;ADA&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="Hony Mode" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;HM&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="VQ3 Duel" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;VQ3DM&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="VQ3 2v2" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;VQ32V2&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="VQ3 Team Deathmatch" icon="9" expand="0" state="0" type="13">if mode_current ~== &quot;VQ3TDM&quot; keep&#x0D;&#x0A;remove</GameModeItems>
+                    <GameModeItems name="CQ3 Duel" icon="9" expand="0" state="0" type="13">if mode_current != &quot;CQ3DM&quot; remove</GameModeItems>                    
+                    <GameModeItems name="CQ3 Team Deathmatch" icon="9" expand="0" state="0" type="13">if mode_current != &quot;CQ3TDM&quot; remove</GameModeItems>
+                    <GameModeItems name="Instagib Duel" icon="9" expand="0" state="0" type="13">if mode_current ~!= &quot;i1v1&quot; remove</GameModeItems>
+                    <GameModeItems name="Instagib FFA" icon="9" expand="0" state="0" type="13">if mode_current ~!= &quot;iFFA&quot; remove</GameModeItems>                    
+                    <GameModeItems name="Instagib TDM" icon="9" expand="0" state="0" type="13">if mode_current ~!= &quot;iTDM&quot; remove</GameModeItems>
+                    <GameModeItems name="Instagib CTF" icon="9" expand="0" state="0" type="13">if mode_current ~!= &quot;iCTF&quot; remove</GameModeItems>
+                    <GameModeItems name="OSP Clan Arena" icon="9" expand="0" state="0" type="13">if mode_current ~!= &quot;OSPCA&quot; remove</GameModeItems>
+                    <GameModeItems name="OSP Capture The Flag" icon="9" expand="0" state="0" type="13">if mode_current ~!= &quot;OSPCTF&quot; remove</GameModeItems>
+                </GameModes>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="baseq3" icon="9" expand="0" state="0" type="13">if modname == &quot;baseq3&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="Arena" icon="9" expand="0" state="0" type="13">if modname == &quot;arena&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="CPMA" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="Defrag" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="Excessive+" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="Excessive" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="OSP" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="q3ut4" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                </Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="Q3 1.32" icon="9" expand="0" state="0" type="13">if version != &quot;Q3 1.32c*&quot; remove</Version>
+                    <Version name="Q3 1.32b" icon="9" expand="0" state="0" type="13">if version != &quot;Q3 1.32c*&quot; remove</Version>
+                    <Version name="Q3 1.32c" icon="9" expand="0" state="0" type="13">if version != &quot;Q3 1.32c*&quot; remove</Version>
+                    <Version name="ioq3 1.33" icon="9" expand="0" state="0" type="13">if version != &quot;ioq3 1.33*&quot; remove</Version>
+                    <Version name="ioq3 1.34" icon="9" expand="0" state="0" type="13">if version != &quot;ioq3 1.34*&quot; remove</Version>
+                    <Version name="ioq3 1.35" icon="9" expand="0" state="0" type="13">if version != &quot;ioq3 1.35*&quot; remove</Version>
+                    <Version name="CNQ3 1.40" icon="9" expand="0" state="0" type="13">if version != &quot;CNQ3 1.40*&quot; remove</Version>
+                    <Version name="CNQ3 1.42" icon="9" expand="0" state="0" type="13">if version != &quot;CNQ3 1.42*&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="ra3map1" icon="9" expand="0" state="0" type="13">if map != &quot;ra3map1&quot; remove</Map>
+                    <Map name="q3wctf2" icon="9" expand="0" state="0" type="13">if map != &quot;q3wctf2&quot; remove</Map>
+					<Map name="cpm24" icon="9" expand="0" state="0" type="13">if map != &quot;cpm24&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Quake 4" icon="36" expand="0" state="0" game="3" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="3" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+				<Anticheat name="Punkbuster On" icon="9" expand="0" state="0" type="15">if anticheat != &quot;1&quot; remove</Anticheat>
+				<Anticheat name="Punkbuster Off" icon="9" expand="0" state="0" type="15">if anticheat != &quot;0&quot; remove</Anticheat>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>						
+                <TV name="Show TV" icon="9" expand="0" state="0" type="15">if si_tv != &quot;1&quot; remove</TV>
+                <TV name="Hide TV" icon="9" expand="0" state="0" type="15">if si_tv != &quot;0&quot; remove</TV>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Duel" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Duel&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;DM&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Team DM&quot; remove</GameType>
+                    <GameType name="Clan Arena" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Clan Arena&quot; remove</GameType>
+                    <GameType name="CTF" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;CTF&quot; remove</GameType>
+                    <GameType name="Arena CTF" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Arena CTF&quot; remove</GameType>
+                    <GameType name="Tourney" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Tourney&quot; remove</GameType>
+                    <GameType name="Run" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Run&quot; remove</GameType>
+                    <GameType name="Freezetag" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;Freezetag&quot; remove</GameType>
+                    <GameType name="RA4" icon="9" expand="0" state="0" type="13">if si_gametype != &quot;RA4&quot; remove</GameType>
+                </GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="baseQUAKE4-1" icon="9" expand="0" state="0" type="13">if modname != &quot;baseQUAKE4-1&quot; remove</Mod>
+                    <Mod name="Q4MAX" icon="9" expand="0" state="0" type="13">if modname != &quot;Q4MAX*&quot; remove</Mod>
+                    <Mod name="Q4MP" icon="9" expand="0" state="0" type="13">if modname != &quot;Q4MP*&quot; remove</Mod>
+                </Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="V1.0" icon="9" expand="0" state="0" type="13">if version != &quot;Quake4 Final V1.0*&quot; remove</Version>
+                    <Version name="V1.2" icon="9" expand="0" state="0" type="13">if version != &quot;Quake4 Final V1.2*&quot; remove</Version>
+                    <Version name="V1.3" icon="9" expand="0" state="0" type="13">if version != &quot;Quake4 Final V1.3*&quot; remove</Version>
+                    <Version name="V1.4.0" icon="9" expand="0" state="0" type="13">if version != &quot;Quake4  V1.4.0*&quot; remove</Version>
+                    <Version name="V1.4.1" icon="9" expand="0" state="0" type="13">if version != &quot;Quake4  V1.4.1*&quot; remove</Version>
+                    <Version name="V1.4.2" icon="9" expand="0" state="0" type="13">if version != &quot;Quake4  V1.4.2*&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">                    
+                    <Map name="q4dm1" icon="9" expand="0" state="0" type="13">if map != &quot;mp/q4dm1&quot; remove</Map>
+                    <Map name="q4dm2" icon="9" expand="0" state="0" type="13">if map != &quot;mp/q4dm2&quot; remove</Map>
+                    <Map name="q4dm3" icon="9" expand="0" state="0" type="13">if map != &quot;mp/q4dm3&quot; remove</Map>
+                    <Map name="q4dm4" icon="9" expand="0" state="0" type="13">if map != &quot;mp/q4dm4&quot; remove</Map>
+                    <Map name="q4dm5" icon="9" expand="0" state="0" type="13">if map != &quot;mp/q4dm5&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Open Arena" icon="34" expand="0" state="0" game="14" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="14" type="1"></Internet>
+			<Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+            </Filter>
+        </Game>
+        <Game name="Warsow" icon="42" expand="0" state="0" game="7" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="7" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+			   <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="CA" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;ca&quot; remove</GameType>
+                    <GameType name="CTF" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;ctf&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;dm&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;tdm&quot; remove</GameType>
+                    <GameType name="Duel" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;duel&quot; remove</GameType>
+                    <GameType name="Race" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;race&quot; remove</GameType>
+                    <GameType name="DA" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;da&quot; remove</GameType>
+                </GameType>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="0.40" icon="9" expand="0" state="0" type="13">if version != &quot;0.40*&quot; remove</Version>
+                    <Version name="0.41" icon="9" expand="0" state="0" type="13">if version != &quot;0.41*&quot; remove</Version>
+                    <Version name="0.42" icon="9" expand="0" state="0" type="13">if version != &quot;0.42*&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="wdm1" icon="9" expand="0" state="0" type="13">if map != &quot;wdm1&quot;remove</Map>
+                    <Map name="wdm2" icon="9" expand="0" state="0" type="13">if map != &quot;wdm2&quot;remove</Map>
+                    <Map name="wdm3" icon="9" expand="0" state="0" type="13">if map != &quot;wdm3&quot; remove</Map>
+                    <Map name="wca2" icon="9" expand="0" state="0" type="13">if map != &quot;wca2&quot; remove</Map>
+                    <Map name="wctf1" icon="9" expand="0" state="0" type="13">if map != &quot;wctf1&quot; remove</Map>
+                    <Map name="wctf2" icon="9" expand="0" state="0" type="13">if map != &quot;wctf2&quot; remove</Map>
+                    <Map name="wctf3" icon="9" expand="0" state="0" type="13">if map != &quot;wctf3&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Return To Castle of Wolfenstein" icon="37" expand="0" state="0" game="4" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="4" type="1"></Internet>
+			<Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+            </Filter>
+        </Game>
+        <Game name="Call of Duty" icon="38" expand="0" state="0" game="5" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="5" type="1"></Internet>
+			<Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+            </Filter>
+        </Game>
+        <Game name="Call of Duty - United Offensive" icon="39" expand="0" state="0" game="22" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="22" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+            </Filter>
+        </Game>
+        <Game name="Call of Duty 2" icon="40" expand="0" state="0" game="6" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="6" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+            </Filter>
+        </Game>
+        <Game name="Call of Duty 4 - Modern Warfare" icon="41" expand="0" state="0" game="8" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="8" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <PB name="Punkbuster on" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                <PB name="Punkbuster off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
+                <Private name="No Private" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove</Private>
+                <Private name="Private Only" icon="9" expand="0" state="0" type="15">if pswrd != &quot;1&quot; remove</Private>
+                <HC name="Show Hardcore" icon="9" expand="0" state="0" type="15">if hc != &quot;1&quot; remove</HC>
+                <HC name="Hide Hardcore" icon="9" expand="0" state="0" type="15">if hc == &quot;1&quot; remove</HC>
+                <CustomFilter name="Custom filters" icon="18" expand="0" state="0" type="0">
+                    <CustomFilter name="Game type SD" icon="9" expand="0" state="0" type="13">if gametype == &quot;sd&quot; keep&#x0D;&#x0A;remove</CustomFilter>
+                    <CustomFilter name="Punkbuster on" icon="9" expand="0" state="0" type="13">if sv_punkbuster == &quot;1&quot; keep&#x0D;&#x0A;remove</CustomFilter>
+                    <CustomFilter name="Punkbuster off" icon="9" expand="0" state="0" type="13">if sv_punkbuster != &quot;1&quot; keep&#x0D;&#x0A;remove</CustomFilter>
+                    <CustomFilter name="version 1.6 only" icon="9" expand="0" state="0" type="13">if shortversion == &quot;1.6&quot; keep&#x0D;&#x0A;remove</CustomFilter>
+                    <CustomFilter name="ProMod Only" icon="9" expand="0" state="0" type="13">if mod == &quot;*promod*&quot; keep&#x0D;&#x0A;remove</CustomFilter>
+                </CustomFilter>
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="War" icon="9" expand="0" state="0" type="13">if gametype != &quot;war&quot; remove</GameType>
+                    <GameType name="Search &amp; Destroy" icon="9" expand="0" state="0" type="13">if gametype != &quot;sd&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if gametype != &quot;koth&quot; remove</GameType>
+                </GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0"></Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="1.7" icon="9" expand="0" state="0" type="13">if shortversion != &quot;1.7&quot; remove</Version>
+                    <Version name="1.6" icon="9" expand="0" state="0" type="13">if shortversion != &quot;1.6&quot; remove</Version>
+                    <Version name="1.5" icon="9" expand="0" state="0" type="13">if shortversion != &quot;1.5&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="mp_vacant" icon="9" expand="0" state="0" type="13">if map != &quot;mp_vacant&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Call of Duty - World at War" icon="51" expand="0" state="0" game="20" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="20" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <MyFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
+                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
+                </MyFilter>
+                <MyFilter name="Passworded" icon="18" expand="0" state="0" type="0">
+                    <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd != &quot;1&quot; remove</Private>
+                    <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove</Private>
+                </MyFilter>
+                <Hardcore name="Hardcore" icon="18" expand="0" state="0" type="0">
+                    <Hardcore name="Yes" icon="9" expand="0" state="0" type="13">if hc &gt;= &quot;1&quot; keep&#x0D;&#x0A;remove</Hardcore>
+                    <Hardcore name="No" icon="9" expand="0" state="0" type="13">if hc != &quot;1&quot; keep&#x0D;&#x0A;remove</Hardcore>
+                </Hardcore>
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if gametype != &quot;ctf&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if gametype != &quot;dm&quot; remove</GameType>
+                    <GameType name="Domination" icon="9" expand="0" state="0" type="13">if gametype != &quot;dom&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if gametype != &quot;koth&quot; remove</GameType>
+                    <GameType name="Sabotage" icon="9" expand="0" state="0" type="13">if gametype != &quot;sab&quot; remove</GameType>
+                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if gametype != &quot;sd&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if gametype != &quot;tdm&quot; remove</GameType>
+                    <GameType name="Total War" icon="9" expand="0" state="0" type="13">if gametype != &quot;twar&quot; remove</GameType>
+                    <NoMix name="No mix" icon="9" expand="0" state="0" type="13">if sv_hostname ~== &quot;*mix*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;dom&quot; goto 5 &#x0D;&#x0A;if sv_hostname ~== &quot;*dom*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;sab&quot; goto 7&#x0D;&#x0A;if sv_hostname ~== &quot;*sab*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;sd&quot; goto 11&#x0D;&#x0A;if sv_hostname ~== &quot;*sd*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*search*destroy*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*s&amp;d*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;koth&quot; goto 16&#x0D;&#x0A;if sv_hostname ~== &quot;*koth*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*hq*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*hea*quarters*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*king*of*the*hill*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;tdm&quot; goto 20&#x0D;&#x0A;if sv_hostname ~== &quot;*tdm*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*tea*deat*match*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;dm&quot; goto 25&#x0D;&#x0A;if sv_hostname ~== &quot;*dm*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*ffa*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*fre*fo*all*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*team*&quot; goto 24&#x0D;&#x0A;if sv_hostname ~== &quot;*deat*match*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;twar&quot; goto 27&#x0D;&#x0A;if sv_hostname ~== &quot;*war*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;ctf&quot; goto 29&#x0D;&#x0A;if sv_hostname ~== &quot;*ctf*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*capture*the*flag*&quot; remove</NoMix>
+                </GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="None" icon="9" expand="0" state="0" type="13">if mod == &quot;1&quot; remove</Mod>
+                </Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="1.4" icon="9" expand="0" state="0" type="13">if protocol != &quot;97&quot; remove</Version>
+					<Version name="1.5" icon="9" expand="0" state="0" type="13">if protocol != &quot;99&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="mp_airfield" icon="9" expand="0" state="0" type="13">if map != &quot;mp_airfield&quot; remove</Map>
+                    <Map name="mp_asylum" icon="9" expand="0" state="0" type="13">if map != &quot;mp_asylum&quot; remove</Map>
+                    <Map name="mp_castle" icon="9" expand="0" state="0" type="13">if map != &quot;mp_castle&quot; remove</Map>
+                    <Map name="mp_courtyard" icon="9" expand="0" state="0" type="13">if map != &quot;mp_courtyard&quot; remove</Map>
+                    <Map name="mp_docks(sub pens)" icon="9" expand="0" state="0" type="13">if map != "mp_docks" remove</Map>
+					<Map name="mp_dome" icon="9" expand="0" state="0" type="13">if map != &quot;mp_dome&quot; remove</Map>
+                    <Map name="mp_downfall" icon="9" expand="0" state="0" type="13">if map != &quot;mp_downfall&quot; remove</Map>
+                    <Map name="mp_hangar" icon="9" expand="0" state="0" type="13">if map != &quot;mp_hangar&quot; remove</Map>
+                    <Map name="mp_kneedeep" icon="9" expand="0" state="0" type="13">if map != &quot;mp_kneedeep&quot; remove</Map>
+					<Map name="mp_kwai(banzai)" icon="9" expand="0" state="0" type="13">if map != "mp_kwai" remove</Map>
+                    <Map name="mp_makin" icon="9" expand="0" state="0" type="13">if map != &quot;mp_makin&quot; remove</Map>
+                    <Map name="mp_makin_day" icon="9" expand="0" state="0" type="13">if map != &quot;mp_makin_day&quot; remove</Map>
+                    <Map name="mp_nachtfeuer(nightfire)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_nachtfeuer&quot; remove</Map>
+                    <Map name="mp_outskirts" icon="9" expand="0" state="0" type="13">if map != &quot;mp_outskirts&quot; remove</Map>
+                    <Map name="mp_roundhouse" icon="9" expand="0" state="0" type="13">if map != &quot;mp_roundhouse&quot; remove</Map>
+                    <Map name="mp_seelow" icon="9" expand="0" state="0" type="13">if map != &quot;mp_seelow&quot; remove</Map>
+                    <Map name="mp_shrine(cliffside)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_shrine&quot; remove</Map>
+					<Map name="mp_stalingrad(corrosion)" icon="9" expand="0" state="0" type="13">if map != "mp_stalingrad" remove</Map>
+                    <Map name="mp_suburban(upheaval)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_suburban&quot; remove</Map>
+                    <Map name="mp_subway(station)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_subway&quot; remove</Map>
+					
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Counter-Strike" icon="44" expand="0" state="0" game="9" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="9" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="VAC" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="Dust 2" icon="9" expand="0" state="0" type="13">if map != &quot;de_dust2&quot; remove</Map>
+                    <Map name="Dust" icon="9" expand="0" state="0" type="13">if map != &quot;de_dust&quot; remove</Map>
+                    <Map name="Aztec" icon="9" expand="0" state="0" type="13">if map != &quot;de_aztec&quot; remove</Map>
+                    <Map name="Inferno" icon="9" expand="0" state="0" type="13">if map != &quot;de_inferno&quot; remove</Map>
+                    <Map name="Nuke" icon="9" expand="0" state="0" type="13">if map != &quot;de_nuke&quot; remove</Map>
+                    <Map name="Prodigy" icon="9" expand="0" state="0" type="13">if map != &quot;de_prodigy&quot; remove</Map>
+                    <Map name="Tides" icon="9" expand="0" state="0" type="13">if map != &quot;de_tides&quot; remove</Map>
+                    <Map name="Train" icon="9" expand="0" state="0" type="13">if map != &quot;de_train&quot; remove</Map>
+                    <Map name="Tuscan" icon="9" expand="0" state="0" type="13">if map != &quot;de_tuscan&quot; remove</Map>
+                    <Map name="Villa" icon="9" expand="0" state="0" type="13">if map != &quot;de_villa&quot; remove</Map>
+                    <Map name="Italy" icon="9" expand="0" state="0" type="13">if map != &quot;de_italy&quot; remove</Map>
+                    <Map name="Office" icon="9" expand="0" state="0" type="13">if map != &quot;de_office&quot; remove</Map>
+                    <Map name="Assault" icon="9" expand="0" state="0" type="13">if map != &quot;de_assault&quot; remove</Map>
+                    <Map name="Cbble" icon="9" expand="0" state="0" type="13">if map != &quot;de_cbble&quot; remove</Map>
+                </Map>
+                <RegionFilter name="Region to query master server" icon="18" expand="0" state="0" type="60">
+                    <RegionItem name="US East coast" icon="9" expand="0" state="0" type="61">1</RegionItem>
+                    <RegionItem name="US West coast" icon="9" expand="0" state="0" type="61">2</RegionItem>
+                    <RegionItem name="South America" icon="9" expand="0" state="0" type="61">4</RegionItem>
+                    <RegionItem name="Europe" icon="9" expand="0" state="0" type="61">8</RegionItem>
+                    <RegionItem name="Asia" icon="9" expand="0" state="0" type="61">16</RegionItem>
+                    <RegionItem name="Australia" icon="9" expand="0" state="0" type="61">32</RegionItem>
+                    <RegionItem name="Middle East" icon="9" expand="0" state="0" type="61">64</RegionItem>
+                    <RegionItem name="Africa" icon="9" expand="0" state="0" type="61">128</RegionItem>
+                    <RegionItem name="Rest of the World" icon="9" expand="0" state="0" type="61">255</RegionItem>
+                </RegionFilter>
+			</Filter>
+        </Game>
+        <Game name="Counter-Strike: Condition Zero" icon="45" expand="0" state="0" game="10" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="10" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="VAC" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == &quot;0&quot; remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+                <RegionFilter name="Region to query master server" icon="18" expand="0" state="0" type="60">
+                    <RegionItem name="US East coast" icon="9" expand="0" state="0" type="61">1</RegionItem>
+                    <RegionItem name="US West coast" icon="9" expand="0" state="0" type="61">2</RegionItem>
+                    <RegionItem name="South America" icon="9" expand="0" state="0" type="61">4</RegionItem>
+                    <RegionItem name="Europe" icon="9" expand="0" state="0" type="61">8</RegionItem>
+                    <RegionItem name="Asia" icon="9" expand="0" state="0" type="61">16</RegionItem>
+                    <RegionItem name="Australia" icon="9" expand="0" state="0" type="61">32</RegionItem>
+                    <RegionItem name="Middle East" icon="9" expand="0" state="0" type="61">64</RegionItem>
+                    <RegionItem name="Africa" icon="9" expand="0" state="0" type="61">128</RegionItem>
+                    <RegionItem name="Rest of the World" icon="9" expand="0" state="0" type="61">255</RegionItem>
+                </RegionFilter>		
+            </Filter>
+        </Game>
+        <Game name="Counter-Strike: Source" icon="46" expand="0" state="0" game="11" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="11" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="VAC" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == &quot;0&quot; remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="Dust 2" icon="9" expand="0" state="0" type="13">if map != &quot;de_dust2&quot; remove</Map>
+                    <Map name="Dust" icon="9" expand="0" state="0" type="13">if map != &quot;de_dust&quot; remove</Map>
+                    <Map name="Aztec" icon="9" expand="0" state="0" type="13">if map != &quot;de_aztec&quot; remove</Map>
+                    <Map name="Inferno" icon="9" expand="0" state="0" type="13">if map != &quot;de_inferno&quot; remove</Map>
+                    <Map name="Nuke" icon="9" expand="0" state="0" type="13">if map != &quot;de_nuke&quot; remove</Map>
+                    <Map name="Prodigy" icon="9" expand="0" state="0" type="13">if map != &quot;de_prodigy&quot; remove</Map>
+                    <Map name="Tides" icon="9" expand="0" state="0" type="13">if map != &quot;de_tides&quot; remove</Map>
+                    <Map name="Train" icon="9" expand="0" state="0" type="13">if map != &quot;de_train&quot; remove</Map>
+                    <Map name="Tuscan" icon="9" expand="0" state="0" type="13">if map != &quot;de_tuscan&quot; remove</Map>
+                    <Map name="Villa" icon="9" expand="0" state="0" type="13">if map != &quot;de_villa&quot; remove</Map>
+                    <Map name="Italy" icon="9" expand="0" state="0" type="13">if map != &quot;de_italy&quot; remove</Map>
+                    <Map name="Office" icon="9" expand="0" state="0" type="13">if map != &quot;de_office&quot; remove</Map>
+                    <Map name="Assault" icon="9" expand="0" state="0" type="13">if map != &quot;de_assault&quot; remove</Map>
+                    <Map name="Cbble" icon="9" expand="0" state="0" type="13">if map != &quot;de_cbble&quot; remove</Map>
+                </Map>
+                <RegionFilter name="Region to query master server" icon="18" expand="0" state="0" type="60">
+                    <RegionItem name="US East coast" icon="9" expand="0" state="0" type="61">1</RegionItem>
+                    <RegionItem name="US West coast" icon="9" expand="0" state="0" type="61">2</RegionItem>
+                    <RegionItem name="South America" icon="9" expand="0" state="0" type="61">4</RegionItem>
+                    <RegionItem name="Europe" icon="9" expand="0" state="0" type="61">8</RegionItem>
+                    <RegionItem name="Asia" icon="9" expand="0" state="0" type="61">16</RegionItem>
+                    <RegionItem name="Australia" icon="9" expand="0" state="0" type="61">32</RegionItem>
+                    <RegionItem name="Middle East" icon="9" expand="0" state="0" type="61">64</RegionItem>
+                    <RegionItem name="Africa" icon="9" expand="0" state="0" type="61">128</RegionItem>
+                    <RegionItem name="Rest of the World" icon="9" expand="0" state="0" type="61">255</RegionItem>
+                </RegionFilter>
+            </Filter>
+        </Game>
+        <Game name="Half-life" icon="43" expand="0" state="0" game="18" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="18" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="VAC" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="Counter-Strike" icon="9" expand="1" state="1" type="13">if gamename != &quot;Counter-Strike&quot; remove</Mod>
+                    <Mod name="Condition Zero" icon="9" expand="1" state="0" type="13">if gamename != &quot;Condition Zero*&quot; remove</Mod>
+                    <Mod name="Team Fortress Classic" icon="9" expand="0" state="0" type="13">if gamename != &quot;Team Fortress Classic&quot; remove</Mod>
+                    <Mod name="Day of Defeat" icon="9" expand="0" state="0" type="13">if gamename != &quot;Day of Defeat&quot; remove</Mod>
+                    <Mod name="Half-life" icon="9" expand="0" state="0" type="13">if gamename != &quot;Half-Life&quot; remove</Mod>
+                    <Mod name="Zombie Plague" icon="9" expand="0" state="0" type="13">if gamename != &quot;Zombie Plague*&quot; remove</Mod>
+                </Mod>
+                <RegionFilter name="Region to query master server" icon="18" expand="0" state="0" type="60">
+                    <RegionItem name="US East coast" icon="9" expand="0" state="0" type="61">1</RegionItem>
+                    <RegionItem name="US West coast" icon="9" expand="0" state="0" type="61">2</RegionItem>
+                    <RegionItem name="South America" icon="9" expand="0" state="0" type="61">4</RegionItem>
+                    <RegionItem name="Europe" icon="9" expand="0" state="0" type="61">8</RegionItem>
+                    <RegionItem name="Asia" icon="9" expand="0" state="0" type="61">16</RegionItem>
+                    <RegionItem name="Australia" icon="9" expand="0" state="0" type="61">32</RegionItem>
+                    <RegionItem name="Middle East" icon="9" expand="0" state="0" type="61">64</RegionItem>
+                    <RegionItem name="Africa" icon="9" expand="0" state="0" type="61">128</RegionItem>
+                    <RegionItem name="Rest of the World" icon="9" expand="0" state="0" type="61">255</RegionItem>
+                </RegionFilter>
+            </Filter>
+        </Game>
+        <Game name="Half-life 2" icon="47" expand="0" state="0" game="15" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="15" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Anticheat name="VAC" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="Killing Floor" icon="9" expand="1" state="0" type="13">if gamename != &quot;Killing Floor&quot; remove</Mod>
+                    <Mod name="Team Fortress 2" icon="9" expand="0" state="0" type="13">if gamename != &quot;Team Fortress&quot; remove</Mod>
+                    <Mod name="Day of Defeat: Source" icon="9" expand="0" state="0" type="13">if gamename != &quot;Day of Defeat: Source&quot; remove</Mod>
+                    <Mod name="Half-life 2" icon="9" expand="0" state="0" type="13">if gamename != "Half-Life*" remove</Mod>
+                    <Mod name="PVKII" icon="9" expand="0" state="0" type="13">if gamename != &quot;PVKII*&quot; remove</Mod>
+                    <Mod name="Zombie Panic" icon="9" expand="0" state="0" type="13">if gamename != &quot;ZPS*&quot; goto 3&#x0D;&#x0A;keep&#x0D;&#x0A;if gamename != &quot;Zombie*&quot; remove&#x0D;&#x0A;</Mod>
+                    <Mod name="Hidden: Source" icon="9" expand="0" state="0" type="13">if gamename != &quot;Hidden*&quot; remove</Mod>
+                    <Mod name="Garry&apos;s Mod" icon="9" expand="0" state="0" type="13">if gamename != &quot;*sandbox*&quot; remove</Mod>
+                    <Mod name="Left 4 Dead" icon="9" expand="0" state="0" type="13">if gamename != &quot;L4D*&quot; remove</Mod>
+                </Mod>
+                <RegionFilter name="Region to query master server" icon="18" expand="0" state="0" type="60">
+                    <RegionItem name="US East coast" icon="9" expand="0" state="0" type="61">1</RegionItem>
+                    <RegionItem name="US West coast" icon="9" expand="0" state="0" type="61">2</RegionItem>
+                    <RegionItem name="South America" icon="9" expand="0" state="0" type="61">4</RegionItem>
+                    <RegionItem name="Europe" icon="9" expand="0" state="0" type="61">8</RegionItem>
+                    <RegionItem name="Asia" icon="9" expand="0" state="0" type="61">16</RegionItem>
+                    <RegionItem name="Australia" icon="9" expand="0" state="0" type="61">32</RegionItem>
+                    <RegionItem name="Middle East" icon="9" expand="0" state="0" type="61">64</RegionItem>
+                    <RegionItem name="Africa" icon="9" expand="0" state="0" type="61">128</RegionItem>
+                    <RegionItem name="Rest of the World" icon="9" expand="0" state="0" type="61">255</RegionItem>
+                </RegionFilter>
+            </Filter>
+        </Game>
+        <Game name="Urban Terror" icon="48" expand="0" state="0" game="16" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="16" type="1"></Internet>
+            <Favorite name="Favorites Public" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;1&quot; remove</Favorite>
+            <Favorite name="Favorites Private" icon="2" expand="0" state="0" type="14">if favorite == &quot;1&quot; goto 3&#x0D;&#x0A;remove&#x0D;&#x0A;if private == &quot;0&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <PB name="Punkbuster on" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                <PB name="Punkbuster off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>				
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Free-For-All" icon="9" expand="0" state="0" type="13">if g_gametype == &quot;0&quot; keep&#x0D;&#x0A;if g_gametype == &quot;1&quot; keep&#x0D;&#x0A;if g_gametype == &quot;2&quot; keep&#x0D;&#x0A;remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;3&quot; remove</GameType>
+                    <GameType name="Team Survivor" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;4&quot; remove</GameType>
+                    <GameType name="Follow The Leader" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;5&quot; remove</GameType>
+                    <GameType name="Capture and Hold" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;6&quot; remove</GameType>
+                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;7&quot; remove</GameType>
+                    <GameType name="Bomb and Defuse" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;8&quot; remove</GameType>
+                </GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="Urban only" icon="9" expand="0" state="0" type="13">if modname != &quot;*q3ut4*&quot; remove</Mod>
+                </Mod>
+                <Version name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="ioUrT 1.35" icon="9" expand="0" state="0" type="13">if version != &quot;ioUrT 1.35*&quot; remove</Version>
+                    <Version name="ioq3 1.35urt" icon="9" expand="0" state="0" type="13">if version != &quot;ioq3 1.35urt*&quot; remove</Version>
+                </Version>
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="ut4_tombs" icon="9" expand="0" state="0" type="13">if map != &quot;ut4_tombs&quot; remove</Map>
+                </Map>
+            </Filter>
+        </Game>
+        <Game name="Nexuiz" icon="49" expand="0" state="0" game="17" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="17" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+            </Filter>
+        </Game>
+        <Game name="Doom 3" icon="50" expand="0" state="0" game="19" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="19" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+               <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+            </Filter>
+        </Game>
+        <Game name="Unreal Tournament 3" icon="52" expand="0" state="0" game="21" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="21" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+               <FilterItem name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</FilterItem>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+            </Filter>
+        </Game>
+    </TreeItems>
+</TreeViewCFG>

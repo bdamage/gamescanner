@@ -1,0 +1,46 @@
+
+	Game Scanner Release Notes
+	
+	Website: http://www.bdamage.se
+	
+	Check out the forum for help and support.
+	
+		2.0.7 Release notes
+		-------------------
+		* Updated filters for Enemy Territory, CoD WaW (patch 1.5), Quake 2 and Half-life 1 & 2 includings their mods.
+		* Player and rules can be searched by using /player and /rule in search field.
+		  example /player ETPlayer or /rule sv_punkbuster=1
+		* Fixed potential server duplicate and made it future proof. This may require some rescanning all servers first to apply. 
+		* Limited Half-Life including mods (ie Counter Strike) master servers to one, this will speed up when doing full rescan.
+
+
+
+
+	
+	
+		2.0.6 Release notes
+		-------------------
+
+		What's new/updated in 2.0 since 1.x
+		------------------------------------
+		* Updated IP to country database.
+		* Buddies that is saved with special characters is now supported (QuakeWorld, Quake 2 etc should work fine by now).
+		* New custom filter system based on ASE syntax, you can now create & modify the filters from Game Scanner itself.
+		* New serverlist which is not backward compatible to 1.x.
+		* Dynamic preview map, Game scanner will download levelshots from a server.
+		* Preview maps can now keep the aspect ratio.
+		* Improved new game launch logic based on the script.
+		* Fixed Quake World to better display player names.
+		* Updated Nexuiz player parser.
+		* Fixed a bug with Quake 4 and Doom 3 server parser.
+		* Added Polish translation.
+		* Added support for RTCW protocol 57.
+		* Added Call of Duty - United Offensive
+		* Added support to add multiple servers to Favorites or Events (waiting for activity and free slots etc).
+		* Added New master servers queries for CoD and CoD2.
+		* Improved Half-Life 1 & 2 (including CS and CS Source) master serverlist.
+		* Fixed buddy notification if multiple buddies are on the same server.
+
+		+ other minor improvments and fixed a bunch of bugs.
+		+ Cosmetical changes of the user interface.
+

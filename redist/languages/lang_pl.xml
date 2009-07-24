@@ -1,0 +1,163 @@
+<Language>
+<Name>Polish (polski)</Name>
+<Version>1.0</Version>
+<ErrorOpenFile></ErrorOpenFile>
+<ScanAll>Pobierz nowe serwery i uaktualnij wszystkie serwery (F5).</ScanAll>
+<ScanFiltered>Uaktualnij tylko filtrowane serwery.</ScanFiltered>
+<SettingsButton>Ustawienia dla Game Scanner.</SettingsButton>
+<SearchButton>Szukaj serwer po nazwie lub adresie IP.</SearchButton>
+<QuickConnect>Szybkie po³¹czenie siê do serwera poprzez podanie adresu IP w polu szukaj.</QuickConnect>
+<AddNewBuddyButton>Dodaj nowego przyjaciela!</AddNewBuddyButton>
+<AddToFavorites>Dodaj wybrany serwer lub podaj IP z wyszukiwania do ulubionych.</AddToFavorites>
+<FontButton>Prze³¹czaj pomiêdzy kolorowo zakodowan¹ czcionk¹ a nie-kolorowo zakodowan¹ czcionk¹.</FontButton>
+<DownloadButton>Nowa wersja jest dostêpna do pobrania!</DownloadButton>
+<NewVersionDetected>Game Scanner wykry³ now¹ wersjê do pobrania.\Czy chcia³byœ j¹ teraz pobraæ?</NewVersionDetected>
+<ErrorPrivatePassword>Proszê wybierz serwer zanim bêdziesz ustawiaæ has³o!</ErrorPrivatePassword>
+<IPAddedToClipBoard>Adres IP %s zosta³ dodany do schowka!</IPAddedToClipBoard>
+<ErrorServerCopyToClipBoard>Proszê wybierz serwer zanim bedziêsz kopiowa³ go do schowka!</ErrorServerCopyToClipBoard>
+<ErrorLaunchingGame>Z³a œcie¿ka gry!
+Powód: Œcie¿ka gry mo¿e byæ niepoprawna lub nie istnieje.
+Rozwi¹zanie: WejdŸ do Opcji i ustaw poprawn¹ œcie¿kê gry.</ErrorLaunchingGame>
+<ErrorDownloadingUpdate>Nowa wersja Game Scanner zosta³a znaleziona!
+B³¹d œci¹gania pliku(ów)!
+Czy chcesz odwiedziæ stronê i œci¹gn¹æ j¹ rêcznie?</ErrorDownloadingUpdate>
+<SelectServerAtConnectionRCON>Proszê wybierz serwer zanim po³¹czysz siê do Zdalnej Konsoli!</SelectServerAtConnectionRCON>
+<AskDeleteServerList>Czy jesteœ pewien usuniêcia wszystkich serwerów, równie¿ tych z ulubionych?</AskDeleteServerList>
+<DeletedServerList>G³ówna lista serwerów usuniêta!</DeletedServerList>
+<ErrorDeletingServerList>Nie mo¿esz usun¹æ serwerów podczas skanowania/uaktualniania ich!</ErrorDeletingServerList>
+<ErrorRegHotkey>Game Scanner nie móg³ zarejestrowaæ przypisania klawiszy!</ErrorRegHotkey>
+<ConfigGeneral>G³ówne</ConfigGeneral>
+<ConfigMinimizer>Minimizer</ConfigMinimizer>
+<ConfigExtExe>TeamSpeak &amp; Ventrilo</ConfigExtExe>
+<ConfigGraphic>Przezroczystoœæ</ConfigGraphic>
+<ConfigNetwork>Sieæ</ConfigNetwork>
+<ConfigGames>Gry</ConfigGames>
+<TabPlayers>Gracze</TabPlayers>
+<TabRules>Zasady serwera</TabRules>
+<TabRCON>RCON</TabRCON>
+<TabNetwork>Ping &amp;&amp; Trace route</TabNetwork>
+<TabLogger>Logi</TabLogger>
+<ColumnRule>Zasady</ColumnRule>
+<ColumnValue>Wartoœæ</ColumnValue>
+<ColumnBuddy>Przyjaciel</ColumnBuddy>
+<ColumnServerName>Nazwa serwera</ColumnServerName>
+<ColumnIP>IP</ColumnIP>
+<ColumnNo>#</ColumnNo>
+<ColumnTeam>Dru¿yna</ColumnTeam>
+<ColumnName>Imiê</ColumnName>
+<ColumnFrag>Frag/Rate/XP</ColumnFrag>
+<ColumnPing>Ping</ColumnPing>
+<ColumnTime>Czas</ColumnTime>
+<ColumnAntiCheat>Anti Cheat</ColumnAntiCheat>
+<ColumnPrivate>Prywatny</ColumnPrivate>
+<ColumnRanked>Rankowany</ColumnRanked>
+<ColumnVersion>Wersja</ColumnVersion>
+<ColumnGameType>Typ gry</ColumnGameType>
+<ColumnMap>Mapa</ColumnMap>
+<ColumnMod>Modyfikacja</ColumnMod>
+<ColumnBots>Boty</ColumnBots>
+<ColumnPlayers>Gracze</ColumnPlayers>
+<ColumnCountry>Kraj</ColumnCountry>
+<ColumnStatus>Status</ColumnStatus>
+<MenuConnect>Po³¹cz siê</MenuConnect>
+<MenuLaunchGameOnly>Tylko odpal grê.</MenuLaunchGameOnly>
+<MenuForceLaunch>Zmuœ odpalenie</MenuForceLaunch>
+<MenuAddServerToFavorites>Dodaj serwer do ulubionych</MenuAddServerToFavorites>
+<MenuRemoveFromFavorites>Usuñ serwer z ulubionych</MenuRemoveFromFavorites>
+<MenuSetPrivatePass>Ustaw Has³o</MenuSetPrivatePass>
+<MenuCopyIP>Kopiuj &amp;IP do tekstu                  (Ctrl+C)</MenuCopyIP>
+<MenuYAWN>Wyszukaj serwer w YAWn!</MenuYAWN>
+<MenuYAWNPlayer>Wyszukaj gracza w YAWn!</MenuYAWNPlayer>
+<MenuRCON>RCON</MenuRCON>
+<MenuRefresh>Odœwie¿</MenuRefresh>
+<MenuCopyToClipboard>Kopiuj do schowka</MenuCopyToClipboard>
+<MenuNetworkTools>Narzêdzia seciowe</MenuNetworkTools>
+<MenuPing>Ping serwera</MenuPing>
+<MenuTraceRoute>Trace Route do serwera</MenuTraceRoute>
+<MenuKick>Wyrzuæ</MenuKick>
+<MenuWarn>Ostrze¿</MenuWarn>
+<MenuMute>Zabierz g³os</MenuMute>
+<MenuUnMute>Oddaj g³os</MenuUnMute>
+<MenuFindInternetServers>ZnajdŸ %s serwery internetowe.</MenuFindInternetServers>
+<MenuDeleteServerList>Usuñ listê serwerów z %s.</MenuDeleteServerList>
+<MenuAddNewIPToFav>Dodaj nowe &amp;IP do Ulubionych</MenuAddNewIPToFav>
+<MenuModifyMinPly>&amp;Zmodyfikuj minimaln¹ iloœæ graczy serwera.</MenuModifyMinPly>
+<MenuModifyMaxPly>Zmodyfikuj ma&amp;ksymaln¹ iloœæ graczy serwera.</MenuModifyMaxPly>
+<MenuSettings>Ustawienia</MenuSettings>
+<MenuDeleteAllServers>Usuñ wszystkie serwery</MenuDeleteAllServers>
+<MenuExit>WyjdŸ</MenuExit>
+<MenuAddSelectedPlyToBuddylist>Dodaj wybranego gracza do listy przyjació³</MenuAddSelectedPlyToBuddylist>
+<MenuAddPlayerToBuddyList>&amp;Dodaj do listy przyjació³</MenuAddPlayerToBuddyList>
+<MenuAddNewBuddy>&amp;Dodaj nowego przyjaciela</MenuAddNewBuddy>
+<MenuRemoveBuddy>Usuñ przyjaciela</MenuRemoveBuddy>
+<MenuViewBuddy>Lista przyjació³</MenuViewBuddy>
+<MenuViewMap>Podgl¹d mapy</MenuViewMap>
+<MenuViewTabs>Lista informacji</MenuViewTabs>
+<TitleAddIP>Dodaj nowy serwer</TitleAddIP>
+<TitleSetMinValue>Ustaw minimaln¹ wartoœæ</TitleSetMinValue>
+<TitleSetMaxValue>Ustaw maksymaln¹ wartoœæ</TitleSetMaxValue>
+<TitleSetPrivatePass>Ustaw has³o serwera</TitleSetPrivatePass>
+<MessageNoGamesActive>Musisz skonfigurowaæ przynajmniej jedn¹ aktywn¹ grê.
+Czy chcesz j¹ skonfigurowaæ teraz?</MessageNoGamesActive>
+<MessageBuddyNotOnline>Zaznaczony przyjaciel nie gra
+na ¿adnym serwerze!</MessageBuddyNotOnline>
+<MessageErrorConnecting>Proszê wybierz serwer
+zanim spróbujesz siê do niego po³¹czyæ!
+</MessageErrorConnecting>
+<MessageNoNewVersion>Nie wykryto nowej wersji.</MessageNoNewVersion>
+<InvalidIP>Nieprawid³owy adres IP!</InvalidIP>
+<StatusReceivingServers>Otrzymywanie %s serwerów...</StatusReceivingServers>
+<StatusReceivingServersDone>Otrzymywanie %s serwerów...Zrobione!</StatusReceivingServersDone>
+<StatusReceivingServersError>B³¹d otrzymywania %s serwerów...NIEUDANE!</StatusReceivingServersError>
+<StatusReceivingMaster>Otrzymano %d nowych %s serwerów od g³ównego serwera.</StatusReceivingMaster>
+<StatusNewVersion>*** Nowa wersja %s jest dostêpna do pobrania.***</StatusNewVersion>
+<AskRconKickPlayer>Czy na pewno chcesz wyrzuciæ gracza?</AskRconKickPlayer>
+<AlertRestartRequired>Musisz zrestartowaæ Game Scanner, aby zatwierdziæ zmiany!</AlertRestartRequired>
+<AskToUpdate>Czy chcesz pobraæ i zainstalowaæ poprawkê?</AskToUpdate>
+<Search>Szukaj</Search>
+<BuddyName>Imiê</BuddyName>
+<TitleAddBuddy>Dodaj przyjaciela...</TitleAddBuddy>
+<TitleEditBuddy>Edytuj przyjaciela...</TitleEditBuddy>
+<InvalidPlayer>Niew³aœciwy gracz!</InvalidPlayer>
+<ColumnLaunchByVer>Odpal przez Wersjê</ColumnLaunchByVer>
+<ColumnLaunchByMod>Odpal przez Modyfikacjê</ColumnLaunchByMod>
+<ColumnExePath>Œcie¿ka instalacji</ColumnExePath>
+<ColumnCommand>Komenda</ColumnCommand>
+<CFGSettingsTitle>Ustawienia dla %s</CFGSettingsTitle>
+<CFGAddInstall>Dodaj now¹ instalacjê</CFGAddInstall>
+<CFGEditInstall>Edytuj ustawienia instalacji</CFGEditInstall>
+<CFGDeleteInstall>Usuñ ustawienia instalacji</CFGDeleteInstall>
+<Ok>OK</Ok>
+<Cancel>Anuluj</Cancel>
+<SetDefault>Ustaw domyœlne</SetDefault>
+<TitleNewInstall>Ustawienia do instalacji gry</TitleNewInstall>
+<Save>Zapisz</Save>
+<AddNewInstall>Dodaj now¹ instalacjê</AddNewInstall>
+<CFGTextVersion>Odpal je¿eli Wersja jest równa:</CFGTextVersion>
+<CFGTextMod>Odpal je¿eli Modyfikacja jest równa:</CFGTextMod>
+<MessageInstance>Game Scanner mo¿e dzia³aæ tylko jeden na raz!</MessageInstance>
+<Ready>Gotowy</Ready>
+<SavedServers>Lista serwerów zapisana.</SavedServers>
+<StoppingScanner>Zatrzymujê skaner!</StoppingScanner>
+<ScannerStopped>Skaner zatrzymany!</ScannerStopped>
+<ScanStatus>Skanowanie serwerów %d z %d</ScanStatus>
+<ScanWaitingForThreads>Czekanie na zakoñczenie po³¹czeñ!</ScanWaitingForThreads>
+<ValveMasterStatus>Otrzymano %d nowych %s serwerów z g³ównej listy (Region %s).</ValveMasterStatus>
+<NoName>B¹dŸ pewnien, ¿e Imiê jest wpisane.</NoName>
+<Add>Dodaj</Add>
+<Remove>Usuñ</Remove>
+<Edit>Edytuj</Edit>
+<StatusNumVisible>Liczba widzialnych %s serwerów w liœcie %d z %d.</StatusNumVisible>
+<MenuEditRule>Edytuj zasadê</MenuEditRule>
+<MenuCopyRuleToClipBoard>Kopiuj zasadê do schowka</MenuCopyRuleToClipBoard>
+<TitleEditValue>Edytuj wartoœæ</TitleEditValue>
+<MenuRestoreColumns>Przywróæ kolumny do domyœlnego ustawienia</MenuRestoreColumns>
+<ImportDone>Import listy serwerów zakoñczony!</ImportDone>
+<ExportDone>Eksport listy serwerów zakoñczony!</ExportDone>
+<RCONErrorConnecting>B³¹d po³¹czenia siê ze zdlan¹ konsol¹.</RCONErrorConnecting>
+<RCONErrorCommand>B³¹d wysy³ania komendy!
+Has³o mo¿e byæ niew³aœciwe.</RCONErrorCommand>
+<EnumerateGamesTitle>Narzêdzie do eksportu i importu</EnumerateGamesTitle>
+<ImportServerListLabel>Wybierz, do której gry zaimportowaæ listê serwerów.</ImportServerListLabel>
+<ExportServerListLabel>Wybierz, z której gry wyeksportowaæ listê serwerów.</ExportServerListLabel>
+</Language>

@@ -1,0 +1,32 @@
+
+
+
+Todo
+---------
+1) Move from C to C++
+2) Add larger font support.
+3) Add support for Net Quake.
+5) Gzip library to unpack ip to country database.
+6) Make function AddLogInfo thread safe.
+
+
+
+
+
+
+1 Clean up code
+2 only use XML_ functions in load and save configs
+3 Save listview and treeview window sizes
+
+
+
+
+known bugs
+----------
+
+
+
+
+
+
+

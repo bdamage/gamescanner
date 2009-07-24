@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameScanner", "GameScanner\GameScanner.vcproj", "{31BAEF63-9FF4-4376-9510-04DB47C21800}"
+EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "GameScannerSetup2", "GameScannerSetup2\GameScannerSetup2.vdproj", "{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release x64|Win32 = Release x64|Win32
+		Release x64|x64 = Release x64|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+		Description = Game Scanner
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Debug|Win32.ActiveCfg = Debug|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Debug|Win32.Build.0 = Debug|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Debug|x64.ActiveCfg = Debug|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Release x64|Win32.ActiveCfg = Release x64|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Release x64|x64.ActiveCfg = Release x64|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Release x64|x64.Build.0 = Release x64|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Release|Win32.ActiveCfg = Release|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Release|Win32.Build.0 = Release|Win32
+		{31BAEF63-9FF4-4376-9510-04DB47C21800}.Release|x64.ActiveCfg = Release|Win32
+		{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}.Debug|Win32.ActiveCfg = Debug
+		{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}.Debug|x64.ActiveCfg = Debug
+		{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}.Release x64|Win32.ActiveCfg = Release
+		{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}.Release x64|x64.ActiveCfg = Release
+		{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}.Release|Win32.ActiveCfg = Release
+		{F5E50E4F-3BD0-40EB-A049-53E0E7FC07C4}.Release|x64.ActiveCfg = Release
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

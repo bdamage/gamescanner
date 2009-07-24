@@ -1,0 +1,133 @@
+<?xml version="1.0" ?>
+<Globalfilter version="5.187">
+    <!--Global filter settings for Game Scanner treeview.-->
+    <TreeItems>
+        <GlobalFilter name="Global filter" icon="17" expand="0" state="0" type="23">
+            <GlobalFilter name="Hide offline servers" icon="9" expand="0" state="0" type="50"></GlobalFilter>
+            <GlobalFilter name="Min 6 and max 20 players" icon="9" expand="0" state="0" type="13">if players &lt; &quot;6&quot; remove&#x0D;&#x0A;if players &gt; &quot;20&quot; remove</GlobalFilter>
+            <GlobalFilter name="Max 20 players" icon="9" expand="0" state="0" type="13">if players &gt; &quot;20&quot;  remove</GlobalFilter>
+            <Ping name="Maximum Ping" icon="18" expand="0" state="0" type="23">
+                <Ping name="Max 200 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;200&quot; remove</Ping>
+                <Ping name="Max 150 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;150&quot; remove</Ping>
+                <Ping name="Max 100 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;100&quot; remove</Ping>
+                <Ping name="Max 50 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;50&quot; remove</Ping>
+            </Ping>
+        </GlobalFilter>
+        <Item name="Country filter" icon="9" expand="0" state="0" type="10">
+            <Country name="Unknown" icon="9" expand="0" state="0" type="10">zz</Country>
+            <Continent name="Africa" icon="9" expand="0" state="0" type="10">
+                <Country name="Egypt" icon="9" expand="0" state="0" type="10">eg</Country>
+                <Country name="South Africa" icon="9" expand="0" state="0" type="10">za</Country>
+                <Country name="Tanzania" icon="9" expand="0" state="0" type="10">tz</Country>
+                <Country name="Tunisia" icon="9" expand="0" state="0" type="10">tn</Country>
+            </Continent>
+            <Continent name="Australasia" icon="9" expand="0" state="0" type="10">
+                <Country name="Australia" icon="9" expand="0" state="0" type="10">au</Country>
+                <Country name="New Zeeland" icon="9" expand="0" state="0" type="10">nz</Country>
+            </Continent>
+            <Continent name="Micronesia" icon="9" expand="0" state="0" type="10">
+                <Country name="Guam" icon="9" expand="0" state="0" type="10">gu</Country>
+            </Continent>
+            <Continent name="Asia" icon="9" expand="0" state="0" type="10">
+                <Country name="Belarus" icon="9" expand="0" state="0" type="10">by</Country>
+                <Country name="China" icon="9" expand="0" state="0" type="10">cn</Country>
+                <Country name="Hong Kong" icon="9" expand="0" state="0" type="10">hk</Country>
+                <Country name="India" icon="9" expand="0" state="0" type="10">in</Country>
+                <Country name="Indonesia" icon="9" expand="0" state="0" type="10">id</Country>
+                <Country name="Japan" icon="9" expand="0" state="0" type="10">jp</Country>
+                <Country name="Malaysia" icon="9" expand="0" state="0" type="10">my</Country>
+                <Country name="Pakistan" icon="9" expand="0" state="0" type="10">pk</Country>
+                <Country name="Phillipines" icon="9" expand="0" state="0" type="10">ph</Country>
+                <Country name="Singapore" icon="9" expand="0" state="0" type="10">sg</Country>
+                <Country name="South Korea" icon="9" expand="0" state="0" type="10">kr</Country>
+                <Country name="Taiwan" icon="9" expand="0" state="0" type="10">tw</Country>
+                <Country name="Thailand" icon="9" expand="0" state="0" type="10">th</Country>
+                <Country name="Turkey" icon="9" expand="0" state="0" type="10">tr</Country>
+                <Country name="Viet Nam" icon="9" expand="0" state="0" type="10">vn</Country>
+                <Country name="Ukraine" icon="9" expand="0" state="0" type="10">ua</Country>
+            </Continent>
+            <Continent name="Americas" icon="9" expand="0" state="0" type="10">
+                <Region name="North America" icon="9" expand="0" state="0" type="10">
+                    <Country name="United States" icon="9" expand="0" state="0" type="10">us</Country>
+                    <Country name="Canada" icon="9" expand="0" state="0" type="10">ca</Country>
+                </Region>
+                <Region name="Central America" icon="9" expand="0" state="0" type="10">
+                    <Country name="Aruba" icon="9" expand="0" state="0" type="10">aw</Country>
+                    <Country name="Barbados" icon="9" expand="0" state="0" type="10">bb</Country>
+                    <Country name="Cuba" icon="9" expand="0" state="0" type="10">cu</Country>
+                    <Country name="Mexico" icon="9" expand="0" state="0" type="10">mx</Country>
+                    <Country name="Jamaica" icon="9" expand="0" state="0" type="10">jm</Country>
+                </Region>
+                <Region name="South America" icon="9" expand="0" state="0" type="10">
+                    <Country name="Argentina" icon="9" expand="0" state="0" type="10">ar</Country>
+                    <Country name="Chile" icon="9" expand="0" state="0" type="10">cl</Country>
+                    <Country name="Colombia" icon="9" expand="0" state="0" type="10">co</Country>
+                    <Country name="Brazil" icon="9" expand="0" state="0" type="10">br</Country>
+                    <Country name="Uruguay" icon="9" expand="0" state="0" type="10">uy</Country>
+                    <Country name="Venezuela" icon="9" expand="0" state="0" type="10">ve</Country>
+                </Region>
+            </Continent>
+            <Continent name="Middle East" icon="9" expand="0" state="0" type="10">
+                <Country name="Israel" icon="9" expand="0" state="0" type="10">il</Country>
+                <Country name="Iran" icon="9" expand="0" state="0" type="10">ir</Country>
+                <Country name="Iraq" icon="9" expand="0" state="0" type="10">iq</Country>
+                <Country name="Saudi Arabia" icon="9" expand="0" state="0" type="10">sa</Country>
+            </Continent>
+            <Continent name="Europe" icon="9" expand="0" state="0" type="10">
+                <Region name="Eastern Europe" icon="9" expand="0" state="0" type="10">
+                    <Country name="Bulgaria" icon="9" expand="0" state="0" type="10">bg</Country>
+                    <Country name="Poland" icon="9" expand="0" state="0" type="10">pl</Country>
+                    <Country name="Czech Republic" icon="9" expand="0" state="0" type="10">cz</Country>
+                    <Country name="Hungary" icon="9" expand="0" state="0" type="10">hu</Country>
+                    <Country name="Romania" icon="9" expand="0" state="0" type="10">ro</Country>
+                    <Country name="Russia" icon="9" expand="0" state="0" type="10">ru</Country>
+                    <Country name="Serbia" icon="9" expand="0" state="0" type="10">rs</Country>
+                    <Country name="Slovakia" icon="9" expand="0" state="0" type="10">sk</Country>
+                    <Country name="Slovenia" icon="9" expand="0" state="0" type="10">sl</Country>
+                </Region>
+                <Region name="North Europe" icon="9" expand="0" state="0" type="10">
+                    <Country name="Iceland" icon="9" expand="0" state="0" type="10">is</Country>
+                    <Area name="Baltics" icon="9" expand="0" state="0" type="10">
+                        <Country name="Estonia" icon="9" expand="0" state="0" type="10">ee</Country>
+                        <Country name="Latvia" icon="9" expand="0" state="0" type="10">lv</Country>
+                        <Country name="Lithuania" icon="9" expand="0" state="0" type="10">lt</Country>
+                    </Area>
+                    <Area name="Nordics" icon="9" expand="0" state="0" type="10">
+                        <Country name="Denmark" icon="9" expand="0" state="0" type="10">dk</Country>
+                        <Country name="Norway" icon="9" expand="0" state="0" type="10">no</Country>
+                        <Country name="Finland" icon="9" expand="0" state="0" type="10">fi</Country>
+                        <Country name="Sweden" icon="9" expand="0" state="0" type="10">se</Country>
+                    </Area>
+                </Region>
+                <Region name="Western Europe" icon="9" expand="0" state="0" type="10">
+                    <Country name="Austria" icon="9" expand="0" state="0" type="10">at</Country>
+                    <Country name="Germany" icon="9" expand="0" state="0" type="10">de</Country>
+                    <Country name="France" icon="9" expand="0" state="0" type="10">fr</Country>
+                    <Country name="Ireland" icon="9" expand="0" state="0" type="10">ie</Country>
+                    <Country name="Liechtenstein" icon="9" expand="0" state="0" type="10">li</Country>
+                    <Country name="United Kingdom" icon="9" expand="0" state="0" type="10">gb</Country>
+                    <Country name="Switzerland" icon="9" expand="0" state="0" type="10">ch</Country>
+                    <Area name="Benelux" icon="9" expand="0" state="0" type="10">
+                        <Country name="Belgium" icon="9" expand="0" state="0" type="10">be</Country>
+                        <Country name="Netherlands" icon="9" expand="0" state="0" type="10">nl</Country>
+                        <Country name="Luxembourg" icon="9" expand="0" state="0" type="10">lu</Country>
+                    </Area>
+                </Region>
+                <Region name="South Europe" icon="9" expand="0" state="0" type="10">
+                    <Country name="Albania" icon="9" expand="0" state="0" type="10">al</Country>
+                    <Country name="Bosnia and Herzegowina" icon="9" expand="0" state="0" type="10">ba</Country>
+                    <Country name="Bulgaria" icon="9" expand="0" state="0" type="10">bg</Country>
+                    <Country name="Cyprus" icon="9" expand="0" state="0" type="10">cy</Country>
+                    <Country name="Croatia" icon="9" expand="0" state="0" type="10">hr</Country>
+                    <Country name="Gibraltar" icon="9" expand="0" state="0" type="10">gi</Country>
+                    <Country name="Greece" icon="9" expand="0" state="0" type="10">gr</Country>
+                    <Country name="Italy" icon="9" expand="0" state="0" type="10">it</Country>
+                    <Country name="Malta" icon="9" expand="0" state="0" type="10">mt</Country>
+                    <Country name="Macadonia" icon="9" expand="0" state="0" type="10">mk</Country>
+                    <Country name="Portugal" icon="9" expand="0" state="0" type="10">pt</Country>
+                    <Country name="Spain" icon="9" expand="0" state="0" type="10">es</Country>
+                </Region>
+            </Continent>
+        </Item>
+    </TreeItems>
+</Globalfilter>
