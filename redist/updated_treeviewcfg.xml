@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.201">
+<TreeViewCFG version="5.203">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -9,7 +9,7 @@
 	2009-07-16	5.198	Removed all empty filters and updated Region filters.
 	2009-07-17  5.200	Clean up filter and fixed Half-Life 1 & 2 mods.
 	2009-07-18  5.201	Updated CoD WaW for patch 1.5 support and Quake 2 mods is now added.
-	
+	2009-07-27  5.203	Updated CoD series filters, credit TomMRiddle.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -347,12 +347,62 @@
             <History name="History" icon="16" expand="0" state="0" type="7"></History>
             <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
             <Filter name="Filters" icon="18" expand="0" state="0" type="0">
-                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
-                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
-                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
-                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
-                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
-                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+                <MyFilter name="Killcam" icon="18" expand="0" state="0" type="0">
+                    <kc name="On" icon="9" expand="0" state="0" type="15">if scr_killcam ~!= &quot;1&quot; remove</kc>
+                    <kc name="Off" icon="9" expand="0" state="0" type="15">if scr_killcam ~== &quot;1&quot; remove</kc>
+                </MyFilter>
+                <MyFilter name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="mp_bocage" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_bocage&quot; remove</Map>
+                    <Map name="mp_brecourt" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_brecourt&quot; remove</Map>
+                    <Map name="mp_carentan" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_carentan&quot; remove</Map>
+                    <Map name="mp_chateau" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_chateau&quot; remove</Map>
+                    <Map name="mp_dawnville" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_dawnville&quot; remove</Map>
+                    <Map name="mp_depot" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_depot&quot; remove</Map>
+                    <Map name="mp_harbor" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_harbor&quot; remove</Map>
+                    <Map name="mp_hurtgen" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_hurtgen&quot; remove</Map>
+                    <Map name="mp_neuville" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_neuville&quot; remove</Map>
+                    <Map name="mp_pavlov" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_pavlov&quot; remove</Map>
+                    <Map name="mp_powcamp" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_powcamp&quot; remove</Map>
+                    <Map name="mp_railyard" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_railyard&quot; remove</Map>
+                    <Map name="mp_rocket" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_rocket&quot; remove</Map>
+                    <Map name="mp_ship" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_ship&quot; remove</Map>
+                    <Map name="mp_stalingrad" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_stalingrad&quot; remove</Map>
+                    <Map name="mp_tigertown" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_tigertown&quot; remove</Map>
+                </MyFilter>
+                <MyFilter name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="All" icon="9" expand="0" state="0" type="13">if mod != &quot;1&quot; remove</Mod>
+                    <Mod name="None" icon="9" expand="0" state="0" type="13">if mod &gt; &quot;0&quot; remove</Mod>
+                </MyFilter>
+                <MyFilter name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Behind Enemy Lines" icon="9" expand="0" state="0" type="13">if g_gametype ~!= &quot;bel&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype ~!= &quot;dm&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if g_gametype ~!= &quot;hq&quot; remove</GameType>
+                    <GameType name="Retrieval" icon="9" expand="0" state="0" type="13">if g_gametype ~!= &quot;re&quot; remove</GameType>
+                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if g_gametype ~!= &quot;sd&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype ~!= &quot;tdm&quot; remove</GameType>
+                </MyFilter>
+                <MyFilter name="Friendly fire" icon="18" expand="0" state="0" type="0">
+                    <ff name="Normal" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;1&quot; remove</ff>
+                    <ff name="Reflect" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;2&quot; remove</ff>
+                    <ff name="Shared" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;3&quot; remove</ff>
+                    <ff name="All" icon="9" expand="0" state="0" type="13">if scr_friendlyfire &gt; &quot;0&quot; keep&#x0D;&#x0A;remove</ff>
+                    <ff name="None" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;0&quot; remove</ff>
+                </MyFilter>
+                <MyFilter name="Passworded" icon="18" expand="0" state="0" type="0">
+                    <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; goto 4&#x0D;&#x0A;if g_needpass == &quot;1&quot; goto 4&#x0D;&#x0A;remove</Private>
+                    <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove&#x0D;&#x0A;if g_needpass == &quot;1&quot; remove</Private>
+                </MyFilter>
+                <MyFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
+                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster &gt; &quot;0&quot; remove</PB>
+                </MyFilter>
+                <MyFilter name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="1.5" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.5&quot; remove</Version>
+                    <Version name="1.4" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.4&quot; remove</Version>
+                    <Version name="1.3" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.3&quot; remove</Version>
+                    <Version name="1.2" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.2&quot; remove</Version>
+                    <Version name="1.1" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.1&quot; remove</Version>
+                </MyFilter>
             </Filter>
         </Game>
         <Game name="Call of Duty - United Offensive" icon="39" expand="0" state="0" game="22" type="1">
@@ -362,12 +412,75 @@
             <History name="History" icon="16" expand="0" state="0" type="7"></History>
             <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
             <Filter name="Filters" icon="18" expand="0" state="0" type="0">
-                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
-                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
-                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
-                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
-                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
-                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+                <MyFilter name="Friendly fire" icon="18" expand="0" state="0" type="0">
+                    <ff name="Normal" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;1&quot; remove</ff>
+                    <ff name="Reflect" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;2&quot; remove</ff>
+                    <ff name="Shared" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;3&quot; remove</ff>
+                    <ff name="All" icon="9" expand="0" state="0" type="13">if scr_friendlyfire &gt; &quot;0&quot; keep&#x0D;&#x0A;remove</ff>
+                    <ff name="None" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;0&quot; remove</ff>
+                </MyFilter>
+                <MyFilter name="Killcam" icon="18" expand="0" state="0" type="0">
+                    <kc name="On" icon="9" expand="0" state="0" type="15">if scr_killcam ~!= &quot;1&quot; remove</kc>
+                    <kc name="Off" icon="9" expand="0" state="0" type="15">if scr_killcam ~== &quot;1&quot; remove</kc>
+                </MyFilter>
+                <MyFilter name="Maps" icon="18" expand="0" state="0" type="0">
+                    <MyFilter name="Maps from CoD" icon="18" expand="0" state="0" type="0">
+                        <Map name="mp_bocage" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_bocage&quot; remove</Map>
+                        <Map name="mp_brecourt" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_brecourt&quot; remove</Map>
+                        <Map name="mp_carentan" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_carentan&quot; remove</Map>
+                        <Map name="mp_chateau" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_chateau&quot; remove</Map>
+                        <Map name="mp_dawnville" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_dawnville&quot; remove</Map>
+                        <Map name="mp_depot" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_depot&quot; remove</Map>
+                        <Map name="mp_harbor" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_harbor&quot; remove</Map>
+                        <Map name="mp_hurtgen" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_hurtgen&quot; remove</Map>
+                        <Map name="mp_neuville" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_neuville&quot; remove</Map>
+                        <Map name="mp_pavlov" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_pavlov&quot; remove</Map>
+                        <Map name="mp_powcamp" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_powcamp&quot; remove</Map>
+                        <Map name="mp_railyard" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_railyard&quot; remove</Map>
+                        <Map name="mp_rocket" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_rocket&quot; remove</Map>
+                        <Map name="mp_ship" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_ship&quot; remove</Map>
+                        <Map name="mp_stalingrad" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_stalingrad&quot; remove</Map>
+                        <Map name="mp_tigertown" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_tigertown&quot; remove</Map>
+                    </MyFilter>
+                    <Map name="mp_arnhem" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_arnhem&quot; remove</Map>
+                    <Map name="mp_berlin" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_berlin&quot; remove</Map>
+                    <Map name="mp_cassino" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_cassino&quot; remove</Map>
+                    <Map name="mp_foy" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_foy&quot; remove</Map>
+                    <Map name="mp_italy" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_italy&quot; remove</Map>
+                    <Map name="mp_kharkov" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_kharkov&quot; remove</Map>
+                    <Map name="mp_kursk" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_kursk&quot; remove</Map>
+                    <Map name="mp_ponyri" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_ponyri&quot; remove</Map>
+                    <Map name="mp_rhinevalley" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_rhinevalley&quot; remove</Map>
+                    <Map name="mp_sicily" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_sicily&quot; remove</Map>
+                    <Map name="mp_uo_stanjel" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_uo_stanjel&quot; remove</Map>
+                </MyFilter>
+                <MyFilter name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Base Assault" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;bas&quot; remove</GameType>
+                    <GameType name="Behind Enemy Lines" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;bel&quot; remove</GameType>
+                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;ctf&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;dm&quot; remove</GameType>
+                    <GameType name="Domination" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;dom&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;hq&quot; remove</GameType>
+                    <GameType name="Retrieval" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;re&quot; remove</GameType>
+                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;sd&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;tdm&quot; remove</GameType>
+                </MyFilter>
+                <MyFilter name="Passworded" icon="18" expand="0" state="0" type="0">
+                    <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; goto 4&#x0D;&#x0A;if g_needpass == &quot;1&quot; goto 4&#x0D;&#x0A;remove</Private>
+                    <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove&#x0D;&#x0A;if g_needpass == &quot;1&quot; remove</Private>
+                </MyFilter>
+                <MyFilter name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="1.51" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.51&quot; remove</Version>
+                    <Version name="1.41" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.41&quot; remove</Version>
+                </MyFilter>
+                <MyFilter name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="All" icon="9" expand="0" state="0" type="13">if mod != &quot;1&quot; remove</Mod>
+                    <Mod name="None" icon="9" expand="0" state="0" type="13">if mod == &quot;1&quot; remove</Mod>
+                </MyFilter>
+                <MyFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
+                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster &gt; &quot;0&quot; remove</PB>
+                </MyFilter>
             </Filter>
         </Game>
         <Game name="Call of Duty 2" icon="40" expand="0" state="0" game="6" type="1">
@@ -377,12 +490,63 @@
             <History name="History" icon="16" expand="0" state="0" type="7"></History>
             <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
             <Filter name="Filters" icon="18" expand="0" state="0" type="0">
-                <Anticheat name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</Anticheat>
-                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
-                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
-                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
-                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
-                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
+                <MyFilter name="Passworded" icon="18" expand="0" state="0" type="0">
+                    <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; goto 4&#x0D;&#x0A;if g_needpass == &quot;1&quot; goto 4&#x0D;&#x0A;remove</Private>
+                    <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove&#x0D;&#x0A;if g_needpass == &quot;1&quot; remove</Private>
+                </MyFilter>
+                <MyFilter name="Friendly fire" icon="18" expand="0" state="1" type="0">
+                    <ff name="Normal" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;1&quot; remove</ff>
+                    <ff name="Reflect" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;2&quot; remove</ff>
+                    <ff name="Shared" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;3&quot; remove</ff>
+                    <ff name="All" icon="9" expand="0" state="0" type="13">if scr_friendlyfire &gt; &quot;0&quot; keep&#x0D;&#x0A;remove</ff>
+                    <ff name="None" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;0&quot; remove</ff>
+                </MyFilter>
+                <MyFilter name="Killcam" icon="18" expand="0" state="1" type="0">
+                    <kc name="On" icon="9" expand="0" state="0" type="15">if scr_killcam ~!= &quot;1&quot; remove</kc>
+                    <kc name="Off" icon="9" expand="0" state="0" type="15">if scr_killcam ~== &quot;1&quot; remove</kc>
+                </MyFilter>
+                <MyFilter name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="mp_breakout(villers-bocage)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_brecourt" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_burgundy" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_carentan" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_dawnville" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_decoy(el alamein)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_downtown(moscow)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_farmhouse(beltot)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_harbor(rostov)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_leningrad" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_matmata" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_railyard(stalingrad)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_rhine(wallendar)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_toujane" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                    <Map name="mp_trainstation(caen)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_breakout&quot; remove</Map>
+                </MyFilter>
+                <MyFilter name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="All" icon="9" expand="0" state="0" type="13">if mod != &quot;1&quot; remove</Mod>
+                    <Mod name="None" icon="9" expand="0" state="0" type="13">if mod == &quot;1&quot; remove</Mod>
+                </MyFilter>
+                <MyFilter name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;ctf&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;dm&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;hq&quot; remove</GameType>
+                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;sd&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;tdm&quot; remove</GameType>
+                </MyFilter>
+                <MyFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
+                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster &gt; &quot;0&quot; remove</PB>
+                </MyFilter>
+                <MyFilter name="Antilag" icon="18" expand="0" state="0" type="0">
+                    <antilag name="On" icon="9" expand="0" state="0" type="15">if g_antilag != &quot;1&quot; remove</antilag>
+                    <antilag name="Off" icon="9" expand="0" state="0" type="15">if g_antilag != &quot;0&quot; remove</antilag>
+                </MyFilter>
+                <MyFilter name="Versions" icon="18" expand="0" state="0" type="0">
+                    <Version name="1.0" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.0&quot; remove</Version>
+                    <Version name="1.01" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.01&quot; remove</Version>
+                    <Version name="1.2" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.2&quot; remove</Version>
+                    <Version name="1.3" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.3&quot; remove</Version>
+                </MyFilter>
             </Filter>
         </Game>
         <Game name="Call of Duty 4 - Modern Warfare" icon="41" expand="0" state="0" game="8" type="1">
@@ -392,32 +556,68 @@
             <History name="History" icon="16" expand="0" state="0" type="7"></History>
             <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
             <Filter name="Filters" icon="18" expand="0" state="0" type="0">
-                <PB name="Punkbuster on" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
-                <PB name="Punkbuster off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
-                <Private name="No Private" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove</Private>
-                <Private name="Private Only" icon="9" expand="0" state="0" type="15">if pswrd != &quot;1&quot; remove</Private>
-                <HC name="Show Hardcore" icon="9" expand="0" state="0" type="15">if hc != &quot;1&quot; remove</HC>
-                <HC name="Hide Hardcore" icon="9" expand="0" state="0" type="15">if hc == &quot;1&quot; remove</HC>
-                <CustomFilter name="Custom filters" icon="18" expand="0" state="0" type="0">
-                    <CustomFilter name="Game type SD" icon="9" expand="0" state="0" type="13">if gametype == &quot;sd&quot; keep&#x0D;&#x0A;remove</CustomFilter>
-                    <CustomFilter name="Punkbuster on" icon="9" expand="0" state="0" type="13">if sv_punkbuster == &quot;1&quot; keep&#x0D;&#x0A;remove</CustomFilter>
-                    <CustomFilter name="Punkbuster off" icon="9" expand="0" state="0" type="13">if sv_punkbuster != &quot;1&quot; keep&#x0D;&#x0A;remove</CustomFilter>
-                    <CustomFilter name="version 1.6 only" icon="9" expand="0" state="0" type="13">if shortversion == &quot;1.6&quot; keep&#x0D;&#x0A;remove</CustomFilter>
-                    <CustomFilter name="ProMod Only" icon="9" expand="0" state="0" type="13">if mod == &quot;*promod*&quot; keep&#x0D;&#x0A;remove</CustomFilter>
+                <MyFilter name="Passworded" icon="18" expand="0" state="0" type="0">
+                    <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd != &quot;1&quot; remove</Private>
+                    <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove</Private>
+                </MyFilter>
+                <MyFilter name="Friendly fire" icon="18" expand="0" state="0" type="0">
+                    <ff name="Normal" icon="9" expand="0" state="0" type="13">if ff != &quot;1&quot; remove</ff>
+                    <ff name="Reflect" icon="9" expand="0" state="0" type="13">if ff != &quot;2&quot; remove</ff>
+                    <ff name="Shared" icon="9" expand="0" state="0" type="13">if ff != &quot;3&quot; remove</ff>
+                    <ff name="All" icon="9" expand="0" state="0" type="13">if ff &gt; &quot;0&quot; keep&#x0D;&#x0A;remove</ff>
+                    <ff name="None" icon="9" expand="0" state="0" type="13">if ff &gt; &quot;0&quot; remove</ff>
+                </MyFilter>
+                <MyFilter name="Hardcore" icon="18" expand="0" state="0" type="0">
+                    <HC name="Yes" icon="9" expand="0" state="0" type="15">if hc != &quot;1&quot; remove</HC>
+                    <HC name="No" icon="9" expand="0" state="0" type="15">if hc == &quot;1&quot; remove</HC>
+                </MyFilter>
+                <CustomFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
+                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
                 </CustomFilter>
+                <MyFilter name="Killcam" icon="18" expand="0" state="0" type="0">
+                    <kc name="On" icon="9" expand="0" state="0" type="15">if kc != &quot;1&quot; remove</kc>
+                    <kc name="Off" icon="9" expand="0" state="0" type="15">if kc == &quot;1&quot; remove</kc>
+                </MyFilter>
                 <GameType name="Game types" icon="18" expand="0" state="0" type="0">
-                    <GameType name="War" icon="9" expand="0" state="0" type="13">if gametype != &quot;war&quot; remove</GameType>
-                    <GameType name="Search &amp; Destroy" icon="9" expand="0" state="0" type="13">if gametype != &quot;sd&quot; remove</GameType>
-                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if gametype != &quot;koth&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;dm&quot; remove</GameType>
+                    <GameType name="Domination" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;dom&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;koth&quot; remove</GameType>
+                    <GameType name="Sabotage" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;sab&quot; remove</GameType>
+                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;sd&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;war&quot; remove</GameType>
                 </GameType>
-                <Mod name="Mods" icon="18" expand="0" state="0" type="0"></Mod>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="All" icon="9" expand="0" state="0" type="15">if fs_game != &quot;*?*&quot; remove</Mod>
+                    <Mod name="None" icon="9" expand="0" state="0" type="15">if mod == &quot;1&quot; remove</Mod>
+                </Mod>
                 <Version name="Versions" icon="18" expand="0" state="0" type="0">
-                    <Version name="1.7" icon="9" expand="0" state="0" type="13">if shortversion != &quot;1.7&quot; remove</Version>
-                    <Version name="1.6" icon="9" expand="0" state="0" type="13">if shortversion != &quot;1.6&quot; remove</Version>
-                    <Version name="1.5" icon="9" expand="0" state="0" type="13">if shortversion != &quot;1.5&quot; remove</Version>
+                    <Version name="1.7" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.7&quot; remove</Version>
+                    <Version name="1.6" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.6&quot; remove</Version>
+                    <Version name="1.5" icon="9" expand="0" state="0" type="15">if shortversion != &quot;1.5&quot; remove</Version>
                 </Version>
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
-                    <Map name="mp_vacant" icon="9" expand="0" state="0" type="13">if map != &quot;mp_vacant&quot; remove</Map>
+                    <Map name="mp_backlot" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_backlot&quot; remove</Map>
+                    <Map name="mp_bloc" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_bloc&quot; remove</Map>
+                    <Map name="mp_bog" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_bog&quot; remove</Map>
+                    <Map name="mp_broadcast" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_broadcast&quot; remove</Map>
+                    <Map name="mp_carentan(chinatown)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_carentan&quot; remove</Map>
+                    <Map name="mp_cargoship(wet work)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_cargoship&quot; remove</Map>
+                    <Map name="mp_citystreets(district)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_citystreets&quot; remove</Map>
+                    <Map name="mp_convoy(ambush)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_convoy&quot; remove</Map>
+                    <Map name="mp_countdown" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_countdown&quot; remove</Map>
+                    <Map name="mp_crash" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_crash&quot; remove</Map>
+                    <Map name="mp_crash_snow" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_crash_snow&quot; remove</Map>
+                    <Map name="mp_creek" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_creek&quot; remove</Map>
+                    <Map name="mp_crossfire" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_crossfire&quot; remove</Map>
+                    <Map name="mp_farm(downpour)" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_farm&quot; remove</Map>
+                    <Map name="mp_killhouse" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_killhouse&quot; remove</Map>
+                    <Map name="mp_overgrown" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_overgrown&quot; remove</Map>
+                    <Map name="mp_pipeline" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_pipeline&quot; remove</Map>
+                    <Map name="mp_shipment" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_shipment&quot; remove</Map>
+                    <Map name="mp_showdown" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_showdown&quot; remove</Map>
+                    <Map name="mp_strike" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_strike&quot; remove</Map>
+                    <Map name="mp_vacant" icon="9" expand="0" state="0" type="13">if map ~!= &quot;mp_vacant&quot; remove</Map>
                 </Map>
             </Filter>
         </Game>
@@ -428,47 +628,55 @@
             <History name="History" icon="16" expand="0" state="0" type="7"></History>
             <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
             <Filter name="Filters" icon="18" expand="0" state="0" type="0">
-                <MyFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
-                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
-                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster == &quot;1&quot; remove</PB>
-                </MyFilter>
                 <MyFilter name="Passworded" icon="18" expand="0" state="0" type="0">
                     <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd != &quot;1&quot; remove</Private>
                     <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove</Private>
                 </MyFilter>
-                <Hardcore name="Hardcore" icon="18" expand="0" state="0" type="0">
-                    <Hardcore name="Yes" icon="9" expand="0" state="0" type="13">if hc &gt;= &quot;1&quot; keep&#x0D;&#x0A;remove</Hardcore>
-                    <Hardcore name="No" icon="9" expand="0" state="0" type="13">if hc != &quot;1&quot; keep&#x0D;&#x0A;remove</Hardcore>
+                <MyFilter name="Hardcore" icon="18" expand="0" state="0" type="0">
+                    <HC name="Yes" icon="9" expand="0" state="0" type="15">if hc != &quot;1&quot; remove</HC>
+                    <HC name="No" icon="9" expand="0" state="0" type="15">if hc == &quot;1&quot; remove</HC>
+                </MyFilter>
+                <Hardcore name="Friendly fire" icon="18" expand="0" state="0" type="0">
+                    <ff name="Normal" icon="9" expand="0" state="0" type="13">if ff != &quot;1&quot; remove</ff>
+                    <ff name="Reflect" icon="9" expand="0" state="0" type="13">if ff != &quot;2&quot; remove</ff>
+                    <ff name="Shared" icon="9" expand="0" state="0" type="13">if ff != &quot;3&quot; remove</ff>
+                    <ff name="All" icon="9" expand="0" state="0" type="13">if ff &gt; &quot;0&quot; keep&#x0D;&#x0A;remove</ff>
+                    <ff name="None" icon="9" expand="0" state="0" type="13">if ff &gt; &quot;0&quot; remove</ff>
                 </Hardcore>
+                <MyFilter name="Punkbuster" icon="18" expand="0" state="0" type="0">
+                    <PB name="On" icon="9" expand="0" state="0" type="15">if sv_punkbuster != &quot;1&quot; remove</PB>
+                    <PB name="Off" icon="9" expand="0" state="0" type="15">if sv_punkbuster &gt; &quot;0&quot; remove</PB>
+                </MyFilter>
                 <GameType name="Game types" icon="18" expand="0" state="0" type="0">
-                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if gametype != &quot;ctf&quot; remove</GameType>
-                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if gametype != &quot;dm&quot; remove</GameType>
-                    <GameType name="Domination" icon="9" expand="0" state="0" type="13">if gametype != &quot;dom&quot; remove</GameType>
-                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if gametype != &quot;koth&quot; remove</GameType>
-                    <GameType name="Sabotage" icon="9" expand="0" state="0" type="13">if gametype != &quot;sab&quot; remove</GameType>
-                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if gametype != &quot;sd&quot; remove</GameType>
-                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if gametype != &quot;tdm&quot; remove</GameType>
-                    <GameType name="Total War" icon="9" expand="0" state="0" type="13">if gametype != &quot;twar&quot; remove</GameType>
-                    <NoMix name="No mix" icon="9" expand="0" state="0" type="13">if sv_hostname ~== &quot;*mix*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;dom&quot; goto 5 &#x0D;&#x0A;if sv_hostname ~== &quot;*dom*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;sab&quot; goto 7&#x0D;&#x0A;if sv_hostname ~== &quot;*sab*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;sd&quot; goto 11&#x0D;&#x0A;if sv_hostname ~== &quot;*sd*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*search*destroy*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*s&amp;d*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;koth&quot; goto 16&#x0D;&#x0A;if sv_hostname ~== &quot;*koth*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*hq*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*hea*quarters*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*king*of*the*hill*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;tdm&quot; goto 20&#x0D;&#x0A;if sv_hostname ~== &quot;*tdm*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*tea*deat*match*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;dm&quot; goto 25&#x0D;&#x0A;if sv_hostname ~== &quot;*dm*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*ffa*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*fre*fo*all*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*team*&quot; goto 24&#x0D;&#x0A;if sv_hostname ~== &quot;*deat*match*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;twar&quot; goto 27&#x0D;&#x0A;if sv_hostname ~== &quot;*war*&quot; remove&#x0D;&#x0A;if g_gametype == &quot;ctf&quot; goto 29&#x0D;&#x0A;if sv_hostname ~== &quot;*ctf*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*capture*the*flag*&quot; remove</NoMix>
+                    <GameType name="Capture The Flag" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;ctf&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;dm&quot; remove</GameType>
+                    <GameType name="Domination" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;dom&quot; remove</GameType>
+                    <GameType name="Head Quarters" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;koth&quot; remove</GameType>
+                    <GameType name="Sabotage" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;sab&quot; remove</GameType>
+                    <GameType name="Search and Destroy" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;sd&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;tdm&quot; remove</GameType>
+                    <GameType name="War" icon="9" expand="0" state="0" type="13">if gametype ~!= &quot;twar&quot; remove</GameType>
+                    <NoMix name="No mix" icon="9" expand="0" state="0" type="13">if sv_hostname ~== &quot;*mix*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;dom&quot; goto 5 &#x0D;&#x0A;if sv_hostname ~== &quot;*dom*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;sab&quot; goto 7&#x0D;&#x0A;if sv_hostname ~== &quot;*sab*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;sd&quot; goto 11&#x0D;&#x0A;if sv_hostname ~== &quot;*sd*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*search*destroy*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*s&amp;d*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;koth&quot; goto 16&#x0D;&#x0A;if sv_hostname ~== &quot;*koth*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*hq*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*hea*quarters*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*king*of*the*hill*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;tdm&quot; goto 20&#x0D;&#x0A;if sv_hostname ~== &quot;*tdm*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*tea*deat*match*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;dm&quot; goto 25&#x0D;&#x0A;if sv_hostname ~== &quot;*dm*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*ffa*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*fre*fo*all*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*team*&quot; goto 24&#x0D;&#x0A;if sv_hostname ~== &quot;*deat*match*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;twar&quot; goto 27&#x0D;&#x0A;if sv_hostname ~== &quot;*war*&quot; remove&#x0D;&#x0A;if g_gametype ~== &quot;ctf&quot; goto 29&#x0D;&#x0A;if sv_hostname ~== &quot;*ctf*&quot; remove&#x0D;&#x0A;if sv_hostname ~== &quot;*capture*the*flag*&quot; remove</NoMix>
                 </GameType>
                 <Mod name="Mods" icon="18" expand="0" state="0" type="0">
-                    <Mod name="None" icon="9" expand="0" state="0" type="13">if mod == &quot;1&quot; remove</Mod>
+                    <Mod name="All" icon="9" expand="0" state="0" type="15">if fs_game != &quot;*?*&quot; remove</Mod>
+                    <Mod name="None" icon="9" expand="0" state="0" type="15">if mod == &quot;1&quot; remove</Mod>
                 </Mod>
                 <Version name="Versions" icon="18" expand="0" state="0" type="0">
-                    <Version name="1.4" icon="9" expand="0" state="0" type="13">if protocol != &quot;97&quot; remove</Version>
-					<Version name="1.5" icon="9" expand="0" state="0" type="13">if protocol != &quot;99&quot; remove</Version>
+                    <Version name="1.5" icon="9" expand="0" state="0" type="15">if protocol != &quot;99&quot; remove</Version>
+                    <Version name="1.4" icon="9" expand="0" state="0" type="15">if protocol != &quot;97&quot; remove</Version>
                 </Version>
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
                     <Map name="mp_airfield" icon="9" expand="0" state="0" type="13">if map != &quot;mp_airfield&quot; remove</Map>
                     <Map name="mp_asylum" icon="9" expand="0" state="0" type="13">if map != &quot;mp_asylum&quot; remove</Map>
                     <Map name="mp_castle" icon="9" expand="0" state="0" type="13">if map != &quot;mp_castle&quot; remove</Map>
                     <Map name="mp_courtyard" icon="9" expand="0" state="0" type="13">if map != &quot;mp_courtyard&quot; remove</Map>
-                    <Map name="mp_docks(sub pens)" icon="9" expand="0" state="0" type="13">if map != "mp_docks" remove</Map>
-					<Map name="mp_dome" icon="9" expand="0" state="0" type="13">if map != &quot;mp_dome&quot; remove</Map>
+                    <Map name="mp_docks(sub pens)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_docks&quot; remove</Map>
+                    <Map name="mp_dome" icon="9" expand="0" state="0" type="13">if map != &quot;mp_dome&quot; remove</Map>
                     <Map name="mp_downfall" icon="9" expand="0" state="0" type="13">if map != &quot;mp_downfall&quot; remove</Map>
                     <Map name="mp_hangar" icon="9" expand="0" state="0" type="13">if map != &quot;mp_hangar&quot; remove</Map>
                     <Map name="mp_kneedeep" icon="9" expand="0" state="0" type="13">if map != &quot;mp_kneedeep&quot; remove</Map>
-					<Map name="mp_kwai(banzai)" icon="9" expand="0" state="0" type="13">if map != "mp_kwai" remove</Map>
+                    <Map name="mp_kwai(banzai)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_kwai&quot; remove</Map>
                     <Map name="mp_makin" icon="9" expand="0" state="0" type="13">if map != &quot;mp_makin&quot; remove</Map>
                     <Map name="mp_makin_day" icon="9" expand="0" state="0" type="13">if map != &quot;mp_makin_day&quot; remove</Map>
                     <Map name="mp_nachtfeuer(nightfire)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_nachtfeuer&quot; remove</Map>
@@ -476,10 +684,9 @@
                     <Map name="mp_roundhouse" icon="9" expand="0" state="0" type="13">if map != &quot;mp_roundhouse&quot; remove</Map>
                     <Map name="mp_seelow" icon="9" expand="0" state="0" type="13">if map != &quot;mp_seelow&quot; remove</Map>
                     <Map name="mp_shrine(cliffside)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_shrine&quot; remove</Map>
-					<Map name="mp_stalingrad(corrosion)" icon="9" expand="0" state="0" type="13">if map != "mp_stalingrad" remove</Map>
+                    <Map name="mp_stalingrad(corrosion)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_stalingrad&quot; remove</Map>
                     <Map name="mp_suburban(upheaval)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_suburban&quot; remove</Map>
                     <Map name="mp_subway(station)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_subway&quot; remove</Map>
-					
                 </Map>
             </Filter>
         </Game>

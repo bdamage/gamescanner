@@ -4,6 +4,12 @@
 	Website: http://www.bdamage.se
 	
 	Check out the forum for help and support.
+
+		2.0.8 Release notes
+		-------------------
+		* Bunch of new filters added for CoD series, thanks to TomMRiddle.
+		* Fixed a bug when creating new Folders could get a ranking icon instead the folder icon.
+
 	
 		2.0.7 Release notes
 		-------------------

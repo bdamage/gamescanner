@@ -287,7 +287,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 	
 	strncpy(szFilePath,m_USER_SAVE_PATH,strlen(m_USER_SAVE_PATH));
 	strcat_s(szFilePath,"treeviewcfg.xml");
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load TreeView xml from path: %s",szFilePath);
+	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_USER_SAVE_PATH);
 	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)
 	{
@@ -330,6 +330,9 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 				//continue with the old one
 			}else
 			{
+				ZeroMemory(TREEVIEW_VERSION,sizeof(TREEVIEW_VERSION));
+				xmlUpdate.GetCustomAttribute(xmlUpdate.m_pRootElement,"version",TREEVIEW_VERSION,sizeof(TREEVIEW_VERSION)-1);
+
 				hRoot = xmlUpdate.GetHandle();
 			}			
 		}
@@ -344,13 +347,15 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 		ParseChilds((DWORD*)&TreeLevel,child->FirstChildElement(),TVI_ROOT,-2);
 	}	
 
+
 	sprintf_s(szFilePath,"%s%s",m_USER_SAVE_PATH,"globalfilter.xml");	
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load globalfilter.xml from %s",szFilePath);
+	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_USER_SAVE_PATH);
 	TiXmlDocument GlobalFilterDoc(szFilePath);
 	if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) //!GlobalFilterDoc.LoadFile()) 
 	{
 		log.AddLogInfo(GS_LOG_ERROR,"Error loading config file for globalfilter.xml from m_USER_SAVE_PATH (%s)",szFilePath);
+		AppCFG.filter.bHideOfflineServers = 0;
 		sprintf_s(szFilePath,"%s\\%s",m_EXE_PATH,"globalfilter.xml");
 		SetCurrentDirectory(m_EXE_PATH);
 		if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) 
@@ -360,8 +365,27 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 		}
 	}
 
+
 	ZeroMemory(TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION));
 	xml.GetCustomAttribute(xml.m_pRootElement,"version",TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION)-1);
+	if(CheckForUpdateGlobalFilters(TREEVIEW_GLOBAL_FILTER_VERSION)==0)
+	{
+		int retMB = MessageBox(NULL,"A new version of global filters file has detected.\nWould you like to upgrade?\nNOTE: An upgrade will cause custom filters to be lost!","Game Scanner",MB_YESNO|MB_ICONINFORMATION);
+		if(retMB==IDYES)
+		{
+			AppCFG.filter.bHideOfflineServers = 0;
+			sprintf_s(szFilePath,"%s\\%s",m_EXE_PATH,"globalfilter.xml");
+			SetCurrentDirectory(m_EXE_PATH);
+			if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) 
+			{
+				log.AddLogInfo(GS_LOG_ERROR,"Error loading default globalfilter.xml file from m_EXE_PATH (%s)",szFilePath);
+				return 1;
+			}
+		}
+	}
+
+	ZeroMemory(TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION));
+	xmlGlobalFilters.GetCustomAttribute(xmlGlobalFilters.m_pRootElement,"version",TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION)-1);
 
 	child = xmlGlobalFilters.m_pRootElement->FirstChildElement("TreeItems");
 	for( child; child; child=child->NextSiblingElement() )
@@ -402,12 +426,12 @@ int  CTreeViewManager::CheckForUpdate(const char *szCurrentVersion)
 	ZeroMemory(szFilePath,sizeof(szFilePath));
 	strncpy(szFilePath,m_EXE_PATH,strlen(m_EXE_PATH));
 	strcat_s(szFilePath,"\\updated_treeviewcfg.xml");
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load TreeView.new file from %s",szFilePath);
+	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_EXE_PATH);
 
 	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)//!doc.LoadFile(szFilePath)) 
 	{
-		log.AddLogInfo(GS_LOG_ERROR,"Error loading TreeView.new from %s",szFilePath);
+		log.AddLogInfo(GS_LOG_ERROR,"Error loading %s",szFilePath);
 		return 1;
 	}
 
@@ -424,14 +448,14 @@ int  CTreeViewManager::CheckForUpdate(const char *szCurrentVersion)
 			{
 			
 				log.AddLogInfo(GS_LOG_INFO,"New version detected %s != %s",szVersion,szCurrentVersion);
-				strcpy_s(TREEVIEW_VERSION,szVersion);
+		//		strcpy_s(TREEVIEW_VERSION,szVersion);
 			}
 			else
 				return 2;
 		}else
 		{
 			log.AddLogInfo(GS_LOG_INFO,"New version detected",szVersion);
-			strcpy_s(TREEVIEW_VERSION,szVersion);
+		//	strcpy_s(TREEVIEW_VERSION,szVersion);
 		}
 		
 		return 0; //New version detected
@@ -440,6 +464,51 @@ int  CTreeViewManager::CheckForUpdate(const char *szCurrentVersion)
 
 }
 
+//Returns 0 if a new version has detected otherwise non zero.
+int  CTreeViewManager::CheckForUpdateGlobalFilters(const char *szCurrentVersion)
+{
+	CXmlFile xml;
+	char szFilePath[_MAX_PATH+_MAX_FNAME];
+	ZeroMemory(szFilePath,sizeof(szFilePath));
+	strncpy(szFilePath,m_EXE_PATH,strlen(m_EXE_PATH));
+	strcat_s(szFilePath,"\\globalfilter.xml");
+	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
+	SetCurrentDirectory(m_EXE_PATH);
+
+	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)//!doc.LoadFile(szFilePath)) 
+	{
+		log.AddLogInfo(GS_LOG_ERROR,"Error loading %s",szFilePath);
+		return 1;
+	}
+
+	char  szVersion[20];
+	ZeroMemory(szVersion,sizeof(szVersion));
+	xml.GetCustomAttribute(xml.m_pRootElement,"version",szVersion,sizeof(szVersion)-1);
+
+	log.AddLogInfo(GS_LOG_INFO,"Detected globalfilter file version is %s ",szVersion);
+	if(szVersion!=NULL)
+	{
+		if(szCurrentVersion!=NULL)
+		{
+			if(strcmp(szVersion,szCurrentVersion)>0)
+			{
+			
+				log.AddLogInfo(GS_LOG_INFO,"New global filter version detected %s != %s",szVersion,szCurrentVersion);
+		//		strcpy_s(TREEVIEW_GLOBAL_FILTER_VERSION,szVersion);
+			}
+			else
+				return 2;
+		}else
+		{
+			log.AddLogInfo(GS_LOG_INFO,"New global filter version detected",szVersion);
+		//	strcpy_s(TREEVIEW_GLOBAL_FILTER_VERSION,szVersion);
+		}
+		
+		return 0; //New version detected
+	}
+	return 1;
+
+}
 
 int CTreeViewManager::ParseChilds(DWORD *TreeLevel,TiXmlElement* childItem, HTREEITEM hTreeItem, int iGameIdx)
 {

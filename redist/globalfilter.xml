@@ -1,17 +1,22 @@
 <?xml version="1.0" ?>
-<Globalfilter version="5.187">
+<Globalfilter version="5.203">
     <!--Global filter settings for Game Scanner treeview.-->
     <TreeItems>
         <GlobalFilter name="Global filter" icon="17" expand="0" state="0" type="23">
             <GlobalFilter name="Hide offline servers" icon="9" expand="0" state="0" type="50"></GlobalFilter>
-            <GlobalFilter name="Min 6 and max 20 players" icon="9" expand="0" state="0" type="13">if players &lt; &quot;6&quot; remove&#x0D;&#x0A;if players &gt; &quot;20&quot; remove</GlobalFilter>
-            <GlobalFilter name="Max 20 players" icon="9" expand="0" state="0" type="13">if players &gt; &quot;20&quot;  remove</GlobalFilter>
+			<rifle name="Rifles only" icon="9" expand="0" state="0" type="13">if hostname ~== &quot;*bolt*&quot; goto 4&#x0D;&#x0A;if hostname ~== &quot;*rifle*&quot; goto 4&#x0D;&#x0A;remove&#x0D;&#x0A;if hostname ~== &quot;*sniper*&quot; remove</rifle>
             <Ping name="Maximum Ping" icon="18" expand="0" state="0" type="23">
                 <Ping name="Max 200 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;200&quot; remove</Ping>
                 <Ping name="Max 150 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;150&quot; remove</Ping>
                 <Ping name="Max 100 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;100&quot; remove</Ping>
                 <Ping name="Max 50 ping" icon="9" expand="0" state="0" type="15">if ping &gt; &quot;50&quot; remove</Ping>
             </Ping>
+            <MyFilter name="Players" icon="18" expand="0" state="0" type="0">
+                <notempty name="Not empty" icon="9" expand="0" state="0" type="13">if players == &quot;0&quot; remove</notempty>
+                <notfull name="Not full" icon="9" expand="0" state="0" type="13">if players &gt;= maxplayers remove</notfull>
+                <maxp name="Max 15 players" icon="9" expand="0" state="0" type="13">if players &gt; &quot;15&quot;  remove</maxp>
+                <minp name="Min 7 players" icon="9" expand="0" state="0" type="13">if players &lt; &quot;7&quot; remove</minp>
+            </MyFilter>			
         </GlobalFilter>
         <Item name="Country filter" icon="9" expand="0" state="0" type="10">
             <Country name="Unknown" icon="9" expand="0" state="0" type="10">zz</Country>

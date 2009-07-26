@@ -3,7 +3,7 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION "2.0.7"
+#define  APP_VERSION "2.0.8"
 
 #pragma once
 #define _SECURE_SCL 0

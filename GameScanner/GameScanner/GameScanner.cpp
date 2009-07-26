@@ -2826,7 +2826,9 @@ void  TreeView_BuildList()
 	g_tvIndex = 0;	
 	TreeView_DeleteAllItems(g_hwndMainTreeCtrl);
 	tvmgr.Load(EXE_PATH,USER_SAVE_PATH);
+	TreeView_ReBuildList();
 	PostMessage(g_hWnd,WM_REINIT_COUNTRYFILTER,0,0);
+
 
 	return;
 }
@@ -3333,7 +3335,7 @@ void OnRestore()
 	
 	SetDlgTrans(g_hWnd,AppCFG.g_cTransparancy);
 	
-	TreeView_ReBuildList();
+	//TreeView_ReBuildList();
 
 	g_iCurrentSelectedServer = -1;
 
@@ -11751,12 +11753,13 @@ void OnDeleteFolder(HWND hWndParent)
 
 void OnAddNewFolder(HWND hWndParent)
 {
-
+	
 	g_EditorTI.sName = "New Folder";
 	g_EditorTI.sElementName = "MyFilter";
 	g_EditorTI.sScript = "";
 	g_EditorTI.iIconIndex = 18;
 	g_EditorTI.dwType = 0;
+	g_EditorTI.dwState = 0;
 
 	HTREEITEM hTreeItem = TreeView_GetSelection(g_hwndMainTreeCtrl);
  

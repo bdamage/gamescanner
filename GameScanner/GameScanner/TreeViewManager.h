@@ -55,6 +55,7 @@ public:
 	int Save();
 	int  Load(char *ExePath,char *UserPath);
 	int  CheckForUpdate(const char *szCurrentVersion);
+	int  CheckForUpdateGlobalFilters(const char *szCurrentVersion);
 	DWORD SwapDWCheckState(TVITEM  *pTVitem, DWORD &dwValue);
 	int DoAction(int iSel, UINT flags,TVITEM  *ptvitem,BOOL bRedraw);
 	int OnSelection(LPARAM lParam);
