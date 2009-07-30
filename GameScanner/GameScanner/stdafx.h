@@ -3,7 +3,7 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION "2.0.8"
+#define  APP_VERSION "2.0.9"
 
 #pragma once
 #define _SECURE_SCL 0
@@ -87,8 +87,6 @@
 #include "ImageMenu.h"
 #include "Download.h"
 
-//#include "..\..\HttpFileDownload\HttpFileDownload.h"
-//#include "..\..\IPtoCountry\IPtoCountry.h"
 #include "..\..\FreeImage\freeimage.h"
 #include "..\..\hashlib\src\hashlibpp.h"
 #include <tinyxml.h>

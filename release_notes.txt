@@ -5,13 +5,23 @@
 	
 	Check out the forum for help and support.
 
-		2.0.8 Release notes
+		Version 2.0.9
+		-------------------
+		* Map preview resize fixed.
+		* Added new feature if the server is full a pop-up will ask if the user would like to add the server to auto join monitor.
+		* Fixed a bug with the monitor code to never restart itself after a auto join.
+
+
+		Version 2.0.8
 		-------------------
 		* Bunch of new filters added for CoD series, thanks to TomMRiddle.
-		* Fixed a bug when creating new Folders could get a ranking icon instead the folder icon.
+		* Fixed a bug when creating new Folders that could get a ETQW ranking icon instead the folder icon.
 
 	
-		2.0.7 Release notes
+
+
+
+		Version 2.0.7 
 		-------------------
 		* Updated filters for Enemy Territory, CoD WaW (patch 1.5), Quake 2 and Half-life 1 & 2 includings their mods.
 		* Player and rules can be searched by using /player and /rule in search field.
@@ -24,7 +34,7 @@
 
 	
 	
-		2.0.6 Release notes
+		Version 2.0.6 
 		-------------------
 
 		What's new/updated in 2.0 since 1.x

@@ -204,7 +204,7 @@ char QuakeWorldASCII[]=
 #define SCAN_ALL		0
 #define SCAN_FILTERED	1
 #define SCAN_ALL_GAMES	2
-
+#define MONITOR_INTERVAL 5*1000
 
 #define SERVER_PURGE_COUNTER 5  //Counter after X timeouts to purge (delete) the server
 
@@ -234,6 +234,7 @@ CLanguage g_lang(log);
 CXmlConfig g_xmlcfg;
 CBuddyManager bm(log,gm,g_lang);
 
+UINT_PTR hTimerMonitor=NULL;
 
 /****************************************
 	Buddy Global vars
@@ -1764,6 +1765,7 @@ BOOL ListView_PL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 DWORD WINAPI Monitor_ScanThread(LPVOID lpVoid)
 {
 	KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);
+	hTimerMonitor=NULL;	
 	TCHAR sztmpBuffer[256];
 	BOOL bSetNewTimer=TRUE;
 	dbg_print("Monitor_ScanThread called.");
@@ -1800,8 +1802,13 @@ DWORD WINAPI Monitor_ScanThread(LPVOID lpVoid)
 		if(bWaitingToSave)
 			return 0;
 	}
+
 	if(bSetNewTimer)
-		SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,10*1000,0);	
+	{
+		if(hTimerMonitor==NULL)
+			hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);	
+	}
+	
 	return 0;
 }
 
@@ -3326,7 +3333,7 @@ void ListView_SetHeaderSortImage(HWND listView, int columnIndex, BOOL isAscendin
 void OnRestore()
 {
 	dbg_print("OnRestore");	
-	strcpy(gm.g_szMapName,"unknownmap.png");
+
 	ZeroMemory(g_szIPtoAdd,sizeof(g_szIPtoAdd));
 	EnableButtons(TRUE);
 
@@ -3457,7 +3464,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	Q4_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);
 	STEAM_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies,NULL);
 
-	
+	strcpy(gm.g_szMapName,"unknownmap.png");
 
 	g_CurrentSRV = NULL;
 	g_bRedrawServerListThread =  FALSE;
@@ -3733,7 +3740,9 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 void OnClose()
 {
 	SendMessage(g_hwndMainSTATS,WM_STOP_PING,0,0);
-	KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);
+	if(hTimerMonitor!=NULL)
+		KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);
+	hTimerMonitor = NULL;
 	dbg_print("--- Closing down and cleaning up!\n");
 
 	Shell_NotifyIcon(NIM_DELETE,&structNID);
@@ -4932,7 +4941,8 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 		if((gm.GamesInfo[g_currentGameIdx].vSI.size()>0) && (g_bMinimized == false))
 			OnActivate_ServerList(SCAN_FILTERED);
 	}
-	SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,10*1000,0);		
+	if(hTimerMonitor==NULL)
+		hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);
 	EnableButtons(true);
  return 0;
 }
@@ -9442,6 +9452,8 @@ void OnMonitorNotifyFreeSlots()
 			{
 				pSI->wMonitor |= MONITOR_NOTIFY_FREE_SLOTS;
 				g_vMonitorSI.push_back(pSI);
+				if(hTimerMonitor==NULL)
+					hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);	
 			}
 			ListView_Update(g_hwndListViewServer,n);
 		}
@@ -9465,8 +9477,11 @@ void OnMonitorNotifyActivity()
 			}
 			else
 			{
+
 				pSI->wMonitor |= MONITOR_NOTIFY_ACTIVITY;
 				g_vMonitorSI.push_back(pSI);
+				if(hTimerMonitor==NULL)
+					hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);	
 			}
 			ListView_Update(g_hwndListViewServer,n);
 		}
@@ -9493,6 +9508,9 @@ void OnMonitorNotifyAutoJoin()
 			{
 				pSI->wMonitor |= MONITOR_AUTOJOIN;
 				g_vMonitorSI.push_back(pSI);
+				if(hTimerMonitor==NULL)
+					hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);	
+
 			}							
 			ListView_Update(g_hwndListViewServer,n);		
 		}
@@ -10676,6 +10694,29 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 
 	}
 
+	if(pSI->nPlayers>=pSI->nMaxPlayers)
+	{
+		int retFullServer = MessageBox(g_hWnd,"The server is full would you like to connect anyway? (Ignore)\nOr add the server to try to auto join? (Retry)\nOtherwise abort.","Full server",MB_ABORTRETRYIGNORE | MB_ICONINFORMATION);
+		if(retFullServer==IDRETRY)
+		{
+			if(pSI->wMonitor & MONITOR_AUTOJOIN)
+			{
+				//pSI->wMonitor ^= MONITOR_AUTOJOIN;
+				//g_vMonitorSI.erase(find(g_vMonitorSI.begin(),g_vMonitorSI.end(),pSI));
+			}
+			else
+			{
+				pSI->wMonitor |= MONITOR_AUTOJOIN;
+				g_vMonitorSI.push_back(pSI);
+			}							
+			int n=-1;
+			if ((n =  ListView_GetNextItem(g_hwndListViewServer,n,LVNI_SELECTED))!=-1)
+				ListView_Update(g_hwndListViewServer,n);
+			return;
+		}else if(retFullServer==IDABORT)
+			return;
+	}
+
 
 	pSI->cHistory++;
 	
@@ -10765,6 +10806,18 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 
 	if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
 	{
+		if(hTimerMonitor!=NULL)
+		{
+			KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);
+			for(int iMon=0; iMon<g_vMonitorSI.size();iMon++)
+			{
+				SERVER_INFO *pSI = g_vMonitorSI.at(iMon);
+				if(pSI!=NULL)
+					pSI->wMonitor = 0;
+			}
+			g_vMonitorSI.clear();
+			hTimerMonitor=NULL;
+		}
 		//A Successfull launch
 		WINDOWPLACEMENT wp;
 		GetWindowPlacement(g_hWnd, &wp);

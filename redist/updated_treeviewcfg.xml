@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.203">
+<TreeViewCFG version="5.204">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -10,6 +10,7 @@
 	2009-07-17  5.200	Clean up filter and fixed Half-Life 1 & 2 mods.
 	2009-07-18  5.201	Updated CoD WaW for patch 1.5 support and Quake 2 mods is now added.
 	2009-07-27  5.203	Updated CoD series filters, credit TomMRiddle.
+	2009-07-30	5.204	Changed all states 1 to 0.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -25,8 +26,8 @@
                 <Private name="Private Only" icon="9" expand="0" state="0" type="15">if g_needpass != &quot;1&quot; remove</Private>
                 <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
                 <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
-                <NoETTV name="No ETTV" icon="9" expand="0" state="1" type="13">if version == &quot;ETTV*&quot; remove</NoETTV>
-                <NoBots name="No Bots" icon="9" expand="0" state="1" type="15">if bots &gt;= &quot;1&quot; remove</NoBots>
+                <NoETTV name="No ETTV" icon="9" expand="0" state="0" type="13">if version == &quot;ETTV*&quot; remove</NoETTV>
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="15">if bots &gt;= &quot;1&quot; remove</NoBots>
                 <GameType name="Game types" icon="18" expand="0" state="0" type="0">
                     <GameType name="Campaign" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;4&quot; remove</GameType>
                     <GameType name="Objective" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;2&quot; remove</GameType>
@@ -494,14 +495,14 @@
                     <Private name="Yes" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; goto 4&#x0D;&#x0A;if g_needpass == &quot;1&quot; goto 4&#x0D;&#x0A;remove</Private>
                     <Private name="No" icon="9" expand="0" state="0" type="15">if pswrd == &quot;1&quot; remove&#x0D;&#x0A;if g_needpass == &quot;1&quot; remove</Private>
                 </MyFilter>
-                <MyFilter name="Friendly fire" icon="18" expand="0" state="1" type="0">
+                <MyFilter name="Friendly fire" icon="18" expand="0" state="0" type="0">
                     <ff name="Normal" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;1&quot; remove</ff>
                     <ff name="Reflect" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;2&quot; remove</ff>
                     <ff name="Shared" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;3&quot; remove</ff>
                     <ff name="All" icon="9" expand="0" state="0" type="13">if scr_friendlyfire &gt; &quot;0&quot; keep&#x0D;&#x0A;remove</ff>
                     <ff name="None" icon="9" expand="0" state="0" type="13">if scr_friendlyfire != &quot;0&quot; remove</ff>
                 </MyFilter>
-                <MyFilter name="Killcam" icon="18" expand="0" state="1" type="0">
+                <MyFilter name="Killcam" icon="18" expand="0" state="0" type="0">
                     <kc name="On" icon="9" expand="0" state="0" type="15">if scr_killcam ~!= &quot;1&quot; remove</kc>
                     <kc name="Off" icon="9" expand="0" state="0" type="15">if scr_killcam ~== &quot;1&quot; remove</kc>
                 </MyFilter>
@@ -810,7 +811,7 @@
                 <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
                 <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
                 <Mod name="Mods" icon="18" expand="0" state="0" type="0">
-                    <Mod name="Counter-Strike" icon="9" expand="1" state="1" type="13">if gamename != &quot;Counter-Strike&quot; remove</Mod>
+                    <Mod name="Counter-Strike" icon="9" expand="1" state="0" type="13">if gamename != &quot;Counter-Strike&quot; remove</Mod>
                     <Mod name="Condition Zero" icon="9" expand="1" state="0" type="13">if gamename != &quot;Condition Zero*&quot; remove</Mod>
                     <Mod name="Team Fortress Classic" icon="9" expand="0" state="0" type="13">if gamename != &quot;Team Fortress Classic&quot; remove</Mod>
                     <Mod name="Day of Defeat" icon="9" expand="0" state="0" type="13">if gamename != &quot;Day of Defeat&quot; remove</Mod>
