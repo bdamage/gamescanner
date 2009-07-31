@@ -8207,7 +8207,7 @@ BOOL FindServerRule(char *szRule)
 	pGI->vRefListSI.clear();
 	char rulename[256];
 	ZeroMemory(rulename,256);
-	szRule+=strlen("/rule");
+	szRule+=strlen("/rule ");
 	size_t n = strcspn(szRule,"=");
 	strncpy(rulename,szRule,n);
 	

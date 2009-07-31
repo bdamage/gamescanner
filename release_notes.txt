@@ -5,6 +5,11 @@
 	
 	Check out the forum for help and support.
 
+		Version 2.0.10
+		-------------------
+		* Servers with specific rules can now be searched.
+
+
 		Version 2.0.9
 		-------------------
 		* Map preview resize fixed.
