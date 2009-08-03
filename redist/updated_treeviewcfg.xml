@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.204">
+<TreeViewCFG version="5.208">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -11,6 +11,8 @@
 	2009-07-18  5.201	Updated CoD WaW for patch 1.5 support and Quake 2 mods is now added.
 	2009-07-27  5.203	Updated CoD series filters, credit TomMRiddle.
 	2009-07-30	5.204	Changed all states 1 to 0.
+	2009-08-03	5.207	Added Wolfenstein.
+	2009-08-03  5.208   Fixed Defrag mod filter.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -206,7 +208,7 @@
                     <Mod name="baseq3" icon="9" expand="0" state="0" type="13">if modname == &quot;baseq3&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="Arena" icon="9" expand="0" state="0" type="13">if modname == &quot;arena&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="CPMA" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
-                    <Mod name="Defrag" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="Defrag" icon="9" expand="0" state="0" type="13">if modname == &quot;defrag&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="Excessive+" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="Excessive" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="OSP" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
@@ -943,5 +945,19 @@
                 <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
             </Filter>
         </Game>
+        <Game name="Wolfenstein" icon="54" expand="0" state="0" game="23" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="21" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+               <FilterItem name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</FilterItem>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+            </Filter>
+        </Game>		
     </TreeItems>
 </TreeViewCFG>

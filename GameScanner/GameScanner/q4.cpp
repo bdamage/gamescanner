@@ -24,6 +24,34 @@ extern CGameManager gm;
 
 //extern GamesMap gm.GamesInfo;
 
+struct Q4DATA
+{
+	char leadData[10]; //ÿÿservers
+	char data[1];
+} ;
+struct Q4DATA_SERVER_INFO
+{
+	char leadData[23]; //ÿÿservers
+	char data[1];
+	
+};
+struct ETQWDATA_RESPONSE_SERVERINFO
+{
+	char leadData[31]; //ÿÿservers
+	// 1  2  3  4  5  6  7 8  9  10 11 12 13                   20 21 22 23 24 25          29 30
+	//ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 ff ff ff ff 0d 00 0d 00 1c 03 00
+	char data[1];
+	
+};
+
+struct WOLF_RESPONSE_SERVERINFO
+{
+	char leadData[31]; //ÿÿservers
+	// 1  2  3  4  5  6  7 8  9  10 11 12 13                   20 21 22 23 24 25          29 30 31
+	//ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 ff ff ff ff 12 00 1e 00 8c 03 00 00  //WOLF
+	char data[1];
+	
+};
 
 
 void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),
@@ -36,21 +64,35 @@ void Q4_SetCallbacks(long (*UpdateServerListView)(DWORD index),
 }
 
 
+/*
+Wolf beta 
+-----------
+0x0A2DE878  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 ff ff ff ff 12 00 1e 00 cb 03 00 00 73 69 5f 6e 61 6d 65 00 46 6c 61 6d 65 47 75 61 72 64  ÿÿinfoResponse.....ÿÿÿÿ....Ë...si_name.FlameGuard
 
+0x030AD010  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 ff ff ff ff 12 00 1e 00 2d 04 00 00 73 69 5f 6e 61 6d 65 00 46 6c 61 6d 65 47 75 61 72 64  ÿÿinfoResponse.....ÿÿÿÿ....-...si_name.FlameGuard
+
+0x0A2E0188  ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 00 01 00 00 00 ff ff ff ff 12 00 1e 00 8c 03 00 00 73 69 5f 6e 61 6d 65 00 59 43 4e 20 48 6f 73 74 69 6e  ÿÿinfoResponse.....ÿÿÿÿ....Œ...si_name.YCN Hostin
+
+
+*/
 char *Q4_ParseServerRules(SERVER_INFO* pSI,SERVER_RULES* &pLinkedListStart,char *packet,DWORD packetlen)
 {
 	SERVER_RULES *pSR=NULL;
 	SERVER_RULES *pCurrentSR=NULL;
 	Q4DATA_SERVER_INFO *Q4SI; 
 	ETQWDATA_RESPONSE_SERVERINFO *ETQWResponse;
+	WOLF_RESPONSE_SERVERINFO *WOLFResponse;
 	
 	Q4SI = (Q4DATA_SERVER_INFO *)packet;
 	ETQWResponse  =(ETQWDATA_RESPONSE_SERVERINFO *)packet;
+	WOLFResponse  =(WOLF_RESPONSE_SERVERINFO *)packet;
 	pSR=NULL;
 
 	char *pointer = NULL;
 	if(pSI->cGAMEINDEX==ETQW_SERVERLIST)
 		pointer = ETQWResponse->data;
+	else if(pSI->cGAMEINDEX==WOLF_SERVERLIST)
+		pointer = WOLFResponse->data;
 	else
 		pointer =Q4SI->data;
 
@@ -213,20 +255,12 @@ DWORD Q4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
 		return -1;
 	}
-/*	if(pSI->bLocked)
-	{
-		dbg_print("Server locked @Get_ServerStatus!\n");
-		return 3;
-	}
 
-	pSI->bLocked = TRUE;
-*/
 	SOCKET pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
-	//  pSI->bLocked = FALSE;
 	  return -1;
 	}
   
@@ -371,7 +405,38 @@ retry:
 	closesocket(pSocket);
 	return 0;
 }
+/*
+Wolf beta
 
+0x034331B8  5f 61 6e 74 69 4c 61 67 4f 6e 6c 79 00 30 00 73 69 5f 61 6e 74 69 4c 61 67 00 31 00 62 6f 74 5f 65 6e 61 62 6c 65 00 30 00 67 61 6d 65 6e 61 6d 65  _antiLagOnly.0.si_antiLag.1.bot_enable.0.gamename
+0x034331E9  00 62 61 73 65 57 6f 6c 66 65 6e 73 74 65 69 6e 2d 31 00 73 69 5f 6d 61 70 00 6d 61 70 73 2f 6d 70 5f 6d 61 6e 6f 72 2e 65 6e 74 69 74 69 65 73 00  .baseWolfenstein-1.si_map.maps/mp_manor.entities.
+                  #  PING  RATE   ? ?  Ply name    ?   ? ?  
+0x0343321A  00 00 00 2b 00 80 3e 00 00 54 73 75 00 00 00 00 01 40 00 80 3e 00 00 47 61 72 79 42 6f 75 72 62 69 65 72 00 00 00 00 02 35 00 80 3e 00 00 62 69 6c  ...+.€>..Tsu.....@.€>..GaryBourbier.....5.€>..bil
+0x0343324B  62 6f 65 65 65 00 00 00 00 03 32 00 80 3e 00 00 62 6f 6f 79 61 68 00 00 00 00 04 36 00 80 3e 00 00 4d 75 63 6b 61 21 00 00 00 00 05 28 00 80 3e 00  boeee.....2.€>..booyah.....6.€>..Mucka!.....(.€>.
+0x0343327C  00 63 33 70 65 67 34 00 00 00 00 06 48 00 80 3e 00 00 61 7a 69 72 00 00 00 00 08 07 00 80 3e 00 00 4a 6f 6e 6e 79 00 00 00 00 09 6b 00 80 3e 00 00  .c3peg4.....H.€>..azir.......€>..Jonny.....k.€>..
+0x034332AD  41 6e 75 62 69 53 00 00 00 00 0a 50 00 80 3e 00 00 4a 75 6d 2d 4a 75 6d 00 00 00 00 0b 4c 00 80 3e 00 00 5e 37 49 6e 66 61 6e 5e 33 74 5e 37 6f 72  AnubiS.....P.€>..Jum-Jum.....L.€>..^7Infan^3t^7or
+0x034332DE  00 00 5e 33 65 6e 69 67 6d 61 5e 39 2e 5e 30 00 00 0c 50 00 80 3e 00 00 76 69 70 65 72 65 6b 00 00 00 00 0d 3a 00 80 3e 00 00 5e 32 73 74 61 6d 69  ..^3enigma^9.^0...P.€>..viperek.....:.€>..^2stami
+0x0343330F  6e 61 5e 37 62 6f 79 00 00 00 00 0e 20 01 80 3e 00 00 62 6f 74 61 00 00 00 00 0f 3b 00 80 3e 00 00 7a 69 47 45 52 00 00 00 00 10 01 00 00 00 00 77  na^7boy..... .€>..bota.....;.€>..ziGER..........w
+0x03433340  f1 06 00 02 00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 f3 54 31 69 fb 3a 1d 18 78 13 28 03 b0 33 43 03 10  ñ....ýýýý««««««««.
+
+Wolf beta
+ # PING  RATE  ?   ? Player name                            ?  Clan tag                         ?
+03 1e 00 80 3e 00 00 57 61 6b 69 7a 61 73 68 69 5e 33 21 00 00 5e 30 61 72 74 5e 34 2e 5e 30 00 00 ...€>..Wakizashi^3!..^0art^4.^0..
+
+
+
+1 BYTE Ply index
+2 BYTE Ping
+2 BYTE Rate
+2 BYTE Unknown
+n BYTES String name
+1 BYTE NULL string terminator
+1 BYTE Unknown
+n BYTES Clan tag
+1 BYTE NULL string terminator
+1 BYTE Unknown
+
+*/
 
 PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numPlayers)
 {
@@ -385,7 +450,12 @@ PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numP
 			pSI->cRanked = 1;   //ETQW
 		
 		}
+	} else 	if ((packet[0]==16) && (pSI->cGAMEINDEX == WOLF_SERVERLIST)) 
+	{
+		*numPlayers = 0;
+		return pQ4Players;
 	}
+			
 /*
 bot_minplayers 
 */
@@ -409,11 +479,12 @@ bot_minplayers
 			ping = (WORD*)&packet[0];
 			player->ping  = *ping; 
 			packet+=2;
-			if((pSI->cGAMEINDEX==Q4_SERVERLIST) ||(pSI->cGAMEINDEX==DOOM3_SERVERLIST) )
+			if((pSI->cGAMEINDEX==Q4_SERVERLIST) || (pSI->cGAMEINDEX==DOOM3_SERVERLIST)  || (pSI->cGAMEINDEX==WOLF_SERVERLIST) )
 			{
 				rate = (WORD*)&packet[0];
 				player->rate  = *rate; 
-				packet+=4;//Unknown bytes
+				packet+=2; //rate
+				packet+=2; //unknown bytes
 			}
 
 			player->szPlayerName = _strdup(packet);
@@ -447,6 +518,17 @@ bot_minplayers
 					player->szTeam = _strdup("PLAYER");
 
 				packet++;			
+			} else if(pSI->cGAMEINDEX==WOLF_SERVERLIST)
+			{
+
+				packet++; //unknown byte
+
+				if(strlen(packet)>0)
+					player->szClanTag = _strdup(packet);
+
+				packet+=strlen(packet)+1;
+
+				packet++; //unknown byte
 			}
 			player->pServerInfo = pSI;
 			if(pQ4Players==NULL)
@@ -484,6 +566,8 @@ bot_minplayers
 			}
 
 			if (packet[0]==0x20)  //ETQW & Q4
+				break;
+			if ((packet[0]==16) && (pSI->cGAMEINDEX == WOLF_SERVERLIST)) 
 				break;
 		}
 		

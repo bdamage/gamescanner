@@ -7073,14 +7073,18 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 	if(fp!=NULL)
 	{
 		while(!feof(fp))
-		{				
-			fgets( buff, sizeof(buff), fp );
-			pszIP = SplitIPandPORT((char*)&buff,dwPort);					
-			DWORD dwRet = AddServer(pGI,pszIP,dwPort,false);
-			if(dwRet!=0xFFFFFFFF)
+		{		
+		//	ZeroMemory(buff, sizeof(buff));
+			char *pout = fgets( buff, sizeof(buff), fp );
+			if(pout!=NULL)
 			{
-				i++;
-				SetStatusText(pGI->iIconIndex,g_lang.GetString("StatusReceivingMaster"),i,pGI->szGAME_NAME);
+				pszIP = SplitIPandPORT((char*)&buff,dwPort);					
+				DWORD dwRet = AddServer(pGI,pszIP,dwPort,false);
+				if(dwRet!=0xFFFFFFFF)
+				{
+					i++;
+					SetStatusText(pGI->iIconIndex,g_lang.GetString("StatusReceivingMaster"),i,pGI->szGAME_NAME);
+				}
 			}
 
 		}
@@ -11004,8 +11008,44 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 
 	if(pElement!=NULL)
 	{
+		char version[30];
+		char newversion[30];
+		strcpy(version,APP_VERSION);
+		
+		DWORD dwMajor,dwMinor,dwMaintain;
+		DWORD dwNewMajor,dwNewMinor,dwNewMaintain;
+		char *pMaj = version;
+		char *pt = strchr(version,'.');
+		pt[0] = 0;
+		char *pMin = pt+1;
+
+		pt = strchr(pMin,'.');
+		pt[0] = 0;
+		char *pMain = pt+1;
+		dwMajor = atol(pMaj);
+		dwMinor = atol(pMin);
+		dwMaintain = atol(pMain);
+
+
+		
+
 		ReadCfgStr2(pElement , "Version",szVersion,sizeof(szVersion));
-		if(strcmp(szVersion,APP_VERSION)>0)
+		strcpy(newversion,szVersion);
+		pMaj = newversion;
+		pt = strchr(newversion,'.');
+		pt[0] = 0;
+		pMin = pt+1;
+		pt = strchr(pMin,'.');
+		pt[0] = 0;
+		pMain = pt+1;
+		dwNewMajor = atol(pMaj);
+		dwNewMinor = atol(pMin);
+		dwNewMaintain = atol(pMain);
+
+		if ((dwNewMajor>=dwMajor && dwNewMinor>=dwMinor && dwNewMaintain>dwMaintain) \
+		|| (dwNewMajor>=dwMajor && dwNewMinor>dwMinor) \
+		|| (dwNewMajor>dwMajor) )
+			
 		{
 			Show_ToolbarButton(IDC_DOWNLOAD, true);
 			//EnableDownloadLink(TRUE);

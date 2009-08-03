@@ -8,6 +8,8 @@
 		Version 2.0.10
 		-------------------
 		* Servers with specific rules can now be searched.
+		* Added support for Wolfenstein beta.
+		* Fixed Q3 mod filter for defrag mod.
 
 
 		Version 2.0.9
