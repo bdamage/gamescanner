@@ -334,7 +334,7 @@
 		</Detection>
 		<Columns>
 			<Column idx="0">sv_punkbuster</Column>
-			<Column idx="1">sv_needpass</Column>
+			<Column idx="1">g_needpass</Column>
 			<Column idx="2">ranked</Column>
 			<Column idx="3">sv_hostname</Column>
 			<Column idx="4">version</Column>
@@ -543,9 +543,9 @@
 		<Icon>hl.ico</Icon>
 		<MasterServers>
 			<MasterServer http="0">hl1master.steampowered.com:27010</MasterServer>
-			<!--<MasterServer http="0">68.142.72.250:27010</MasterServer>
-			<MasterServer http="0">69.28.151.162:27010</MasterServer>	
-			<MasterServer http="0">72.165.61.189:27010</MasterServer>	-->		
+			<MasterServer http="0">68.142.72.250:27010</MasterServer>
+			<MasterServer http="0">69.28.151.162:27010</MasterServer>
+			<MasterServer http="0">72.165.61.189:27010</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -581,9 +581,9 @@
 		<Icon>cstrike.ico</Icon>
 		<MasterServers>
 			<MasterServer http="0">hl1master.steampowered.com:27010</MasterServer>
-			<!--<MasterServer http="0">68.142.72.250:27010</MasterServer>
-			<MasterServer http="0">69.28.151.162:27010</MasterServer>	
-			<MasterServer http="0">72.165.61.189:27010</MasterServer>	-->		
+			<MasterServer http="0">68.142.72.250:27010</MasterServer>
+			<MasterServer http="0">69.28.151.162:27010</MasterServer>
+			<MasterServer http="0">72.165.61.189:27010</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -626,9 +626,9 @@
 		<Icon>cstrikezero.ico</Icon>
 		<MasterServers>
 			<MasterServer http="0">hl1master.steampowered.com:27010</MasterServer>	
-			<!--<MasterServer http="0">68.142.72.250:27010</MasterServer>
-			<MasterServer http="0">69.28.151.162:27010</MasterServer>	
-			<MasterServer http="0">72.165.61.189:27010</MasterServer>	-->		
+			<MasterServer http="0">68.142.72.250:27010</MasterServer>
+			<MasterServer http="0">69.28.151.162:27010</MasterServer>
+			<MasterServer http="0">72.165.61.189:27010</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>

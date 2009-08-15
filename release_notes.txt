@@ -5,6 +5,10 @@
 	
 	Check out the forum for help and support.
 
+		Version	2.0.11
+		-------------------
+		* RTCW now displays private servers with lock icon.
+
 		Version 2.0.10
 		-------------------
 		* Servers with specific rules can now be searched.

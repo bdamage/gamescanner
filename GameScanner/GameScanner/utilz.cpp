@@ -624,24 +624,6 @@ char * ServerRule_Add(SERVER_RULES* &pLinkedListStart,char *szRuleName,char*szRu
 }
 
 
-/*
-SERVER_INFO g_pSIduplicate;
-bool duplicate_func(SERVER_INFO *pSIa) //This function is not multithread safe!!
-{
-	if((pSIa->dwIP == g_pSIduplicate.dwIP) && (pSIa->usPort == g_pSIduplicate.usPort))
-		return true;
-	return false;
-}
-
-bool duplicate_funcGS4(SERVER_INFO *pSIa) //This function is not multithread safe!!
-{
-	if((pSIa->dwIP == g_pSIduplicate.dwIP) && (pSIa->usQueryPort == g_pSIduplicate.usQueryPort))
-		return true;
-	return false;
-}
-*/
-
-
 long GetIndexByHashValue(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 {
 	hash_multimap <int, int>::iterator hmp_Iter;
@@ -670,22 +652,6 @@ long CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO *pSI)
 	int hash = pSI->dwIP + pSI->usQueryPort;
 
 	return GetIndexByHashValue(pGI,  hash,pSI->dwIP,pSI->usQueryPort);
-
-/*	if(pGI->GAME_ENGINE == GAMESPYv4_ENGINE)
-	{
-		memcpy(&g_pSIduplicate,pSI,sizeof(SERVER_INFO));
-		iResult = find_if(pGI->vSI.begin(), pGI->vSI.end(),duplicate_funcGS4);
-	}
-	else*/
-
-		iResult = find(pGI->vSI.begin(), pGI->vSI.end(),(LPSERVERINFO)pSI);
-		//iResult = find_if(pGI->vSI.begin(), pGI->vSI.end(),duplicate_func);
-	
-	if(iResult == pGI->vSI.end())
-		 return -1;
-	pSrv = *iResult;
-
-	return pSrv->dwIndex;
 }
 
 BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
