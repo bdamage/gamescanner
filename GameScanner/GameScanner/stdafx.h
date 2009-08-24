@@ -3,7 +3,7 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION "2.0.10"
+#define  APP_VERSION "2.0.11"
 
 #pragma once
 #define _SECURE_SCL 0
@@ -15,8 +15,8 @@
 #endif
 
 #ifndef _WIN32_WINNT		// Allow use of features specific to Windows XP or later.                   
-//#define _WIN32_WINNT 0x0600	// Change this to the appropriate value to target other versions of Windows.
-#define _WIN32_WINNT 0x0501	// Change this to the appropriate value to target other versions of Windows.
+//#define _WIN32_WINNT 0x0600	// Vista
+#define _WIN32_WINNT 0x0501	// XP - Change this to the appropriate value to target other versions of Windows.
 #endif						
 
 #ifndef _WIN32_WINDOWS		// Allow use of features specific to Windows 98 or later.

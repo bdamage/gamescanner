@@ -18,6 +18,7 @@
 #define IDS_COLOR_FONT                  108
 #define IDC_GAMESCANNER                 109
 #define IDS_ADD_NEW_BUDDY               110
+#define IDM_CONNECT_AS_SPEC             110
 #define IDR_MAINFRAME                   128
 #define IDI_SMALL                       129
 #define IDI_ICON1                       130
@@ -388,6 +389,6 @@
 #define _APS_NEXT_RESOURCE_VALUE        1228
 #define _APS_NEXT_COMMAND_VALUE         32921
 #define _APS_NEXT_CONTROL_VALUE         1222
-#define _APS_NEXT_SYMED_VALUE           110
+#define _APS_NEXT_SYMED_VALUE           111
 #endif
 #endif

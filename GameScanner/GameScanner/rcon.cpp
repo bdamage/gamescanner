@@ -25,19 +25,62 @@ extern GamesMap GamesInfo;
 extern CLanguage g_lang;
 extern CLogger log;
 
+list<string> RCONList;
 char szRCON_CMD_BACKLOG[MAX_BACKLOG][80];
+
+void LoadRCONCommandList()
+{
+	RCONList.clear();
+	RCONList.push_back("kick");
+	RCONList.push_back("config");
+	RCONList.push_back("ref");
+	RCONList.push_back("map_restart");
+	RCONList.push_back("cls");
+	RCONList.push_back("cvarlist");
+	RCONList.push_back("gamemod");
+	RCONList.push_back("modversion");
+	RCONList.push_back("timeinfo");
+	RCONList.push_back("cmdlist");
+	RCONList.push_back("serverinfo");
+	RCONList.push_back("status");
+	RCONList.push_back("map");
+	RCONList.push_back("say");
+	RCONList.push_back("vstr");
+	RCONList.push_back("exec");
+	RCONList.push_back("set");
+	RCONList.push_back("seta");
+	RCONList.push_back("setu");
+	RCONList.push_back("sets");
+	RCONList.push_back("devmap");
+	RCONList.push_back("sectorlist");
+	RCONList.push_back("dumpuser");
+	RCONList.push_back("systeminfo");
+	RCONList.push_back("heartbeat");
+	RCONList.push_back("vminfo");
+	RCONList.push_back("midiinfo");
+	RCONList.push_back("writeconfig");
+	RCONList.push_back("changeVectors");
+	RCONList.push_back("meminfo");
+	RCONList.push_back("bind");
+	RCONList.push_back("unbindall");
+	RCONList.push_back("touchFile");
+	RCONList.push_back("dir");
+	RCONList.push_back("path");
+	RCONList.push_back("bindlist");
+	RCONList.push_back("unbind");
+	RCONList.push_back("reset");
+	RCONList.push_back("toggle");
+	RCONList.push_back("wait");
+	RCONList.push_back("echo");
+}
 
 LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
-	 if(uMsg == WM_COMMAND)
-		 {
-				DWORD wmId;
-				DWORD wmEvent;
-				wmId    = LOWORD(wParam); 
-				wmEvent = HIWORD(wParam); 
-				// Parse the menu selections:
-	 }		
-	 if(uMsg == WM_KEYDOWN)
+	
+	static list <string>::iterator sIter;
+	static char szCmdAuto[256];
+
+	if(uMsg == WM_KEYDOWN)
 	 {
 	 	if(wParam==VK_UP)
 			return TRUE;
@@ -46,9 +89,46 @@ LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 		if(wParam==VK_TAB)
 			return TRUE;
 	 }
-	if(uMsg == WM_KEYUP)
-		{
-			
+
+ 	if(uMsg == WM_KEYUP)
+	{			
+			if(wParam>=0x41 && wParam<=0x5A)
+			{
+				
+				GetDlgItemText(g_hRCONDlg,IDC_EDIT_CMD,szCmdAuto,sizeof(szCmdAuto)-1);
+				for(sIter = RCONList.begin(); sIter!=RCONList.end();)
+				{
+					string s = *sIter;
+					if(strncmp(s.c_str(),szCmdAuto,strlen(szCmdAuto))==0)
+					{
+						SetDlgItemText(g_hRCONDlg,IDC_EDIT_CMD,s.c_str());
+						PostMessage(GetDlgItem(g_hRCONDlg,IDC_EDIT_CMD),EM_SETSEL,strlen(szCmdAuto),s.size());
+						break;
+					}
+					sIter++;
+				}
+				
+			}
+			if(wParam==VK_TAB)
+			{
+				if(sIter==RCONList.end())
+					sIter = RCONList.begin();
+				else
+					sIter++;
+				while(sIter!=RCONList.end())
+				{
+
+					string s = *sIter;
+					if(strncmp(s.c_str(),szCmdAuto,strlen(szCmdAuto))==0)
+					{
+						SetDlgItemText(g_hRCONDlg,IDC_EDIT_CMD,s.c_str());
+						PostMessage(GetDlgItem(g_hRCONDlg,IDC_EDIT_CMD),EM_SETSEL,strlen(szCmdAuto),s.size());
+						break;
+					}
+					sIter++;
+				}
+
+			}
 			if(wParam==VK_F1)
 			{
 
@@ -152,24 +232,19 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 			GetClientRect(GetDlgItem(hDlg, IDC_STATIC_RCON_INFO),&item);
 			MoveWindow(GetDlgItem(hDlg, IDC_STATIC_RCON_INFO),0,rc.bottom-30,x,50,TRUE);
-
-
 			GetClientRect(GetDlgItem(hDlg, IDOK),&item);
 			MoveWindow(GetDlgItem(hDlg, IDOK),x+10,rc.bottom-50,item.right,item.bottom,TRUE);
 			GetClientRect(GetDlgItem(hDlg, ID_RCON_CONNECT),&item);
 			MoveWindow(GetDlgItem(hDlg, ID_RCON_CONNECT),x+10,rc.bottom-20,item.right,item.bottom,TRUE);
 			GetClientRect(GetDlgItem(hDlg, IDC_CHECK_COLFILTER),&item);
 			MoveWindow(GetDlgItem(hDlg, IDC_CHECK_COLFILTER),x+100,rc.bottom-30,item.right,item.bottom,TRUE);
-
-			
-
 			return TRUE;
 		}
 			break;
 	case WM_INITDIALOG:
 		{
+			LoadRCONCommandList();
 			dwRCONLOG=0;
-			//CenterWindow(hDlg);
 			g_hRCONDlg = hDlg;
 			g_hwndRCONCmd = GetDlgItem(hDlg,IDC_EDIT_CMD);
 			g_hwndRCONOut = GetDlgItem(hDlg,IDC_LIST_RCON);
@@ -189,6 +264,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 	case WM_COMMAND:
 		{
 
+			
 			switch(LOWORD(wParam))
 			{
 				case ID_RCON_CONNECT:

@@ -11,18 +11,17 @@ class CTreeViewManager
 {
 
 
+	DWORD g_tvIndex;
+
 	CXmlFile	xml;
 	TCHAR *m_EXE_PATH;			//Don't write anything to this path
 	TCHAR *m_USER_SAVE_PATH;    //Path to save settings and server lists
 	CLogger & log;
 	CGameManager &gm;
 	CScriptEngine &m_se;
-	
-//HTREEITEM hRootItem=NULL,hRootFiltersItem=NULL,
 	HTREEITEM hRootCountryFiltersItem;
-
-//HTREEITEM hRootEuropeItem=NULL,hFilterPingItem=NULL,hFilterGameTypeItem=NULL;
-
+	
+	int ReBuildListChild(HTREEITEM hTreeItemParent,int idx,int ParentLevel);
 
 public:
 	
@@ -68,4 +67,7 @@ public:
 	void Select_all_childs(HTREEITEM hRoot, bool selected);
 	void Initialize_CountryFilter();
 	DWORD Build_CountryFilter(HTREEITEM hRoot);
+	void BuildList(HWND hWndParent,char *ExePath,char*UserPath);
+	void ReBuildList();
+	HTREEITEM AddItem(_MYTREEITEM *ti,HTREEITEM hCurrent,bool active);
 };

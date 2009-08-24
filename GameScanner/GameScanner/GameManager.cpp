@@ -41,6 +41,7 @@ void CGameManager::Default_GameSettings()
 		GamesInfo[i].vGAME_INST.clear();
 		GamesInfo[i].bLockServerList = FALSE;
 		GamesInfo[i].filter.dwRegion = 0;
+		GamesInfo[i].hTI = NULL;
 	}
 
 	CXmlFile xml;
@@ -62,12 +63,14 @@ void CGameManager::Default_GameSettings()
 	{
 		char szTemp[100];
 		GAME_INFO gameinfo;
-		
+		gameinfo.bLockServerList = FALSE;
 		gameinfo.bActive=0;
 		gameinfo.dwTotalServers=0;
 		gameinfo.dwScanIdx = 0;
 		gameinfo.dwViewFlags = 0;
 		gameinfo.nMasterServers = 0;
+		gameinfo.filter.dwRegion = 0;
+		gameinfo.hTI = NULL;
 		
 		ZeroMemory(&gameinfo.filter,sizeof(gameinfo.filter));
 		ZeroMemory(&gameinfo.szGAME_NAME,sizeof(gameinfo.szGAME_NAME));

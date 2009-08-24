@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.208">
+<TreeViewCFG version="5.209">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -13,6 +13,7 @@
 	2009-07-30	5.204	Changed all states 1 to 0.
 	2009-08-03	5.207	Added Wolfenstein.
 	2009-08-03  5.208   Fixed Defrag mod filter.
+	2009-08-21	5.209	OSP mod filter fixed.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -211,7 +212,7 @@
                     <Mod name="Defrag" icon="9" expand="0" state="0" type="13">if modname == &quot;defrag&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="Excessive+" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="Excessive" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
-                    <Mod name="OSP" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="OSP" icon="9" expand="0" state="0" type="13">if modname ~== &quot;osp&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="q3ut4" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
                 </Mod>
                 <Version name="Versions" icon="18" expand="0" state="0" type="0">

@@ -1101,3 +1101,136 @@ DWORD CTreeViewManager::Build_CountryFilter(HTREEITEM hRoot)
 	}
 	return dwReturnToParent;
 }
+
+
+int CTreeViewManager::ReBuildListChild(HTREEITEM hTreeItemParent,int idx,int ParentLevel)
+{
+	HTREEITEM hTreeItem=NULL;
+	int i = idx;
+	int level;
+
+	for (i; i<vTI.size();i++)
+	{
+		_MYTREEITEM ti;
+		ti = vTI.at(i);
+		
+		bool active=true;
+		if(ti.cGAMEINDEX!=-1)
+		{
+			if(ti.cGAMEINDEX<gm.GamesInfo.size())
+				active = gm.GamesInfo[ti.cGAMEINDEX].bActive;
+		}
+		if((ParentLevel==vTI.at(i).dwLevel) && (vTI.at(i).bDelete==FALSE))
+		{
+			vTI.at(i).hTreeItem = AddItem(&ti,hTreeItemParent, active);
+			level = vTI.at(i).dwLevel ;
+			hTreeItem = vTI.at(i).hTreeItem;
+		} else if (ParentLevel<vTI.at(i).dwLevel)
+		{
+			i = ReBuildListChild(hTreeItem,i,vTI.at(i).dwLevel);
+			hTreeItem = NULL;
+			if(i<vTI.size())
+			{
+				if (vTI.at(i).dwLevel==ParentLevel)
+					i--;
+				else
+					return i;
+			}
+			else
+				return i;
+
+		} else if (ParentLevel>vTI.at(i).dwLevel)
+			return i;
+		
+	}
+	return i;
+}
+
+void  CTreeViewManager::BuildList(HWND hWndParent,char *ExePath,char*UserPath)
+{   
+	g_tvIndex = 0;	
+	TreeView_DeleteAllItems(hwndTreeCtrl);
+	Load(ExePath,UserPath);
+	ReBuildList();
+	PostMessage(hWndParent,WM_REINIT_COUNTRYFILTER,0,0);
+
+	return;
+}
+
+void CTreeViewManager::ReBuildList()
+{   
+	g_tvIndex = 0;	
+	int level=2;
+	TreeView_DeleteAllItems(hwndTreeCtrl);
+	HTREEITEM hTreeItem=NULL;
+	for (int i=0; i<vTI.size();i++)
+	{
+		if(vTI.at(i).bDelete)
+		{
+			vTI.erase(vTI.begin()+i);
+			i--;
+		}
+
+	}
+	for (int i=0; i<vTI.size();i++)
+	{
+		i = ReBuildListChild(hTreeItem,i, level);	
+	}
+	char szBuffer[256];
+	for(int i=0; i<gm.GamesInfo.size();i++)
+	{
+		gm.GamesInfo[i].hTI = GetHTIByItemGame(i);
+		sprintf(szBuffer,"%s (%d)",gm.GamesInfo[i].szGAME_NAME,gm.GamesInfo[i].dwTotalServers);
+		if(gm.GamesInfo[i].hTI!=NULL)
+		{
+			SetItemText(gm.GamesInfo[i].hTI,szBuffer);
+			TreeView_SetItemState(hwndTreeCtrl,gm.GamesInfo[i].hTI,TVIS_BOLD ,TVIS_BOLD);
+		}
+
+	}
+}
+
+
+
+HTREEITEM CTreeViewManager::AddItem(_MYTREEITEM *ti,HTREEITEM hCurrent,bool active)
+							
+{
+	 int iImageIndex = ti->iIconIndex+ti->dwState;
+	 bool expand = ti->bExpanded;
+	
+	 char text[256];
+	 sprintf(text,"%s",ti->sName.c_str());
+
+	if(active==false)
+	{
+		g_tvIndex++;
+		return NULL;
+	}
+		
+	TVINSERTSTRUCT tvs;
+	memset(&tvs,0,sizeof(TVINSERTSTRUCT));
+	tvs.item.mask                   = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
+/*	if(ti->dwType==13)
+	{
+		tvs.item.mask                   = TVIF_STATE|TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
+		tvs.item.state = INDEXTOSTATEIMAGEMASK (ti->dwState+1);
+		tvs.item.stateMask = TVIS_STATEIMAGEMASK;
+	}
+*/
+
+	tvs.hParent = hCurrent;
+	tvs.item.pszText            = (LPSTR)text;
+	
+	tvs.item.lParam = g_tvIndex++;
+	tvs.item.cchTextMax             = lstrlen(tvs.item.pszText) + 1;
+
+	//tvs.hInsertAfter = TVI_LAST;
+	tvs.item.iImage                 = iImageIndex;
+	tvs.item.iSelectedImage         = iImageIndex;//62;
+	HTREEITEM hNewItem = TreeView_InsertItem(hwndTreeCtrl, &tvs);
+	//TreeView_SetCheckState(g_hwndMainTreeCtrl,hNewItem,TRUE);
+    
+	if (hCurrent && expand)
+		TreeView_Expand(hwndTreeCtrl, hCurrent, TVE_EXPAND);
+	return hNewItem;
+}

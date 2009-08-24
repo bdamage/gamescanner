@@ -8,6 +8,12 @@
 		Version	2.0.11
 		-------------------
 		* RTCW now displays private servers with lock icon.
+		* Added connect as spectator.
+		* Fixed OSP mod filter for Q3.
+		* Added RCON auto completion of commands, TAB to enumerate through known commands.
+		* Fixed a bug when detecting default game install.
+		* Fixed drawing issues.
+
 
 		Version 2.0.10
 		-------------------
@@ -28,10 +34,6 @@
 		* Bunch of new filters added for CoD series, thanks to TomMRiddle.
 		* Fixed a bug when creating new Folders that could get a ETQW ranking icon instead the folder icon.
 
-	
-
-
-
 		Version 2.0.7 
 		-------------------
 		* Updated filters for Enemy Territory, CoD WaW (patch 1.5), Quake 2 and Half-life 1 & 2 includings their mods.
@@ -39,10 +41,6 @@
 		  example /player ETPlayer or /rule sv_punkbuster=1
 		* Fixed potential server duplicate and made it future proof. This may require some rescanning all servers first to apply. 
 		* Limited Half-Life including mods (ie Counter Strike) master servers to one, this will speed up when doing full rescan.
-
-
-
-
 	
 	
 		Version 2.0.6 

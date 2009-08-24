@@ -240,7 +240,6 @@ UINT_PTR hTimerMonitor=NULL;
 	Buddy Global vars
 *****************************************/
 
-DWORD g_tvIndex=0;
 
 BOOL g_bWinSizesLoaded = FALSE;
 
@@ -2736,279 +2735,9 @@ void Select_item_and_all_childs(HTREEITEM hRoot, bool selected)
 
 
 
-HTREEITEM TreeView_AddItem(_MYTREEITEM *ti,HTREEITEM hCurrent,bool active)
-							
-{
-	 int iImageIndex = ti->iIconIndex+ti->dwState;
-	 bool expand = ti->bExpanded;
-	
-	 char text[256];
-	 sprintf(text,"%s",ti->sName.c_str());
-
-	if(active==false)
-	{
-		g_tvIndex++;
-		return NULL;
-	}
-		
-	TVINSERTSTRUCT tvs;
-	memset(&tvs,0,sizeof(TVINSERTSTRUCT));
-	tvs.item.mask                   = TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
-/*	if(ti->dwType==13)
-	{
-		tvs.item.mask                   = TVIF_STATE|TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_TEXT;
-		tvs.item.state = INDEXTOSTATEIMAGEMASK (ti->dwState+1);
-		tvs.item.stateMask = TVIS_STATEIMAGEMASK;
-	}
-*/
-
-	tvs.hParent = hCurrent;
-	tvs.item.pszText            = (LPSTR)text;
-	
-	tvs.item.lParam = g_tvIndex++;
-	tvs.item.cchTextMax             = lstrlen(tvs.item.pszText) + 1;
-
-	//tvs.hInsertAfter = TVI_LAST;
-	tvs.item.iImage                 = iImageIndex;
-	tvs.item.iSelectedImage         = iImageIndex;//62;
-	HTREEITEM hNewItem = TreeView_InsertItem(g_hwndMainTreeCtrl, &tvs);
-	//TreeView_SetCheckState(g_hwndMainTreeCtrl,hNewItem,TRUE);
-    
-	if (hCurrent && expand)
-		TreeView_Expand(g_hwndMainTreeCtrl, hCurrent, TVE_EXPAND);
-	return hNewItem;
-}
-
 //DWORD g_TreeLevel=1;
 
 
-
-
-int TreeView_ReBuildListChild(HTREEITEM hTreeItemParent,int idx,int ParentLevel)
-{
-	HTREEITEM hTreeItem=NULL;
-	int i = idx;
-	int level;
-
-	for (i; i<tvmgr.vTI.size();i++)
-	{
-		_MYTREEITEM ti;
-		ti = tvmgr.vTI.at(i);
-		
-
-		bool active=true;
-		if(ti.cGAMEINDEX!=-1)
-		{
-			if(ti.cGAMEINDEX<gm.GamesInfo.size())
-				active = gm.GamesInfo[ti.cGAMEINDEX].bActive;
-		}
-		if((ParentLevel==tvmgr.vTI.at(i).dwLevel) && (tvmgr.vTI.at(i).bDelete==FALSE))
-		{
-			tvmgr.vTI.at(i).hTreeItem = TreeView_AddItem(&ti,hTreeItemParent, active);
-			level = tvmgr.vTI.at(i).dwLevel ;
-			hTreeItem = tvmgr.vTI.at(i).hTreeItem;
-		} else if (ParentLevel<tvmgr.vTI.at(i).dwLevel)
-		{
-			i = TreeView_ReBuildListChild(hTreeItem,i,tvmgr.vTI.at(i).dwLevel);
-			hTreeItem = NULL;
-			if(i<tvmgr.vTI.size())
-			{
-				if (tvmgr.vTI.at(i).dwLevel==ParentLevel)
-					i--;
-				else
-					return i;
-			}
-			else
-				return i;
-
-		} else if (ParentLevel>tvmgr.vTI.at(i).dwLevel)
-			return i;
-		
-	}
-	return i;
-}
-
-void  TreeView_BuildList()
-{   
-	g_tvIndex = 0;	
-	TreeView_DeleteAllItems(g_hwndMainTreeCtrl);
-	tvmgr.Load(EXE_PATH,USER_SAVE_PATH);
-	TreeView_ReBuildList();
-	PostMessage(g_hWnd,WM_REINIT_COUNTRYFILTER,0,0);
-
-
-	return;
-}
-//
-//int  TreeView_load()
-//{
-//
-//	CXmlFile xml;
-//	CXmlFile xmlUpdate;
-//	CXmlFile xmlGlobalFilters;
-//	TiXmlHandle hRoot(0);
-//
-//	char szFilePath[_MAX_PATH+_MAX_FNAME];
-//	ZeroMemory(szFilePath,sizeof(szFilePath));
-//	
-//	strncpy(szFilePath,USER_SAVE_PATH,strlen(USER_SAVE_PATH));
-//	strcat(szFilePath,"treeviewcfg.xml");
-//	log.AddLogInfo(GS_LOG_INFO,"Trying to load TreeView xml from path: %s",szFilePath);
-//	SetCurrentDirectory(USER_SAVE_PATH);
-//	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)
-//	{
-//		ZeroMemory(szFilePath,sizeof(szFilePath));
-//		strncpy(szFilePath,EXE_PATH,strlen(EXE_PATH));
-//		strcat(szFilePath,"\\updated_treeviewcfg.xml");
-//		SetCurrentDirectory(EXE_PATH);
-//			
-//		if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING) //(!doc.LoadFile(szFilePath)) 
-//		{
-//			log.AddLogInfo(GS_LOG_ERROR,"Error loading default TreeView file from EXE_PATH (%s)",szFilePath);
-//			return 1;
-//		}
-//	}
-//
-//	hRoot = xml.GetHandle();
-//	g_bTREELOADED = TRUE;
-//
-//
-//	ZeroMemory(TREEVIEW_VERSION,sizeof(TREEVIEW_VERSION));
-//	xml.GetCustomAttribute(xml.m_pRootElement,"Version",TREEVIEW_VERSION,sizeof(TREEVIEW_VERSION)-1);
-//
-//	if(strlen(TREEVIEW_VERSION)>0)
-//		log.AddLogInfo(GS_LOG_INFO,"Current TreeView CFG file version is %s.",TREEVIEW_VERSION);
-//		
-//	if(TreeView_CheckForUpdate(TREEVIEW_VERSION)==0)
-//	{
-//		//new version detected
-//		ZeroMemory(szFilePath,sizeof(szFilePath));
-//		strncpy(szFilePath,EXE_PATH,strlen(EXE_PATH));
-//		strcat(szFilePath,"\\updated_treeviewcfg.xml");
-//		SetCurrentDirectory(EXE_PATH);		
-//		if(xmlUpdate.load(szFilePath)==XMLFILE_ERROR_LOADING ) //!docNew.LoadFile(szFilePath))
-//		{
-//			log.AddLogInfo(GS_LOG_ERROR,"Error loading NEW treeviewcfg file.");
-//			//continue with the old one
-//		}else
-//		{
-//			hRoot = xmlUpdate.GetHandle();
-//		}			
-//	}
-//
-//
-//
-//	tvmgr.vTI.clear();
-//
-//	// save this for later
-//
-//	//hRoot=TiXmlHandle(pElem);
-//	
-//	
-//	TiXmlElement* child = hRoot.FirstChild( "TreeItems" ).ToElement();
-//
-//	g_TreeLevel=1;
-//	for( child; child; child=child->NextSiblingElement() )
-//	{
-//		Tree_ParseChilds(child->FirstChildElement(),TVI_ROOT,TRUE);
-//	}	
-//
-//	sprintf(szFilePath,"%s%s",USER_SAVE_PATH,"globalfilter.xml");	
-//	log.AddLogInfo(GS_LOG_INFO,"Trying to load globalfilter.xml from %s",szFilePath);
-//	SetCurrentDirectory(USER_SAVE_PATH);
-//	TiXmlDocument GlobalFilterDoc(szFilePath);
-//	if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) //!GlobalFilterDoc.LoadFile()) 
-//	{
-//		log.AddLogInfo(GS_LOG_ERROR,"Error loading config file for globalfilter.xml from USER_SAVE_PATH (%s)",szFilePath);
-//		sprintf(szFilePath,"%s\\%s",EXE_PATH,"globalfilter.xml");
-//		SetCurrentDirectory(EXE_PATH);
-//		if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) 
-//		{
-//			log.AddLogInfo(GS_LOG_ERROR,"Error loading default globalfilter.xml file from EXE_PATH (%s)",szFilePath);
-//			return 1;
-//		}
-//	}
-//
-//	ZeroMemory(TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION));
-//	xml.GetCustomAttribute(xml.m_pRootElement,"version",TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION)-1);
-//
-////	XML_GetTreeItemStr(xmlGlobalFilters.m_pRootElement, "version",TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION)-1);
-//
-//	child = xmlGlobalFilters.m_pRootElement->FirstChildElement("TreeItems" );
-//	for( child; child; child=child->NextSiblingElement() )
-//	{	
-//		Tree_ParseChilds(child->FirstChildElement(),TVI_ROOT,FALSE);
-//	}	
-//
-//	char szBuffer[200];
-//
-//	//Let's do some resync values, this will help to ensure after an upgrade of the treeview structure to display correct values and states.
-//	for(int i=0; i<gm.GamesInfo.size();i++)
-//	{
-//		gm.GamesInfo[i].hTI = tvmgr.GetHTIByItemGame(i);
-//
-//		sprintf(szBuffer,"%s (%d)",gm.GamesInfo[i].szGAME_NAME,gm.GamesInfo[i].dwTotalServers);
-//		if(gm.GamesInfo[i].hTI!=NULL)
-//		{
-//			tvmgr.SetItemText(gm.GamesInfo[i].hTI,szBuffer);
-//			TreeView_SetItemState(g_hwndMainTreeCtrl,gm.GamesInfo[i].hTI,TVIS_BOLD ,TVIS_BOLD);
-//
-//			//TreeView_SetFilterGroupCheckState(i,FILTER_REGION,gm.GamesInfo[i].filter.dwRegion);
-//			//TreeView_SetFilterGroupCheckState(i,FILTER_REGION,gm.GamesInfo[i].filter.dwRegion);
-//		}
-//	}
-//
-//	for(int i=0; i<tvmgr.vTI.size(); i++)
-//	{
-//		if((tvmgr.vTI.at(i).sName == "Hide offline servers"))
-//		{
-//			if(AppCFG.filter.bHideOfflineServers)
-//				tvmgr.SetCheckBoxState(i,1);
-//			else
-//				tvmgr.SetCheckBoxState(i,0);
-//
-//		}
-//	}
-//
-//
-//	PostMessage(g_hWnd,WM_REINIT_COUNTRYFILTER,0,0);
-//
-//	SetFocus(g_hwndMainTreeCtrl);
-//	return 0;
-//}
-
-void TreeView_ReBuildList()
-{   
-	g_tvIndex = 0;	
-	int level=2;
-	TreeView_DeleteAllItems(g_hwndMainTreeCtrl);
-	HTREEITEM hTreeItem=NULL;
-	for (int i=0; i<tvmgr.vTI.size();i++)
-	{
-		if(tvmgr.vTI.at(i).bDelete)
-		{
-			tvmgr.vTI.erase(tvmgr.vTI.begin()+i);
-			i--;
-		}
-
-	}
-	for (int i=0; i<tvmgr.vTI.size();i++)
-	{
-		i = TreeView_ReBuildListChild(hTreeItem,i, level);	
-	}
-	char szBuffer[256];
-	for(int i=0; i<gm.GamesInfo.size();i++)
-	{
-		gm.GamesInfo[i].hTI = tvmgr.GetHTIByItemGame(i);
-		sprintf(szBuffer,"%s (%d)",gm.GamesInfo[i].szGAME_NAME,gm.GamesInfo[i].dwTotalServers);
-		if(gm.GamesInfo[i].hTI!=NULL)
-		{
-			tvmgr.SetItemText(gm.GamesInfo[i].hTI,szBuffer);
-			TreeView_SetItemState(g_hwndMainTreeCtrl,gm.GamesInfo[i].hTI,TVIS_BOLD ,TVIS_BOLD);
-		}
-
-	}
-}
 
 
  void OnActivate()
@@ -3192,11 +2921,7 @@ long UpdateRulesList(LPSERVER_RULES pServerRules)
 void FastConnect()
 {
 	char ip[200];
-
 	GetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,ip,sizeof(ip)-1);
-
-
-
 	ZeroMemory(&g_FastConnectSrv,sizeof(SERVER_INFO));
 	DWORD dwPort;	
 	if(ip[0]==0)
@@ -3208,8 +2933,6 @@ void FastConnect()
 		return;
 	}
 	
-
-
 	char destPort[10];
 	size_t n = 0; //strcspn(ip,"01234567890"); //removed since 2.0 beta 18
 
@@ -3227,8 +2950,6 @@ void FastConnect()
 	ZeroMemory(szCustomCmd,sizeof(szCustomCmd));
 	if(p!=NULL)
 		strcpy(szCustomCmd,&p[1]);
-
-	
 
 
 	strcpy(g_FastConnectSrv.szIPaddress,SplitIPandPORT(&ip[n],dwPort));
@@ -3363,10 +3084,12 @@ void OnRestore()
 	//		SetCurrentActiveGame(FindFirstActiveGame());
 	}
 	SetStatusText(ICO_INFO,g_lang.GetString("Ready"));
-	
-	UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);		
-	InvalidateRect(g_hWnd,NULL,TRUE);
-	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
+
+	//InvalidateRect(g_hWnd,NULL,TRUE);
+	//InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
+//	UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);	
+
+
 }
 
 
@@ -3482,6 +3205,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_MAPPREVIEW].idx = WIN_MAPPREVIEW;
 
 
+
 	g_hwndMainTreeCtrl = CreateWindowEx(WS_EX_CLIENTEDGE  ,  WC_TREEVIEW , NULL,
 
 							WS_VISIBLE |WS_CHILDWINDOW|  WS_TABSTOP |  TVS_HASBUTTONS | TVS_EDITLABELS| TVS_LINESATROOT | TVS_HASLINES   , 
@@ -3492,7 +3216,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_MAINTREEVIEW].idx = WIN_MAINTREEVIEW;
 	WNDCONT[WIN_MAINTREEVIEW].hWnd = g_hwndMainTreeCtrl;
 
-	g_hwndListViewServer = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+	g_hwndListViewServer = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE|LVS_EX_DOUBLEBUFFER , WC_LISTVIEW , NULL,
 							 LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,TOOLBAR_Y_OFFSET,200, 100, 
 							hwnd, (HMENU) IDC_LIST_SERVER, hInst, NULL);
@@ -3500,13 +3224,14 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_SERVERLIST].idx = WIN_SERVERLIST;
 	WNDCONT[WIN_SERVERLIST].hWnd = g_hwndListViewServer;
 	
-	g_hwndListBuddy	 = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+	g_hwndListBuddy	 = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE|LVS_EX_DOUBLEBUFFER , WC_LISTVIEW , NULL,
 							LVS_REPORT | WS_VISIBLE |WS_CHILD | WS_TABSTOP ,
 							0,0+TOOLBAR_Y_OFFSET+BORDER_SIZE,50, 50, 
 							hwnd, (HMENU) IDC_LIST_BUDDY, hInst, NULL);		
 
 	WNDCONT[WIN_BUDDYLIST].idx = WIN_BUDDYLIST;
 	WNDCONT[WIN_BUDDYLIST].hWnd = g_hwndListBuddy;
+
 
 	g_hwndTabControl = CreateWindowEx(0 , WC_TABCONTROL  , NULL,
 							WS_VISIBLE |WS_CHILD | WS_TABSTOP | WS_CLIPSIBLINGS,
@@ -3516,7 +3241,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_TABCONTROL].idx = WIN_TABCONTROL;
 	WNDCONT[WIN_TABCONTROL].hWnd = g_hwndTabControl;
 
-	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE |LVS_EX_DOUBLEBUFFER, WC_LISTVIEW , NULL,
 							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_LIST_PLAYERS, hInst, NULL);
@@ -3524,7 +3249,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_PLAYERS].idx = WIN_PLAYERS;
 	WNDCONT[WIN_PLAYERS].hWnd = g_hwndListViewPlayers;
 	
-	g_hwndListViewVars = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+	g_hwndListViewVars = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE|LVS_EX_DOUBLEBUFFER , WC_LISTVIEW , NULL,
 							LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							200+BORDER_SIZE*2,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100-BORDER_SIZE, 200, 
 							hwnd, (HMENU) IDC_LIST2, hInst, NULL);
@@ -3583,9 +3308,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 		Initialize_WindowSizes();
 		CenterWindow(g_hWnd);
 	}
-
-
-
 	SetImageList();
 
 	TCITEM tci;
@@ -3685,7 +3407,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	g_hwndRibbonBar = TOOLBAR_CreateRebar(hwnd);
 
 
-
 	// Subclassing    
 	g_wpOrigListViewServerProc = (LONG_PTR) SetWindowLongPtr(g_hwndListViewServer, GWLP_WNDPROC, (LONG_PTR) ListView_SL_SubclassProc); 
 	g_wpOrigTreeViewProc = (LONG_PTR) SetWindowLongPtr(g_hwndMainTreeCtrl, GWLP_WNDPROC, (LONG_PTR) TreeView_SubclassProc); 
@@ -3722,7 +3443,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	EnableButtons(TRUE);
 
 	SetInitialViewStates();
-	TreeView_BuildList();
+	tvmgr.BuildList(g_hWnd,EXE_PATH,USER_SAVE_PATH);
 
 	if(gm.GamesInfo.size()>0)
 		currCV = &gm.GamesInfo[0];
@@ -4920,11 +4641,6 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 			LoadServerListV4(&gm.GamesInfo[i]);
 			t.Stop();
 			t.Print();
-
-		//	LoadServerListV3(&gm.GamesInfo[i]);
-			//LoadServerListV2(&gm.GamesInfo[i]);
-			
-
 			gm.GamesInfo[i].bLockServerList = FALSE;
 		}
 	}
@@ -4941,8 +4657,8 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 		if((gm.GamesInfo[g_currentGameIdx].vSI.size()>0) && (g_bMinimized == false))
 			OnActivate_ServerList(SCAN_FILTERED);
 	}
-	if(hTimerMonitor==NULL)
-		hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);
+//	if(hTimerMonitor==NULL)
+//		hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);
 	EnableButtons(true);
  return 0;
 }
@@ -5232,12 +4948,12 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 		WriteCfgStr(abc, "GameData", "GameName",gm.GamesInfo[i].szGAME_NAME) ;
 
 		
-		WriteCfgStr(abc, "GameData", "MasterServer",gm.GamesInfo[i].szMasterServerIP[0]);
-		WriteCfgStr(abc, "GameData", "MapPreview",gm.GamesInfo[i].szMAP_MAPPREVIEW_PATH);
-		WriteCfgStr(abc, "GameData", "ProtcolName",gm.GamesInfo[i].szWebProtocolName);
+	//	WriteCfgStr(abc, "GameData", "MasterServer",gm.GamesInfo[i].szMasterServerIP[0]);
+	//	WriteCfgStr(abc, "GameData", "MapPreview",gm.GamesInfo[i].szMAP_MAPPREVIEW_PATH);
+	//	WriteCfgStr(abc, "GameData", "ProtcolName",gm.GamesInfo[i].szWebProtocolName);
 		WriteCfgInt(abc, "GameData", "Active",gm.GamesInfo[i].bActive);
 		WriteCfgInt(abc, "GameData", "gametype",gm.GamesInfo[i].cGAMEINDEX);
-		WriteCfgInt(abc, "GameData", "MasterServerPort",gm.GamesInfo[i].dwMasterServerPORT);
+	//	WriteCfgInt(abc, "GameData", "MasterServerPort",gm.GamesInfo[i].dwMasterServerPORT);
 		WriteCfgInt(abc, "GameData", "IconIndex",gm.GamesInfo[i].iIconIndex);
 	
 		
@@ -5541,7 +5257,8 @@ int SetCurrentActiveGame(int GameIndex)
 
 	//Deselect
 	for(int i=0;i<gm.GamesInfo.size();i++)
-		TreeView_SetItemState(g_hwndMainTreeCtrl,gm.GamesInfo[i].hTI,0 , TVIS_SELECTED );
+		if(gm.GamesInfo[i].hTI!=NULL)
+			TreeView_SetItemState(g_hwndMainTreeCtrl,gm.GamesInfo[i].hTI,0 , TVIS_SELECTED );
 
 
 	TreeView_SetItemState(g_hwndMainTreeCtrl,gm.GamesInfo[g_currentGameIdx].hTI,TVIS_SELECTED, TVIS_SELECTED);
@@ -5782,6 +5499,7 @@ void Download_MapshotInit()
 
 void OnPaint(HDC hDC)
 {
+	dbg_print("OnPaint");
 	POINT pt;
 	if(AppCFG.bShowMapPreview)
 	{
@@ -6154,8 +5872,6 @@ void Initialize_WindowSizes()
 //	dbg_print("WIN_SERVERLIST %d, %d - %d, %d",WNDCONT[WIN_SERVERLIST].rSize.left,WNDCONT[WIN_SERVERLIST].rSize.top,WNDCONT[WIN_SERVERLIST].rSize.right,WNDCONT[WIN_SERVERLIST].rSize.bottom);
 
 	InvalidateRect(NULL,NULL,TRUE);
-	
-
 }
 
 
@@ -6175,18 +5891,33 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 	WINDOWPLACEMENT wp;
 	GetWindowPlacement(g_hWnd, &wp);
 
+	int xMax = GetSystemMetrics(SM_CXMAXIMIZED);
+	int yMax = GetSystemMetrics(SM_CYMAXIMIZED);
 
 
 	RECT wrc;
 	GetWindowRect(g_hWnd,&wrc);
-	SetRect(&WNDCONT[WIN_MAIN].rSize,wrc.left,wrc.top,wrc.right-wrc.left,wrc.bottom-wrc.top);
+	//SetRect(&WNDCONT[WIN_MAIN].rSize,wrc.left,wrc.top,wrc.right-wrc.left,wrc.bottom-wrc.top);
 	
 //	if(wParam==SIZE_MAXIMIZED)
 //	{
 //		CopyRect(&wrc,&rc);
 //	}
-	CopyRect(&WNDCONT[WIN_MAIN].rSize,&wrc);
+	if(wrc.left>xMax)
+	{
+		wrc.left = 0;
+		if (wrc.right>xMax)
+			wrc.right = xMax;
+		if(g_bNormalWindowed)
+		{
+			SetWindowPos( g_hWnd, NULL,WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.top,WNDCONT[WIN_MAIN].rSize.right - WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.bottom - WNDCONT[WIN_MAIN].rSize.top,SWP_SHOWWINDOW | SWP_NOSIZE ); 
+			MoveWindow(g_hWnd,WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.top,WNDCONT[WIN_MAIN].rSize.right - WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.bottom - WNDCONT[WIN_MAIN].rSize.top,FALSE);
+			//InvalidateRect(g_hWnd,NULL,TRUE);
+		}
 
+	}
+	CopyRect(&WNDCONT[WIN_MAIN].rSize,&wrc);
+	dbg_print("xMax = %d, yMax = %d",xMax,yMax);
 	dbg_print("GetWindowPlacement    %d, %d - %d, %d",wp.rcNormalPosition.left,wp.rcNormalPosition.top,wp.rcNormalPosition.right,wp.rcNormalPosition.bottom);
 	dbg_print("GetWindowPlacement %d   Min(%d, %d)  Max(%d, %d)",wp.showCmd,wp.ptMinPosition.x,wp.ptMinPosition.y,wp.ptMaxPosition.x,wp.ptMaxPosition.y);
 	dbg_print("Update_WindowSizes CR %d, %d - %d, %d",rc.left,rc.top,rc.right,rc.bottom);
@@ -6347,7 +6078,6 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 				40,	
 				bRepaint);
 
-
 	Update_WindowSizes(wParam);
 
 	for(int i=0;i<WIN_MAX;i++)
@@ -6355,6 +6085,7 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 		if(WNDCONT[i].idx!=WIN_MAIN)
 		{
 			MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,bRepaint);
+//			UpdateWindow(WNDCONT[i].hWnd);
 			ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
 		}
 
@@ -6364,12 +6095,26 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	
 	CalcSplitterGripArea();
 
-	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
+	
 
-	InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
+
+	if(WNDCONT[WIN_PING].bShow)
+		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 
 	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
 
+
+
+	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
+	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
+	InvalidateRect(g_hwndComboEdit,NULL,TRUE);
+	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
+	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
+	SendMessage(g_hwndComboEdit,WM_SETTEXT,0,(LPARAM)_T("Welcome to Game Scanner!"));
+	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
+	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
+
+	
 }
 
 void UpdateCurrentServerUI()
@@ -6636,9 +6381,6 @@ void LoadImageList()
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ALARM_CLOCK)); //29
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
-
-
-	
 }
 
 
@@ -6824,10 +6566,7 @@ nextMasterServer:
 	if(currGameIdx==g_currentGameIdx)
 	{
 		g_currentScanGameIdx = -1;
-		//Modified since ver 5.25		
-		Initialize_RedrawServerListThread();
-		//RedrawServerListThread(&gm.GamesInfo[currGameIdx]);
-		
+		Initialize_RedrawServerListThread();		
 	}
 
 	g_bCancel = false;
@@ -6868,8 +6607,6 @@ NoError:
   return returnCode;
  }
 
-
-
 bool FilterServerItemV2(SERVER_INFO *srv,GAME_INFO *pGI, vFILTER_SETS *vFilterSets)
 {
 	DWORD dwFilterFlags = pGI->dwViewFlags;
@@ -6882,100 +6619,84 @@ bool FilterServerItemV2(SERVER_INFO *srv,GAME_INFO *pGI, vFILTER_SETS *vFilterSe
 	DWORD bCustomFilterOnly = dwFilterFlags & REDRAWLIST_CUSTOM_FILTER;
 
 	bool returnVal=false;
+	if(pGI->dwViewFlags & REDRAW_SERVERLIST)
+		bRescanFilter = 0; //force filter when only redrawing the serverlist looks better for user
 
-//	__try
-//	{
-		if(pGI->dwViewFlags & REDRAW_SERVERLIST)
-			bRescanFilter = 0; //force filter when only redrawing the serverlist looks better for user
-
-		if(dwFilterFlags & REDRAW_MONITOR_SERVERS)
-		{
-			if(srv->wMonitor>0)
-				return true;
-			
-			return false;
-		}
+	if(dwFilterFlags & REDRAW_MONITOR_SERVERS)
+	{
+		if(srv->wMonitor>0)
+			return true;
 		
+		return false;
+	}
 	
-		time_t currTime;
-		time(&currTime);
-		
-		double seconds = difftime(currTime,srv->timeLastScan);
-		
-		if((seconds<(60*2)) && bWeAreScanning)
-			return false;
-					
 
-		returnVal=false;
+	time_t currTime;
+	time(&currTime);
+	
+	double seconds = difftime(currTime,srv->timeLastScan);
+	
+	if((seconds<(60*2)) && bWeAreScanning)
+		return false;
+				
 
-		if(tvmgr.CountryFilter.counter!=0)
+	returnVal=false;
+
+	if(tvmgr.CountryFilter.counter!=0)
+	{
+		for(int i=0; i<tvmgr.CountryFilter.counter;i++)
 		{
-			for(int i=0; i<tvmgr.CountryFilter.counter;i++)
+			if(_stricmp(srv->szShortCountryName,tvmgr.CountryFilter.szShortCountryName[i])==0)
 			{
-				if(_stricmp(srv->szShortCountryName,tvmgr.CountryFilter.szShortCountryName[i])==0)//if(srv->cCountryFlag == CountryFilter.countryIndex[i])
-				{
-					returnVal=true;
-					break;
-				} 
-			}
-			if(returnVal==false)
+				returnVal=true;
+				break;
+			} 
+		}
+		if(returnVal==false)
+			return false;
+	}
+	else
+		returnVal=true;
+
+	//If scanning filtered (limited number of servers) ignore following filter options:
+	if((bRescanFilter==0))
+	{
+	
+		if(AppCFG.filter.bHideOfflineServers && (srv->dwPing==9999))
+		{
+			if(srv->bUpdated && (bWeAreScanning))
+				returnVal=true;
+			else
 				return false;
 		}
+
+		if((srv->cPurge>=SERVER_PURGE_COUNTER) && (srv->cFavorite==0))
+			return false;
+
+		if(bForceHistory)
+			if(srv->cHistory==0)
+				return false;
+
+		BOOL bFilterReturn=TRUE;
+		if(bCustomFilterOnly)
+			bFilterReturn = se.Execute(srv,pGI,&pGI->vFilterSetsFavorites);
 		else
-			returnVal=true;
-
-		//If scanning filtered (limited number of servers) ignore following filter options:
-		if((bRescanFilter==0))
-		{
+			bFilterReturn = se.Execute(srv,pGI,vFilterSets);
 		
-			if(AppCFG.filter.bHideOfflineServers && (srv->dwPing==9999))
-			{
-				if(srv->bUpdated && (bWeAreScanning))
-					returnVal=true;
-				else
-					return false;
-			}
+		if(bFilterReturn==FALSE)
+			return false;
 
-			if((srv->cPurge>=SERVER_PURGE_COUNTER) && (srv->cFavorite==0))
+		
+		if(pGI->filter.bNoBots)
+			if(srv->cBots>0)
 				return false;
-
-			if(bForceHistory)
-				if(srv->cHistory==0)
-					return false;
-
-			BOOL bFilterReturn=TRUE;
-			if(bCustomFilterOnly)
-				bFilterReturn = se.Execute(srv,pGI,&pGI->vFilterSetsFavorites);
-			else
-				bFilterReturn = se.Execute(srv,pGI,vFilterSets);
-			
-			if(bFilterReturn==FALSE)
-				return false;
-
-			
-			if(pGI->filter.bNoBots)
-				if(srv->cBots>0)
-					return false;
 
 
 		if(pGI->filter.bRanked && (srv->cGAMEINDEX == ETQW_SERVERLIST))
 			if(srv->cRanked==0)
 				return false;
 
-
-
-
 	}
-
-
-
-//	}
-//	__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
-//	{
-		// exception handling code
-//		dbg_print("Access Violation!!! @ FilterServerItem(...)\n");	
-//		return false;
-//	}
 
 	return returnVal;
 }
@@ -7193,9 +6914,6 @@ COLORREF GetColor(char inC)
 LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
 	HDC  hDC =  pListDraw->nmcd.hdc;
-
-
-
 	HBRUSH  hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
 	FillRect(hDC, &rc, (HBRUSH) hbrSel);
 	if(hbrSel!=NULL)
@@ -7214,11 +6932,8 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 		SelectObject(hDC,g_hf);	
 		return (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
 	}
-
-
 	BYTE ncharWidth;
-	SelectObject(hDC,g_hf2);
-			
+	SelectObject(hDC,g_hf2);		
 	ABC abc[256];
 	LPABC pAbc = abc;
 	GetCharABCWidths(hDC,(UINT)0, (UINT) 255,pAbc);
@@ -7872,28 +7587,21 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 					{
 						if(pListDraw->iSubItem==2)
 						{
-							//PLAYERDATA *pPlayerData = pCurrentPL;
-						//	if(pPlayerData!=NULL)
-						//	{
-								//for(int i=0;i<nItem;i++)
-							//		pPlayerData = pPlayerData->pNext;
+							PLAYERDATA *pPlayerData = g_vecPlayerList.at(nItem);
 
-								PLAYERDATA *pPlayerData = g_vecPlayerList.at(nItem);
+							RECT rc;								
+							if(pPlayerData!=NULL)
+							{
+								char szText[256];
+								if( pPlayerData->szClanTag!=NULL)
+									sprintf_s(szText,sizeof(szText)-1,"%s %s", pPlayerData->szClanTag,pPlayerData->szPlayerName);
+								else
+									sprintf_s(szText,sizeof(szText)-1,"%s",pPlayerData->szPlayerName);
 
-								RECT rc;								
-								if(pPlayerData!=NULL)
-								{
-									char szText[256];
-									if( pPlayerData->szClanTag!=NULL)
-										sprintf_s(szText,sizeof(szText)-1,"%s %s", pPlayerData->szClanTag,pPlayerData->szPlayerName);
-									else
-										sprintf_s(szText,sizeof(szText)-1,"%s",pPlayerData->szPlayerName);
-
-									ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
-									if(gm.GamesInfo[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
-										return gm.GamesInfo[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw ,szText);// pPlayerData->szPlayerName);
-								}
-							//}
+								ListView_GetSubItemRect(g_hwndListViewPlayers,nItem,pListDraw->iSubItem,LVIR_BOUNDS,&rc);								
+								if(gm.GamesInfo[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText!=NULL)
+									return gm.GamesInfo[pPlayerData->cGAMEINDEX].Draw_ColorEncodedText(rc, pListDraw ,szText);// pPlayerData->szPlayerName);
+							}
 						}
 					}
 					return  CDRF_NEWFONT;					
@@ -7958,8 +7666,6 @@ LRESULT TreeView_CustomDraw(LPARAM lParam)
 					{
 						pCustomDraw->clrText   = RGB(0, 0, 0);
 						pCustomDraw->clrTextBk = RGB(202, 221,250);
-	
-
 					}
 				}
 				break;
@@ -7989,12 +7695,9 @@ LRESULT TreeView_CustomDraw(LPARAM lParam)
 
 void OnSearchFieldChange()
 {
-
-
-
-					TCHAR szSearchTmp[256];
-					ZeroMemory(szSearchTmp,sizeof(szSearchTmp));
-					GetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,szSearchTmp,sizeof(szSearchTmp)-sizeof(TCHAR));
+	TCHAR szSearchTmp[256];
+	ZeroMemory(szSearchTmp,sizeof(szSearchTmp));
+	GetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,szSearchTmp,sizeof(szSearchTmp)-sizeof(TCHAR));
 	GetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,szSearchTmp,99);
 	if(strlen(szSearchTmp)>0)
 	{
@@ -8036,7 +7739,6 @@ SERVER_INFO *FindServer(char *str)
 	char copy1[256];
 	char copy2[256];
 	char szTempBuffert[256];
-
 
 	SendDlgItemMessage(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_SHOWDROPDOWN, FALSE, 0); 
 	SendDlgItemMessage (g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_RESETCONTENT, 0, 0); 
@@ -8639,9 +8341,6 @@ LRESULT CALLBACK EditValue_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 		{
 			CenterWindow(hDlg);
 			hwndEdit = GetDlgItem(hDlg,IDC_EDIT_MINMAX);
-
-			
-
 			SetWindowText(hDlg,g_lang.GetString("TitleEditValue"));				
 			SetDlgItemText(hDlg,IDC_STATIC_EDIT_LABEL,g_sEditRuleValueLabel.c_str());	
 
@@ -8718,7 +8417,7 @@ LRESULT APIENTRY ListView_Rules_SubclassProc( HWND hwnd, UINT uMsg, WPARAM wPara
 			// Parse the menu selections:
 			switch (wmId)
 			{
-			case IDM_COPY_RULE:
+				case IDM_COPY_RULE:
 				{
 					n = ListView_GetSelectionMark(g_hwndListViewVars);
 					ListView_GetItemText(g_hwndListViewVars,n,0,szRuleName,sizeof(szRuleName)-1);
@@ -8879,8 +8578,10 @@ void Favorite_Add(bool manually,char *szIP)
 }
 
 
+
 void OnRCON()
 {
+	
 
 	int i = ListView_GetSelectionMark(g_hwndListViewServer);
 	if(i!=-1)
@@ -9292,13 +8993,13 @@ DWORD WINAPI  Menu_SL_Thread(LPVOID hWnd , WPARAM wParam, LPARAM lParam)
 	{			
 		SERVER_INFO *pSI = Get_ServerInfoByListViewIndex(currCV,n); 
 
-
 		AppendMenu(hPopMenu,MF_BYPOSITION|MF_STRING,IDM_CONNECT,g_lang.GetString("MenuConnect"));
 		AppendMenu(hPopMenu,MF_BYPOSITION|MF_STRING,IDM_LAUNCH_GAME_ONLY,g_lang.GetString("MenuLaunchGameOnly"));
 		AppendMenu(hPopMenu,MF_POPUP|MF_BYPOSITION|MF_STRING,(UINT_PTR)hSubForceLaunchPopMenu,g_lang.GetString("MenuForceLaunch"));
 		for(int x=0; x<currCV->vGAME_INST.size();x++)
 			AppendMenu(hSubForceLaunchPopMenu,MF_BYPOSITION|MF_STRING,36000+x,currCV->vGAME_INST.at(x).sName.c_str());
 
+		AppendMenu(hPopMenu,MF_BYPOSITION|MF_STRING,IDM_CONNECT_AS_SPEC,"Connect As Spectator");
 	
 		AppendMenu(hPopMenu,MF_BYPOSITION|MF_SEPARATOR,0,"");
 	
@@ -9653,6 +9354,18 @@ LRESULT APIENTRY ListView_SL_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 				case IDM_OPTIONS_RCON:		OnRCON();							break;
 				case IDM_REFRESH:			OnActivate_ServerList();			break;
 				case IDM_CONNECT:			StartGame_ConnectToServer(false);	break;
+				case IDM_CONNECT_AS_SPEC:
+					{
+						int i = ListView_GetSelectionMark(g_hwndListViewServer);
+						if(i!=-1)
+						{
+							SERVER_INFO *pSrv;	
+							pSrv = Get_ServerInfoByListViewIndex(currCV,i);
+							LaunchGame(pSrv,&gm.GamesInfo[g_currentGameIdx],0,"+spectator 1",TRUE);
+
+						}
+					}
+						break;
 				case IDM_REFRESH_SELECTED:	Initialize_ScanSelection();			break;
 				case IDM_PRIVPASS:
 					{
@@ -9697,16 +9410,8 @@ LRESULT APIENTRY ListView_SL_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 					}
 					break;
 
-				case IDM_DELETE:
-					{
-						OnDeleteServers();			
-					}
-					break;
-				case IDM_ADDIP:
-					{
-						OnAddFavorites();
-					}
-				break;
+				case IDM_DELETE:	OnDeleteServers();			break;
+				case IDM_ADDIP:		OnAddFavorites();			break;
 				case IDM_PING_SERVER:
 					{
 						OnTabControlSelection(3);
@@ -9720,21 +9425,9 @@ LRESULT APIENTRY ListView_SL_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 
 					}
 					break;
-				case IDM_MONITOR_AUTO_JOIN:
-					{
-						OnMonitorNotifyAutoJoin();
-						break;
-					}
-				case IDM_MONITOR_NOTIFY_WHEN_ACTIVITY:
-					{
-						OnMonitorNotifyActivity();
-						break;
-					}
-				case IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE:
-					{
-						OnMonitorNotifyFreeSlots();
-						break;
-					}
+				case IDM_MONITOR_AUTO_JOIN:	OnMonitorNotifyAutoJoin();				break;
+				case IDM_MONITOR_NOTIFY_WHEN_ACTIVITY:	OnMonitorNotifyActivity();	break;
+				case IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE:	OnMonitorNotifyFreeSlots();	break;
 				case IDM_COPY_VERSION:
 					{
 						int n = ListView_GetSelectionMark(g_hwndListViewServer);
@@ -10329,17 +10022,15 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	log.SetLogPath(USER_SAVE_PATH);
 	SetCurrentDirectory(USER_SAVE_PATH);
 
-	//	bool installed = IsInstalled(GS_LOG_VERSION);
 	//LOGGER_Init();
 
-	log.AddLogInfo(GS_LOG_INFO,"Initializing Game Scanner version %s",APP_VERSION);
+	log.AddLogInfo(GS_LOG_INFO,"Initializing Game Scanner version "APP_VERSION);
 	log.AddLogInfo(GS_LOG_INFO,"Executable directory: %s",EXE_PATH);
 	log.AddLogInfo(GS_LOG_INFO,"User Data directory: %s",USER_SAVE_PATH);	
 	//log.AddLogInfo(GS_LOG_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
 	log.AddLogInfo(GS_LOG_INFO,"Cmd line input %s",lpCmdLine);
 
-	g_IPtoCountry.SetPath(EXE_PATH);
-	//IPC_SetPath(EXE_PATH);	
+	g_IPtoCountry.SetPath(EXE_PATH);	
 	char szPath[512];
 	strcpy(szPath,EXE_PATH);
 	strcat(szPath,"\\languages");
@@ -10657,35 +10348,6 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 	if(pSI==NULL)
 		return;
 
-	//simple autodetect to try to recognize which game to launch (used for quick launch)
-/*	for(int i=0; i<gm.GamesInfo.size();i++)
-	{
-		
-		if((gm.GamesInfo[i].dwDefaultPort==pSI->usPort) && gm.GamesInfo[i].bActive)
-		{
-			typeRecognized = gm.GamesInfo[i].cGAMEINDEX;
-			break;
-		}
-	}
-	
-	if(typeRecognized==-1)
-	{
-		pSI->cGAMEINDEX = g_currentGameIdx;  //added since v.1.25
-		GetServerInfo(g_currentGameIdx,pSI);
-	}
-	else
-	{
-		
-		if(pSI->cGAMEINDEX==-1)   //added since v.1.25
-			pSI->cGAMEINDEX = typeRecognized;
-
-		GetServerInfo(typeRecognized,pSI);
-
-		dbg_print("Game detected: ");
-		dbg_print(gm.GamesInfo[typeRecognized].szGAME_NAME);
-		dbg_print("\n");
-	}
-	*/
 	if(pSI->pServerRules==NULL)
 		gm.GetServerInfo(g_currentGameIdx,pSI);
 
@@ -10754,7 +10416,7 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 						break;
 					}
 				}
-			} else
+			} else if (iFirstDefaultInstallIdx==-1)
 				iFirstDefaultInstallIdx = x;
 		}
 	}
@@ -10958,7 +10620,7 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 
 	if(IsServerAlive("www.cludden.se")==false)
 	{
-		log.AddLogInfo(0,"< Update Server is down!\n >");
+		log.AddLogInfo(0,"< Update Server is down! >");
 		return ret;
 	}
 	OSVERSIONINFO OSversion;
@@ -12853,10 +12515,9 @@ void OnLeftMouseButtonUp(HWND hWnd, WPARAM wParam,LPARAM lParam)
 		Sizing = FALSE;
 	}
 	ReleaseDC(hWnd, hdc);	
-	InvalidateRect(hWnd,NULL,TRUE);
-	InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
+	//InvalidateRect(hWnd,NULL,TRUE);
+	//InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 	OnSize(hWnd,0,TRUE);
-	//PostMessage(hWnd, WM_SIZE, AppCFG.nWindowState, 0);
 }
 
 void OnLeftMouseButtonDown(HWND hWnd, WPARAM wParam,LPARAM lParam)
@@ -13005,14 +12666,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_GETSERVERLIST_STOP:
 
 			break;
-
-	//	case WM_INITVIEWS:
-		 //   Load_WindowSizes();  //Fixes a XP bug
-	//		Update_WindowSizes(0,&g_winClientRC);	
-	//		PostMessage(g_hWnd,WM_SIZE,0,0);
-	//		InvalidateRect(g_hWnd,NULL,TRUE);
-	//		return TRUE;
-
 		case WM_REFRESHSERVERLIST:
 			Initialize_RedrawServerListThread();
 			return TRUE;
@@ -13055,7 +12708,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			 OnRestore();
 			 PostMessage(g_hWnd,WM_REINIT_COUNTRYFILTER,0,0);
-			// InvalidateRect(hWnd,NULL,TRUE);
+			
 		
 		}
 		else if (wParam==SIZE_MINIMIZED)
@@ -13071,11 +12724,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		 }
 		dbg_print("WM_SIZE: Win state %d",AppCFG.nWindowState);
 		OnSize(hWnd,wParam);
+		if(wParam==SIZE_RESTORED)
+			 InvalidateRect(hWnd,NULL,TRUE);
+
 		return 0;
 	   }
-	case WM_LBUTTONDOWN: OnLeftMouseButtonDown( hWnd, wParam, lParam);
+	case WM_LBUTTONDOWN: 
+		OnLeftMouseButtonDown( hWnd, wParam, lParam);
 	   break;
-	case WM_MOUSEMOVE:  OnMouseMove(hWnd,  wParam, lParam);
+	case WM_MOUSEMOVE:  
+		OnMouseMove(hWnd,  wParam, lParam);
 	   break;
 	case WM_LBUTTONUP:	OnLeftMouseButtonUp( hWnd,  wParam, lParam);
 	   break;
@@ -13290,7 +12948,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						DialogBox(g_hInst, (LPCTSTR)IDD_DIALOG_CONFIG, g_hWnd, (DLGPROC)CFG_MainProc);
 					
 						OnSize(g_hWnd,SIZE_RESTORED,TRUE);
-						TreeView_ReBuildList();							
+						tvmgr.ReBuildList();							
 						SetDlgTrans(hWnd,AppCFG.g_cTransparancy);
 						
 						currCV = &gm.GamesInfo[g_currentGameIdx];		//restore currCV pointer									
@@ -13317,14 +12975,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		case WM_PAINT:
-			if(hWnd==NULL)	
-				return TRUE;
-			hdc = BeginPaint(hWnd, &ps);
-			if(hdc==NULL)
-				return FALSE;
-			OnPaint(hdc);
-			EndPaint(hWnd, &ps);			
-			break;
+			
+				if(hWnd==NULL)	
+					return TRUE;
+				hdc = BeginPaint(hWnd, &ps);
+				if(hdc==NULL)
+					return FALSE;
+				OnPaint(hdc);
+				EndPaint(hWnd, &ps);			
+			return 0L;
 		case WM_CLOSE:
 			{	
 				dbg_print("WM_CLOSE");
