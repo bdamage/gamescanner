@@ -276,12 +276,27 @@ void CGameManager::Default_GameSettings()
 				}
 			case GAMESPYv4_ENGINE:
 				{
-					gameinfo.colorfilter = NULL;
+					
 					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
 					gameinfo.GetServersFromMasterServer = NULL;
 					gameinfo.GetServerStatus = &UT_Get_ServerStatus;
 				}
 				break;
+			case WOLF_ENGINE:
+				{
+				
+					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
+					gameinfo.GetServersFromMasterServer = &GSC_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &Q4_Get_ServerStatus;
+					break;
+				}
+			case CODWW_ENGINE:
+				{
+					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;				
+					gameinfo.GetServersFromMasterServer = &GSC_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &Q3_Get_ServerStatus;
+					break;
+				}
 		}
 		GamesInfo[gameinfo.cGAMEINDEX] = gameinfo;
 		pGame = pGame->NextSiblingElement();
@@ -313,8 +328,11 @@ int CGameManager::GetNetEngine(char *szName)
 		return GAMESPYv4_ENGINE;
 	else if(strcmp("COD4",szName)==0)
 		return COD4_ENGINE;
+	else if(strcmp("WOLF",szName)==0)
+		return WOLF_ENGINE;
+	else if(strcmp("CODWW",szName)==0)
+		return CODWW_ENGINE;	
 
-	
 	return Q3_ENGINE;  //Q3 as default
 }
 

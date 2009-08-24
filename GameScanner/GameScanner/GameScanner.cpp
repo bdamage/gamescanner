@@ -2006,7 +2006,7 @@ void Default_Appsettings()
 	strcpy(AppCFG.szEXT_EXE_PATH,"C:\\Program Files\\Teamspeak2_RC2\\TeamSpeak.exe");
 	strcpy(AppCFG.szEXT_EXE_CMD,"127.0.0.1?nickname=MyNick?loginname=MyLoginAccount?password=XYZ?channel=Axis");
 	strcpy(AppCFG.szEXT_EXE_WINDOWNAME,"TEAMSPEAK 2");
-	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4");
+	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4|WolfMP");
 
 
 	//Legacy stuff - this should be cleared out from source code...
@@ -3736,6 +3736,8 @@ void ImportServerList(char* szFilename, char*szPath,GAME_INFO *pGI, DWORD dwImpo
 		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
 	}
 }
+
+
 
 void ExportServerList(char* szFilename, char*szPath,GAME_INFO *pGI, DWORD dwExportFlag=0)
 {
@@ -6814,6 +6816,62 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 	pGI->dwTotalServers = pGI->vSI.size();
 }
 
+
+
+void Parse_FileServerListFromGSC(GAME_INFO *pGI,char *szFilename)
+{
+
+	SetCurrentDirectory(USER_SAVE_PATH);
+	FILE *fp=fopen(szFilename, "rb");
+	int i=0;
+	char buff[256];
+	DWORD dwPort=0;
+	char *pszIP;
+	char seps[] ={","};
+	if(fp!=NULL)
+	{
+		char *pout = fgets( buff, sizeof(buff), fp ); //skip first row
+		while(!feof(fp))
+		{		
+		//	ZeroMemory(buff, sizeof(buff));
+			char *pout = fgets( buff, sizeof(buff), fp );
+			if(pout!=NULL)
+			{
+				
+				char *next_token=NULL;
+				char *pszIP = strtok_s( buff, seps, &next_token);
+				char *port =  strtok_s( NULL, seps, &next_token);
+				
+				if(port!=NULL)
+				{
+					dwPort = atoi(port);
+
+					DWORD dwRet = AddServer(pGI,pszIP,dwPort,false);
+					if(dwRet!=0xFFFFFFFF)
+					{
+						i++;
+						SetStatusText(pGI->iIconIndex,g_lang.GetString("StatusReceivingMaster"),i,pGI->szGAME_NAME);
+					}
+				}
+			}
+
+		}
+		fclose(fp);
+	} 	
+	pGI->dwTotalServers = pGI->vSI.size();
+}
+
+
+DWORD GSC_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
+{
+	CInternet inet;
+	
+	inet.SetPath(USER_SAVE_PATH);
+	inet.CrackURL(pGI->szMasterServerIP[iMasterIdx]);
+	inet.URLPost(pGI->szMasterServerIP[iMasterIdx], "servers.csv");
+	Parse_FileServerListFromGSC(pGI,"servers.csv");
+	return 0;
+}
 
 
 //This is only for reference purpose
@@ -12263,7 +12321,8 @@ int CFG_Load()
 
 		if(pElem->Attribute("WindowNames")!=NULL)
 			strcpy(AppCFG.szET_WindowName,pElem->Attribute("WindowNames"));
-
+		//Temp update
+		strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4|WolfMP");
 	} 	
 
 

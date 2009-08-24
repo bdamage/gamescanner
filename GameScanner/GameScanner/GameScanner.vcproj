@@ -303,6 +303,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Internet.cpp"
+				>
+			</File>
+			<File
 				RelativePath=".\IPtoCountry.cpp"
 				>
 			</File>
@@ -457,6 +461,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\Internet.h"
+				>
+			</File>
+			<File
 				RelativePath=".\IPtoCountry.h"
 				>
 			</File>
@@ -547,11 +555,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\alarmclock.ico"
+				RelativePath="C:\Users\kjelle\Desktop\alarmclock.ico"
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\kjelle\Desktop\alarmclock.ico"
+				RelativePath=".\res\alarmclock.ico"
 				>
 			</File>
 			<File
@@ -679,11 +687,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\GSPlusOrg16.ico"
+				RelativePath="C:\Users\Kjell\Pictures\GSPlusOrg16.ico"
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\Kjell\Pictures\GSPlusOrg16.ico"
+				RelativePath=".\res\GSPlusOrg16.ico"
 				>
 			</File>
 			<File

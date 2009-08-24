@@ -50,6 +50,7 @@ void mysort(int sortBy=3);
 LRESULT ListView_SL_CustomDraw (LPARAM lParam);
 int AddServerToList(TCHAR *ip, TCHAR *port);
 void ClickMouse(VOID);
+DWORD GSC_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx);
 void Parse_FileServerList(GAME_INFO *pGI,TCHAR *szFilename);
 void SetDlgTrans(HWND hwnd,int trans);
 void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx=0, char *szCustomCmd=NULL,BOOL bForceLaunch=FALSE);

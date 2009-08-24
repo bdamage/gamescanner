@@ -57,6 +57,7 @@
 #include <string.h>
 #include <vector>
 #include <queue>
+#include <Wininet.h.>
 #include <deque>
 #include <UxTheme.h>
 //#include <tmschema.h>  
@@ -73,6 +74,10 @@
 #include <iphlpapi.h>
 #include <icmpapi.h>  //ping
 #include <Mmsystem.h>
+#include <fcntl.h>     /* for _O_TEXT and _O_BINARY */
+#include <errno.h>     /* for EINVAL */
+#include <sys\stat.h>  /* for _S_IWRITE */
+#include <share.h>     /* for _SH_DENYNO */
 
 #include "structs_defines.h"
 #include "utilz.h"
@@ -86,7 +91,7 @@
 #include "Logger.h"
 #include "ImageMenu.h"
 #include "Download.h"
-
+#include "Internet.h"
 #include "..\..\FreeImage\freeimage.h"
 #include "..\..\hashlib\src\hashlibpp.h"
 #include <tinyxml.h>

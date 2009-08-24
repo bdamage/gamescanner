@@ -13,6 +13,10 @@
 		* Added RCON auto completion of commands, TAB to enumerate through known commands.
 		* Fixed a bug when detecting default game install.
 		* Fixed drawing issues.
+		* Changed CoD World at War master server list.
+		* Added Wolfenstein master serverlist.
+		* Added minimize support for Wolfenstein.
+
 
 
 		Version 2.0.10

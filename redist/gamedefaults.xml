@@ -896,12 +896,12 @@
 		<Name>Call of Duty - World at War</Name>
 		<ShortName>CoD WaW</ShortName>
 		<Filename>codwaw.servers</Filename>
-		<NetEngine>COD4</NetEngine>
+		<NetEngine>CODWW</NetEngine>
 		<WebProtocol>codwaw</WebProtocol>
 		<MapPreviewPath>codwawmaps</MapPreviewPath>
 		<Icon>CoDWaW.ico</Icon>
 		<MasterServers>
-			<MasterServer http="1">http://www.cludden.se/braindamage/download/codwaw.txt</MasterServer>			
+			<MasterServer http="0">https://api.getgsc.com/?command=get_gameservers_csv&amp;search_by=game_abbrev&amp;search_term=codww&amp;limit=100000</MasterServer>			
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
@@ -918,7 +918,7 @@
 			<Column idx="0">sv_punkbuster</Column>
 			<Column idx="1">pswrd</Column>
 			<Column idx="2">ranked</Column>
-			<Column idx="3">hostname</Column>
+			<Column idx="3">sv_hostname</Column>
 			<Column idx="4">protocol</Column>
 			<Column idx="5">g_gametype</Column>	
 			<Column idx="6">mapname</Column>
@@ -1029,20 +1029,20 @@
 		<ShortName>WOLF</ShortName>
 		<Filename>wolf.servers</Filename>
 		<WebProtocol>wolf</WebProtocol>
-		<NetEngine>Q4</NetEngine>
+		<NetEngine>WOLF</NetEngine>
 		<Icon>wolf.ico</Icon>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
 		<MasterQueryString></MasterQueryString>
 		<MapPreviewPath>wolfmaps</MapPreviewPath>
 		<MasterServers>
-			<MasterServer http="1" >http://www.cludden.se/braindamage/download/wolfenstein.txt</MasterServer>			
+			<MasterServer http="0" >https://api.getgsc.com/?command=get_gameservers_csv&amp;search_by=game_abbrev&amp;search_term=wolf&amp;limit=100000</MasterServer>			
 		</MasterServers>
 		<Detection>
 			<Registry>
-				<RegRoot></RegRoot>
-				<RegKey></RegKey>
-				<RegItem></RegItem>
+				<RegRoot>HKEY_LOCAL_MACHINE</RegRoot>
+				<RegKey>SOFTWARE\Activision\Wolfenstein</RegKey>
+				<RegItem>EXEStringM</RegItem>
 				<InstallSuffix></InstallSuffix>
 			</Registry>
 		</Detection>
