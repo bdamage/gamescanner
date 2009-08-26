@@ -6112,7 +6112,7 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	InvalidateRect(g_hwndComboEdit,NULL,TRUE);
 	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
 	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
-	SendMessage(g_hwndComboEdit,WM_SETTEXT,0,(LPARAM)_T("Welcome to Game Scanner!"));
+//	SendMessage(g_hwndComboEdit,WM_SETTEXT,0,(LPARAM)_T("Welcome to Game Scanner!"));
 	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
 	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
 

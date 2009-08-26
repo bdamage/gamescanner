@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.209">
+<TreeViewCFG version="5.210">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -14,6 +14,7 @@
 	2009-08-03	5.207	Added Wolfenstein.
 	2009-08-03  5.208   Fixed Defrag mod filter.
 	2009-08-21	5.209	OSP mod filter fixed.
+	2009-08-26	5.210	Updated Q3 mods, Added Game type for ETQW, Wolfenstein and maps for Wolfenstein.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -93,6 +94,11 @@
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
                     <Map name="Ark" icon="9" expand="0" state="0" type="13">if map != &quot;*ark&quot; remove</Map>
                 </Map>
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Team Death Match" icon="9" expand="0" state="0" type="13">if si_rules != &quot;sdGameRulesTDM&quot; remove</GameType>
+                    <GameType name="Objective" icon="9" expand="0" state="0" type="13">if si_rules != &quot;sdGameRulesObjective&quot; remove</GameType>
+                    <GameType name="Stop Watch" icon="9" expand="0" state="0" type="13">if si_rules != &quot;sdGameRulesStopWatch&quot; remove</GameType>
+                </GameType>					
             </Filter>
         </Game>
         <Game name="Quake World" icon="32" expand="0" state="0" game="12" type="1">
@@ -209,11 +215,13 @@
                     <Mod name="baseq3" icon="9" expand="0" state="0" type="13">if modname == &quot;baseq3&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="Arena" icon="9" expand="0" state="0" type="13">if modname == &quot;arena&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="CPMA" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
-                    <Mod name="Defrag" icon="9" expand="0" state="0" type="13">if modname == &quot;defrag&quot; keep&#x0D;&#x0A;remove</Mod>
-                    <Mod name="Excessive+" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
-                    <Mod name="Excessive" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="Defrag" icon="9" expand="0" state="0" type="13">if modname == &quot;defrag&quot; keep&#x0D;&#x0A;remove</Mod>                  
+                    <Mod name="Excessive" icon="9" expand="0" state="0" type="13">if modname == &quot;Excessive&quot; keep&#x0D;&#x0A;remove</Mod>
+					<Mod name="Excessive+" icon="9" expand="0" state="0" type="13">if modname == &quot;excessiveplus&quot; keep&#x0D;&#x0A;remove</Mod>
                     <Mod name="OSP" icon="9" expand="0" state="0" type="13">if modname ~== &quot;osp&quot; keep&#x0D;&#x0A;remove</Mod>
-                    <Mod name="q3ut4" icon="9" expand="0" state="0" type="13">if modname == &quot;cpma&quot; keep&#x0D;&#x0A;remove</Mod>
+                    <Mod name="q3ut4" icon="9" expand="0" state="0" type="13">if modname == &quot;q3ut4&quot; keep&#x0D;&#x0A;remove</Mod>
+					<Mod name="NoGhost" icon="9" expand="0" state="0" type="13">if modname == &quot;NoGhost&quot; keep&#x0D;&#x0A;remove</Mod>
+					<Mod name="Threewave" icon="9" expand="0" state="0" type="13">if modname == &quot;Threewave&quot; keep&#x0D;&#x0A;remove</Mod>
                 </Mod>
                 <Version name="Versions" icon="18" expand="0" state="0" type="0">
                     <Version name="Q3 1.32" icon="9" expand="0" state="0" type="13">if version != &quot;Q3 1.32c*&quot; remove</Version>
@@ -958,6 +966,21 @@
                 <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
                 <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
                 <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                    <Map name="Bank" icon="9" expand="0" state="0" type="13">if map != &quot;*bank*&quot; remove</Map>
+					<Map name="Canals" icon="9" expand="0" state="0" type="13">if map != &quot;*canals*&quot; remove</Map>
+					<Map name="Tesla" icon="9" expand="0" state="0" type="13">if map != &quot;*tesla*&quot; remove</Map>
+					<Map name="Facility" icon="9" expand="0" state="0" type="13">if map != &quot;*facility*&quot; remove</Map>
+					<Map name="Roof tops" icon="9" expand="0" state="0" type="13">if map != &quot;*rooftops*&quot; remove</Map>
+					<Map name="Manor" icon="9" expand="0" state="0" type="13">if map != &quot;*manor*&quot; remove</Map>
+					<Map name="Hospital" icon="9" expand="0" state="0" type="13">if map != &quot;*hospital*&quot; remove</Map>
+					<Map name="Chemical" icon="9" expand="0" state="0" type="13">if map != &quot;*chemical*&quot; remove</Map>
+                </Map>
+                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Team Death Match" icon="9" expand="0" state="0" type="13">if si_rules != &quot;sdGameRulesTDM&quot; remove</GameType>
+                    <GameType name="Objective" icon="9" expand="0" state="0" type="13">if si_rules != &quot;sdGameRulesObjective&quot; remove</GameType>
+                    <GameType name="Stop Watch" icon="9" expand="0" state="0" type="13">if si_rules != &quot;sdGameRulesStopWatch&quot; remove</GameType>
+                </GameType>				
             </Filter>
         </Game>		
     </TreeItems>
