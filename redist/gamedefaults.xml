@@ -501,10 +501,11 @@
 		<Icon>warsow.ico</Icon>
 		<MasterServers>
 			<MasterServer http="0" protocol="10">dpmaster.deathmask.net:27950</MasterServer>
+			<MasterServer http="0" protocol="11">dpmaster.deathmask.net:27950</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
-		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers Warsow 10 empty full</MasterQueryString>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers Warsow %PROTOCOL% empty full</MasterQueryString>
 		<Detection>
 			<Registry>
 				<RegRoot>HKEY_CLASSES_ROOT</RegRoot>

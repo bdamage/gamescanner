@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.210">
+<TreeViewCFG version="5.212">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -15,6 +15,8 @@
 	2009-08-03  5.208   Fixed Defrag mod filter.
 	2009-08-21	5.209	OSP mod filter fixed.
 	2009-08-26	5.210	Updated Q3 mods, Added Game type for ETQW, Wolfenstein and maps for Wolfenstein.
+	2009-08-26	5.211	Removed QW Rocket Arena filter and corrected Clan Arena filter.
+	2009-08-30	5.212	Added Warsow version 0.50 filter
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -116,8 +118,7 @@
                 <GameType name="Game types" icon="18" expand="0" state="0" type="0"></GameType>
                 <Mod name="Mods" icon="18" expand="0" state="0" type="0">
                     <Mod name="QW" icon="9" expand="0" state="0" type="13">if modname != &quot;qw&quot; remove</Mod>
-                    <Mod name="Clan Arena" icon="9" expand="0" state="0" type="13">if modname != &quot;ca&quot; remove</Mod>
-                    <Mod name="Rocket Arena" icon="9" expand="0" state="0" type="13">if modname != &quot;arena&quot; remove</Mod>
+                    <Mod name="Clan Arena" icon="9" expand="0" state="0" type="13">if modname != &quot;arena&quot; remove</Mod>
                     <Mod name="Team Fortress" icon="9" expand="0" state="0" type="13">if modname != &quot;fortress&quot; remove</Mod>
                     <Mod name="CTF" icon="9" expand="0" state="0" type="13">if modname != &quot;ctf&quot; remove</Mod>
                 </Mod>
@@ -327,6 +328,7 @@
                     <Version name="0.40" icon="9" expand="0" state="0" type="13">if version != &quot;0.40*&quot; remove</Version>
                     <Version name="0.41" icon="9" expand="0" state="0" type="13">if version != &quot;0.41*&quot; remove</Version>
                     <Version name="0.42" icon="9" expand="0" state="0" type="13">if version != &quot;0.42*&quot; remove</Version>
+					<Version name="0.50" icon="9" expand="0" state="0" type="13">if version != &quot;0.50*&quot; remove</Version>
                 </Version>
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
                     <Map name="wdm1" icon="9" expand="0" state="0" type="13">if map != &quot;wdm1&quot;remove</Map>

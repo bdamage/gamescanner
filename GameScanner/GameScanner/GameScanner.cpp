@@ -1555,6 +1555,9 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 							if(pGI->vGAME_SPEC_COL.size()>=COL_GAMETYPE)
 							{
 								char *szVarValue = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),pSrvInf->pServerRules);
+								if(szVarValue==NULL)
+									szVarValue = Get_RuleValue(_T("gametype"),pSrvInf->pServerRules); //Warsow v0.50 fix
+
 								if(szVarValue!=NULL)							
 									strncpy(pLVItem->pszText,szVarValue,pLVItem->cchTextMax);
 							}
@@ -3085,11 +3088,6 @@ void OnRestore()
 	}
 	SetStatusText(ICO_INFO,g_lang.GetString("Ready"));
 
-	//InvalidateRect(g_hWnd,NULL,TRUE);
-	//InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
-//	UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);	
-
-
 }
 
 
@@ -3175,14 +3173,16 @@ void ChangeMainMenuLanguage(HWND hWnd)
 }
 
 BOOL g_bOnCreate = FALSE;
+
 void OnCreate(HWND hwnd, HINSTANCE hInst)
 {
 	g_bOnCreate = TRUE;
 	LV_COLUMN   lvColumn;
+	DWORD dwExStyle = 0;	
 	ZeroMemory(&lvColumn,sizeof(LV_COLUMN));
 	ZeroMemory(&g_CopyTI,sizeof(_MYTREEITEM));
 	ZeroMemory(&g_PasteAtTI,sizeof(_MYTREEITEM));
-			
+	
 	Q3_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);
 	Q4_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);
 	STEAM_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies,NULL);
@@ -3205,7 +3205,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_MAPPREVIEW].idx = WIN_MAPPREVIEW;
 
 
-
 	g_hwndMainTreeCtrl = CreateWindowEx(WS_EX_CLIENTEDGE  ,  WC_TREEVIEW , NULL,
 
 							WS_VISIBLE |WS_CHILDWINDOW|  WS_TABSTOP |  TVS_HASBUTTONS | TVS_EDITLABELS| TVS_LINESATROOT | TVS_HASLINES   , 
@@ -3216,15 +3215,21 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_MAINTREEVIEW].idx = WIN_MAINTREEVIEW;
 	WNDCONT[WIN_MAINTREEVIEW].hWnd = g_hwndMainTreeCtrl;
 
-	g_hwndListViewServer = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE|LVS_EX_DOUBLEBUFFER , WC_LISTVIEW , NULL,
-							 LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+	g_hwndListViewServer = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW , NULL,
+							LVS_OWNERDATA | LVS_REPORT | WS_VISIBLE | WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
 							100+BORDER_SIZE,TOOLBAR_Y_OFFSET,200, 100, 
 							hwnd, (HMENU) IDC_LIST_SERVER, hInst, NULL);
+
+	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewServer);
+	dwExStyle |= LVS_EX_FULLROWSELECT;
+	dwExStyle |= LVS_EX_SUBITEMIMAGES; // | LVS_EX_LABELTIP  ;
+	dwExStyle |= LVS_EX_DOUBLEBUFFER;
+	ListView_SetExtendedListViewStyle(g_hwndListViewServer,dwExStyle);
 
 	WNDCONT[WIN_SERVERLIST].idx = WIN_SERVERLIST;
 	WNDCONT[WIN_SERVERLIST].hWnd = g_hwndListViewServer;
 	
-	g_hwndListBuddy	 = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE|LVS_EX_DOUBLEBUFFER , WC_LISTVIEW , NULL,
+	g_hwndListBuddy	 = CreateWindowEx(LVS_EX_FULLROWSELECT | WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
 							LVS_REPORT | WS_VISIBLE |WS_CHILD | WS_TABSTOP ,
 							0,0+TOOLBAR_Y_OFFSET+BORDER_SIZE,50, 50, 
 							hwnd, (HMENU) IDC_LIST_BUDDY, hInst, NULL);		
@@ -3241,7 +3246,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_TABCONTROL].idx = WIN_TABCONTROL;
 	WNDCONT[WIN_TABCONTROL].hWnd = g_hwndTabControl;
 
-	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE |LVS_EX_DOUBLEBUFFER, WC_LISTVIEW , NULL,
+	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
 							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_LIST_PLAYERS, hInst, NULL);
@@ -3249,7 +3254,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_PLAYERS].idx = WIN_PLAYERS;
 	WNDCONT[WIN_PLAYERS].hWnd = g_hwndListViewPlayers;
 	
-	g_hwndListViewVars = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE|LVS_EX_DOUBLEBUFFER , WC_LISTVIEW , NULL,
+	g_hwndListViewVars = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
 							LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							200+BORDER_SIZE*2,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100-BORDER_SIZE, 200, 
 							hwnd, (HMENU) IDC_LIST2, hInst, NULL);
@@ -3282,7 +3287,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 			 (LPSTR) NULL, WS_CHILD | WS_VISIBLE|PBS_SMOOTH,
 			 rc.right/2, rc.bottom-cyVScroll, rc.right/2, cyVScroll, 
 			 hwnd, (HMENU) 0, hInst, NULL); 
-	
+
 	WNDCONT[WIN_PROGRESSBAR].idx = WIN_PROGRESSBAR;
 	WNDCONT[WIN_PROGRESSBAR].hWnd = g_hwndProgressBar;
 
@@ -3329,37 +3334,31 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	tci.pszText =  (LPSTR)g_lang.GetString("TabLogger");
 	TabCtrl_InsertItem(g_hwndTabControl,4,&tci);
 
-	DWORD dwExStyle = 0;
+
 
 	SetWindowTheme(g_hwndMainTreeCtrl, L"explorer", 0);
 
 	
 	dwExStyle = TreeView_GetExtendedStyle(g_hwndMainTreeCtrl);
-	//dwExStyle |= (TVS_EX_DOUBLEBUFFER | TVS_EX_FADEINOUTEXPANDOS);
+//	dwExStyle |= TVS_EX_DOUBLEBUFFER;
 	TreeView_SetExtendedStyle(g_hwndMainTreeCtrl, WS_EX_LEFT,dwExStyle);
 	
 
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewPlayers);
-	dwExStyle |= LVS_EX_FULLROWSELECT ;
+	dwExStyle |= LVS_EX_FULLROWSELECT;
 	dwExStyle |= LVS_EX_SUBITEMIMAGES;
+	dwExStyle |= LVS_EX_DOUBLEBUFFER;	
 	ListView_SetExtendedListViewStyle(g_hwndListViewPlayers,dwExStyle);
 
 
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewVars);
 	dwExStyle |= LVS_EX_FULLROWSELECT ;
+	dwExStyle |= LVS_EX_DOUBLEBUFFER;
 	ListView_SetExtendedListViewStyle(g_hwndListViewVars,dwExStyle);
 	
-
-	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewServer);
-	dwExStyle |= LVS_EX_FULLROWSELECT ;
-	dwExStyle |= LVS_EX_SUBITEMIMAGES; // | LVS_EX_LABELTIP  ;
-	dwExStyle |= LVS_EX_DOUBLEBUFFER;
-
-	ListView_SetExtendedListViewStyle(g_hwndListViewServer,dwExStyle);
-
-
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListBuddy);
 	dwExStyle |= LVS_EX_FULLROWSELECT | LVS_EX_SUBITEMIMAGES | LVS_EX_LABELTIP ;
+	dwExStyle |= LVS_EX_DOUBLEBUFFER;
 	ListView_SetExtendedListViewStyle(g_hwndListBuddy,dwExStyle);
 
 	//initialize the columns
@@ -3435,7 +3434,6 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 //-----	
 	g_LVHeaderSL = new CListViewHeader(g_hwndListViewServer,"SLLVHeader",g_lang);
 	LVHeaderSL_AddDefaultColumns(FALSE);
-	//ListView_InitilizeColumns();
 
 	SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 	
 
@@ -5880,15 +5878,10 @@ void Initialize_WindowSizes()
 void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 {
 	RECT rc;
-	
-//	if(pRC==NULL) //Should we restore fixe for Win XP
 	GetClientRect(g_hWnd, &rc);
-//	else
-//		CopyRect(&rc,pRC);
 
 	if(wParam == SIZE_MINIMIZED)
 		return ;
-
 
 	WINDOWPLACEMENT wp;
 	GetWindowPlacement(g_hWnd, &wp);
@@ -5899,12 +5892,7 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 
 	RECT wrc;
 	GetWindowRect(g_hWnd,&wrc);
-	//SetRect(&WNDCONT[WIN_MAIN].rSize,wrc.left,wrc.top,wrc.right-wrc.left,wrc.bottom-wrc.top);
-	
-//	if(wParam==SIZE_MAXIMIZED)
-//	{
-//		CopyRect(&wrc,&rc);
-//	}
+
 	if(wrc.left>xMax)
 	{
 		wrc.left = 0;
@@ -5914,7 +5902,7 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 		{
 			SetWindowPos( g_hWnd, NULL,WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.top,WNDCONT[WIN_MAIN].rSize.right - WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.bottom - WNDCONT[WIN_MAIN].rSize.top,SWP_SHOWWINDOW | SWP_NOSIZE ); 
 			MoveWindow(g_hWnd,WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.top,WNDCONT[WIN_MAIN].rSize.right - WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.bottom - WNDCONT[WIN_MAIN].rSize.top,FALSE);
-			//InvalidateRect(g_hWnd,NULL,TRUE);
+			
 		}
 
 	}
@@ -6067,7 +6055,6 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	rc.top = TOOLBAR_Y_OFFSET;
 	rc.bottom-= (STATUSBAR_Y_OFFSET + TOOLBAR_Y_OFFSET);
 
-	//GetClientRect(hwndParent, &g_INFOIconRect);
 	g_INFOIconRect.left=2;
 	
 	g_INFOIconRect.bottom = STATUSBAR_Y_OFFSET;
@@ -6086,8 +6073,7 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	{
 		if(WNDCONT[i].idx!=WIN_MAIN)
 		{
-			MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,bRepaint);
-//			UpdateWindow(WNDCONT[i].hWnd);
+			MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,FALSE);
 			ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
 		}
 
@@ -6098,21 +6084,16 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	CalcSplitterGripArea();
 
 	
-
-
 	if(WNDCONT[WIN_PING].bShow)
 		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 
 	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
-
-
 
 	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
 	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
 	InvalidateRect(g_hwndComboEdit,NULL,TRUE);
 	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
 	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
-//	SendMessage(g_hwndComboEdit,WM_SETTEXT,0,(LPARAM)_T("Welcome to Game Scanner!"));
 	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
 	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
 
@@ -6126,7 +6107,6 @@ void UpdateCurrentServerUI()
 	RECT rc;
 	SetRect(&rc,  WNDCONT[WIN_MAPPREVIEW].rSize.left, WNDCONT[WIN_MAPPREVIEW].rSize.top, WNDCONT[WIN_MAPPREVIEW].rSize.left+WNDCONT[WIN_MAPPREVIEW].rSize.right, WNDCONT[WIN_MAPPREVIEW].rSize.top+WNDCONT[WIN_MAPPREVIEW].rSize.bottom);
 	InvalidateRect(g_hWnd,&rc, TRUE);
-
 }
 
 
@@ -12321,8 +12301,6 @@ int CFG_Load()
 
 		if(pElem->Attribute("WindowNames")!=NULL)
 			strcpy(AppCFG.szET_WindowName,pElem->Attribute("WindowNames"));
-		//Temp update
-		strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4|WolfMP");
 	} 	
 
 
@@ -12748,16 +12726,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 			break;
 		}
-		case WM_NOTIFY:
-		{
-			return OnNotify(hWnd,  message,  wParam,  lParam);				
-		}
-		break;
-	
-	case WM_SIZE:
+		case WM_NOTIFY:		return OnNotify(hWnd,  message,  wParam,  lParam);
+		case WM_SIZE:
 	   {			 
 		dbg_print("WM_SIZE %d",wParam);
-	
+
 		if(wParam==SIZE_MAXIMIZED)
 			AppCFG.nWindowState = SW_SHOWMAXIMIZED;
 		else if(g_bOnCreate==FALSE)
@@ -12767,8 +12740,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			 OnRestore();
 			 PostMessage(g_hWnd,WM_REINIT_COUNTRYFILTER,0,0);
-			
-		
 		}
 		else if (wParam==SIZE_MINIMIZED)
 		{			
@@ -12788,14 +12759,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 		return 0;
 	   }
-	case WM_LBUTTONDOWN: 
-		OnLeftMouseButtonDown( hWnd, wParam, lParam);
-	   break;
-	case WM_MOUSEMOVE:  
-		OnMouseMove(hWnd,  wParam, lParam);
-	   break;
-	case WM_LBUTTONUP:	OnLeftMouseButtonUp( hWnd,  wParam, lParam);
-	   break;
+	case WM_LBUTTONDOWN:	OnLeftMouseButtonDown( hWnd, wParam, lParam);		break;
+	case WM_MOUSEMOVE:		OnMouseMove(hWnd,  wParam, lParam);					break;
+	case WM_LBUTTONUP:		OnLeftMouseButtonUp( hWnd,  wParam, lParam);		break;
 	case WM_HOTKEY:
 		if ((wParam == HOTKEY_ID))
 			tryToMinimizeGame();
@@ -12931,48 +12897,18 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 					}				
 				break;
-				case IDC_BUTTON_QUICK_CONNECT:	
-					FastConnect();
-				break;				
-				case IDC_BUTTON_ADD_SERVER:
-					OnButtonClick_AddServer();
-				break;
-				case IDC_BUTTON_FIND:
-				{
-					OnSearchFieldChange();
-				}
-				break;
-				case ID_IMPORT_SERVERS:
-					OnImportServers(hWnd);
-					break;
-				case ID_EXPORT_ALL_SERVERS:
-					OnExportServers(hWnd);
-					break;
-				case IDM_OPTIONS_RCON:
-					 OnRCON();
-					break;
-				case ID_BUDDY_ADD:
-					bm.Buddy_Add(g_hInst,g_hWnd,true);
-				break;
-				case ID_BUDDY_REMOVE:
-					bm.Remove();
-				break;
-				case ID_BUDDY_ADDFROMPLAYERLIST:
-					bm.Buddy_Add(g_hInst,g_hWnd,false);
-				break;
-				case ID_FAVORITES_ADDIP:
-					Favorite_Add(true);
-				break;
-
-				case ID_HELP_DOCUMENTATIONFAQ:
-					ShellExecute(NULL,NULL,"http://www.bdamage.se/page.php?3",NULL,NULL,SW_SHOWNORMAL);
-					break;
-				case ID_SERVERLIST_PURGEPUBLICSERVLIST:
-					{	
-						DeleteAllServerLists(hWnd);
-						return TRUE;
-					} //ID_SERVERLIST_PURGEPUBLICSERVLIST
-				break;
+				case IDC_BUTTON_QUICK_CONNECT:		FastConnect();							break;				
+				case IDC_BUTTON_ADD_SERVER:			OnButtonClick_AddServer();				break;
+				case IDC_BUTTON_FIND:				OnSearchFieldChange();					break;
+				case ID_IMPORT_SERVERS:				OnImportServers(hWnd);					break;
+				case ID_EXPORT_ALL_SERVERS:			OnExportServers(hWnd);					break;
+				case IDM_OPTIONS_RCON:				OnRCON();								break;
+				case ID_BUDDY_ADD:					bm.Buddy_Add(g_hInst,g_hWnd,true);		break;
+				case ID_BUDDY_REMOVE:				bm.Remove();							break;
+				case ID_BUDDY_ADDFROMPLAYERLIST:	bm.Buddy_Add(g_hInst,g_hWnd,false);		break;
+				case ID_FAVORITES_ADDIP:			Favorite_Add(true);						break;
+				case ID_HELP_DOCUMENTATIONFAQ:		ShellExecute(NULL,NULL,"http://www.bdamage.se/documentation.html",NULL,NULL,SW_SHOWNORMAL);	break;
+				case ID_SERVERLIST_PURGEPUBLICSERVLIST:		DeleteAllServerLists(hWnd);		break;
 				case IDM_UPDATE:
 					{
 						HANDLE hThread;
@@ -13059,8 +12995,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			}
 		default: 
 			return DefWindowProc(hWnd, message, wParam, lParam);
-		}
-	
+		}	
 	return 0;
 }
 
