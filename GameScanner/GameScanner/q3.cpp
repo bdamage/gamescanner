@@ -44,7 +44,26 @@ void Q3_SetCallbacks(long (*UpdateServerListView)(DWORD index),
 }
 
 
+unsigned char* Warsow_patch(SOCKET pSocket,SERVER_INFO *pSI, DWORD *dwStartTick,size_t *packetlen)
+{
 
+	unsigned char *packet=NULL;
+	char szWarsow042[] = {"\xFF\xFF\xFF\xFFgetinfo"};
+	*packetlen = send(pSocket, szWarsow042, sizeof(szWarsow042), 0);	
+	*dwStartTick = GetTickCount();
+	packet=(unsigned char*)getpacket(pSocket, packetlen);
+	if(packet!=NULL)
+		return packet;
+
+	if(*packetlen==SOCKET_ERROR) 
+	{
+		dbg_print("Error at send()\n");
+		closesocket(pSocket);		
+		pSI->cPurge++;
+
+	}
+	return NULL;
+}
 
 DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
 {
@@ -81,6 +100,8 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	len = UTILZ_ConvertEscapeCodes(gm.GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
 retry:
+
+
 	if(gm.GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
 		packetlen = send(pSocket, sendbuf, len+1, 0);
 	else
@@ -97,10 +118,16 @@ retry:
 
 	dwStartTick = GetTickCount();
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(pSI->cGAMEINDEX==WARSOW_SERVERLIST && packet==NULL)
+		packet = Warsow_patch(pSocket,pSI,&dwStartTick,&packetlen);
+
 	if(packet==NULL)
 	{
+		
 		if(dwRetries<AppCFG.dwRetries)
 		{
+			
+
 			dwRetries++;
 			goto retry;
 		}
@@ -140,7 +167,13 @@ retry:
 				if(szPVarValue!=NULL)
 					strcpy(szP_ET,szPVarValue);
 			}
-
+			char *szVarValue=NULL;
+			GAME_INFO *pGI = &gm.GamesInfo[pSI->cGAMEINDEX];
+			pSI->szServerName = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_SERVERNAME).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szMap = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szMod = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_MOD).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szGameTypeName = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szVersion = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_VERSION).sRuleValue.c_str(),pSI->pServerRules);
 
 			PLAYERDATA *pQ3Players=NULL;
 			DWORD nPlayers=0;
@@ -167,13 +200,7 @@ retry:
 			pSI->cPurge = 0;
 			pSI->nPlayers = nPlayers;
 			
-			char *szVarValue=NULL;
-			GAME_INFO *pGI = &gm.GamesInfo[pSI->cGAMEINDEX];
-			pSI->szServerName = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_SERVERNAME).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szMap = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szMod = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_MOD).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szGameTypeName = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szVersion = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_VERSION).sRuleValue.c_str(),pSI->pServerRules);
+
 
 			szVarValue= Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_PRIVATE).sRuleValue.c_str(),pSI->pServerRules);
 			if(szVarValue!=NULL)
@@ -354,6 +381,12 @@ retry:
 			//Retrieve players if any exsist...
 			//---------------------------------
 
+			pSI->szServerName = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_SERVERNAME).sRuleValue.c_str(),pSI->pServerRules,1);
+			pSI->szMap = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szMod = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MOD).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szGameTypeName = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),pSI->pServerRules);
+			pSI->szVersion = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_VERSION).sRuleValue.c_str(),pSI->pServerRules);
+
 			pQ3Players = Q3_ParsePlayers2(pSI,pCurrPointer,end,&nPlayers);
 
 	
@@ -369,14 +402,6 @@ retry:
 			char *szVarValue=NULL;
 			char *pVarValue = NULL;
 	
-
-			pSI->szServerName = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_SERVERNAME).sRuleValue.c_str(),pSI->pServerRules,1);
-			pSI->szMap = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szMod = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MOD).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szGameTypeName = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),pSI->pServerRules);
-			pSI->szVersion = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_VERSION).sRuleValue.c_str(),pSI->pServerRules);
-
-
 			szVarValue = Get_RuleValue("pswrd",pServRules);  //CoD & Cod2
 			if(szVarValue!=NULL)
 				pSI->bPrivate = atoi(szVarValue);
@@ -708,7 +733,18 @@ char * ParseString(char* & pData)
 	}
 	return NULL;
 }
+/*
+Player structures:
 
+Warsow <v0.4
+[rate] [ping] "playername" [team] [0x22]
+
+Warsow v0.5
+[rate] [ping] "playername" [team][0x0a]
+last player: 
+[rate] [ping] "playername" [team][0x0a][0x00]
+
+*/
 PLAYERDATA *Q3_ParsePlayers2(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers,char *szP)
 {
 	int Pindex =0;
@@ -737,9 +773,9 @@ PLAYERDATA *Q3_ParsePlayers2(SERVER_INFO *pSI,char *pointer,char *end, DWORD *nu
 			int nexuizUnknown = ParseNum(pointer);
 			player->szPlayerName = ParseString(pointer);
 
-
+			
 			switch(pSI->cGAMEINDEX)
-			{
+			{				
 				case NEXUIZ_SERVERLIST:
 				case OPENARENA_SERVERLIST:
 				case Q3_SERVERLIST:
@@ -773,21 +809,32 @@ PLAYERDATA *Q3_ParsePlayers2(SERVER_INFO *pSI,char *pointer,char *end, DWORD *nu
 				}
 				case WARSOW_SERVERLIST:
 				{
-					pointer++;
-					char * p0a = strchr(pointer,0x0A);
-					p0a[0]=0;
-					if(strcmp(pointer,"0")==0)
-						player->szTeam = _strdup("Spectator");
-					else if(strcmp(pointer,"2")==0)
-						player->szTeam = _strdup("Red");
-					else if(strcmp(pointer,"3")==0)
-						player->szTeam= _strdup("Blue");
-						
-					pointer++;						
+					char *szProtocol=NULL;
+				//	GAME_INFO *pGI = &gm.GamesInfo[pSI->cGAMEINDEX];
+				//	szProtocol = Get_RuleValue((TCHAR*)_T("protocol"),pSI->pServerRules);
+					//if(szProtocol!=NULL)
+					{
+						//if(atoi(szProtocol)<11) //pre version 0.5
+						{
+							pointer++;
+							char * p0a = strchr(pointer,0x0A);
+							if(p0a!=NULL)
+								p0a[0]=0;
+							if(strcmp(pointer,"0")==0)
+								player->szTeam = _strdup("Spectator");
+							else if(strcmp(pointer,"2")==0)
+								player->szTeam = _strdup("Red");
+							else if(strcmp(pointer,"3")==0)
+								player->szTeam= _strdup("Blue");
+								
+							pointer++;						
+						}
+					}
 					break;
 				}
 			}
-			pointer++; //0x0a but for Warsow it is 0x22
+			//Player seperator
+			pointer++; //normal 0x0a but for Warsow it is 0x22 (pre v0.5)
 
 			if(pQ3Players==NULL)
 				pQ3Players = pQ3CurrentPlayer = player;
@@ -979,6 +1026,39 @@ QW
 0x01049E9F  00 30 00 74 69 6d 65 6c 69 6d 69 74 00 31 30 00 fd fd fd fd ab ab ab ab ab  .0.timelimit.10.ýýýý«««««
 0x01049EB8  ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 00 7c 20 9d 3d 88 79 0a 00 18  «««.............| .=ˆy...
 
+
+
+Warsow 0.5               s t  a  t  u  s  R  e  s  p  o  n  s  e     \                             \  \  
+0x02FB4E58  ff ff ff ff 73 74 61 74 75 73 52 65 73 70 6f 6e 73 65 0a 5c 63 68 61 6c 6c 65 6e 67 65 5c 5c 76 65 72 73 69 6f 6e 5c 30 2e  ÿÿÿÿstatusResponse.\challenge\\version\0.
+0x02FB4E81  35 30 20 69 33 38 36 20 41 75 67 20 32 35 20 32 30 30 39 20 4c 69 6e 75 78 5c 66 73 5f 67 61 6d 65 5c 62 61 73 65 77 73 77  50 i386 Aug 25 2009 Linux\fs_game\basewsw
+0x02FB4EAA  5c 67 5f 61 6e 74 69 6c 61 67 5c 31 5c 67 5f 67 61 6d 65 74 79 70 65 73 5f 61 76 61 69 6c 61 62 6c 65 5c 5c 67 5f 69 6e 73  \g_antilag\1\g_gametypes_available\\g_ins
+0x02FB4ED3  74 61 67 69 62 5c 30 5c 67 5f 6d 61 74 63 68 5f 73 63 6f 72 65 5c 5c 67 5f 6d 61 74 63 68 5f 74 69 6d 65 5c 57 61 72 6d 75  tagib\0\g_match_score\\g_match_time\Warmu
+0x02FB4EFC  70 5c 67 5f 6e 65 65 64 70 61 73 73 5c 30 5c 67 61 6d 65 64 61 74 65 5c 41 75 67 20 32 35 20 32 30 30 39 5c 67 61 6d 65 6e  p\g_needpass\0\gamedate\Aug 25 2009\gamen
+0x02FB4F25  61 6d 65 5c 57 61 72 73 6f 77 5c 6d 61 70 6e 61 6d 65 5c 77 64 6d 31 5c 70 72 6f 74 6f 63 6f 6c 5c 31 31 5c 73 76 5f 63 68  ame\Warsow\mapname\wdm1\protocol\11\sv_ch
+0x02FB4F4E  65 61 74 73 5c 30 5c 73 76 5f 68 6f 73 74 6e 61 6d 65 5c 57 61 72 73 6f 77 2e 6e 65 74 2e 61 75 20 30 2e 35 20 23 31 5c 73  eats\0\sv_hostname\Warsow.net.au 0.5 #1\s
+0x02FB4F77  76 5f 6d 61 78 63 6c 69 65 6e 74 73 5c 31 36 5c 73 76 5f 6d 61 78 6d 76 63 6c 69 65 6e 74 73 5c 34 5c 73 76 5f 70 70 73 5c  v_maxclients\16\sv_maxmvclients\4\sv_pps\
+0x02FB4FA0  32 30 5c 73 76 5f 70 75 72 65 5c 31 5c 73 76 5f 73 6b 69 6c 6c 6c 65 76 65 6c 5c 31 5c 67 61 6d 65 74 79 70 65 5c 64 75 65  20\sv_pure\1\sv_skilllevel\1\gametype\due
+0x02FB4FC9  6c 5c 63 6c 69 65 6e 74 73 5c 30 0a 00 fd fd fd fd																		    l\clients\0..ýýýý
+
+
+0x02FB4EA8  ff ff ff ff 73 74 61 74 75 73 52 65 73 70 6f 6e 73 65 0a 5c 63 68 61 6c 6c 65 6e 67 65 5c 5c 76 65 72 73 69 6f 6e 5c 30 2e 35 30 20 69 33 38 36 20 41 75 67 20 32 35 20 32 30 30  ÿÿÿÿstatusResponse.\challenge\\version\0.50 i386 Aug 25 200
+0x02FB4EE3  39 20 4c 69 6e 75 78 5c 66 73 5f 67 61 6d 65 5c 62 61 73 65 77 73 77 5c 67 5f 61 6e 74 69 6c 61 67 5c 31 5c 67 5f 67 61 6d 65 74 79 70 65 73 5f 61 76 61 69 6c 61 62 6c 65 5c 5c  9 Linux\fs_game\basewsw\g_antilag\1\g_gametypes_available\\
+0x02FB4F1E  67 5f 69 6e 73 74 61 67 69 62 5c 30 5c 67 5f 6d 61 74 63 68 5f 73 63 6f 72 65 5c 5c 67 5f 6d 61 74 63 68 5f 74 69 6d 65 5c 57 61 72 6d 75 70 5c 67 5f 6e 65 65 64 70 61 73 73 5c  g_instagib\0\g_match_score\\g_match_time\Warmup\g_needpass\
+0x02FB4F59  30 5c 67 61 6d 65 64 61 74 65 5c 41 75 67 20 32 35 20 32 30 30 39 5c 67 61 6d 65 6e 61 6d 65 5c 57 61 72 73 6f 77 5c 6d 61 70 6e 61 6d 65 5c 77 64 6d 31 34 5c 70 72 6f 74 6f 63  0\gamedate\Aug 25 2009\gamename\Warsow\mapname\wdm14\protoc
+0x02FB4F94  6f 6c 5c 31 31 5c 73 76 5f 63 68 65 61 74 73 5c 30 5c 73 76 5f 68 6f 73 74 6e 61 6d 65 5c 23 4c 69 6e 75 78 2e 65 73 20 40 20 69 72 63 2e 6d 69 6e 64 66 6f 72 67 65 2e 6f 72 67  ol\11\sv_cheats\0\sv_hostname\#Linux.es @ irc.mindforge.org
+0x02FB4FCF  20 7c 20 57 53 57 20 53 70 61 69 6e 5c 73 76 5f 6d 61 78 63 6c 69 65 6e 74 73 5c 31 36 5c 73 76 5f 6d 61 78 6d 76 63 6c 69 65 6e 74 73 5c 34 5c 73 76 5f 70 70 73 5c 32 30 5c 73   | WSW Spain\sv_maxclients\16\sv_maxmvclients\4\sv_pps\20\s
+0x02FB500A  76 5f 70 75 72 65 5c 31 5c 73 76 5f 73 6b 69 6c 6c 6c 65 76 65 6c 5c 31 5c 67 61 6d 65 74 79 70 65 5c 64 6d 5c 63 6c 69 65 6e 74 73 5c 30 0a 00 fd fd fd fd ab ab ab ab ab ab ab  v_pure\1\sv_skilllevel\1\gametype\dm\clients\0..ýýýý«««««««
+
+
+0x02FDF688  ff ff ff ff 73 74 61 74 75 73 52 65 73 70 6f 6e 73 65 0a 5c 63 68 61 6c 6c 65 6e 67 65 00 00 76 65 72 73 69 6f 6e 00 30 2e 35 30 20 69 33 38 36 20 41 75 67 20 32 35 20 32 30 30  ÿÿÿÿstatusResponse.\challenge..version.0.50 i386 Aug 25 200
+0x02FDF6C3  39 20 4c 69 6e 75 78 00 66 73 5f 67 61 6d 65 00 62 61 73 65 77 73 77 00 67 5f 61 6e 74 69 6c 61 67 00 31 00 67 5f 67 61 6d 65 74 79 70 65 73 5f 61 76 61 69 6c 61 62 6c 65 00 00  9 Linux.fs_game.basewsw.g_antilag.1.g_gametypes_available..
+0x02FDF6FE  67 5f 69 6e 73 74 61 67 69 62 00 30 00 67 5f 6d 61 74 63 68 5f 73 63 6f 72 65 00 00 67 5f 6d 61 74 63 68 5f 74 69 6d 65 00 57 61 72 6d 75 70 00 67 5f 6e 65 65 64 70 61 73 73 00  g_instagib.0.g_match_score..g_match_time.Warmup.g_needpass.
+0x02FDF739  30 00 67 61 6d 65 64 61 74 65 00 41 75 67 20 32 35 20 32 30 30 39 00 67 61 6d 65 6e 61 6d 65 00 57 61 72 73 6f 77 00 6d 61 70 6e 61 6d 65 00 77 64 6d 31 37 00 70 72 6f 74 6f 63  0.gamedate.Aug 25 2009.gamename.Warsow.mapname.wdm17.protoc
+0x02FDF774  6f 6c 00 31 31 00 73 76 5f 63 68 65 61 74 73 00 30 00 73 76 5f 68 6f 73 74 6e 61 6d 65 00 46 75 63 6b 69 6e 67 46 72 6f 67 73 2e 66 72 20 70 75 62 6c 69 63 20 34 00 73 76 5f 6d  ol.11.sv_cheats.0.sv_hostname.FuckingFrogs.fr public 4.sv_m
+0x02FDF7AF  61 78 63 6c 69 65 6e 74 73 00 31 36 00 73 76 5f 6d 61 78 6d 76 63 6c 69 65 6e 74 73 00 34 00 73 76 5f 70 70 73 00 32 30 00 73 76 5f 70 75 72 65 00 31 00 73 76 5f 73 6b 69 6c 6c  axclients.16.sv_maxmvclients.4.sv_pps.20.sv_pure.1.sv_skill
+0x02FDF7EA  6c 65 76 65 6c 00 31 00 67 61 6d 65 74 79 70 65 00 64 61 00 63 6c 69 65 6e 74 73 00 34 00 30 20 36 38 20 22 5e 39 2e 5e 37 70 5e 39 72 5e 37 30 5e 30 5b 5e 37 46 72 75 5e 39 69  level.1.gametype.da.clients.4.0 68 "^9.^7p^9r^70^0[^7Fru^9i
+0x02FDF825  5e 37 54 22 20 31 0a 30 20 37 32 20 22 5e 39 2e 5e 37 70 5e 39 72 5e 37 30 5e 30 5d 5e 39 50 5e 37 69 78 65 6c 22 20 31 0a 30 20 36 35 20 22 4d 69 73 74 65 72 20 53 70 61 74 65  ^7T" 1.0 72 "^9.^7p^9r^70^0]^9P^7ixel" 1.0 65 "Mister Spate
+0x02FDF860  6e 21 22 20 31 0a 30 20 34 36 20 22 47 65 65 70 61 72 64 22 20 31 0a 00 fd fd fd fd ab ab ab ab ab ab ab ab 00 00 00 00 00 00 00 00 00 00 00 00 db 67 51 16 bd cd 07 1c 20 6a fb  n!" 1.0 46 "Geepard" 1..ýýýý««««««««............ÛgQ..Í.. jû
 
 */
 

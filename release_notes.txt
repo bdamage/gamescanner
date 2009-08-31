@@ -7,6 +7,11 @@
 
 
 		Version 2.0.12
+		--------------
+		* Added Warsow version 0.5 support.
+
+
+		Version 2.0.11 final
 		-------------------
 		* Updated Q3 mod filters.
 		* Added Game type filter for ETQW and Wolfenstein.

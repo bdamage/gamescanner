@@ -11702,7 +11702,7 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 
 		// allows buttons to have a separate dropdown arrow
 		// Note: TBN_DROPDOWN notification is sent by a toolbar control when the user clicks a dropdown button
-	//	::SendMessage(hwndTB, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS);
+		::SendMessage(hwndTB, TB_SETEXTENDEDSTYLE, 0, TBSTYLE_EX_DRAWDDARROWS);
 	
 		::SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELONG(TOOLBAR_SIZE_X, TOOLBAR_SIZE_X));
 		//::SendMessage(hwndTB, TB_SETBITMAPSIZE, 0, MAKELONG(24, 24));
@@ -11753,10 +11753,10 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 
 	   	ZeroMemory(&tbb, sizeof(TBBUTTON));
 
-		tbb.iBitmap = iImages++;
+		tbb.iBitmap = 0;
 		tbb.idCommand = IDM_REFRESH;
 		tbb.fsState = TBSTATE_ENABLED;
-		tbb.fsStyle = TBSTYLE_BUTTON ; //| TBSTYLE_DROPDOWN;
+		tbb.fsStyle = TBSTYLE_BUTTON ; //;
 		//		tbb.fsStyle = TBSTYLE_SEP;
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);
 
@@ -11768,10 +11768,10 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);
 
 
-		tbb.iBitmap = iImages++;
+		tbb.iBitmap = 1;
 		tbb.idCommand = IDM_SETTINGS;
 		tbb.fsState = TBSTATE_ENABLED;
-		tbb.fsStyle = TBSTYLE_BUTTON;
+		tbb.fsStyle = BTNS_BUTTON ;//| BTNS_DROPDOWN;
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);
 	
     return hwndTB;
@@ -12552,7 +12552,7 @@ void OnLeftMouseButtonUp(HWND hWnd, WPARAM wParam,LPARAM lParam)
 		Sizing = FALSE;
 	}
 	ReleaseDC(hWnd, hdc);	
-	//InvalidateRect(hWnd,NULL,TRUE);
+	InvalidateRect(hWnd,NULL,TRUE);
 	//InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 	OnSize(hWnd,0,TRUE);
 }

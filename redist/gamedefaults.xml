@@ -500,11 +500,12 @@
 		<MapPreviewPath>warsowmaps</MapPreviewPath>
 		<Icon>warsow.ico</Icon>
 		<MasterServers>
-			<MasterServer http="0" protocol="10">dpmaster.deathmask.net:27950</MasterServer>
-			<MasterServer http="0" protocol="11">dpmaster.deathmask.net:27950</MasterServer>
+			<MasterServer http="0" protocol="10">dpmaster.deathmask.net:27950</MasterServer> <!-- version 0.42-->
+			<MasterServer http="0" protocol="11">dpmaster.deathmask.net:27950</MasterServer> <!-- version 0.50-->
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
-		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery>
+		<!-- <ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery> Warsow version 0.42 -->
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery> <!-- version 0.5-->
 		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers Warsow %PROTOCOL% empty full</MasterQueryString>
 		<Detection>
 			<Registry>

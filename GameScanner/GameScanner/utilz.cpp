@@ -789,8 +789,7 @@ char *Get_RuleValue(const TCHAR *szRuleName,SERVER_RULES *pSR,int iCompareMode)
 							return pSR->value;
 					}
 					__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
-					{
-						DebugBreak();
+					{						
 						return NULL;
 					}
 
