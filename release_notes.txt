@@ -6,6 +6,13 @@
 	Check out the forum for help and support.
 
 
+		Version 2.0.13
+		--------------
+		* Changed Wolfenstein master server
+		* Updated IP to Country database.
+
+
+
 		Version 2.0.12
 		--------------
 		* Added Warsow version 0.5 support.

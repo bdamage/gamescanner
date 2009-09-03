@@ -1031,14 +1031,15 @@
 		<ShortName>WOLF</ShortName>
 		<Filename>wolf.servers</Filename>
 		<WebProtocol>wolf</WebProtocol>
-		<NetEngine>WOLF</NetEngine>
+		<NetEngine>Q4</NetEngine>
 		<Icon>wolf.ico</Icon>
 		<ServerDefaultPort>27960</ServerDefaultPort>
 		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
 		<MasterQueryString></MasterQueryString>
 		<MapPreviewPath>wolfmaps</MapPreviewPath>
 		<MasterServers>
-			<MasterServer http="0" >https://api.getgsc.com/?command=get_gameservers_csv&amp;search_by=game_abbrev&amp;search_term=wolf&amp;limit=100000</MasterServer>			
+			<MasterServer http="1" >http://wolf-ipgetter.demonware.net/ipgetter/</MasterServer>		
+			<!--<MasterServer http="1" >https://api.getgsc.com/?command=get_gameservers_csv&amp;search_by=game_abbrev&amp;search_term=wolf&amp;limit=100000</MasterServer>-->
 		</MasterServers>
 		<Detection>
 			<Registry>

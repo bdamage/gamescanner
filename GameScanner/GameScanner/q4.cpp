@@ -438,6 +438,14 @@ n BYTES Clan tag
 
 */
 
+struct serverInfo_t {
+  int osMask;
+  byte isRanked;
+  int timeLeft;
+  byte gameState;
+ };
+
+
 PLAYERDATA *Q4_ParsePlayers(SERVER_INFO *pSI,char *packet,char *end, DWORD *numPlayers)
 {
 	PLAYERDATA *pQ4Players=NULL;
@@ -538,8 +546,10 @@ bot_minplayers
 
 			*numPlayers= *numPlayers+1;
 
-			if(pSI->cGAMEINDEX==ETQW_SERVERLIST) //ETQW specific
+			if(pSI->cGAMEINDEX==WOLF_SERVERLIST || (pSI->cGAMEINDEX==WOLF_SERVERLIST)) //ETQW specific
 			{	
+				serverInfo_t *serverInfo = (serverInfo_t *)packet;
+
 				if(packet[5]==0x01)
 				{
 					pSI->cRanked = 1;
@@ -562,15 +572,49 @@ bot_minplayers
 					  int maxClients; // max clients that the tv server supports
 						*/
 				}
+				switch(serverInfo->gameState)
+				{
+					case 1 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","WARMUP");	break;
+					case 2 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Game in progress");	break;
+					case 4 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Reviewing Score");	break;
+					case 8 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","STOPWATCH SECOND PLAYOFF");	break;
+
+				}
 
 			}
 
 			if (packet[0]==0x20)  //ETQW & Q4
 				break;
-			if ((packet[0]==16) && (pSI->cGAMEINDEX == WOLF_SERVERLIST)) 
+			if ((packet[0]==16) && packet[2]==0 && packet[3]==0 && (pSI->cGAMEINDEX == WOLF_SERVERLIST)) 
+			{
+				serverInfo_t *serverInfo = (serverInfo_t *)&packet[1];
+				switch(serverInfo->gameState)
+				{
+					case 1 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","WARMUP");	break;
+					case 2 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Game in progress");	break;
+					case 4 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Reviewing Score");	break;
+					case 8 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","STOPWATCH SECOND PLAYOFF");	break;
+				}
+
+				
 				break;
+			}
 		}
 		
 	}
 	return pQ4Players;
 }
+/*  OS MASK---| R |timeleft--| 
+ 10 01 00 00 00 00 23 f7 06 00 02 00
+ 10 01 00 00 00 00 5a d6 02 00 02 00 
+ 10 01 00 00 00 00 5a d6 02 00 02 00  1:36
+ 10 01 00 00 00 00 5d 36 00 00 02 00 0:21
+ 10 01 00 00 00 00 00 00 00 00 04 00 Review score
+ 10 01 00 00 00 00 c4 14 00 00 01 00 14:41
+ 
+ 10 01 00 00 00 00 00 00 00 00 01 00 Review Score
+
+ 10 01 00 00 00 00 a8 83 0a 00 02 00 11:47
+
+ 10 01 00 00 00 00 a8 83 0a 00 02 00
+*/

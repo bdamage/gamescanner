@@ -6486,11 +6486,30 @@ nextMasterServer:
 	{
 		if(gm.GamesInfo[currGameIdx].bUseHTTPServerList[nMasterServer])
 		{
-			g_download.SetPath(USER_SAVE_PATH);
-			int ret = g_download.HttpFileDownload(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer],"servers.txt",NULL,NULL);
-			if(ret!=0)
-				goto exitError;
-			Parse_FileServerList(&gm.GamesInfo[currGameIdx],"servers.txt");
+			BOOL bHTTPS = FALSE;
+
+			if(strlen(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer])>0)
+				if(strstr(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer],"https:")!=NULL)
+					bHTTPS = TRUE;
+
+			if(!bHTTPS)
+			{
+				g_download.SetPath(USER_SAVE_PATH);
+				int ret = g_download.HttpFileDownload(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer],"servers.txt",NULL,NULL);
+				if(ret!=0)
+					goto exitError;
+				Parse_FileServerList(&gm.GamesInfo[currGameIdx],"servers.txt");
+			} else
+			{
+
+				CInternet inet;				
+				inet.SetPath(USER_SAVE_PATH);
+				inet.CrackURL(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer]);
+				inet.URLPost(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer], "servers.csv");
+				Parse_FileServerListFromGSC(&gm.GamesInfo[currGameIdx],"servers.csv");
+
+			}
+
 		}else	
 		{	
 			if(gm.GamesInfo[currGameIdx].GetServersFromMasterServer!=NULL)
@@ -6781,7 +6800,23 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 			char *pout = fgets( buff, sizeof(buff), fp );
 			if(pout!=NULL)
 			{
-				pszIP = SplitIPandPORT((char*)&buff,dwPort);					
+				pszIP = SplitIPandPORT((char*)&buff,dwPort);
+				if(pGI->cGAMEINDEX == WOLF_SERVERLIST) //temp fix for Wolf
+				{
+					if(dwPort==3074) 
+						dwPort=27758;
+					if(dwPort==3075) 
+						dwPort=27759;
+					if(dwPort==3076) 
+						dwPort=27760;
+					if(dwPort==3077) 
+						dwPort=27761;
+					if(dwPort==3078) 
+						dwPort=27762;
+					if(dwPort==3079) 
+						dwPort=27763;
+				}
+
 				DWORD dwRet = AddServer(pGI,pszIP,dwPort,false);
 				if(dwRet!=0xFFFFFFFF)
 				{
@@ -10506,7 +10541,7 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 	if(szCustomCmd!=NULL) //This is used by the fast connect from the search field for custom command typical pasted from irc or similar
 		strcat(CommandParameters,szCustomCmd);
 
-	//log.AddLogInfo(0,CommandParameters);
+	log.AddLogInfo(0,CommandParameters);
 
 	if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
 	{

@@ -23,7 +23,7 @@ void OnAddNewFolder(HWND hWndParent);
 void OnDeleteFolder(HWND hWndParent);
 void OnCopyFilter();
 void OnPasteFilter();
-
+void Parse_FileServerListFromGSC(GAME_INFO *pGI,char *szFilename);
 void ListView_InitilizeColumns(BOOL bRestore=FALSE);
 void TreeView_ReBuildList();
 int LoadIconIntoImageList(TCHAR*szFilename);
