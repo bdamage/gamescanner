@@ -6091,10 +6091,12 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 
 	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
 	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
-	InvalidateRect(g_hwndComboEdit,NULL,TRUE);
+
 	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
 	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
 	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
+	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
+	InvalidateRect(g_hwndComboEdit,NULL,TRUE);	
 	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
 
 	

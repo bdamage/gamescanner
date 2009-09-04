@@ -546,54 +546,56 @@ bot_minplayers
 
 			*numPlayers= *numPlayers+1;
 
-			if(pSI->cGAMEINDEX==WOLF_SERVERLIST || (pSI->cGAMEINDEX==WOLF_SERVERLIST)) //ETQW specific
-			{	
-				serverInfo_t *serverInfo = (serverInfo_t *)packet;
-
-				if(packet[5]==0x01)
-				{
-					pSI->cRanked = 1;
-					ServerRule_Add(pSI->pServerRules,"ranked","1");
-
-				//	packet++; 4+2
-					 /* 
-					  int osMask;
-					  byte isRanked;
-					  int timeLeft;
-					  byte gameState;
-					  byte serverType; // 0 for regular server, 1 for tv server
-					  //After this, the next block depends on the server type.
-
-					  byte numInterestedClients; // number of clients considering joining this server
-					  
-					  //For tv servers:
-
-					  int numConnectedClients; // number of clients on the tv server
-					  int maxClients; // max clients that the tv server supports
-						*/
-				}
-				switch(serverInfo->gameState)
-				{
-					case 1 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","WARMUP");	break;
-					case 2 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Game in progress");	break;
-					case 4 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Reviewing Score");	break;
-					case 8 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","STOPWATCH SECOND PLAYOFF");	break;
-
-				}
-
-			}
+	
 
 			if (packet[0]==0x20)  //ETQW & Q4
+			{
+				if(pSI->cGAMEINDEX==ETQW_SERVERLIST) //ETQW specific
+				{	
+					serverInfo_t *serverInfo = (serverInfo_t *)&packet[1];
+
+					if(packet[5]==0x01)
+					{
+						pSI->cRanked = 1;
+						ServerRule_Add(pSI->pServerRules,"ranked","1");
+					}
+					switch(serverInfo->gameState)
+					{
+						case 1 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","WARMUP");	break;
+						case 2 :	
+									{
+										char szTimeLeft[100];
+										int secs = serverInfo->timeLeft/1000;
+										int min = secs/60;
+										int sec = secs - (min  * 60);
+										sprintf_s(szTimeLeft,"%2.2d:%2.2d",min,sec);
+										pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status",szTimeLeft);	
+										break;
+									}
+						case 4 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Reviewing Score");	break;
+						case 8 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Stopwatch second playoff");	break;
+					}
+
+				}		
 				break;
+			}
 			if ((packet[0]==16) && packet[2]==0 && packet[3]==0 && (pSI->cGAMEINDEX == WOLF_SERVERLIST)) 
 			{
 				serverInfo_t *serverInfo = (serverInfo_t *)&packet[1];
 				switch(serverInfo->gameState)
 				{
 					case 1 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","WARMUP");	break;
-					case 2 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Game in progress");	break;
+					case 2 :	{										
+									char szTimeLeft[100];
+									int secs = serverInfo->timeLeft/1000;
+									int min = secs/60;
+									int sec = secs - (min  * 60);
+									sprintf_s(szTimeLeft,"%2.2d:%2.2d",min,sec);
+									pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status",szTimeLeft);	
+									break;
+								}
 					case 4 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Reviewing Score");	break;
-					case 8 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","STOPWATCH SECOND PLAYOFF");	break;
+					case 8 :	pSI->szSTATUS = ServerRule_Add(pSI->pServerRules,"gs.status","Stopwatch second playoff");	break;
 				}
 
 				
