@@ -5,6 +5,10 @@
 	
 	Check out the forum for help and support.
 
+		Version 2.0.15
+		--------------
+		* Fixed search field draw issue.
+
 
 		Version 2.0.14
 		--------------

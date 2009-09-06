@@ -87,7 +87,7 @@ LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 	 	if(wParam==VK_DOWN)
 			return TRUE;
 		if(wParam==VK_TAB)
-			return TRUE;
+			return 0;
 	 }
 
  	if(uMsg == WM_KEYUP)

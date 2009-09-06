@@ -412,7 +412,8 @@ HTREEITEM	m_hitemDrag,m_hitemDrop;
 
 HWND g_PROGRESS_DLG = NULL,g_DlgProgress = NULL,g_DlgProgressMsg=NULL;
 HWND g_hwndToolbarOptions = NULL;
-HWND g_hwndSearchToolbar = NULL, g_hwndSearchCombo= NULL;
+HWND g_hwndSearchToolbar = NULL;
+//HWND g_hwndSearchCombo= NULL;
 HWND g_hwndComboEdit = NULL;
 HWND g_hWnd=NULL,g_hwndRibbonBar = NULL;
 
@@ -6090,15 +6091,18 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
 
 	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
-	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
+	
+//	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
 
 	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
 	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
-	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
+	//InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
 	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
 	InvalidateRect(g_hwndComboEdit,NULL,TRUE);	
 	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
 
+	//UpdateWindow(g_hwndSearchCombo);
+	//UpdateWindow(g_hwndComboEdit);
 	
 }
 
@@ -6843,7 +6847,6 @@ void Parse_FileServerListFromGSC(GAME_INFO *pGI,char *szFilename)
 	int i=0;
 	char buff[256];
 	DWORD dwPort=0;
-	char *pszIP;
 	char seps[] ={","};
 	if(fp!=NULL)
 	{
@@ -7798,7 +7801,9 @@ void OnSearchFieldChange()
 		SetDlgItemText(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,szSearchTmp);					
 		SetCursor(::LoadCursor(NULL,IDC_ARROW));
 		ShowCursor(TRUE);
-		SendDlgItemMessage (g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_SETEDITSEL, 0,MAKELPARAM(strlen(szSearchTmp),strlen(szSearchTmp))); 	
+		//PostMessage(GetDlgItem(g_hRCONDlg,IDC_EDIT_CMD),,strlen(szCmdAuto),s.size());
+		SendDlgItemMessage (g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, EM_SETSEL, strlen(szSearchTmp),strlen(szSearchTmp)); 	
+		//SendDlgItemMessage (g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_SETEDITSEL, 0,MAKELPARAM(strlen(szSearchTmp),strlen(szSearchTmp))); 	
 	}
 	else
 	{
@@ -8130,7 +8135,7 @@ void Show_StopScanningButton(BOOL show)
 void Show_ToolbarButton(int id, bool show)
 {	
 	::SendMessage(g_hwndSearchToolbar,	TB_HIDEBUTTON, (WPARAM)id, (LPARAM)MAKELONG(!show,0)); 
-	UpdateWindow(g_hwndSearchCombo);
+	//UpdateWindow(g_hwndSearchCombo);
 }
 
 
@@ -8147,7 +8152,7 @@ LRESULT APIENTRY ComboBox_SearchSubclassProc( HWND hwnd, UINT uMsg, WPARAM wPara
 			switch (wmId)
 			{
 				case ID_CTRL_V:
-					{
+				{
 					  if (IsClipboardFormatAvailable(CF_TEXT)) 
 					  {
 						if (OpenClipboard(hwnd)) 
@@ -8167,8 +8172,9 @@ LRESULT APIENTRY ComboBox_SearchSubclassProc( HWND hwnd, UINT uMsg, WPARAM wPara
 							CloseClipboard();
 						}
 					  }
-					}
-				break;
+					  return 0;
+				}
+				
 			}
 
 	 }
@@ -11814,6 +11820,29 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
     return hwndTB;
 }
 
+
+HWND WINAPI TOOLBAR_CreateSearchEdit(HWND hwndParent)
+{
+	DWORD dwBaseUnits =  GetDialogBaseUnits(); 
+
+   g_hwndComboEdit = CreateWindowEx(   0, 
+            WC_EDIT, /*WC_EDIT*/
+            NULL,
+            WS_VISIBLE |  WS_CHILD | WS_TABSTOP |
+            WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
+            (2 * LOWORD(dwBaseUnits)) / 4, 
+            (1 * HIWORD(dwBaseUnits)) / 8, 
+            (160 * LOWORD(dwBaseUnits)) / 4, 
+            (10 * HIWORD(dwBaseUnits)) / 8, 
+            hwndParent, 
+            (HMENU)IDC_COMBOBOXEX_CMD, 
+            g_hInst, 
+            NULL);
+
+ 	g_wpOrigCBSearchProc = (LONG_PTR) SetWindowLongPtr(g_hwndComboEdit, GWLP_WNDPROC, (LONG_PTR) ComboBox_SearchSubclassProc); 
+	return g_hwndComboEdit;
+}
+
 HWND WINAPI TOOLBAR_CreateSearchComboBox(HWND hwndParent)
 {
 	HWND hwndCB;
@@ -11821,7 +11850,7 @@ HWND WINAPI TOOLBAR_CreateSearchComboBox(HWND hwndParent)
 
 	  //add a band that contains a combobox
    hwndCB = CreateWindowEx(   0, 
-            TEXT("Combobox"), 
+            WC_COMBOBOX, 
             NULL,
             WS_VISIBLE |  WS_CHILD | WS_TABSTOP |WS_VSCROLL |
             WS_CLIPCHILDREN | WS_CLIPSIBLINGS | 
@@ -11833,7 +11862,8 @@ HWND WINAPI TOOLBAR_CreateSearchComboBox(HWND hwndParent)
             hwndParent, 
             (HMENU)IDC_COMBOBOXEX_CMD, 
             g_hInst, 
-            NULL);
+            NULL); 
+
 
 	if(hwndCB!=NULL)
 	{		
@@ -11942,7 +11972,9 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);	
 
 		g_hwndSearchToolbar = hwndTB;
-		g_hwndSearchCombo = TOOLBAR_CreateSearchComboBox(hwndTB);
+
+		TOOLBAR_CreateSearchEdit(hwndTB);
+		//g_hwndSearchCombo = TOOLBAR_CreateSearchComboBox(hwndTB);
 	
     return hwndTB;
 }
@@ -12835,19 +12867,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			wmId    = LOWORD(wParam); 
 			wmEvent = HIWORD(wParam); 
 			switch(wmEvent)
-			{				
+			{	
+				case EN_CHANGE:
 				case CBN_EDITCHANGE:
 					{
 						if(wmId==IDC_COMBOBOXEX_CMD) 
-						{
 							OnSearchFieldChange();
-
-						}
-						//return FALSE;
 						break;
 					}
 
-				case CBN_SELENDOK:
+			/*	case CBN_SELENDOK:
 				{
 				
 					if (wmId==IDC_COMBOBOXEX_CMD)
@@ -12875,10 +12904,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							//PostMessage(g_hWnd,WM_USER_GETSERVERINFO,0,(LPARAM)NULL);
 						}
 						Show_ToolbarButton(IDC_BUTTON_FIND,true);
-					}
+					}n
 				
 				break;
-				}
+				}*/
 				
 			}//End wmEvent switch
 			// Parse the menu selections:
