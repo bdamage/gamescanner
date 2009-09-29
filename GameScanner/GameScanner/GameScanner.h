@@ -155,6 +155,8 @@ LRESULT APIENTRY ButtAddToFavoriteWindProc(HWND hWnd, UINT message, WPARAM wPara
 LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ;
 LRESULT APIENTRY ComboBox_SearchSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) ;
 
+void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam);
+
 //void EnableDownloadLink(BOOL bEnable);
 void UpdateCurrentServerUI();
 void SetInitialViewStates();
@@ -163,7 +165,7 @@ DWORD WINAPI  RefreshServerListThread_v2(LPVOID lpParam);
 void CheckAll(bool state);
 
 DWORD WINAPI  UpdateNotify(LPVOID lpParam);
-
+void RepaintAllWindows();
 
 void Load_Countryfilter(TCHAR *filename);
 void Save_Countryfilter(TCHAR *filename);

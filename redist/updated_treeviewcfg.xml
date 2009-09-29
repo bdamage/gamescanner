@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.212">
+<TreeViewCFG version="5.213">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -17,6 +17,7 @@
 	2009-08-26	5.210	Updated Q3 mods, Added Game type for ETQW, Wolfenstein and maps for Wolfenstein.
 	2009-08-26	5.211	Removed QW Rocket Arena filter and corrected Clan Arena filter.
 	2009-08-30	5.212	Added Warsow version 0.50 filter
+	2009-09-29  5.213   Updated CoD WaW filters to reflect v.1.6 (version + maps filter)
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -677,7 +678,8 @@
                     <Mod name="None" icon="9" expand="0" state="0" type="15">if mod == &quot;1&quot; remove</Mod>
                 </Mod>
                 <Version name="Versions" icon="18" expand="0" state="0" type="0">
-                    <Version name="1.5" icon="9" expand="0" state="0" type="15">if protocol != &quot;99&quot; remove</Version>
+                    <Version name="1.6" icon="9" expand="0" state="0" type="15">if protocol != &quot;100&quot; remove</Version>
+					<Version name="1.5" icon="9" expand="0" state="0" type="15">if protocol != &quot;99&quot; remove</Version>
                     <Version name="1.4" icon="9" expand="0" state="0" type="15">if protocol != &quot;97&quot; remove</Version>
                 </Version>
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
@@ -701,6 +703,9 @@
                     <Map name="mp_stalingrad(corrosion)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_stalingrad&quot; remove</Map>
                     <Map name="mp_suburban(upheaval)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_suburban&quot; remove</Map>
                     <Map name="mp_subway(station)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_subway&quot; remove</Map>
+					<Map name="Battery (mp_drum)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_drum&quot; remove</Map>
+					<Map name="Breach (mp_bgate)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_bgate&quot; remove</Map>
+					<Map name="Revolution (mp_vodka)" icon="9" expand="0" state="0" type="13">if map != &quot;mp_vodka&quot; remove</Map>
                 </Map>
             </Filter>
         </Game>

@@ -82,7 +82,7 @@ char szTitle[MAX_LOADSTRING];					// The title bar text
 char szWindowClass[MAX_LOADSTRING];			// the main window class name
 BOOL bWaitingToSave=FALSE;
 BOOL bWaitingToSaveMinimized=FALSE;
-
+POINT mousept;
 //vFILTER_SETS vFilterSetsGlobal;
 BOOL g_bBeginEdit = FALSE;
 // Forward declarations of functions included in this code module:
@@ -3183,7 +3183,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	ZeroMemory(&lvColumn,sizeof(LV_COLUMN));
 	ZeroMemory(&g_CopyTI,sizeof(_MYTREEITEM));
 	ZeroMemory(&g_PasteAtTI,sizeof(_MYTREEITEM));
-	
+	tvmgr.m_hwndMain = hwnd;
+
 	Q3_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);
 	Q4_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies, NULL);
 	STEAM_SetCallbacks(UpdateServerItem, Buddy_CheckForBuddies,NULL);
@@ -3208,7 +3209,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	g_hwndMainTreeCtrl = CreateWindowEx(WS_EX_CLIENTEDGE  ,  WC_TREEVIEW , NULL,
 
-							WS_VISIBLE |WS_CHILDWINDOW|  WS_TABSTOP |  TVS_HASBUTTONS | TVS_EDITLABELS| TVS_LINESATROOT | TVS_HASLINES   , 
+							WS_CLIPCHILDREN|WS_VISIBLE |WS_CHILDWINDOW|  WS_TABSTOP |  TVS_HASBUTTONS | TVS_EDITLABELS| TVS_LINESATROOT | TVS_HASLINES   , 
 							0,TOOLBAR_Y_OFFSET,50, 50, 
 							hwnd, (HMENU) IDC_MAINTREE, hInst, NULL);
 
@@ -3230,8 +3231,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_SERVERLIST].idx = WIN_SERVERLIST;
 	WNDCONT[WIN_SERVERLIST].hWnd = g_hwndListViewServer;
 	
-	g_hwndListBuddy	 = CreateWindowEx(LVS_EX_FULLROWSELECT | WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
-							LVS_REPORT | WS_VISIBLE |WS_CHILD | WS_TABSTOP ,
+	g_hwndListBuddy	 = CreateWindowEx(WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+							LVS_REPORT | WS_VISIBLE |WS_CHILD | WS_TABSTOP|WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
 							0,0+TOOLBAR_Y_OFFSET+BORDER_SIZE,50, 50, 
 							hwnd, (HMENU) IDC_LIST_BUDDY, hInst, NULL);		
 
@@ -3240,14 +3241,14 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 
 	g_hwndTabControl = CreateWindowEx(0 , WC_TABCONTROL  , NULL,
-							WS_VISIBLE |WS_CHILD | WS_TABSTOP | WS_CLIPSIBLINGS,
+							WS_VISIBLE |WS_CHILD | WS_TABSTOP | WS_CLIPSIBLINGS |WS_CLIPCHILDREN,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_TAB1, hInst, NULL);
 
 	WNDCONT[WIN_TABCONTROL].idx = WIN_TABCONTROL;
 	WNDCONT[WIN_TABCONTROL].hWnd = g_hwndTabControl;
 
-	g_hwndListViewPlayers = CreateWindowEx(LVS_EX_SUBITEMIMAGES|LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
+	g_hwndListViewPlayers = CreateWindowEx(WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
 							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_LIST_PLAYERS, hInst, NULL);
@@ -3256,7 +3257,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_PLAYERS].hWnd = g_hwndListViewPlayers;
 	
 	g_hwndListViewVars = CreateWindowEx(LVS_EX_FULLROWSELECT|WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
-							LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+							LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
 							200+BORDER_SIZE*2,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100-BORDER_SIZE, 200, 
 							hwnd, (HMENU) IDC_LIST2, hInst, NULL);
 
@@ -3266,7 +3267,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	int cyVScroll = GetSystemMetrics(SM_CYVSCROLL); 		
 
 	g_hwndLogger = CreateWindowEx(0 , WC_EDIT , NULL, 
-							 WS_VSCROLL|WS_BORDER | WS_VISIBLE |  WS_CHILD | ES_LEFT | ES_MULTILINE  | ES_AUTOHSCROLL |  ES_AUTOVSCROLL   ,
+							 WS_VSCROLL|WS_BORDER | WS_VISIBLE |  WS_CHILD | ES_LEFT | ES_MULTILINE  | ES_AUTOHSCROLL |  ES_AUTOVSCROLL  |WS_CLIPCHILDREN ,
 								100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_EDIT_LOGGER, hInst, NULL);
 
@@ -3276,7 +3277,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 
 	g_hwndStatus = CreateWindowEx(0 , WC_EDIT , NULL, 
-							WS_VISIBLE |  WS_CHILD | ES_AUTOHSCROLL | ES_READONLY | ES_NOHIDESEL ,
+							WS_VISIBLE |  WS_CHILD | ES_AUTOHSCROLL | ES_READONLY | ES_NOHIDESEL |WS_CLIPCHILDREN,
 							0,rc.bottom-cyVScroll,rc.right/2, cyVScroll, 
 							hwnd, (HMENU) IDC_EDIT_STATUS, hInst, NULL);
 
@@ -3348,7 +3349,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewPlayers);
 	dwExStyle |= LVS_EX_FULLROWSELECT;
 	dwExStyle |= LVS_EX_SUBITEMIMAGES;
-	dwExStyle |= LVS_EX_DOUBLEBUFFER;	
+	dwExStyle |= LVS_EX_DOUBLEBUFFER;		
 	ListView_SetExtendedListViewStyle(g_hwndListViewPlayers,dwExStyle);
 
 
@@ -5591,13 +5592,11 @@ void OnPaint(HDC hDC)
 			0, 0, FreeImage_GetWidth(dib), FreeImage_GetHeight(dib),
 			FreeImage_GetBits(dib), FreeImage_GetInfo(dib), DIB_RGB_COLORS, SRCCOPY);
 			FreeImage_Unload(dib);
-
 	//	Rectangle(hDC,  WNDCONT[WIN_MAPPREVIEW].rSize.left, WNDCONT[WIN_MAPPREVIEW].rSize.top, WNDCONT[WIN_MAPPREVIEW].rSize.left+WNDCONT[WIN_MAPPREVIEW].rSize.right, WNDCONT[WIN_MAPPREVIEW].rSize.top+WNDCONT[WIN_MAPPREVIEW].rSize.bottom);
-		
 		}
-
-		
 	} 
+
+
 
 	pt.y = g_INFOIconRect.top; //rc.bottom;
 	pt.x = g_INFOIconRect.left;//rc.left+2;
@@ -6032,6 +6031,19 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 */
 }
 
+void RepaintAllWindows()
+{
+	
+	InvalidateRect(g_hWnd,NULL,TRUE);
+	for(int i=0;i<WIN_MAX;i++)
+	{
+		//	MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,FALSE);
+		//	ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
+			InvalidateRect(WNDCONT[i].hWnd,&WNDCONT[i].rSize,TRUE);
+	}
+	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
+	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
+}
 
 void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 {
@@ -6061,12 +6073,15 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	g_INFOIconRect.bottom = STATUSBAR_Y_OFFSET;
 	g_INFOIconRect.right = g_INFOIconRect.left +20;
 
-	MoveWindow( g_hwndRibbonBar, 
+/*	MoveWindow( g_hwndRibbonBar, 
 				rc.left,
 				rc.top ,
 				rc.right,
 				40,	
-				bRepaint);
+				FALSE);
+*/
+
+
 
 	Update_WindowSizes(wParam);
 
@@ -6080,7 +6095,7 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 
 
 	}
-	ShowWindow(g_hwndRibbonBar,SW_SHOWNORMAL);
+	//ShowWindow(g_hwndRibbonBar,SW_SHOWNORMAL);
 	
 	CalcSplitterGripArea();
 
@@ -6088,18 +6103,18 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	if(WNDCONT[WIN_PING].bShow)
 		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 
-	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
+//	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
 
-	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
+//	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
 	
 //	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
 
-	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
-	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
+//	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
+//	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
 	//InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
-	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
-	InvalidateRect(g_hwndComboEdit,NULL,TRUE);	
-	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
+//	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
+//	InvalidateRect(g_hwndComboEdit,NULL,TRUE);	
+	//InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
 
 	//UpdateWindow(g_hwndSearchCombo);
 	//UpdateWindow(g_hwndComboEdit);
@@ -9315,6 +9330,12 @@ LRESULT APIENTRY ListView_SL_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 	
 	switch(uMsg)
 	{
+
+
+		case WM_MOUSEMOVE:		
+			OnMouseMove(hwnd,  wParam, lParam);				
+			return 0;
+
 		case WM_KILLFOCUS:
 			{
 			//	int n = ListView_GetSelectionMark(g_hwndListViewServer);
@@ -10373,14 +10394,18 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 	wcex.cbClsExtra		= 0;
 	wcex.cbWndExtra		= 0; 
 	wcex.hInstance		= hInstance;
-	wcex.hIcon			= LoadIcon(hInstance, (LPCTSTR)IDI_SMALL);
+
 	wcex.hCursor		= LoadCursor(NULL, IDC_ARROW);
 
 	wcex.hbrBackground	= (HBRUSH) GetSysColorBrush(COLOR_3DFACE);//hBrush;
 
 	wcex.lpszMenuName	= (LPCTSTR)IDC_GAMESCANNER;
 	wcex.lpszClassName	= szWindowClass;
-	wcex.hIconSm		= LoadIcon(wcex.hInstance, (LPCTSTR)IDI_SMALL);
+	//wcex.hIcon			= LoadIcon(hInstance, (LPCTSTR)IDI_SMALL);
+	//wcex.hIconSm		= LoadIcon(wcex.hInstance, (LPCTSTR)IDI_SMALL);
+
+	wcex.hIcon    = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_SMALL), IMAGE_ICON, 32, 32, LR_CREATEDIBSECTION);
+    wcex.hIconSm  = (HICON)LoadImage(hInstance, MAKEINTRESOURCE(IDI_SMALL), IMAGE_ICON, 16, 16, LR_CREATEDIBSECTION);
 
 	return RegisterClassEx(&wcex);
 }
@@ -11719,7 +11744,7 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
     hwndTB = CreateWindowEx(0,
                             TOOLBARCLASSNAME ,
                             NULL,
-                            WS_VISIBLE |WS_CLIPSIBLINGS | WS_CHILD |  
+                            WS_VISIBLE |WS_CLIPSIBLINGS | WS_CHILD | WS_CLIPCHILDREN |
 							TBSTYLE_TOOLTIPS | TBSTYLE_FLAT |
 							CCS_NODIVIDER | CCS_NORESIZE, 
                             0,  0, (TOOLBAR_SIZE_X+2)*4, 0,
@@ -11829,7 +11854,7 @@ HWND WINAPI TOOLBAR_CreateSearchEdit(HWND hwndParent)
             WC_EDIT, /*WC_EDIT*/
             NULL,
             WS_VISIBLE |  WS_CHILD | WS_TABSTOP |
-            WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
+            WS_CLIPCHILDREN  ,
             (2 * LOWORD(dwBaseUnits)) / 4, 
             (1 * HIWORD(dwBaseUnits)) / 8, 
             (160 * LOWORD(dwBaseUnits)) / 4, 
@@ -11888,7 +11913,7 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
     hwndTB = CreateWindowEx(0,
                             TOOLBARCLASSNAME ,
                             NULL,
-                            WS_VISIBLE |WS_CLIPSIBLINGS | WS_CHILD |
+                            WS_VISIBLE |WS_CLIPSIBLINGS | WS_CHILD | WS_CLIPCHILDREN |
 							TBSTYLE_TOOLTIPS | TBSTYLE_FLAT |
 							CCS_NODIVIDER | CCS_NORESIZE , 
                             0, 0, 28, TOOLBAR_SIZE_X+4,
@@ -11995,9 +12020,9 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
    hwndRB = CreateWindowEx(WS_EX_TOOLWINDOW,
                            REBARCLASSNAME,
                            NULL,
-                           WS_CHILD|WS_VISIBLE|WS_CLIPSIBLINGS|
-                           WS_CLIPCHILDREN|RBS_VARHEIGHT| 
-                            CCS_NODIVIDER ,
+                           WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN |
+						   RBS_VARHEIGHT | 
+                           CCS_NODIVIDER ,
                            0,0,280,24,
                            hwndOwner,
                            NULL,
@@ -12052,8 +12077,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 	ZeroMemory(&rbBand,sizeof(REBARBANDINFO));
 	rbBand.cbSize = sizeof(REBARBANDINFO);  // Required
 
-	rbBand.fMask  = RBBIM_TEXT | RBIM_IMAGELIST |  
-				    RBBIM_STYLE | RBBIM_CHILD  | RBBIM_CHILDSIZE | RBBIM_SIZE;
+	rbBand.fMask  = RBBIM_TEXT | RBIM_IMAGELIST | RBBIM_STYLE | RBBIM_CHILD  | RBBIM_CHILDSIZE | RBBIM_SIZE;
 	rbBand.fStyle = RBBS_NOGRIPPER;
 	
 	HWND hwndCSTB = TOOLBAR_CreateSearchToolBar(hwndRB);
@@ -12086,7 +12110,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    g_hInst = hInstance; // Store instance handle in our global variable
 
-   hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
+   hWnd = CreateWindow(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW | WS_CLIPCHILDREN,
       CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, NULL, NULL, g_hInst, NULL);
 
    if (!hWnd)
@@ -12524,6 +12548,59 @@ int CFG_Load()
 
 }
 
+void MoveAllWindows()
+{
+	
+	MoveWindow(WNDCONT[WIN_MAINTREEVIEW].hWnd,
+		WNDCONT[WIN_MAINTREEVIEW].rSize.left,
+		WNDCONT[WIN_MAINTREEVIEW].rSize.top,
+		WNDCONT[WIN_MAINTREEVIEW].rSize.right,
+		WNDCONT[WIN_MAINTREEVIEW].rSize.bottom,TRUE);
+
+	MoveWindow(WNDCONT[WIN_SERVERLIST].hWnd,
+		WNDCONT[WIN_SERVERLIST].rSize.left,
+		WNDCONT[WIN_SERVERLIST].rSize.top,
+		WNDCONT[WIN_SERVERLIST].rSize.right,
+		WNDCONT[WIN_SERVERLIST].rSize.bottom,TRUE);
+	MoveWindow(WNDCONT[WIN_BUDDYLIST].hWnd,
+		WNDCONT[WIN_BUDDYLIST].rSize.left,
+		WNDCONT[WIN_BUDDYLIST].rSize.top,
+		WNDCONT[WIN_BUDDYLIST].rSize.right,
+		WNDCONT[WIN_BUDDYLIST].rSize.bottom,TRUE);
+
+
+	MoveWindow(WNDCONT[WIN_TABCONTROL].hWnd,
+		WNDCONT[WIN_TABCONTROL].rSize.left,
+		WNDCONT[WIN_TABCONTROL].rSize.top,
+		WNDCONT[WIN_TABCONTROL].rSize.right,
+		WNDCONT[WIN_TABCONTROL].rSize.bottom,TRUE);
+	MoveWindow(WNDCONT[WIN_PLAYERS].hWnd,
+		WNDCONT[WIN_PLAYERS].rSize.left,
+		WNDCONT[WIN_PLAYERS].rSize.top,
+		WNDCONT[WIN_PLAYERS].rSize.right,
+		WNDCONT[WIN_PLAYERS].rSize.bottom,TRUE);
+	MoveWindow(WNDCONT[WIN_RULES].hWnd,
+		WNDCONT[WIN_RULES].rSize.left,
+		WNDCONT[WIN_RULES].rSize.top,
+		WNDCONT[WIN_RULES].rSize.right,
+		WNDCONT[WIN_RULES].rSize.bottom,TRUE);
+	MoveWindow(WNDCONT[WIN_PING].hWnd,
+		WNDCONT[WIN_PING].rSize.left,
+		WNDCONT[WIN_PING].rSize.top,
+		WNDCONT[WIN_PING].rSize.right,
+		WNDCONT[WIN_PING].rSize.bottom,TRUE);
+	MoveWindow(WNDCONT[WIN_LOGGER].hWnd,
+		WNDCONT[WIN_LOGGER].rSize.left,
+		WNDCONT[WIN_LOGGER].rSize.top,
+		WNDCONT[WIN_LOGGER].rSize.right,
+		WNDCONT[WIN_LOGGER].rSize.bottom,TRUE);
+	MoveWindow(WNDCONT[WIN_RCON].hWnd,
+		WNDCONT[WIN_RCON].rSize.left,
+		WNDCONT[WIN_RCON].rSize.top,
+		WNDCONT[WIN_RCON].rSize.right,
+		WNDCONT[WIN_RCON].rSize.bottom,TRUE);
+}
+
 void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 {
 	POINT pt;
@@ -12533,13 +12610,16 @@ void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 	GetClientRect(hWnd,&rc);
 	pt.x = LOWORD(lParam); 
 	pt.y = HIWORD(lParam); 
-
-	//   DrawFocusRect(hdc, &SplitterGripArea[1].hit);
-
+	mousept.x = LOWORD(lParam); 
+	mousept.y = HIWORD(lParam); 
+	// DrawFocusRect(hdc, &SplitterGripArea[1].hit);
 	if(Sizing)
 	{
+		
 		if(wParam == MK_LBUTTON)   
 		{
+
+		//	SetWindowRgn(hWnd,NULL,TRUE);
 			for(int i=0;i<3;i++)
 			{
 
@@ -12548,6 +12628,35 @@ void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 					DrawFocusRect(hdc, &SplitterGripArea[i].hit);
 					if((pt.y<rc.bottom-(TOOLBAR_Y_OFFSET+STATUSBAR_Y_OFFSET)) && (pt.y>TOOLBAR_Y_OFFSET+20) )
 					{
+						if(i==2)
+						{
+							RECT clientRC;
+							GetClientRect(g_hWnd, &clientRC);
+							clientRC.top = TOOLBAR_Y_OFFSET;
+							clientRC.bottom-= (STATUSBAR_Y_OFFSET + TOOLBAR_Y_OFFSET); //reduce the size of statusbar from the main window size						
+							WNDCONT[WIN_SERVERLIST].rSize.bottom  =  pt.y - WNDCONT[WIN_SERVERLIST].rSize.top;
+				
+							WNDCONT[WIN_TABCONTROL].rSize.top  =  pt.y + BORDER_SIZE;
+							
+							WNDCONT[WIN_PLAYERS].rSize.top  =  pt.y  + BORDER_SIZE +  WNDCONT[WIN_TABCONTROL].rSize.bottom;
+							//Calc size	for tab control childs					
+							WNDCONT[WIN_PLAYERS].rSize.bottom = clientRC.top + (clientRC.bottom - WNDCONT[WIN_PLAYERS].rSize.top) + BORDER_SIZE;
+							CopyRect(&WNDCONT[WIN_RULES].rSize,&WNDCONT[WIN_PLAYERS].rSize);
+							CopyRect(&WNDCONT[WIN_LOGGER].rSize,&WNDCONT[WIN_PLAYERS].rSize);
+							CopyRect(&WNDCONT[WIN_PING].rSize,&WNDCONT[WIN_PLAYERS].rSize);
+							CopyRect(&WNDCONT[WIN_RCON].rSize,&WNDCONT[WIN_RCON].rSize);
+							MoveAllWindows();
+						} else
+						{
+							RECT clientRC;
+							GetClientRect(g_hWnd, &clientRC);
+							clientRC.top = TOOLBAR_Y_OFFSET;
+							clientRC.bottom-= (STATUSBAR_Y_OFFSET + TOOLBAR_Y_OFFSET); //reduce the size of statusbar from the main window size						
+							WNDCONT[WIN_MAINTREEVIEW].rSize.bottom  =  pt.y - WNDCONT[WIN_MAINTREEVIEW].rSize.top;							
+							WNDCONT[WIN_BUDDYLIST].rSize.top  =  pt.y + BORDER_SIZE;
+							WNDCONT[WIN_BUDDYLIST].rSize.bottom = clientRC.top + (clientRC.bottom - WNDCONT[WIN_BUDDYLIST].rSize.top) + BORDER_SIZE;
+							MoveAllWindows();
+						}
 						SplitterGripArea[i].hit.top = pt.y;
 						SplitterGripArea[i].hit.bottom = pt.y + BORDER_SIZE;
 					}
@@ -12559,6 +12668,31 @@ void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 					DrawFocusRect(hdc, &SplitterGripArea[i].hit);
 					if(pt.x>30)
 					{
+						RECT clientRC;
+						GetClientRect(g_hWnd, &clientRC);
+						clientRC.top = TOOLBAR_Y_OFFSET;
+						clientRC.bottom-= (STATUSBAR_Y_OFFSET + TOOLBAR_Y_OFFSET); //reduce the size of statusbar from the main window size						
+						WNDCONT[WIN_SERVERLIST].rSize.left  =   pt.x + BORDER_SIZE;
+						
+						WNDCONT[WIN_SERVERLIST].rSize.right = clientRC.left + (clientRC.right - WNDCONT[WIN_SERVERLIST].rSize.left);
+
+						WNDCONT[WIN_MAINTREEVIEW].rSize.right  =  pt.x - WNDCONT[WIN_MAINTREEVIEW].rSize.left;
+						WNDCONT[WIN_BUDDYLIST].rSize.right  =  pt.x - WNDCONT[WIN_BUDDYLIST].rSize.left;
+			
+
+
+						WNDCONT[WIN_TABCONTROL].rSize.left  =  pt.x + BORDER_SIZE;	
+						WNDCONT[WIN_TABCONTROL].rSize.right  = WNDCONT[WIN_SERVERLIST].rSize.right; 
+						WNDCONT[WIN_PLAYERS].rSize.left =  pt.x + BORDER_SIZE; 
+						WNDCONT[WIN_PLAYERS].rSize.right = WNDCONT[WIN_SERVERLIST].rSize.right; 
+						//Calc size	for tab control childs					
+						WNDCONT[WIN_PLAYERS].rSize.bottom = clientRC.top + (clientRC.bottom - WNDCONT[WIN_PLAYERS].rSize.top);
+						CopyRect(&WNDCONT[WIN_RULES].rSize,&WNDCONT[WIN_PLAYERS].rSize);
+						CopyRect(&WNDCONT[WIN_LOGGER].rSize,&WNDCONT[WIN_PLAYERS].rSize);
+						CopyRect(&WNDCONT[WIN_PING].rSize,&WNDCONT[WIN_PLAYERS].rSize);
+						CopyRect(&WNDCONT[WIN_RCON].rSize,&WNDCONT[WIN_RCON].rSize);
+						MoveAllWindows();
+
 						SplitterGripArea[i].hit.left = pt.x;
 						SplitterGripArea[i].hit.right = pt.x + BORDER_SIZE;
 					}
@@ -12568,7 +12702,8 @@ void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 
 			}
 		}
-		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
+	//	InvalidateRect(hWnd,NULL,TRUE);
+		InvalidateRect(WNDCONT[WIN_PING].hWnd,NULL,TRUE);
 	} 
 	else 
 	   
@@ -12621,9 +12756,10 @@ void OnLeftMouseButtonUp(HWND hWnd, WPARAM wParam,LPARAM lParam)
 		Sizing = FALSE;
 	}
 	ReleaseDC(hWnd, hdc);	
-	InvalidateRect(hWnd,NULL,TRUE);
+
 	//InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 	OnSize(hWnd,0,TRUE);
+	RepaintAllWindows();
 }
 
 void OnLeftMouseButtonDown(HWND hWnd, WPARAM wParam,LPARAM lParam)
@@ -12822,6 +12958,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			 return 0;
 		 }
 		dbg_print("WM_SIZE: Win state %d",AppCFG.nWindowState);
+		MoveWindow(g_hwndRibbonBar, 0, 0, LOWORD(lParam), HIWORD(lParam),FALSE);
 		OnSize(hWnd,wParam);
 		if(wParam==SIZE_RESTORED)
 			 InvalidateRect(hWnd,NULL,TRUE);

@@ -16,6 +16,7 @@ CTreeViewManager::CTreeViewManager(CLogger & logger, CGameManager & _gm, CScript
 	g_save_counter = 0;
 	hwndTreeCtrl = NULL;
 	m_bTREELOADED = FALSE;
+	m_hwndMain = NULL;
 }
 
 CTreeViewManager::~CTreeViewManager(void)
@@ -315,7 +316,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 		
 	if(CheckForUpdate(TREEVIEW_VERSION)==0)
 	{
-		int retMB = MessageBox(NULL,"A new version of treeview (filters & game selection) file has detected.\nWould you like to upgrade?\nNOTE: An upgrade will cause custom filters to be lost!","Game Scanner",MB_YESNO|MB_ICONINFORMATION);
+		int retMB = MessageBox(m_hwndMain,"A new version of treeview (filters & game selection) file has detected.\nWould you like to upgrade?\nNOTE: An upgrade will cause custom filters to be lost!","Game Scanner",MB_YESNO|MB_ICONINFORMATION);
 		if(retMB==IDYES)
 		{
 
@@ -370,7 +371,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 	xml.GetCustomAttribute(xml.m_pRootElement,"version",TREEVIEW_GLOBAL_FILTER_VERSION,sizeof(TREEVIEW_GLOBAL_FILTER_VERSION)-1);
 	if(CheckForUpdateGlobalFilters(TREEVIEW_GLOBAL_FILTER_VERSION)==0)
 	{
-		int retMB = MessageBox(NULL,"A new version of global filters file has detected.\nWould you like to upgrade?\nNOTE: An upgrade will cause custom filters to be lost!","Game Scanner",MB_YESNO|MB_ICONINFORMATION);
+		int retMB = MessageBox(m_hwndMain,"A new version of global filters file has detected.\nWould you like to upgrade?\nNOTE: An upgrade will cause custom filters to be lost!","Game Scanner",MB_YESNO|MB_ICONINFORMATION);
 		if(retMB==IDYES)
 		{
 			AppCFG.filter.bHideOfflineServers = 0;

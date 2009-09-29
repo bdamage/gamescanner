@@ -33,6 +33,7 @@ public:
 	UINT m_iSecondClickIdx;
 	UINT g_save_counter;
 	BOOL m_bTREELOADED;
+	HWND m_hwndMain;
 	HWND hwndTreeCtrl;
 	char TREEVIEW_VERSION[20];
 	char TREEVIEW_GLOBAL_FILTER_VERSION[20];
