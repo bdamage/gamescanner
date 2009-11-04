@@ -8,7 +8,7 @@
 		Version 2.0.16
 		--------------
 		* Reduced flickering while resizing where possible.
-		* Updated CoD WaW filters to reflect v.1.6 (version + maps filter)
+		* Updated CoD WaW filters to reflect v1.6 (version + maps filter)
 
 
 		Version 2.0.15
