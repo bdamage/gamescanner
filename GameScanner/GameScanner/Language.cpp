@@ -46,6 +46,7 @@ int CLanguage::loadFile(const char *filename)
 	}
 	return 0;
 }
+
 int CLanguage::AddFile(const char *filename)
 {
 	char sztemp[200];
@@ -65,6 +66,7 @@ int CLanguage::AddFile(const char *filename)
 	}
 	return 0;
 }
+
 const TCHAR* CLanguage::GetString(const char* szXmlTagName)
 {
 	if(DefaultLanguage.size()>0)

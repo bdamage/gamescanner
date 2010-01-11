@@ -1,5 +1,5 @@
 <Games>
-	<Version>1.3</Version>
+	<Version>1.31</Version>
 	<Game>
 		<GameIndex>0</GameIndex>
 		<Name>Wolfenstein - Enemy Territory</Name>
@@ -521,7 +521,7 @@
 			<Column idx="2">ranked</Column>
 			<Column idx="3">sv_hostname</Column>
 			<Column idx="4">version</Column>
-			<Column idx="5">g_gametype</Column>	
+			<Column idx="5">gametype</Column>	
 			<Column idx="6">mapname</Column>
 			<Column idx="7">gamename</Column>
 			<Column idx="8">bots</Column>			

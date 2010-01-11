@@ -71,4 +71,5 @@ public:
 	void BuildList(HWND hWndParent,char *ExePath,char*UserPath);
 	void ReBuildList();
 	HTREEITEM AddItem(_MYTREEITEM *ti,HTREEITEM hCurrent,bool active);
+	int ResetToDefault(void);
 };

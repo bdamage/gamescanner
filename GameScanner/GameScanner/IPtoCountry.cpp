@@ -3,7 +3,7 @@
 
 
 
-#define MAX_LUT 35
+#define MAX_LUT 55
 LOOKUPTABLE LUT[MAX_LUT];
 
 
@@ -67,11 +67,11 @@ void CIPtoCountry::LoadTable()
 
 	//Create a look up table for optimiziation
 	DWORD dwSize = vIPC.size();
-	DWORD dwPartition = dwSize/30;
+	DWORD dwPartition = dwSize/50;
 
 	CIPCountry tmpIPC;
 	DWORD dwIdx = dwSize;
-	for(int i=0;i<30; i++)
+	for(int i=0;i<50; i++)
 	{
 		dwIdx-=dwPartition;  //dwHalfQuarter
 		tmpIPC  = vIPC.at(dwIdx);
@@ -91,7 +91,7 @@ char * CIPtoCountry::IPtoCountry(DWORD IP, char *szShortName)
 	tmpIPC.dwEndIP = IP;
 
 	DWORD dwStartIdx = 0;
-	for(int i=0;i<30; i++)
+	for(int i=0;i<50; i++)
 	{		
 		if(IP>=LUT[i].ipc.startIP)
 		{

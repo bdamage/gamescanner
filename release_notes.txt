@@ -5,6 +5,12 @@
 	
 	Check out the forum for help and support.
 
+		Version 2.0.17
+		-------------
+		* Changed Warsow column g_gametype to gametype to reflect version 0.5x better.
+		* Added Treeview reset to default in the menu.
+
+
 		Version 2.0.16
 		--------------
 		* Reduced flickering while resizing where possible.

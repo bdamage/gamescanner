@@ -9163,8 +9163,9 @@ DWORD WINAPI  Menu_SL_Thread(LPVOID hWnd , WPARAM wParam, LPARAM lParam)
 	AppendMenu(hSubPopMenu,MF_BYPOSITION|MF_STRING,IDM_PING_SERVER,g_lang.GetString("MenuPing"));
 	AppendMenu(hSubPopMenu,MF_BYPOSITION|MF_STRING,IDM_TRACEROUTE_SERVER,g_lang.GetString("MenuTraceRoute"));
 	
+#ifdef _DEBUG
 	AppendMenu(hPopMenu,MF_BYPOSITION|MF_STRING,IDM_FILTER_DEBUG,"Debug filter on selected server");
-
+#endif
 	
 	ImageMenu_CreatePopup((HWND)hWnd, hPopMenu); 
 	imi.mask = IMIMF_LOADFROMRES|IMIMF_ICON; 
@@ -11501,7 +11502,7 @@ LRESULT CALLBACK FilterEditor_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 							try
 							{
 								gm.ValidateGameIndex(idx);
-							}catch(int a)
+							}catch(...)
 							{
 								log.AddLogInfo(GS_LOG_WARNING, "Error GameIdx <FilterEditor_Dlg> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 													
 								MessageBox(g_hWnd,"Game idx out of bounds!","Error",MB_OK);								
@@ -13100,6 +13101,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						}
 					}				
 				break;
+				case ID_FILE_RESETTREEVIEWTODEFAULT: 
+					{
+					int btn = MessageBox(hWnd,"Are you sure you want to reset the treeview structure?\nAll custom/modified filters will be restored to default or losted.","Reset",MB_YESNO);
+					if(btn==IDOK)
+						tvmgr.ResetToDefault(); 
+					}
+					break;
 				case IDC_BUTTON_QUICK_CONNECT:		FastConnect();							break;				
 				case IDC_BUTTON_ADD_SERVER:			OnButtonClick_AddServer();				break;
 				case IDC_BUTTON_FIND:				OnSearchFieldChange();					break;

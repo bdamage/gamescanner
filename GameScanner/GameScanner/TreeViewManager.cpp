@@ -1235,3 +1235,27 @@ HTREEITEM CTreeViewManager::AddItem(_MYTREEITEM *ti,HTREEITEM hCurrent,bool acti
 		TreeView_Expand(hwndTreeCtrl, hCurrent, TVE_EXPAND);
 	return hNewItem;
 }
+
+int CTreeViewManager::ResetToDefault(void)
+{
+ 	char szFilePath[_MAX_PATH+_MAX_FNAME];
+	ZeroMemory(szFilePath,sizeof(szFilePath));
+
+	strncpy(szFilePath,m_USER_SAVE_PATH,strlen(m_USER_SAVE_PATH));
+	strcat_s(szFilePath,"treeviewcfg.xml");
+	SetCurrentDirectory(m_USER_SAVE_PATH);
+	remove(szFilePath);
+
+	sprintf_s(szFilePath,"%s%s",m_USER_SAVE_PATH,"globalfilter.xml");	
+	SetCurrentDirectory(m_USER_SAVE_PATH);
+	remove(szFilePath);
+
+
+	g_tvIndex = 0;	
+	TreeView_DeleteAllItems(hwndTreeCtrl);
+	Load(m_EXE_PATH,m_USER_SAVE_PATH);
+	ReBuildList();
+	PostMessage(GetParent(CTreeViewManager::hwndTreeCtrl),WM_REINIT_COUNTRYFILTER,0,0);
+
+	return 0;
+}
