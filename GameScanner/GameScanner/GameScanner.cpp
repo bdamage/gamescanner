@@ -236,9 +236,7 @@ CBuddyManager bm(log,gm,g_lang);
 
 UINT_PTR hTimerMonitor=NULL;
 
-/****************************************
-	Buddy Global vars
-*****************************************/
+OSVERSIONINFO g_OSversion;
 
 
 BOOL g_bWinSizesLoaded = FALSE;
@@ -3341,8 +3339,12 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	SetWindowTheme(g_hwndMainTreeCtrl, L"explorer", 0);
 
 	
+
+	//For Vista and later
+	DWORD _TVS_EX_DOUBLEBUFFER = 0x0004;
+
 	dwExStyle = TreeView_GetExtendedStyle(g_hwndMainTreeCtrl);
-//	dwExStyle |= TVS_EX_DOUBLEBUFFER;
+	dwExStyle |= _TVS_EX_DOUBLEBUFFER ; 
 	TreeView_SetExtendedStyle(g_hwndMainTreeCtrl, WS_EX_LEFT,dwExStyle);
 	
 
@@ -6085,6 +6087,10 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 
 	Update_WindowSizes(wParam);
 
+	
+
+
+
 	for(int i=0;i<WIN_MAX;i++)
 	{
 		if(WNDCONT[i].idx!=WIN_MAIN)
@@ -6099,9 +6105,26 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	
 	CalcSplitterGripArea();
 
-	
 	if(WNDCONT[WIN_PING].bShow)
 		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
+
+	//Fix XP repaint issue
+	if((g_OSversion.dwMajorVersion==5) && (g_OSversion.dwMinorVersion==1))
+	{
+		UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);
+		UpdateWindow(WNDCONT[WIN_MAINTREEVIEW].hWnd);
+		//InvalidateRect(g_hWnd,NULL,TRUE);
+	//	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
+		InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
+		InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
+		InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
+		InvalidateRect(g_hwndMainTreeCtrl,NULL,TRUE);
+		InvalidateRect(WNDCONT[WIN_SERVERLIST].hWnd,NULL,TRUE);
+
+
+		
+	}
+
 
 //	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
 
@@ -10126,6 +10149,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	SetCurrentDirectory(USER_SAVE_PATH);
 
 	//LOGGER_Init();
+	g_OSversion.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
+	::GetVersionEx(&g_OSversion);
+
 
 	log.AddLogInfo(GS_LOG_INFO,"Initializing Game Scanner version "APP_VERSION);
 	log.AddLogInfo(GS_LOG_INFO,"Executable directory: %s",EXE_PATH);
@@ -10730,8 +10756,9 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 		log.AddLogInfo(0,"< Update Server is down! >");
 		return ret;
 	}
+	
 	OSVERSIONINFO OSversion;
-		
+
 	OSversion.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
 	::GetVersionEx(&OSversion);
 	log.AddLogInfo(0,"OS Version: %d.%d",OSversion.dwMajorVersion,OSversion.dwMinorVersion);
