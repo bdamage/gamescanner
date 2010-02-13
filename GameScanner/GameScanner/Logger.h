@@ -13,5 +13,5 @@ public:
 	~CLogger(void);
 	void SetLogPath(const char *szPath);
 	void AddLogInfo(int color, char *lpszText, ...);
-
+	void AddGetLastErrorIntoLog(char* lpszFunction);
 };

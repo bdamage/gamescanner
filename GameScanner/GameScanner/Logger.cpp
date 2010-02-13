@@ -105,3 +105,23 @@ void CLogger::AddLogInfo(int color, char *lpszText, ...)
 	LeaveCriticalSection(&CS_Logger);
 
 }
+
+void CLogger::AddGetLastErrorIntoLog(char* lpszFunction)
+{
+	LPVOID lpMsgBuf;
+	DWORD dw = GetLastError(); 
+
+	FormatMessage(
+		FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+		FORMAT_MESSAGE_FROM_SYSTEM |
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+		NULL,
+		dw,
+		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+		(LPTSTR) &lpMsgBuf,
+		0, NULL );
+
+	AddLogInfo(1,"GetLastError from func %s Info: %s",lpszFunction,lpMsgBuf);
+
+	LocalFree(lpMsgBuf);	
+}

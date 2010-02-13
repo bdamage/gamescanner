@@ -15,6 +15,7 @@ BOOL				InitInstance(HINSTANCE, int);
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 void OnTabControlSelection(int iSelection=-1);
 HWND FindGameWindow();
+extern long InsertServerItem(GAME_INFO *pGI,SERVER_INFO *pSI);
 BOOL OnTreeViewSelectionChanged(LPARAM lParam);
 void OnDelFilter(HWND hWndParent);
 void OnEditFilter(HWND hWndParent);
@@ -65,13 +66,10 @@ void LoadImageList();
 void Load_CountryFlags();
 int Get_CountryFlagByShortName(const TCHAR *szCC);
 const TCHAR * XML_GetTreeItemName(TiXmlElement* pNode,TCHAR *szOutput, DWORD maxBytes);
-
-//const TCHAR * XML_GetTreeItemStr(TiXmlElement* pNode, const TCHAR* attributeName,TCHAR *szOutput, DWORD maxBytes);
 void LoadAllServerList();
 DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid);
 DWORD WINAPI CFG_Save(LPVOID lpVoid);
 int CFG_Load();
-//void Default_GameSettings();
 
 LRESULT TreeView_CustomDraw(LPARAM lParam);
 HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner);
@@ -105,7 +103,6 @@ DWORD TreeView_GetItemStateByType(TCHAR cGameIdx,DWORD dwType);
 DWORD WINAPI GetServerList(LPVOID lpParam );
 DWORD WINAPI ProgressGUI_Thread(LPVOID lpParam);
 DWORD WINAPI CheckForUpdates(LPVOID lpParam);
-//SERVER_INFO *Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 
 DWORD WINAPI  GetServerStatusThread(LPVOID lpParam);
 

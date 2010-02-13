@@ -813,6 +813,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_76352B6480C841F8AC94ECE851D54DE3"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_77C1A85DF10A472A85CE24FD5E8FABA1"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1234,6 +1240,12 @@
         "Entry"
         {
         "MsmKey" = "8:_ABD69D2B156D4BAF91E8BD724A06172D"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_ABEC8F7D4A694F3FAD32DB87D58BAD9F"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -4588,6 +4600,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_76352B6480C841F8AC94ECE851D54DE3"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\wop.ico"
+            "TargetName" = "8:wop.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_434BE3A6A2BF4F8181A738F1C6427E81"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_77C1A85DF10A472A85CE24FD5E8FABA1"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\fi.gif"
@@ -5994,6 +6026,26 @@
             "TargetName" = "8:np.gif"
             "Tag" = "8:"
             "Folder" = "8:_3724492347D34D4F818E7710267DE3CA"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_ABEC8F7D4A694F3FAD32DB87D58BAD9F"
+            {
+            "SourcePath" = "8:..\\..\\redist\\FreeImage.dll"
+            "TargetName" = "8:FreeImage.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8068,14 +8120,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{F6BC9D7B-C214-41E6-92E2-BB47A0732E40}"
-        "PackageCode" = "8:{2991F0A1-C557-4A3F-A827-26C6D9CE7860}"
+        "ProductCode" = "8:{0463AB0A-8B2A-4714-A7C9-E0B16A309951}"
+        "PackageCode" = "8:{8478AC81-495F-4764-9FF1-88AC8FC59F4D}"
         "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.0.17"
+        "ProductVersion" = "8:2.0.18"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"

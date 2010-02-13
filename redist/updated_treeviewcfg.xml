@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.215">
+<TreeViewCFG version="5.216">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -19,6 +19,7 @@
 	2009-08-30	5.212	Added Warsow version 0.50 filter
 	2009-09-29  5.213   Updated CoD WaW filters to reflect v.1.6 (version + maps filter)
 	2010-01-24  5.215   WoP
+	2010-01-24  5.216   WoP Game types added.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -1005,7 +1006,16 @@
                 <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
                 </Map>
-                <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+			    <GameType name="Game types" icon="18" expand="0" state="0" type="0">
+                    <GameType name="Free For All" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;0&quot; remove</GameType>
+                    <GameType name="1 vs 1" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;1&quot; remove</GameType>
+                    <GameType name="SP" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;2&quot; remove</GameType>
+                    <GameType name="Spray your Color - Free For All" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;3&quot; remove</GameType>
+                    <GameType name="Last Pad Standing" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;4&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;5&quot; remove</GameType>
+                    <GameType name="Capture the Lolly" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;6&quot; remove</GameType>
+                    <GameType name="Spray your Color - Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;7&quot; remove</GameType>
+                    <GameType name="Big Ballons" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;8&quot; remove</GameType>
                 </GameType>				
             </Filter>
         </Game>		

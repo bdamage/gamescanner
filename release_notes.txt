@@ -10,6 +10,7 @@
 		* Changed Warsow column g_gametype to gametype to reflect version 0.5x better.
 		* Added Treeview reset to default in the menu.
 		* Updated IP to Country database.
+		* Added a new game: World of Padman
 
 		Known issue with repainting windows under Windows XP when restoring from task tray.
 

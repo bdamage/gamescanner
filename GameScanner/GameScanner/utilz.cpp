@@ -265,25 +265,7 @@ void SetFontToDlgItem(HWND hDlg,HFONT hf,int nIDDlgItem)
 
 
 
-void AddGetLastErrorIntoLog(char* lpszFunction)
-{
-	LPVOID lpMsgBuf;
-	DWORD dw = GetLastError(); 
 
-	FormatMessage(
-		FORMAT_MESSAGE_ALLOCATE_BUFFER | 
-		FORMAT_MESSAGE_FROM_SYSTEM |
-		FORMAT_MESSAGE_IGNORE_INSERTS,
-		NULL,
-		dw,
-		MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
-		(LPTSTR) &lpMsgBuf,
-		0, NULL );
-
-	log.AddLogInfo(1,"GetLastError from func %s Info: %s",lpszFunction,lpMsgBuf);
-
-	LocalFree(lpMsgBuf);	
-}
 
 BOOL isNumeric(char c)
 {
@@ -624,35 +606,6 @@ char * ServerRule_Add(SERVER_RULES* &pLinkedListStart,char *szRuleName,char*szRu
 }
 
 
-long GetIndexByHashValue(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
-{
-	hash_multimap <int, int>::iterator hmp_Iter;
-	hmp_Iter = pGI->shash.find(hash);
-	while(hmp_Iter!= pGI->shash.end())
-	{
-		Int_Pair idx = *hmp_Iter;		
-		SERVER_INFO  *pSI = (SERVER_INFO*) pGI->vSI.at(idx.second);
-		if((dwIP == pSI->dwIP) && (dwPort == pSI->usQueryPort))
-			return idx.second;
-		hmp_Iter++;
-	}
-	return -1;
-}
-
-
-/************************************************************ 
-	Check if the server exsist in the current view list.
-
-	This function is not multithread safe!!
-*************************************************************/
-long CheckForDuplicateServer(GAME_INFO *pGI, SERVER_INFO *pSI)
-{
-	vSRV_INF::iterator  iResult;
-	SERVER_INFO *pSrv = NULL;
-	int hash = pSI->dwIP + pSI->usQueryPort;
-
-	return GetIndexByHashValue(pGI,  hash,pSI->dwIP,pSI->usQueryPort);
-}
 
 BOOL UTILZ_checkforduplicates(GAME_INFO *pGI, int hash,DWORD dwIP, DWORD dwPort)
 {

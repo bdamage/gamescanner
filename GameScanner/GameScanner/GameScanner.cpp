@@ -323,7 +323,7 @@ _CUSTOM_COLUMN BUDDY_CUSTCOLUMNS[MAX_COLUMNS];
 BOOL Sizing = FALSE;
 
 long UpdateServerItem(DWORD index);
-long InsertServerItem(GAME_INFO *pGI,SERVER_INFO *pSI);
+
 int TreeView_save();
 void ListView_SetHeaderSortImage(HWND listView, int columnIndex, BOOL isAscending);
 BOOL DDE_Init();
@@ -359,10 +359,8 @@ void WriteCfgInt(TiXmlElement * root, char *szParentName, char *szParamName,int 
 int XML_GetTreeItemInt(TiXmlElement* pNode, const char* attributeName);
 int OwnerDrawnComboBox_Country(LPDRAWITEMSTRUCT lpDrawItemStruct, HDC dc);
 
-DWORD AddServer(GAME_INFO *pGI,char *szIP, unsigned short usPort,bool bFavorite);
 
-void UpdateItem(LPARAM *lp);
-void OnRestore();
+
 void OnCreate(HWND hwnd);
 void OnInitialize_MainDlg(HWND hwnd);
 void OnClose();
@@ -380,8 +378,7 @@ void FilterUpdate();
 
 LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam);
 HTREEITEM TreeView_AddItem(_MYTREEITEM ti, HTREEITEM hCurrent, bool active=true);
-void Select_item_and_all_childs(HTREEITEM hRoot, bool select);
-//int TreeView_GetSelectionV3(LPARAM lParam);
+
 
 char EXE_PATH[_MAX_PATH+_MAX_FNAME];			//Don't write anything to this path
 char USER_SAVE_PATH[_MAX_PATH+_MAX_FNAME];     //Path to save settings and server lists
@@ -2113,7 +2110,7 @@ SERVER_INFO *FindServerByIPandPort(char *szIP, DWORD dwPort)
   if adding a IP and favorite=true and it exisist set server as favorite and return the current index
 
  */
-
+/*
 DWORD AddServer(GAME_INFO *pGI,char *szIP, unsigned short usPort,bool bFavorite)
 {
 	SERVER_INFO *pSI;
@@ -2168,238 +2165,7 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, unsigned short usPort,bool bFavorite)
 		
 	return pSI->dwIndex;
 }
-
-
-
-/*
-DWORD TreeView_SwapDWCheckStateOR(TVITEM  *pTVitem, _MYTREEITEM ti,DWORD *dwVal)
-{
-	DWORD dwState;
-	if(pTVitem->iImage == CHECKED_ICON) //Is it checked
-	{
-		pTVitem->iSelectedImage =	pTVitem->iImage = UNCHECKED_ICON;  //Unchecked image
-		*dwVal^=ti.dwValue;
-		dwState = 0;
-	}
-	else
-	{
-		pTVitem->iSelectedImage =	pTVitem->iImage = CHECKED_ICON;  //Checked image
-		*dwVal|=ti.dwValue;
-				
-		dwState = 1;
-	}			
-	TreeView_SetItem(g_hwndMainTreeCtrl, pTVitem );
-	return dwState;
-}
 */
-/*
-DWORD TreeView_SetDWCheckState (TVITEM  *pTVitem, _MYTREEITEM ti, BOOL active)
-{
-	if(active) //Is it checked
-	{
-		pTVitem->iSelectedImage =	pTVitem->iImage = CHECKED_ICON;  //checked image
-		tvmgr.vTI.at(ti.dwIndex).dwState = 1;
-		ti.dwState = 1;
-	}
-	else
-	{
-		pTVitem->iSelectedImage =	pTVitem->iImage = UNCHECKED_ICON;  //unChecked image
-		ti.dwState = 0;
-		tvmgr.vTI.at(ti.dwIndex).dwState = 0;
-
-	}			
-	TreeView_SetItem(g_hwndMainTreeCtrl, pTVitem );
-	return ti.dwValue;
-}
-
-//Used for group selection such as Ping
-DWORD TreeView_UncheckAllTypes(char cGameIdx, DWORD dwType)
-{	
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		
-		if((tvmgr.vTI.at(i).dwType == dwType) && (tvmgr.vTI.at(i).cGAMEINDEX == cGameIdx) )
-		{
-			TVITEM  tvitem;
-			ZeroMemory(&tvitem,sizeof(TVITEM));
-			tvitem.hItem = tvmgr.vTI.at(i).hTreeItem;
-			tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE;
-			TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
-			TreeView_SetDWCheckState(&tvitem, tvmgr.vTI.at(i), FALSE);		
-		}
-	}
-	return 0;
-}
-*/
-
-/*
-HTREEITEM TreeView_GetTIByItemType(DWORD dwType)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if(tvmgr.vTI.at(i).dwType == dwType)
-			return tvmgr.vTI.at(i).hTreeItem;
-	}
-	return NULL;
-}
-*/
-
-
-/*
-DWORD TreeView_GetItemStateByType(char cGameIdx,DWORD dwType)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if((tvmgr.vTI.at(i).dwType == dwType) && (tvmgr.vTI.at(i).cGAMEINDEX == cGameIdx))
-			return tvmgr.vTI.at(i).dwState;
-	}
-	return 0;
-}
-*/
-
-/*******************************************************
- 
- Sets a new value depending of type.
- Return if successfully found the dwType.
-	This function will only change the first occurrence, 
-	therefore recommendation is that dwType is unique.
-
-********************************************************/
-/*BOOL TreeView_SetDWValueByItemType(DWORD dwType,DWORD dwNewValue,DWORD dwNewState, char*pszNewStrValue)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if(tvmgr.vTI.at(i).dwType == dwType)
-		{
-			tvmgr.vTI.at(i).dwValue = dwNewValue;
-			tvmgr.vTI.at(i).dwState = dwNewState;
-			//if(pszNewStrValue!=NULL)
-			//	tvmgr.vTI.at(i).strValue = pszNewStrValue;
-			 if(tvmgr.vTI.at(i).dwType==DO_GLOBAL_EDIT_FILTER)
-			 {
-				char text[256];
-				sprintf(text,"%s %d",tvmgr.vTI.at(i).sName.c_str(),tvmgr.vTI.at(i).dwValue);
-				TreeView_SetItemText(tvmgr.vTI.at(i).hTreeItem,text);
-				TreeView_SetCheckBoxState(i,tvmgr.vTI.at(i).dwState);
-			}
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-*/
-/*
-BOOL TreeView_SetItemStateByNameAndType(string name,DWORD dwType,DWORD dwNewState)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if((tvmgr.vTI.at(i).sName == name) && (tvmgr.vTI.at(i).dwType == dwType) )
-		{
-			tvmgr.vTI.at(i).dwState = dwNewState;
-			
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-*/
-/*********************************************************
-This function is good for when upgrading the treeview list,
-purpose is to restore it's original value set by the user.
-**********************************************************/
-/*
-BOOL TreeView_SetFilterGroupCheckState(char gameIdx, DWORD dwType,DWORD dwFilterValue)
-{
-	BOOL bChanges=FALSE;
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-
-		if((tvmgr.vTI.at(i).cGAMEINDEX == gameIdx) && (tvmgr.vTI.at(i).dwType == dwType))
-		{		
-			if(tvmgr.vTI.at(i).dwValue & dwFilterValue)
-			{
-				tvmgr.vTI.at(i).dwState = 1;	
-				TreeView_SetCheckBoxState(i,tvmgr.vTI.at(i).dwState);
-				bChanges = TRUE;
-
-			}
-		}
-	}
-	return bChanges;
-}
-*/
-/*
-BOOL TreeView_SetFilterCheckState(char gameIdx, DWORD dwType,DWORD dwNewState)
-{
-	BOOL bChanges=FALSE;
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-
-		if((tvmgr.vTI.at(i).cGAMEINDEX == gameIdx) && (tvmgr.vTI.at(i).dwType == dwType))
-		{		
-				TreeView_SetCheckBoxState(i,dwNewState);
-				bChanges = TRUE;
-		}
-	}
-	return bChanges;
-}*/
-
-/*******************************************************
- 
- Gets a new value depending of type.
- Return if successfully found the dwType.
-	This function will only change the first occurence, 
-	therefore recommendation is that dwType is unique.
-
-********************************************************/
-/*DWORD TreeView_GetDWValue(DWORD dwType,DWORD dwType)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if((tvmgr.vTI.at(i).dwType == dwType) && (tvmgr.vTI.at(i).dwType==dwType))
-		{		
-
-			return tvmgr.vTI.at(i).dwValue;
-		}
-	}
-	return 0;
-}
-*/
-/*
-DWORD TreeView_GetDWStateByGameType(int iGameType, DWORD dwType,DWORD dwType)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if((tvmgr.vTI.at(i).cGAMEINDEX == iGameType)&& (tvmgr.vTI.at(i).dwType == dwType) && (tvmgr.vTI.at(i).dwType==dwType))
-		{		
-
-			return tvmgr.vTI.at(i).dwState;
-		}
-	}
-	return 0;
-}
-*/
-
-
-
-/*
-BOOL TreeView_DeleteByHItemTree(HTREEITEM hItemtree)
-{
-	for(UINT i=0;i<tvmgr.vTI.size();i++)
-	{
-		if(tvmgr.vTI.at(i).hTreeItem == hItemtree)
-		{	
-			tvmgr.vTI.erase(tvmgr.vTI.begin()+i);
-			return TRUE;
-		}
-	}
-	return FALSE;
-}
-*/
-
-
-
-
 
 #pragma pack(1) 
 typedef struct { 
@@ -2602,7 +2368,7 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 			if(dwPort==0)
 				dwPort = gm.GamesInfo[g_currentGameIdx].dwDefaultPort;
 
-			if(AddServer(&gm.GamesInfo[g_currentGameIdx],ip, dwPort,true)!=0xFFFFFFFF)		
+			if(gm.AddServer(g_currentGameIdx,ip, dwPort,true)!=0xFFFFFFFF)		
 			{
 				SetStatusText(ICO_INFO,"Added IP %s:%d into %s favorite serverlist.",ip,dwPort,gm.GamesInfo[g_currentGameIdx].szGAME_NAME);
 				
@@ -2623,122 +2389,6 @@ LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lP
 	}
 	return FALSE;
 }
-
-
-bool ShouldWeSelect(LPARAM lParam)
-{
-	for(int i=0; i<tvmgr.CountryFilter.counter;i++)
-	{
-		if (tvmgr.CountryFilter.lParam[i]==lParam)
-			return true;
-	}
-	return false;
-}
-
-void Select_item_by_lparam(HTREEITEM hRoot)
-{
-
-	char szBuffer[55];
-	HTREEITEM hCurrent=NULL;
-	HTREEITEM hChild=NULL;
-	TVITEM  tvitem;
-	memset(&tvitem,0,sizeof(TVITEM));
-	tvitem.pszText = szBuffer;
-	tvitem.cchTextMax = sizeof(szBuffer);
-
-	tvitem.hItem = hRoot;
-	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE | TVIF_PARAM | TVIF_TEXT;
-
-	hChild = TreeView_GetNextItem( g_hwndMainTreeCtrl, hRoot, TVGN_CHILD);
-	if(hChild!=NULL)
-		Select_item_by_lparam(hChild);
-	
-	hCurrent = hRoot;
-	while(hCurrent!=NULL)
-	{
-		tvitem.hItem = hCurrent;
-		TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
-#ifdef _DEBUG
-		char szDebugTxt[100];	
-		sprintf(szDebugTxt,"%d %s - (%d)\n",tvitem.iImage,tvitem.pszText,tvitem.lParam);
-		dbg_print(szDebugTxt);
-#endif
-
-		if( ShouldWeSelect(tvitem.lParam))
-		{
-			tvitem.iSelectedImage =	tvitem.iImage = CHECKED_ICON;  //checked image			
-			TreeView_SetItem(g_hwndMainTreeCtrl, &tvitem );
-		}
-
-		hCurrent =TreeView_GetNextItem( g_hwndMainTreeCtrl, hCurrent, TVGN_NEXT);
-		
-		if(hCurrent!=NULL)
-		{
-			hChild = TreeView_GetNextItem( g_hwndMainTreeCtrl, hCurrent, TVGN_CHILD);
-			if(hChild!=NULL)
-			{
-				Select_item_by_lparam(hChild);
-				tvitem.hItem = hChild;
-				TreeView_GetItem(g_hwndMainTreeCtrl, &tvitem );
-#ifdef _DEBUG
-				char szDebugTxt[100];				
-				sprintf(szDebugTxt,">%d %s - (%d)\n",tvitem.iImage,tvitem.pszText,tvitem.lParam);
-				dbg_print(szDebugTxt);
-#endif
-				if( ShouldWeSelect(tvitem.lParam))
-				{
-					tvitem.iSelectedImage =	tvitem.iImage = CHECKED_ICON;  //checked image			
-					TreeView_SetItem(g_hwndMainTreeCtrl, &tvitem );
-				}
-			}
-		}
-		
-	}
-}
-
-
-void Select_item_and_all_childs(HTREEITEM hRoot, bool selected)
-{
-	HTREEITEM hCurrent=NULL;
-	HTREEITEM hChild=NULL;
-	TVITEM  tvitem;
-	memset(&tvitem,0,sizeof(TVITEM));
-	tvitem.hItem = hRoot;
-	tvitem.mask = TVIF_SELECTEDIMAGE |  TVIF_IMAGE ;
-
-	hChild = TreeView_GetNextItem( g_hwndMainTreeCtrl, hRoot, TVGN_CHILD);
-	if(hChild!=NULL)
-	{
-		Select_item_and_all_childs(hChild,selected);
-		hCurrent = hChild;
-	}
-	else
-		hCurrent = hRoot;
-
-	while(hCurrent!=NULL)
-	{
-		if(selected==false)
-			tvitem.iSelectedImage =	tvitem.iImage = UNCHECKED_ICON;  //Unchecked image
-		else
-			tvitem.iSelectedImage =	tvitem.iImage = CHECKED_ICON;  //Checked image
-		
-		TreeView_SetItem(g_hwndMainTreeCtrl, &tvitem );
-		if(hChild!=NULL)
-			hCurrent =TreeView_GetNextItem( g_hwndMainTreeCtrl, hCurrent, TVGN_NEXT);
-		else
-			hCurrent = NULL;
-		tvitem.hItem = hCurrent;
-		if(hCurrent!=NULL)
-			Select_item_and_all_childs(hCurrent,selected);
-		
-	}
-}
-
-
-
-
-//DWORD g_TreeLevel=1;
-
 
 
 
@@ -2962,7 +2612,7 @@ void FastConnect()
 	g_FastConnectSrv.dwIndex = 999999;
 	g_FastConnectSrv.dwIP = NetworkNameToIP(g_FastConnectSrv.szIPaddress,_itoa(dwPort,destPort,10));
 
-	int iResult = CheckForDuplicateServer(&gm.GamesInfo[g_currentGameIdx],&g_FastConnectSrv);
+	int iResult = gm.CheckForDuplicateServer(g_currentGameIdx,&g_FastConnectSrv);
 
 	if(iResult!=-1) //did we get an exsisting server?
 	{
@@ -3905,238 +3555,6 @@ void SaveServerList(GAME_INFO *pGI, DWORD dwExportFlag=0)
 
 
 }
-/*
-//TODO rewrite file structure for easier future changes/additional info
-DWORD WINAPI LoadServerListV2(LPVOID lpVoid)
-{
-	GAME_INFO *pGI = (GAME_INFO*)lpVoid;
-	SetCurrentDirectory(USER_SAVE_PATH);
-	pGI->vSI.clear();
-	char szBuffer[100];
-	if(pGI->hTI!=NULL)
-	{
-		sprintf(szBuffer,"%s (Loading...)",pGI->szGAME_NAME);
-		tvmgr.SetItemText(pGI->hTI,szBuffer);
-		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
-	}
-
-	char seps[]   = "\t\n";
-	
-	FILE *fp=NULL;
-	char szFilename2[260];
-	sprintf(szFilename2,"%s.csv",pGI->szFilename);
-	dbg_print("Loading serverlist %s ",szFilename2);
-	fopen_s(&fp,szFilename2, "rb");
-
-	char  *next_token1;
-
-	SERVER_INFO	 *srv;
-	
-	char *szGameType = NULL;
-	char *szGameName = NULL;
-	char *szIP = NULL;
-	char *szPort = NULL;
-	char *szShortCountryName = NULL;
-	char *szByte = NULL;
-	char *szPrivatePassword = NULL;
-	char *szRCONPassword= NULL;
-	char *szVersion  = NULL;
-	char *szMod = NULL;
-	char *szMap = NULL;
-	char *szMaxPlayers = NULL;
-	char *szCurrentNumberOfPlayers= NULL;
-	char *szPrivateClients  = NULL;
-	char *szPrivate = NULL;
-	char *szCountry = NULL;
-	char *szMode = NULL;
-	pGI->dwTotalServers	 = 0;
-	DWORD idx=0;
-	char buffer[1024];
-	if(fp!=NULL)
-	{
-		pGI->vSI.clear();
-		while( !feof( fp ) )
-		{
-			memset(&buffer,0,sizeof(buffer));
-			for(int i=0; i<sizeof(buffer);i++)
-			{
-				
-				if(fread(&buffer[i], 1, 1, fp)!=0)
-				{
-
-					if(buffer[i]==10)
-					{
-
-						next_token1 = NULL;
-						srv = (SERVER_INFO*) calloc(1,sizeof(SERVER_INFO));
-						//memset(&srv,0,sizeof(SERVER_INFO));
-						szGameType= strtok_s( buffer, seps, &next_token1);
-						if(szGameType!=NULL)
-							srv->cGAMEINDEX =  pGI->cGAMEINDEX; //(char)atoi(szGameType); 
-						
-						szGameName = strtok_s( NULL, seps, &next_token1);
-				//		if(szGameName!=NULL)
-				//			strcpy(srv->szServerName,TrimString(szGameName));
-
-						szIP = strtok_s( NULL, seps, &next_token1);
-						if(szIP!=NULL)
-							strcpy(srv->szIPaddress,TrimString(szIP));
-						
-						szPort = strtok_s( NULL, seps, &next_token1);
-						if(szPort!=NULL)
-							srv->usPort = (DWORD)atol(szPort); 
-
-						szShortCountryName = strtok_s( NULL, seps, &next_token1);
-						if(szShortCountryName!=NULL)
-							strcpy(srv->szShortCountryName,TrimString(szShortCountryName));
-						
-						szPrivatePassword = strtok_s( NULL, seps, &next_token1);
-						if(szPrivatePassword!=NULL)
-							strcpy(srv->szPRIVATEPASS,TrimString(szPrivatePassword));
-
-						szRCONPassword = strtok_s( NULL, seps, &next_token1);
-						if(szRCONPassword!=NULL)
-							strcpy(srv->szRCONPASS,TrimString(szRCONPassword));
-						
-						szVersion = strtok_s( NULL, seps, &next_token1);
-				//		if(szVersion!=NULL)
-					//		strcpy(srv->szVersion,TrimString(szVersion));
-						
-						szMod = strtok_s( NULL, seps, &next_token1);
-				//		if(szMod!=NULL)
-				//			strcpy(srv->szMod,TrimString(szMod));
-						
-						szMap = strtok_s( NULL, seps, &next_token1);
-					//	if(szMap!=NULL)
-					//		strcpy(srv->szMap,TrimString(szMap));
-						
-						szMaxPlayers = strtok_s( NULL, seps, &next_token1);
-						if(szMaxPlayers!=NULL)
-							srv->nMaxPlayers = atoi(szMaxPlayers); 
-
-						szCurrentNumberOfPlayers = strtok_s( NULL, seps, &next_token1);
-						if(szCurrentNumberOfPlayers!=NULL)
-							srv->nPlayers = atoi(szCurrentNumberOfPlayers); 
-
-						szPrivateClients = strtok_s( NULL, seps, &next_token1);
-						if(szPrivateClients!=NULL)
-							srv->nPrivateClients = atoi(szPrivateClients); 
-						
-						szPrivate = strtok_s( NULL, seps, &next_token1);
-						if(szPrivate!=NULL)
-							srv->bPrivate = (char)atoi(szPrivate); 
-						
-						szByte = strtok_s( NULL, seps, &next_token1);  //Punkbuster or VAC
-						if(szByte!=NULL)
-							srv->bPunkbuster = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  //Dedicated
-	//					if(szByte!=NULL)
-	//						srv->bDedicated = (BOOL)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   //Ranked
-						if(szByte!=NULL)
-							srv->cRanked = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   
-						if(szByte!=NULL)
-							srv->cBots = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   
-						if(szByte!=NULL)
-							srv->cFavorite = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   
-						if(szByte!=NULL)
-							srv->cHistory = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						//if(szByte!=NULL)
-						//	srv->cPure = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  
-					//	if(szByte!=NULL)
-					//		srv->dwGameType = (WORD)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  
-//						if(szByte!=NULL)
-//							srv->dwMap = (char)atoi(szByte); 
-						
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						if(szByte!=NULL)
-							srv->cPurge = (char)atoi(szByte); 
-					
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						if(szByte!=NULL)
-							srv->dwPing = (DWORD)atol(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						//if(szByte!=NULL)
-						//	srv->dwMod = (WORD)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1); 
-						if(szByte!=NULL)
-							srv->dwIP = (DWORD)atol(szByte); 
-
-						szCountry = strtok_s( NULL, seps, &next_token1);  //not used anymore
-						//if(szCountry!=NULL)
-						//	strcpy(srv->szCountry,TrimString(szCountry));
-
-						szByte = strtok_s( NULL, seps, &next_token1);  
-
-						if(szByte!=NULL)
-						{
-							//srv->dwVersion = (char)atol(szByte); 
-							szByte = strtok_s( NULL, seps, &next_token1);  
-							if(szByte!=NULL)
-							{
-								//srv->bTV = (char)atol(szByte); 
-								szByte = strtok_s( NULL, seps, &next_token1);  
-								if(szByte!=NULL)
-								{
-									srv->usQueryPort = (unsigned short)atol(szByte); 
-									szByte = strtok_s( NULL, seps, &next_token1);
-									if(szByte!=NULL)
-									{
-									//	strcpy(srv->szMode,TrimString(szByte));									
-										szByte = strtok_s( NULL, seps, &next_token1);  
-										//if(szByte!=NULL)
-										//	srv->dwMode = (char)atol(szByte); 	
-									}
-								}								
-							}
-						}				
-
-						srv->dwIndex = idx++;
-
-						srv->pPlayerData = NULL;
-						srv->pServerRules = NULL;					
-						srv->bUpdated = 0;
-						int hash = srv->dwIP + srv->usPort;
-						pGI->shash.insert(Int_Pair(hash,srv->dwIndex));
-						pGI->vSI.push_back(srv);			
-						pGI->dwTotalServers++;
-			
-						i = sizeof(buffer)+1;
-					}  //endif
-				}
-			}  //if
-		}
-		fclose(fp);
-	}
-	pGI->lastScanTimeStamp = 0;
-	if(pGI->hTI!=NULL)
-	{
-		sprintf(szBuffer,"%s (%d)",pGI->szGAME_NAME,pGI->dwTotalServers);
-		tvmgr.SetItemText(pGI->hTI,szBuffer);
-		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
-	}
-	return 0;
-}
-*/
-//DWORD g_AllocatedSR=0,g_TotalAllocatedSR=0;
-//DWORD g_Top1=0,g_nRules=0,g_TopNRules=0;
-//string sTopServerName;
 
 DWORD WINAPI LoadServerListV4(LPVOID lpVoid)
 {
@@ -4264,345 +3682,6 @@ DWORD WINAPI LoadServerListV4(LPVOID lpVoid)
 
  	return 0;
 }
-
-/*
-DWORD WINAPI LoadServerListV3(LPVOID lpVoid)
-{
-	GAME_INFO *pGI = (GAME_INFO*)lpVoid;
-	SetCurrentDirectory(USER_SAVE_PATH);
-	pGI->vSI.clear();
-	char szBuffer[100];
-	if(pGI->hTI!=NULL)
-	{
-		sprintf(szBuffer,"%s (Loading...)",pGI->szGAME_NAME);
-		tvmgr.SetItemText(pGI->hTI,szBuffer);
-		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
-	}
-
-	char seps[]   = "\t\n";
-	char seps2[]   = "\"\t";
-
-	FILE *fp=NULL;
-	char szFilename2[260];
-	sprintf(szFilename2,"%s.gs",pGI->szFilename);
-	dbg_print("Loading serverlist %s ",szFilename2);
-	fopen_s(&fp,szFilename2, "rb");
-
-	char  *next_token1;
-
-	SERVER_INFO	 *srv;
-	
-	char *szGameType = NULL;
-	char *szGameName = NULL;
-	char *szIP = NULL;
-	char *szPort = NULL;
-	char *szShortCountryName = NULL;
-	char *szByte = NULL;
-	char *szPrivatePassword = NULL;
-	char *szRCONPassword= NULL;
-	char *szVersion  = NULL;
-	char *szMod = NULL;
-	char *szMap = NULL;
-	char *szMaxPlayers = NULL;
-	char *szCurrentNumberOfPlayers= NULL;
-	char *szPrivateClients  = NULL;
-	char *szPrivate = NULL;
-	char *szCountry = NULL;
-	char *szMode = NULL;
-	pGI->dwTotalServers	 = 0;
-	DWORD idx=0;
-	char buffer[2624];
-	if(fp!=NULL)
-	{
-		pGI->vSI.clear();
-		while( !feof( fp ) )
-		{
-			memset(&buffer,0,sizeof(buffer));
-			srv = NULL;
-			for(int i=0; i<sizeof(buffer);i++)
-			{
-				
-				if(fread(&buffer[i], 1, 1, fp)!=0)
-				{
-
-					if(buffer[i]==10)
-					{
-
-						next_token1 = NULL;
-						srv = (SERVER_INFO*) calloc(1,sizeof(SERVER_INFO));
-						//memset(&srv,0,sizeof(SERVER_INFO));
-						szGameType= strtok_s( buffer, seps, &next_token1);
-						if(szGameType!=NULL)
-							srv->cGAMEINDEX =  pGI->cGAMEINDEX; //(char)atoi(szGameType); 
-
-
-						szIP = strtok_s( NULL, seps2, &next_token1);
-						if(szIP!=NULL)
-							strcpy(srv->szIPaddress,szIP);
-						
-						szPort = strtok_s( NULL, seps2, &next_token1);
-						if(szPort!=NULL)
-							srv->usPort = (DWORD)atol(szPort); 
-
-						szShortCountryName = strtok_s( NULL, seps2, &next_token1);
-						if(szShortCountryName!=NULL)
-							strcpy(srv->szShortCountryName,szShortCountryName);
-						
-
-						szByte = strtok_s( NULL, seps, &next_token1); 
-						if(szByte!=NULL)
-							srv->dwIP = (DWORD)atol(szByte); 
-
-						szPrivatePassword = strtok_s( NULL, seps, &next_token1);
-						if(szPrivatePassword!=NULL)
-							strcpy(srv->szPRIVATEPASS,TrimString(szPrivatePassword));
-
-						szRCONPassword = strtok_s( NULL, seps, &next_token1);
-						if(szRCONPassword!=NULL)
-							strcpy(srv->szRCONPASS,TrimString(szRCONPassword));
-						
-						szMaxPlayers = strtok_s( NULL, seps, &next_token1);
-						if(szMaxPlayers!=NULL)
-							srv->nMaxPlayers = atoi(szMaxPlayers); 
-
-						szCurrentNumberOfPlayers = strtok_s( NULL, seps, &next_token1);
-						if(szCurrentNumberOfPlayers!=NULL)
-							srv->nPlayers = atoi(szCurrentNumberOfPlayers); 
-
-						szPrivateClients = strtok_s( NULL, seps, &next_token1);
-						if(szPrivateClients!=NULL)
-							srv->nPrivateClients = atoi(szPrivateClients); 
-						
-						szPrivate = strtok_s( NULL, seps, &next_token1);
-						if(szPrivate!=NULL)
-							srv->bPrivate = (char)atoi(szPrivate); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  //Punkbuster or VAC
-						if(szByte!=NULL)
-							srv->bPunkbuster = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);  //not used
-						
-
-						szByte = strtok_s( NULL, seps, &next_token1);   //Ranked
-						if(szByte!=NULL)
-							srv->cRanked = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   
-						if(szByte!=NULL)
-							srv->cBots = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   
-						if(szByte!=NULL)
-							srv->cFavorite = (char)atoi(szByte); 
-
-						szByte = strtok_s( NULL, seps, &next_token1);   
-						if(szByte!=NULL)
-							srv->cHistory = (char)atoi(szByte); 
-
-						
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						if(szByte!=NULL)
-							srv->cPurge = (char)atoi(szByte); 
-					
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						if(szByte!=NULL)
-							srv->dwPing = (DWORD)atol(szByte); 
-
-
-						szByte = strtok_s( NULL, seps, &next_token1);  
-						if(szByte!=NULL)
-							srv->usQueryPort = (unsigned short)atol(szByte); 
-						
-						szByte = strtok_s( NULL, seps, &next_token1);  //reserved
-						break;
-					} //end if 0x0A
-
-				} //end if fread
-
-			} //end for loop
-
-	
-			g_AllocatedSR = 0;
-			g_nRules = 0;
-			if(srv!=NULL)
-			{
-				srv->pServerRules = NULL;
-				memset(&buffer,0,sizeof(buffer));
-				for(int i=0; i<sizeof(buffer);i++)
-				{
-							
-					if(fread(&buffer[i], 1, 1, fp)!=0)
-					{
-
-						if((buffer[i]==10))
-						{
-							if(buffer[0]==10)
-								break;
-
-							SERVER_RULES *pCurrentSR=NULL;
-							next_token1 = NULL;
-							char *szRulename = strtok_s( buffer, seps2, &next_token1); 
-							while((szRulename!=NULL) && (szRulename[0]!=0x0a))
-							{
-								char *szRulevalue = NULL;
-								if((next_token1[1]=='"') && (next_token1[2]=='"'))
-									next_token1+=4;
-								else
-									szRulevalue	= strtok_s( NULL, seps2, &next_token1);  
-								
-									
-
-								DWORD dwSRStructSize = sizeof(SERVER_RULES);
-								if(srv->pServerRules==NULL)
-								{
-									
-									srv->pServerRules = (SERVER_RULES *)calloc(1,dwSRStructSize);		
-									pCurrentSR = srv->pServerRules;			
-								}else
-								{
-									pCurrentSR->pNext = (SERVER_RULES *)calloc(1,dwSRStructSize);
-									pCurrentSR = pCurrentSR->pNext;					
-								}
-								g_AllocatedSR+=dwSRStructSize;
-								g_nRules++;
-								
-								if(szRulename!=NULL)
-									pCurrentSR->name = _strdup(TrimString(szRulename));
-								
-								if(szRulevalue!=NULL)
-									pCurrentSR->value = _strdup(TrimString(szRulevalue));
-									
-
-								if((next_token1[0]==0x0a) || (next_token1[1]==0x0a))
-									break;
-
-								szRulename = strtok_s( NULL, seps2, &next_token1);
-							} //end while token
-							break;
-						} //end if 0x0A
-					}  //if fread
-				}//end of for loop
-				
-
-				g_TotalAllocatedSR+=g_AllocatedSR;
-
-				srv->szServerName = Get_RuleValue((TCHAR*)gm.GamesInfo[srv->cGAMEINDEX].vGAME_SPEC_COL.at(COL_SERVERNAME).sRuleValue.c_str(),srv->pServerRules,1);
-
-				srv->pPlayerData = NULL;	
-				memset(&buffer,0,sizeof(buffer));
-				for(int i=0; i<sizeof(buffer);i++)
-				{
-							
-					if(fread(&buffer[i], 1, 1, fp)!=0)
-					{
-
-						if(buffer[i]==10)
-						{
-							PLAYERDATA *pPlyD=NULL;
-							next_token1 = NULL;
-							char *szValue = strtok_s( buffer, seps2, &next_token1); 
-							while((szValue!=NULL) && (szValue[0]!=0x0A))
-							{					
-
-								if(srv->pPlayerData==NULL)
-								{
-									srv->pPlayerData = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));		
-									pPlyD = srv->pPlayerData;			
-								}else
-								{
-									pPlyD->pNext = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
-									pPlyD = pPlyD->pNext;					
-								}
-								if(szValue!=NULL)
-									pPlyD->iPlayer = atoi(szValue); 								
-								
-								szValue = strtok_s( NULL, seps2, &next_token1); 
-								if(szValue!=NULL)
-									pPlyD->rate = atoi(szValue); 								
-								
-								szValue = strtok_s( NULL, seps2, &next_token1); 
-								if(szValue!=NULL)
-									pPlyD->ping = atoi(szValue); 								
-
-								szValue = strtok_s( NULL, seps2, &next_token1); 
-								if(szValue!=NULL)
-									pPlyD->isBot = (char)atoi(szValue); 		
-
-								szValue = strtok_s( NULL, seps2, &next_token1); 
-								if(szValue!=NULL)
-									pPlyD->time = (char)atoi(szValue); 								
-							
-								szValue = strtok_s( NULL, seps2, &next_token1); 
-								if(szValue!=NULL)
-									pPlyD->szPlayerName= strdup(TrimString(szValue));
-
-								szValue = strtok_s( NULL, seps, &next_token1);
-								if(szValue!=NULL)
-									pPlyD->szClanTag = strdup(TrimString(szValue));
-								
-								szValue = strtok_s( NULL, seps, &next_token1);
-								if(szValue!=NULL)
-									pPlyD->szTeam = strdup(TrimString(szValue));
-								
-								pPlyD->cGAMEINDEX = srv->cGAMEINDEX;
-
-								pPlyD->pServerInfo = srv;
-
-								if(next_token1[0]==0x0a)
-									break;
-								szValue = strtok_s( NULL, seps2, &next_token1); 
-							} //end while token
-							break;
-							
-						} //end if 0x0A
-					}  //if fread
-				}//end of for loop
-
-			
-		
-				
-				srv->szMap = Get_RuleValue((TCHAR*)gm.GamesInfo[srv->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),srv->pServerRules);
-				srv->szMod = Get_RuleValue((TCHAR*)gm.GamesInfo[srv->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MOD).sRuleValue.c_str(),srv->pServerRules);
-				srv->szGameTypeName = Get_RuleValue((TCHAR*)gm.GamesInfo[srv->cGAMEINDEX].vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),srv->pServerRules);
-				srv->szVersion = Get_RuleValue((TCHAR*)gm.GamesInfo[srv->cGAMEINDEX].vGAME_SPEC_COL.at(COL_VERSION).sRuleValue.c_str(),srv->pServerRules);
-
-
-				srv->dwIndex = idx++;
-				srv->timeLastScan = 0x0000000049000000;
-				//time(&srv->timeLastScan);
-				InitializeCriticalSection(&srv->csLock);
-				//InitializeCriticalSectionAndSpinCount(&srv->csLock,0x80000400);
-				
-				srv->bUpdated = 0;
-				int hash = srv->dwIP + srv->usPort;
-				pGI->shash.insert(Int_Pair(hash,srv->dwIndex));
-				pGI->vSI.push_back(srv);			
-				pGI->dwTotalServers++;
-			} //end of srv!=NULL
-			
-
-		//	i = sizeof(buffer)+1;
-			
-		} // end while eof
-		fclose(fp);
-	}  //	if(fp!=NULL)
-	pGI->lastScanTimeStamp = 0;
-	if(pGI->hTI!=NULL)
-	{
-		sprintf(szBuffer,"%s (%d)",pGI->szGAME_NAME,pGI->dwTotalServers);
-		tvmgr.SetItemText(pGI->hTI,szBuffer);
-		TreeView_SetItemState(g_hwndMainTreeCtrl,pGI->hTI,TVIS_BOLD ,TVIS_BOLD);		
-	}
-
-	dbg_print("Biggest mem usage server rules %d",g_Top1);
-	dbg_print("Top number of server rules %d (%d)",g_TopNRules,g_Top1/12);
-	dbg_print("Server name %s",sTopServerName.c_str());
-	dbg_print("Total %d",g_TotalAllocatedSR);
-
-	return 0;
-}
-*/
 
 void SaveAllServerList()
 {
@@ -6861,7 +5940,7 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 						dwPort=27763;
 				}
 
-				DWORD dwRet = AddServer(pGI,pszIP,dwPort,false);
+				DWORD dwRet = gm.AddServer(pGI->cGAMEINDEX,pszIP,dwPort,false);
 				if(dwRet!=0xFFFFFFFF)
 				{
 					i++;
@@ -6904,7 +5983,7 @@ void Parse_FileServerListFromGSC(GAME_INFO *pGI,char *szFilename)
 				{
 					dwPort = atoi(port);
 
-					DWORD dwRet = AddServer(pGI,pszIP,dwPort,false);
+					DWORD dwRet = gm.AddServer(pGI->cGAMEINDEX,pszIP,dwPort,false);
 					if(dwRet!=0xFFFFFFFF)
 					{
 						i++;
@@ -11784,7 +10863,7 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 	
 		if(hwndTB==NULL)
 		{
-				AddGetLastErrorIntoLog("TOOLBAR_CreateOptionsToolBar");
+				log.AddGetLastErrorIntoLog("TOOLBAR_CreateOptionsToolBar");
 			return NULL;
 		}
 			
@@ -11926,7 +11005,7 @@ HWND WINAPI TOOLBAR_CreateSearchComboBox(HWND hwndParent)
 
 	} else
 	{
-		AddGetLastErrorIntoLog("TOOLBAR_CreateSearchComboBox");
+		log.AddGetLastErrorIntoLog("TOOLBAR_CreateSearchComboBox");
 	}
    return hwndCB;
 }
@@ -12071,7 +11150,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 	rbi.himl   = (HIMAGELIST)NULL;
 	if(!SendMessage(hwndRB, RB_SETBARINFO, 0, (LPARAM)&rbi))
 	{
-		AddGetLastErrorIntoLog("Failed: SendMessage(hwndRB, RB_SETBARINFO");
+		log.AddGetLastErrorIntoLog("Failed: SendMessage(hwndRB, RB_SETBARINFO");
 	  return NULL;
 	}
 
@@ -12086,7 +11165,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 
 	hwndTB = TOOLBAR_CreateOptionsToolBar(hwndRB);
 	if(hwndTB==NULL)
-		AddGetLastErrorIntoLog("Failed: TOOLBAR_CreateOptionsToolBar");
+		log.AddGetLastErrorIntoLog("Failed: TOOLBAR_CreateOptionsToolBar");
 
 	 // Get the height of the toolbar.
 	dwBtnSize = SendMessage(hwndTB, TB_GETBUTTONSIZE, 0,0);
@@ -12438,12 +11517,6 @@ int CFG_Load()
 	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"HideOfflineServers",(int&)AppCFG.filter.bHideOfflineServers);
 	AppCFG.bNoMapResize = XML_GetTreeItemInt(hRoot.FirstChild("MapPreviewResize").ToElement(),"disable");
 
-/*	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMaxPlayers",(int&)AppCFG.filter.dwShowServerWithMaxPlayers);
-	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMinPlayers",(int&)AppCFG.filter.dwShowServerWithMinPlayers);
-	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMaxPlayersActive",(int&)AppCFG.filter.cActiveMaxPlayer);
-	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"NumMinPlayersActive",(int&)AppCFG.filter.cActiveMinPlayer);
-	ReadCfgInt(hRoot.FirstChild("Filters").FirstChild().ToElement(),"Ping",(int&)AppCFG.filter.dwPing);
-	*/
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"Transparancy",(int&)AppCFG.g_cTransparancy);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"MaxScanThreads",(int&)AppCFG.dwThreads);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"NetworkRetries",(int&)AppCFG.dwRetries);

@@ -368,7 +368,105 @@ void CGameManager::ClearAllGameServer()
 	for(int i=0;i<GamesInfo.size();i++)
 		ClearServerList(i);	
 }
+
+
+long CGameManager::GetIndexByHashValue(int GameIdx, int hash,DWORD dwIP, DWORD dwPort)
+{
+	hash_multimap <int, int>::iterator hmp_Iter;
 	
+	hmp_Iter = GamesInfo[GameIdx].shash.find(hash);
+	while(hmp_Iter!= GamesInfo[GameIdx].shash.end())
+	{
+		Int_Pair idx = *hmp_Iter;		
+		SERVER_INFO  *pSI = (SERVER_INFO*) GamesInfo[GameIdx].vSI.at(idx.second);
+		if((dwIP == pSI->dwIP) && (dwPort == pSI->usQueryPort))
+			return idx.second;
+		hmp_Iter++;
+	}
+	return -1;
+}
+
+
+/************************************************************ 
+	Check if the server exsist in the current view list.
+
+	This function is not multithread safe!!
+*************************************************************/
+long CGameManager::CheckForDuplicateServer(int GameIdx, SERVER_INFO *pSI)
+{
+	vSRV_INF::iterator  iResult;
+	SERVER_INFO *pSrv = NULL;
+	int hash = pSI->dwIP + pSI->usQueryPort;
+
+	return GetIndexByHashValue(GameIdx,  hash,pSI->dwIP,pSI->usQueryPort);
+}
+
+/*
+  returns 0xFFFFFFFF (-1), if IP is not satisfied 
+  if adding a IP and Favorite=false then if exsistent return 0xFFFFFFFF otherwise the new index
+  if adding a IP and favorite=true and it exisist set server as favorite and return the current index
+
+ */
+
+long CGameManager::AddServer(int GameIdx, char *szIP, unsigned short usPort,bool bFavorite)
+{
+	SERVER_INFO *pSI;
+	pSI = (SERVER_INFO*)calloc(1,sizeof(SERVER_INFO));
+	//ZeroMemory(&pSI,sizeof(SERVER_INFO));
+	char destPort[10];
+	if(szIP==NULL)
+		return 0xFFFFFFFF;
+
+	if(strlen(szIP)<7)
+	{
+		free(pSI);
+		return 0xFFFFFFFF;
+	}
+	
+
+	pSI->cGAMEINDEX = GameIdx;
+	strcpy(pSI->szIPaddress,szIP);
+	pSI->dwIP = NetworkNameToIP(szIP,_itoa(usPort,destPort,10));
+	pSI->usPort = usPort;
+	pSI->usQueryPort = usPort;
+
+	int iResult = CheckForDuplicateServer(GameIdx,pSI);
+	if(iResult!=-1) //did we get an exsisting server?
+	{
+		 //If yes then set that server to a favorite
+		if(bFavorite)
+			GamesInfo[GameIdx].vSI[iResult]->cFavorite = 1;
+		else
+		{
+			free(pSI);
+			return 0xFFFFFFFF;
+		}
+		free(pSI);
+		return GamesInfo[GameIdx].vSI[iResult]->dwIndex;
+	}
+		
+	//Add a new server into current list!
+	InitializeCriticalSection(&pSI->csLock);
+	pSI->dwPing = 9999;
+	strcpy(pSI->szShortCountryName,"zz");
+	pSI->bUpdated = 0;
+	
+	pSI->dwIndex = GamesInfo[GameIdx].vSI.size();
+	if(bFavorite)
+		pSI->cFavorite = 1;
+	
+	int hash = pSI->dwIP + pSI->usPort;
+	GamesInfo[GameIdx].shash.insert(Int_Pair(hash,pSI->dwIndex));
+	GamesInfo[GameIdx].vSI.push_back(pSI);
+	
+	
+
+	InsertServerItem(&GamesInfo[GameIdx],pSI);
+		
+	return pSI->dwIndex;
+}
+
+
 void CGameManager::ClearServerList(int GameIdx)
 {
 	SERVER_INFO *pSrv = NULL;

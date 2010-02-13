@@ -25,4 +25,7 @@ public:
 	UINT Get_GameIcon(UINT GameIndex);
 	SERVER_INFO *Get_ServerInfoByIndex(GAME_INFO *pGI,int index);
 	void GetServerInfo(int gametype,SERVER_INFO *pSrvInf);
+	long GetIndexByHashValue(int GameIdx, int hash,DWORD dwIP, DWORD dwPort);
+	long CheckForDuplicateServer(int GameIdx, SERVER_INFO *pSI);
+	long AddServer(int GameIdx, char *szIP, unsigned short usPort,bool bFavorite);
 };
