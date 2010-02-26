@@ -12,7 +12,7 @@ extern HWND g_hwndProgressBar;
 extern HWND g_hWnd;
 extern CLanguage g_lang;
 extern long UpdateServerItem(DWORD index);
-extern CLogger log;
+extern CLogger g_log;
 extern CGameManager gm;
 
 LPSERVERINFO		SCANNER_pSI_rescan = NULL;
@@ -46,7 +46,7 @@ extern bool Sort_Filter_By_GroupName(FILTER_SET fsA, FILTER_SET fsB);
 //Create scanning threads
 void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp,GAME_INFO *pGI, vFILTER_SETS *vFilterSets))
 {
-	log.AddLogInfo(GS_LOG_DEBUG,"Entering Initialize_Rescan2 function.");
+	g_log.AddLogInfo(GS_LOG_DEBUG,"Entering Initialize_Rescan2 function.");
 	//SCAN_FilterServerItem = filterServerItem;
 
 	vFILTER_SETS vFS;
@@ -79,7 +79,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp
 	if(pGI->dwViewFlags & SCAN_SERVERLIST)
 		pGI->dwViewFlags ^= SCAN_SERVERLIST;
 
-	log.AddLogInfo(GS_LOG_INFO,"Preparing to scan %d servers of a total %d.\n",pGI->vRefScanSI.size(),pGI->vSI.size());
+	g_log.AddLogInfo(GS_LOG_INFO,"Preparing to scan %d servers of a total %d.",pGI->vRefScanSI.size(),pGI->vSI.size());
 
 	if(pGI->dwViewFlags & FORCE_SCAN_FILTERED)
 		pGI->dwViewFlags = 0;
@@ -104,10 +104,10 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp
 	//Create and setup Continue Event, this is important! Otherwise ETSV can crash.
 	SCAN_hContinueEvent = CreateEvent(NULL,TRUE,TRUE,"ScanContinueEvent"); 
     if (SCAN_hContinueEvent == NULL) 
-        log.AddLogInfo(GS_LOG_DEBUG,"CreateEvent failed (%d)\n", GetLastError());
+        g_log.AddLogInfo(GS_LOG_DEBUG,"CreateEvent failed (%d)\n", GetLastError());
 
 	if (! ResetEvent(SCAN_hContinueEvent) ) 
-        log.AddLogInfo(GS_LOG_DEBUG,"ResetEvent failed (%d)\n", GetLastError());
+        g_log.AddLogInfo(GS_LOG_DEBUG,"ResetEvent failed (%d)\n", GetLastError());
 
 	DWORD dwMaxThreads = (AppCFG.dwThreads>pGI->vRefScanSI.size())?pGI->vRefScanSI.size():AppCFG.dwThreads;
 
@@ -125,7 +125,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp
 		}
 		else 
 		{	
-			//log.AddLogInfo(GS_LOG_INFO,"Thread created! %d",i);					
+			//g_log.AddLogInfo(GS_LOG_INFO,"Thread created! %d",i);					
 			EnterCriticalSection( &SCANNER_CSthreadcounter ); 
 			SCANNER_dwThreadCounter++;  
 			LeaveCriticalSection( &SCANNER_CSthreadcounter ); 
@@ -141,16 +141,16 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp
 	DWORD iWaitIndex = 0;
 	DWORD i=0;
 	//Wait for all threads to finish...
-	//log.AddLogInfo(GS_LOG_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
+	//g_log.AddLogInfo(GS_LOG_DEBUG,"AppCFG.dwThreads %d",AppCFG.dwThreads);
 
 	while(iWaitIndex<dwMaxThreads)
 	{
 	
 		DWORD max = ((dwMaxThreads-iWaitIndex)<MAXIMUM_WAIT_OBJECTS)?(dwMaxThreads-iWaitIndex):MAXIMUM_WAIT_OBJECTS;		
 
-	//	log.AddLogInfo(GS_LOG_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
+	//	g_log.AddLogInfo(GS_LOG_DEBUG,"iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d,  max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads,max);
 		DWORD dwEvent = WaitForMultipleObjects(max, &hThreadIndex[iWaitIndex], TRUE, INFINITE);
-		//log.AddLogInfo(GS_LOG_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
+		//g_log.AddLogInfo(GS_LOG_DEBUG,">iWaitIndex: %d, iWaitIndex+max: %d, dwMaxThreads: %d, nThreads: %d, max:%d",iWaitIndex,iWaitIndex+max,dwMaxThreads, nThreads,max);
 	
 		switch (dwEvent) 
 		{
@@ -158,12 +158,12 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp
 				//dbg_print("First event was signaled.\n");
 				break; 
 			case WAIT_TIMEOUT:
-				log.AddLogInfo(GS_LOG_DEBUG,"Wait timed out. @ %s",__FUNCTION__);	
+				g_log.AddLogInfo(GS_LOG_DEBUG,"Wait timed out. @ %s",__FUNCTION__);	
 				break;
 			// Return value is invalid.
 			default: 
 				{
-					log.AddLogInfo(GS_LOG_DEBUG,"Error at waiting threads! %s",__FUNCTION__);				
+					g_log.AddLogInfo(GS_LOG_DEBUG,"Error at waiting threads! %s",__FUNCTION__);				
 				}         
 		}
 
@@ -180,7 +180,7 @@ void Initialize_Rescan2(GAME_INFO *pGI, bool (*filterServerItem)(SERVER_INFO *lp
 		iWaitIndex+=MAXIMUM_WAIT_OBJECTS;
 	}
 	DWORD dwEndTick = GetTickCount();
-	log.AddLogInfo(0,"All servers is now scanned...%d sec",(dwEndTick-dwStartTick)/1000);
+	g_log.AddLogInfo(0,"All servers is now scanned...%d sec",(dwEndTick-dwStartTick)/1000);
 	pGI->vRefScanSI.clear();
 	CloseHandle(SCAN_hContinueEvent);
 }

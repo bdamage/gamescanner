@@ -7,7 +7,7 @@
 #include "utilz.h"
 
 
-CLanguage::CLanguage(CLogger & logger) : log(logger)
+CLanguage::CLanguage(CLogger & logger) : m_log(logger)
 {
 	
 }
@@ -90,13 +90,13 @@ int CLanguage::EnumerateLanguage(void)
    intptr_t hFile;
 	SetCurrentDirectory(m_pszDirectory);
    if( (hFile = _findfirst( "lang*.xml", &lang_file )) == -1L )
-      log.AddLogInfo(0, "No lang*.xml files in current directory!" );
+      m_log.AddLogInfo(0, "No lang*.xml files in current directory!" );
    else
    {
       do {
 		// AddLogInfo(0, "Detected translation file %s ",lang_file.name );
 		 if(AddFile(lang_file.name)==0)
-			log.AddLogInfo(0, "Error reading translation file %s ",lang_file.name );
+			m_log.AddLogInfo(0, "Error reading translation file %s ",lang_file.name );
       } while( _findnext( hFile, &lang_file ) == 0 );
       _findclose( hFile );
    }

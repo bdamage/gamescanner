@@ -5,7 +5,7 @@
 CLogger::CLogger(void)
 {
 	remove("Log_previous_start.htm");
-	rename("Log.htm","Log_previous_start.htm");
+	rename("g_log.htm","Log_previous_start.htm");
 	hwndLogger = NULL;
 	strcpy(szLogPath,".\\");
 	InitializeCriticalSection(&CS_Logger);
@@ -66,12 +66,12 @@ void CLogger::AddLogInfo(int color, char *lpszText, ...)
 
 			if(szLogPath!=NULL)
 				SetCurrentDirectory(szLogPath);
-			//Open the log file for appending
-			pFile = fopen("Log.htm", "a+");
+			//Open the g_log.file for appending
+			pFile = fopen("g_log.htm", "a+");
 
 			if(pFile != NULL)
 			{
-				//Write the error to the log file
+				//Write the error to the g_log.file
 				fprintf(pFile, "<font face=\"Arial\" size=\"2\" color=\"#%s\"><b>",szColor);
 				fprintf(pFile, "[%s][%s]",date,time);
 				

@@ -452,6 +452,24 @@ BEGIN
     CONTROL         "Deselect others in the group",IDC_CHECK_GROUP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,67,293,118,19
 END
 
+IDD_CFG_XMPP DIALOGEX 0, 0, 400, 267
+STYLE DS_SETFONT | DS_FIXEDSYS | WS_CHILD
+FONT 8, "MS Shell Dlg", 400, 0, 0x1
+BEGIN
+    GROUPBOX        "Account settings",IDC_STATIC,4,9,205,65
+    EDITTEXT        IDC_EDIT_XMPP_USERNAME,78,34,104,14,ES_AUTOHSCROLL
+    RTEXT           "Username",IDC_STATIC,12,36,59,13
+    RTEXT           "Password",IDC_STATIC,12,53,59,12
+    EDITTEXT        IDC_EDIT_XMPP_PASSWORD,78,50,104,14,ES_PASSWORD | ES_AUTOHSCROLL
+    CONTROL         "Active",IDC_CHECK_XMPP_ACTIVE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,78,20,104,10
+    GROUPBOX        "XMPP server",IDC_STATIC,6,131,379,67
+    RTEXT           "Server address",IDC_STATIC,12,154,59,12
+    RTEXT           "Port",IDC_STATIC,12,174,59,12
+    EDITTEXT        IDC_EDIT_XMPP_SERVER,78,151,296,17,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_XMPP_PORT,78,173,104,14,ES_AUTOHSCROLL
+    LTEXT           "Beta test of supporting XMPP protocol for real time buddies presence.",IDC_STATIC,227,9,158,64
+END
+
 
 /////////////////////////////////////////////////////////////////////////////
 //
@@ -571,6 +589,20 @@ BEGIN
         HORZGUIDE, 35
         HORZGUIDE, 281
         HORZGUIDE, 293
+    END
+
+    IDD_CFG_XMPP, DIALOG
+    BEGIN
+        RIGHTMARGIN, 385
+        VERTGUIDE, 6
+        VERTGUIDE, 12
+        VERTGUIDE, 71
+        VERTGUIDE, 78
+        VERTGUIDE, 182
+        VERTGUIDE, 209
+        BOTTOMMARGIN, 259
+        HORZGUIDE, 147
+        HORZGUIDE, 168
     END
 END
 #endif    // APSTUDIO_INVOKED

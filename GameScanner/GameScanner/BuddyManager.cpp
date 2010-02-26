@@ -41,6 +41,7 @@ bool Buddy_Sort_ServerName(BUDDY_INFO BIa, BUDDY_INFO BIb)
 }
 
 
+
 LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 
 {
@@ -112,7 +113,7 @@ LRESULT CALLBACK Buddy_AddBuddyProc(HWND hDlg, UINT message, WPARAM wParam, LPAR
 }
 
 CBuddyManager::CBuddyManager(CLogger & logger, CGameManager & _gm,CLanguage &_lang) : 
-	log(logger), 
+	m_log(logger), 
 	gm(_gm),
 	m_lang(_lang)
 {
@@ -169,7 +170,7 @@ vecBI::iterator CBuddyManager::FindBuddyInfoByID(DWORD dwID)
 }
 
 
-BOOL  CBuddyManager::Add(char *szName,SERVER_INFO *pServer)
+BOOL  CBuddyManager::Add(const char *szName,SERVER_INFO *pServer, bool bIsXMPPBuddy)
 {
 	BUDDY_INFO BI;
 	ZeroMemory(&BI,sizeof(BUDDY_INFO));
@@ -177,6 +178,8 @@ BOOL  CBuddyManager::Add(char *szName,SERVER_INFO *pServer)
 		return FALSE;
 	strcpy_s(BI.szPlayerName,szName);
 	BI.dwID = BuddyList.size()+1;
+	BI.bXMPP = bIsXMPPBuddy;
+
 	if(pServer!=NULL)
 	{
 		char szIP[MAX_IP_LEN];
@@ -187,6 +190,7 @@ BOOL  CBuddyManager::Add(char *szName,SERVER_INFO *pServer)
 		strcpy_s(BI.szLastSeenIPaddress,szIP);
 		BI.cGAMEINDEX = pServer->cGAMEINDEX;
 		BI.sIndex = pServer->dwIndex;
+
 		
 	}
 
@@ -204,7 +208,7 @@ void  CBuddyManager::UpdateList()
 	item.mask = LVIF_IMAGE | LVIF_TEXT | LVIF_PARAM ;
 
 	int n=0;
-	for(unsigned int i=0; i<BuddyList.size();i++)
+	for(unsigned int i=0; i<BuddyList.size(); i++)
 	{
 		BUDDY_INFO BI = BuddyList.at(i);
 
@@ -263,7 +267,6 @@ void  CBuddyManager::Buddy_Add(HINSTANCE hInst,HWND hWnd, bool manually)
 	if(manually)
 	{
 		DialogBoxParam(hInst, (LPCTSTR)IDD_DLG_ADD_BUDDY, hWnd, (DLGPROC)Buddy_AddBuddyProc,FALSE);
-
 	}else
 	{
 		OnAddSelectedPlayerToBuddyList();
@@ -325,7 +328,7 @@ void  CBuddyManager::OnBuddySelected()
 					}
 					catch(const exception& e)
 					{						
-						log.AddLogInfo(0,"Access Violation!!! %s (OnBuddySelected)\n",e.what());
+						m_log.AddLogInfo(0,"Access Violation!!! %s (OnBuddySelected)\n",e.what());
 					}
 					UpdateCurrentServerUI();
 				}
@@ -372,7 +375,7 @@ void CBuddyManager::Save()
 	//	while(pBI!=NULL)
 	{		
 		BUDDY_INFO BI = BuddyList.at(i);
-		if(BI.bRemove==false)
+		if((BI.bRemove==false) && (BI.bXMPP==false))
 		{
 			TiXmlElement * buddy = new TiXmlElement( "Buddy" );
 			buddies->LinkEndChild( buddy ); 
@@ -436,77 +439,78 @@ int CBuddyManager::Load()
 	TiXmlDocument doc("Buddies.xml");
 	if (!doc.LoadFile()) 
 	{
-		log.AddLogInfo(GS_LOG_INFO,"Error loading buddies.xml file or file didn't exsist.");
+		m_log.AddLogInfo(GS_LOG_INFO,"Error loading buddies.xml file or file didn't exsist.");
 		return 1;
 	}
 
 
-		TiXmlHandle hDoc(&doc);
-		TiXmlElement* pElem;
-		TiXmlHandle hRoot(0);
-		pElem=hDoc.FirstChildElement().Element();
-		// should always have a valid root but handle gracefully if it does
-		if (!pElem) 
-			return 1;
-		const char *szP;
-		szP = pElem->Value(); //Should return BuddiesRoot
+	TiXmlHandle hDoc(&doc);
+	TiXmlElement* pElem;
+	TiXmlHandle hRoot(0);
+	pElem=hDoc.FirstChildElement().Element();
+	// should always have a valid root but handle gracefully if it does
+	if (!pElem) 
+		return 1;
 
-		// save this for later
-		hRoot=TiXmlHandle(pElem);
+//	const char *szP = pElem->Value(); //Should return BuddiesRoot
 
-		//Default values
-		TiXmlElement* pElement;
-		char szVersion[50];
+	// save this for later
+	hRoot=TiXmlHandle(pElem);
 
-		pElement=hRoot.FirstChild("Versions").ToElement();
-		pElement = pElement->FirstChild()->ToElement();
-		if(pElement!=NULL)
+	//Default values
+	TiXmlElement* pElement;
+	char szVersion[50];
+
+	pElement=hRoot.FirstChild("Versions").ToElement();
+	pElement = pElement->FirstChild()->ToElement();
+	if(pElement!=NULL)
+	{
+		ReadCfgStr2(pElement , "MainVersion",szVersion,sizeof(szVersion));		
+	}
+
+
+	TiXmlElement* pBuddy;
+	pBuddy=hRoot.FirstChild("Buddies").ToElement();
+	if(pBuddy!=NULL)
+	{
+		if(pBuddy->FirstChild()!=NULL)
 		{
-			ReadCfgStr2(pElement , "MainVersion",szVersion,sizeof(szVersion));		
-		}
-	
-
-		TiXmlElement* pBuddy;
-		pBuddy=hRoot.FirstChild("Buddies").ToElement();
-		if(pBuddy!=NULL)
-		{
-			if(pBuddy->FirstChild()!=NULL)
+			pBuddy = pBuddy->FirstChild()->ToElement();
+			while(pBuddy!=NULL)
 			{
-				pBuddy = pBuddy->FirstChild()->ToElement();
-				while(pBuddy!=NULL)
+
+				if(pBuddy!=NULL)
 				{
+					BUDDY_INFO bi;
+					ZeroMemory(&bi,sizeof(BUDDY_INFO));
+					TiXmlElement* pBud = pBuddy->FirstChild()->ToElement();
 
-					if(pBuddy!=NULL)
-					{
-						BUDDY_INFO bi;
-						ZeroMemory(&bi,sizeof(BUDDY_INFO));
-						TiXmlElement* pBud = pBuddy->FirstChild()->ToElement();
+					ReadCfgStr2(pBud , "Name",bi.szPlayerName,sizeof(bi.szPlayerName));				
+					ReadCfgStr2(pBud , "Clan",bi.szClan,sizeof(bi.szClan));
+					ReadCfgStr2(pBud , "LastSeenServerName",bi.szLastSeenServerName,sizeof(bi.szLastSeenServerName));
+					ReadCfgStr2(pBud , "LastSeenIP",bi.szLastSeenIPaddress,sizeof(bi.szLastSeenIPaddress));
+					ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)bi.cMatchOnColorEncoded);
+					ReadCfgInt2(pBud , "ExactMatch",(int&)bi.cMatchExact);						
+					ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)bi.cGAMEINDEX);
 
-						ReadCfgStr2(pBud , "Name",bi.szPlayerName,sizeof(bi.szPlayerName));				
-						ReadCfgStr2(pBud , "Clan",bi.szClan,sizeof(bi.szClan));
-						ReadCfgStr2(pBud , "LastSeenServerName",bi.szLastSeenServerName,sizeof(bi.szLastSeenServerName));
-						ReadCfgStr2(pBud , "LastSeenIP",bi.szLastSeenIPaddress,sizeof(bi.szLastSeenIPaddress));
-						ReadCfgInt2(pBud , "MatchOnColorEncoded",(int&)bi.cMatchOnColorEncoded);
-						ReadCfgInt2(pBud , "ExactMatch",(int&)bi.cMatchExact);						
-						ReadCfgInt2(pBud , "LastSeenGameIdx",(int&)bi.cGAMEINDEX);
+					bi.dwID = dwBuddyID++;
+				
+					bi.sIndex = -1;  //reset
 
-						bi.dwID = dwBuddyID++;
-					
-						bi.sIndex = -1;  //reset
+					BuddyList.push_back(bi);
 
-						BuddyList.push_back(bi);
-
-					}
-					pBuddy = pBuddy->NextSiblingElement();
 				}
-			}else
-			{
-				log.AddLogInfo(GS_LOG_ERROR,"No buddies found.");
+				pBuddy = pBuddy->NextSiblingElement();
 			}
 		}else
-			log.AddLogInfo(GS_LOG_ERROR,"Error loading buddy xml data.");
+		{
+			m_log.AddLogInfo(GS_LOG_ERROR,"No buddies found.");
+		}
+	}else
+	{
+		m_log.AddLogInfo(GS_LOG_ERROR,"Error loading buddy xml data.");
+	}
 
-	//pBI = pFirstBI;
 	return 0;
 }
 
@@ -518,15 +522,15 @@ void CBuddyManager::NotifyBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInf
 		return;
 
 	vecBI::iterator it = FindBuddyInfoByID(pBI->dwID);
-	if(it!=BuddyList.end())
-	{	
-		if(pServerInfo->szServerName!=NULL)
-			strncpy_s(it->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName,_TRUNCATE);
-
-		it->cGAMEINDEX = pServerInfo->cGAMEINDEX;
-		it->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
-	} else
+	if(it==BuddyList.end())
 		return;
+
+	if(pServerInfo->szServerName!=NULL)
+		strncpy_s(it->szServerName,sizeof(pBI->szServerName),pServerInfo->szServerName,_TRUNCATE);
+
+	it->cGAMEINDEX = pServerInfo->cGAMEINDEX;
+	it->sIndex = (int) pServerInfo->dwIndex;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+
 	HWND hwndLV = g_hwndListBuddy;
 
 	LV_FINDINFO lvfi;
@@ -556,13 +560,13 @@ void CBuddyManager::NotifyBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInf
 		}
 
 
-			item.iSubItem = 1;
-			item.iImage = gm.Get_GameIcon(it->cGAMEINDEX);
-			ListView_SetItem(g_hwndListBuddy,&item);
+		item.iSubItem = 1;
+		item.iImage = gm.Get_GameIcon(it->cGAMEINDEX);
+		ListView_SetItem(g_hwndListBuddy,&item);
 
-			sprintf_s(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
-			strcpy_s(it->szIPaddress,szText);
-			ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
+		sprintf_s(szText,"%s:%d",pServerInfo->szIPaddress,pServerInfo->usPort);
+		strcpy_s(it->szIPaddress,szText);
+		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
 
 	}
 	if(gm.GamesInfo[it->cGAMEINDEX].colorfilter!=NULL)
@@ -585,15 +589,13 @@ void CBuddyManager::NotifyBuddyIsOffline(BUDDY_INFO *pBI, SERVER_INFO *pServerIn
 		return;
 
 	vecBI::iterator it = FindBuddyInfoByID(pBI->dwID);
-	if(it!=BuddyList.end())
-	{	
-			strcpy_s(it->szServerName,sizeof(pBI->szServerName)," ");			
-			it->sIndex = (int) -1;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
-			it->pSI = NULL;
-		
-	} else
+
+	if(it==BuddyList.end())
 		return;
 
+	strcpy_s(it->szServerName,sizeof(pBI->szServerName)," ");			
+	it->sIndex = (int) -1;  //have to change the Buddy index to a new var that can hold bigger numbers such as DWORD
+	it->pSI = NULL;
 
 	LV_FINDINFO lvfi;
 	char szText[250];

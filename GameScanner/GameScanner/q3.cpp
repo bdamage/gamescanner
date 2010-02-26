@@ -29,7 +29,7 @@ long (*Q3_InsertServerItem)(GAME_INFO *pGI,SERVER_INFO pSI);
 
 DWORD Q3_dwThreadCounter=0;
 
-extern CLogger log;
+extern CLogger g_log;
 
 char szPlyType[5][12] = {TEXT("Connecting"), TEXT("Axis"), TEXT("Allies"), TEXT("Spectator"),TEXT("Unknown")};
 
@@ -850,162 +850,7 @@ PLAYERDATA *Q3_ParsePlayers2(SERVER_INFO *pSI,char *pointer,char *end, DWORD *nu
 	}
 	return pQ3Players;
 }
-/*
 
-PLAYERDATA *Q3_ParsePlayers(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers,char *szP)
-{
-	int Pindex =0;
-	PLAYERDATA *pQ3Players=NULL;
-	BOOL bGTVBug=FALSE;
-	pSI->cBots = 0;
-	if(pointer[0]!=0)
-	{
-		//Parseplayers	
-		PLAYERDATA *pQ3CurrentPlayer=NULL;		
-		while(pointer<end)
-		{
-			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
-			if(player==NULL) //Out of memory
-				return pQ3Players;
-			player->pNext = NULL;							
-			player->szClanTag = NULL;	
-			player->szTeam = NULL;	
-			player->cGAMEINDEX = pSI->cGAMEINDEX;
-			player->pServerInfo = pSI;
-			player->dwServerIndex = pSI->dwIndex;
-
-			char *endString = strchr(pointer,' ');
-			if(endString!=NULL)
-			{
-				endString[0] = 0;
-				player->rate = atoi(pointer);
-				pointer+=strlen(pointer)+1;
-
-				endString = strchr(pointer,' ');
-				if(endString==NULL)                        //fix for Quake 3 GTV bug
-				{
-					endString =	strchr(pointer,'\"');	
-					if(endString==NULL)  //temp fix on Cod2
-					{
-						free(player);
-						break;
-					}
-					endString[0] = 0;
-
-					bGTVBug = TRUE;
-				}
-				else
-					endString[0] = 0;
-
-				player->ping = atoi(pointer);
-				pointer+=strlen(pointer)+1;
-
-				if(pSI->cGAMEINDEX==NEXUIZ_SERVERLIST)
-				{
-					char *extra;
-					endString = strchr(pointer,'\"');
-					if(endString!=NULL)
-					{
-						endString[0] = 0;
-						extra = strrchr(endString,' ');	
-							if(extra!=NULL)
-							{
-								extra[0]=0;
-								pointer+=strlen(pointer)+1;
-							} else
-								pointer = endString+1;
-					}
-
-
-				}
-
-				//trim
-				endString = strchr(pointer,0x0a);  //is this really needed???
-				if(endString!=NULL)
-					endString[0] = 0;
-
-				char *ch= NULL;
-				if(bGTVBug==FALSE)
-				{
-					ch = strchr(pointer,'\"');				
-					if(ch!=NULL)
-						pointer++; //skip initial byte
-					
-				} else
-					pointer++; //skip initial byte
-
-				bGTVBug = FALSE;  //reset
-
-				ch = strrchr(pointer,'\"');
-				if(ch!=NULL)
-					ch[0]=0; //remove last " 
-
-				player->szPlayerName= _strdup(pointer);
-				pointer+=strlen(pointer)+2;
-
-
-				switch(pSI->cGAMEINDEX)
-				{
-					case NEXUIZ_SERVERLIST:
-					case OPENARENA_SERVERLIST:
-					case Q3_SERVERLIST:
-						{
-							if(player->ping == 0)
-								pSI->cBots ++;
-
-						}
-						break;
-					case ET_SERVERLIST: //ETpro for retrieving player status (connecting, spectating, allies & axis)
-					{
-						if(player->ping == 0)
-							pSI->cBots ++;
-
-						if(szP!=NULL)
-						{
-							int l = strlen(szP);
-							while(Pindex<l)
-							{
-								if(szP[Pindex]!='-')
-								{
-									int _idx = (szP[Pindex]-48);
-									player->szTeam = _strdup(&szPlyType[_idx][0]);
-									Pindex++;					
-									break;
-								}
-								Pindex++;						
-							}
-						}
-						break;
-					}
-					case WARSOW_SERVERLIST:
-					{
-						if(strcmp(pointer,"0")==0)
-							player->szTeam = _strdup("Spectator");
-						else if(strcmp(pointer,"2")==0)
-							player->szTeam = _strdup("Red");
-						else if(strcmp(pointer,"3")==0)
-							player->szTeam= _strdup("Blue");
-							
-						pointer+=2;						
-						break;
-					}
-				}
-			}
-			if(pQ3Players==NULL)
-				pQ3Players = pQ3CurrentPlayer = player;
-			else 
-				pQ3CurrentPlayer = pQ3CurrentPlayer->pNext = player;
-
-			*numPlayers= *numPlayers+1;	
-			if(pointer[0]==0) //Warsow fix
-				break;
-					
-		}
-		
-	}
-	return pQ3Players;
-}
-*/
 /*
 QW
 0x01049D28  ff ff ff ff 69 6e 66 6f 52 65 73 70 6f 6e 73 65 0a 5c 67 61 6d 65 6e 61 6d  ÿÿÿÿinfoResponse.\gamenam
@@ -1215,7 +1060,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	{
 
 		KillTimer(g_hWnd,IDT_1SECOND);
-		log.AddLogInfo(GS_LOG_ERROR,"Error connecting to socket!");
+		g_log.AddLogInfo(GS_LOG_ERROR,"Error connecting to socket!");
 		return 1;
 	}
 
@@ -1224,7 +1069,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	if (hEvent == WSA_INVALID_EVENT)
 	{
 		KillTimer(g_hWnd,IDT_1SECOND);
-		log.AddLogInfo(GS_LOG_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
+		g_log.AddLogInfo(GS_LOG_ERROR,"WSACreateEvent() = WSA_INVALID_EVENT");
 		closesocket(ConnectSocket);
 		return 1;
 	}
@@ -1238,7 +1083,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	if (nRet == SOCKET_ERROR)
 	{
 		KillTimer(g_hWnd,IDT_1SECOND);
-		log.AddLogInfo(GS_LOG_ERROR,"EventSelect() = SOCKET_ERROR");
+		g_log.AddLogInfo(GS_LOG_ERROR,"EventSelect() = SOCKET_ERROR");
 		closesocket(ConnectSocket);
 		WSACloseEvent(hEvent);
 		return 5;
@@ -1261,18 +1106,18 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		dwRet = WSAWaitForMultipleEvents(1, &hEvent, FALSE,4000,FALSE);
 		if (dwRet == WSA_WAIT_TIMEOUT)
 		{
-			log.AddLogInfo(GS_LOG_ERROR,"WSAWaitForMultipleEvents = WSA_WAIT_TIMEOUT");
+			g_log.AddLogInfo(GS_LOG_ERROR,"WSAWaitForMultipleEvents = WSA_WAIT_TIMEOUT");
 			break;
 		}
 
 		//
 		// Figure out what happened
 		//
-		//log.AddLogInfo(0,"\nWSAEnumNetworkEvents()");
+		//g_log.AddLogInfo(0,"\nWSAEnumNetworkEvents()");
 		nRet = WSAEnumNetworkEvents(ConnectSocket, hEvent, &events);
 		if (nRet == SOCKET_ERROR)
 		{
-			log.AddLogInfo(GS_LOG_ERROR,"WSAEnumNetworkEvents() = SOCKET_ERROR");
+			g_log.AddLogInfo(GS_LOG_ERROR,"WSAEnumNetworkEvents() = SOCKET_ERROR");
 			break;
 		}
 
@@ -1283,17 +1128,17 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		// Connect event?
 		if (events.lNetworkEvents & FD_CONNECT)
 		{
-			//log.AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
-			log.AddLogInfo(0,"Master server %s",pGI->szMasterServerIP[0]);
-			log.AddLogInfo(0,"Sending packet string: [%s]  Length: %d",sendbuf,len);
-			log.AddLogInfo(0,"xml config: %s ",pGI->szMasterQueryString);
+			//g_log.AddLogInfo(0,"\nFD_CONNECT: %d", events.iErrorCode[FD_CONNECT_BIT]);
+			g_log.AddLogInfo(0,"Master server %s",pGI->szMasterServerIP[0]);
+			g_log.AddLogInfo(0,"Sending packet string: [%s]  Length: %d",sendbuf,len);
+			g_log.AddLogInfo(0,"xml config: %s ",pGI->szMasterQueryString);
 
 			if(send(ConnectSocket, sendbuf, len , 0)==SOCKET_ERROR) 
 			{
 				KillTimer(g_hWnd,IDT_1SECOND);
 				WSACloseEvent(hEvent);
 				closesocket(ConnectSocket);		
-				log.AddLogInfo(GS_LOG_ERROR,"Error sending master query packet!");
+				g_log.AddLogInfo(GS_LOG_ERROR,"Error sending master query packet!");
 				return 2;
 			}
 		}
@@ -1301,7 +1146,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		// Read event?
 		if (events.lNetworkEvents & FD_READ)
 		{
-			//log.AddLogInfo(0,"\nFD_READ: %d, %d",events.iErrorCode[FD_READ_BIT],i);
+			//g_log.AddLogInfo(0,"\nFD_READ: %d, %d",events.iErrorCode[FD_READ_BIT],i);
 			// Read the data and write it to stdout
 			packet[i]=(unsigned char*)ReadPacket(ConnectSocket, &packetlen);
 			packet_len[i] = packetlen;
@@ -1315,14 +1160,14 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		// Close event?
 		if (events.lNetworkEvents & FD_CLOSE)
 		{
-			log.AddLogInfo(0,"\nFD_CLOSE: %d",events.iErrorCode[FD_CLOSE_BIT]);
+			g_log.AddLogInfo(0,"\nFD_CLOSE: %d",events.iErrorCode[FD_CLOSE_BIT]);
 			break;
 		}
 /*
 		// Write event?
 		if (events.lNetworkEvents & FD_WRITE)
 		{
-			log.AddLogInfo(0,"\nFD_WRITE: %d",events.iErrorCode[FD_WRITE_BIT]);
+			g_log.AddLogInfo(0,"\nFD_WRITE: %d",events.iErrorCode[FD_WRITE_BIT]);
 		}
 */
 	}

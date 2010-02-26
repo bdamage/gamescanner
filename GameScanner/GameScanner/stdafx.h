@@ -79,6 +79,20 @@
 #include <sys\stat.h>  /* for _S_IWRITE */
 #include <share.h>     /* for _SH_DENYNO */
 
+
+#include <Message.h>
+#include <client.h>
+#include <messagehandler.h>
+
+#include <ConnectionListener.h>
+
+
+#include <PresenceHandler.h>
+
+//#include <RosterListener.h>
+#include <RosterManager.h>
+
+
 #include "structs_defines.h"
 #include "utilz.h"
 #include "q3.h"
@@ -95,6 +109,7 @@
 #include "..\..\FreeImage\freeimage.h"
 #include "..\..\hashlib\src\hashlibpp.h"
 #include <tinyxml.h>
+
 
 // TODO: reference additional headers your program requires here
 

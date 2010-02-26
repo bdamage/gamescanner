@@ -11,7 +11,7 @@ typedef std::map<std::string,std::string> MessageMap;
 
 class CLanguage
 {
-	CLogger & log;
+	CLogger & m_log;
 	MessageMap DefaultLanguage;
 
 	const char *m_pszDirectory;

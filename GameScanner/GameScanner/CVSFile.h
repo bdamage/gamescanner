@@ -2,7 +2,7 @@
 
 class CCVSFile 
 {
-	CLogger log;
+	CLogger m_log;
 	FILE *m_file;
 	LPBYTE m_pBuffer;
 	LPBYTE m_pPointer;

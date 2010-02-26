@@ -3,7 +3,7 @@
 class CGameManager
 {
 	int m_iGameCounter;
-	CLogger & log;
+	CLogger & m_log;
 	vFILTER_SETS vFilterSetsGlobal;
 
 

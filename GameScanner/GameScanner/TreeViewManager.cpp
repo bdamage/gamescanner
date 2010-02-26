@@ -7,7 +7,7 @@ extern APP_SETTINGS_NEW AppCFG;
 extern int g_currentGameIdx;
 
 CTreeViewManager::CTreeViewManager(CLogger & logger, CGameManager & _gm, CScriptEngine &_se) : 
-	log(logger), 
+	m_log(logger), 
 	gm(_gm),
 	m_se(_se),
 	g_bMouseMenuClick(FALSE),
@@ -242,7 +242,7 @@ int CTreeViewManager::Save()
 	sprintf_s(szFilePath,"%s%s",m_USER_SAVE_PATH,"treeviewcfg.xml");
 	SetCurrentDirectory(m_USER_SAVE_PATH);
 	if(!doc.SaveFile(szFilePath))
-		log.AddLogInfo(GS_LOG_WARNING,"Error saving Treeview XML file!");
+		m_log.AddLogInfo(GS_LOG_WARNING,"Error saving Treeview XML file!");
 
 	TiXmlDocument GlobalFilterDoc;  
 	 TiXmlDeclaration* decl2 = new TiXmlDeclaration( "1.0", "", "" );   
@@ -266,7 +266,7 @@ int CTreeViewManager::Save()
 	sprintf_s(szFilePath,"%s%s",m_USER_SAVE_PATH,"globalfilter.xml");
 	SetCurrentDirectory(m_USER_SAVE_PATH);
 	if(!GlobalFilterDoc.SaveFile(szFilePath))
-		log.AddLogInfo(GS_LOG_WARNING,"Error saving Treeview XML file!");
+		m_log.AddLogInfo(GS_LOG_WARNING,"Error saving Treeview XML file!");
 
 	return 0;
 }
@@ -288,7 +288,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 	
 	strncpy(szFilePath,m_USER_SAVE_PATH,strlen(m_USER_SAVE_PATH));
 	strcat_s(szFilePath,"treeviewcfg.xml");
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
+	m_log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_USER_SAVE_PATH);
 	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)
 	{
@@ -299,7 +299,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 			
 		if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING) //(!doc.LoadFile(szFilePath)) 
 		{
-			log.AddLogInfo(GS_LOG_ERROR,"Error loading default TreeView file from m_EXE_PATH (%s)",szFilePath);
+			m_log.AddLogInfo(GS_LOG_ERROR,"Error loading default TreeView file from m_EXE_PATH (%s)",szFilePath);
 			return 1;
 		}
 	}
@@ -312,7 +312,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 	xml.GetCustomAttribute(xml.m_pRootElement,"version",TREEVIEW_VERSION,sizeof(TREEVIEW_VERSION)-1);
 
 	if(strlen(TREEVIEW_VERSION)>0)
-		log.AddLogInfo(GS_LOG_INFO,"Current TreeView CFG file version is %s.",TREEVIEW_VERSION);
+		m_log.AddLogInfo(GS_LOG_INFO,"Current TreeView CFG file version is %s.",TREEVIEW_VERSION);
 		
 	if(CheckForUpdate(TREEVIEW_VERSION)==0)
 	{
@@ -327,7 +327,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 			SetCurrentDirectory(m_EXE_PATH);		
 			if(xmlUpdate.load(szFilePath)==XMLFILE_ERROR_LOADING ) //!docNew.LoadFile(szFilePath))
 			{
-				log.AddLogInfo(GS_LOG_ERROR,"Error loading NEW treeviewcfg file.");
+				m_log.AddLogInfo(GS_LOG_ERROR,"Error loading NEW treeviewcfg file.");
 				//continue with the old one
 			}else
 			{
@@ -350,18 +350,18 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 
 
 	sprintf_s(szFilePath,"%s%s",m_USER_SAVE_PATH,"globalfilter.xml");	
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
+	m_log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_USER_SAVE_PATH);
 	TiXmlDocument GlobalFilterDoc(szFilePath);
 	if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) //!GlobalFilterDoc.LoadFile()) 
 	{
-		log.AddLogInfo(GS_LOG_ERROR,"Error loading config file for globalfilter.xml from m_USER_SAVE_PATH (%s)",szFilePath);
+		m_log.AddLogInfo(GS_LOG_ERROR,"Error loading config file for globalfilter.xml from m_USER_SAVE_PATH (%s)",szFilePath);
 		AppCFG.filter.bHideOfflineServers = 0;
 		sprintf_s(szFilePath,"%s\\%s",m_EXE_PATH,"globalfilter.xml");
 		SetCurrentDirectory(m_EXE_PATH);
 		if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) 
 		{
-			log.AddLogInfo(GS_LOG_ERROR,"Error loading default globalfilter.xml file from m_EXE_PATH (%s)",szFilePath);
+			m_log.AddLogInfo(GS_LOG_ERROR,"Error loading default globalfilter.xml file from m_EXE_PATH (%s)",szFilePath);
 			return 1;
 		}
 	}
@@ -379,7 +379,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 			SetCurrentDirectory(m_EXE_PATH);
 			if (xmlGlobalFilters.load(szFilePath)==XMLFILE_ERROR_LOADING) 
 			{
-				log.AddLogInfo(GS_LOG_ERROR,"Error loading default globalfilter.xml file from m_EXE_PATH (%s)",szFilePath);
+				m_log.AddLogInfo(GS_LOG_ERROR,"Error loading default globalfilter.xml file from m_EXE_PATH (%s)",szFilePath);
 				return 1;
 			}
 		}
@@ -427,12 +427,12 @@ int  CTreeViewManager::CheckForUpdate(const char *szCurrentVersion)
 	ZeroMemory(szFilePath,sizeof(szFilePath));
 	strncpy(szFilePath,m_EXE_PATH,strlen(m_EXE_PATH));
 	strcat_s(szFilePath,"\\updated_treeviewcfg.xml");
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
+	m_log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_EXE_PATH);
 
 	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)//!doc.LoadFile(szFilePath)) 
 	{
-		log.AddLogInfo(GS_LOG_ERROR,"Error loading %s",szFilePath);
+		m_log.AddLogInfo(GS_LOG_ERROR,"Error loading %s",szFilePath);
 		return 1;
 	}
 
@@ -440,7 +440,7 @@ int  CTreeViewManager::CheckForUpdate(const char *szCurrentVersion)
 	ZeroMemory(szVersion,sizeof(szVersion));
 	xml.GetCustomAttribute(xml.m_pRootElement,"version",szVersion,sizeof(szVersion)-1);
 
-	log.AddLogInfo(GS_LOG_INFO,"Detected treeview.NEW cfg file version is %s ",szVersion);
+	m_log.AddLogInfo(GS_LOG_INFO,"Detected treeview.NEW cfg file version is %s ",szVersion);
 	if(szVersion!=NULL)
 	{
 		if(szCurrentVersion!=NULL)
@@ -448,14 +448,14 @@ int  CTreeViewManager::CheckForUpdate(const char *szCurrentVersion)
 			if(strcmp(szVersion,szCurrentVersion)>0)
 			{
 			
-				log.AddLogInfo(GS_LOG_INFO,"New version detected %s != %s",szVersion,szCurrentVersion);
+				m_log.AddLogInfo(GS_LOG_INFO,"New version detected %s != %s",szVersion,szCurrentVersion);
 		//		strcpy_s(TREEVIEW_VERSION,szVersion);
 			}
 			else
 				return 2;
 		}else
 		{
-			log.AddLogInfo(GS_LOG_INFO,"New version detected",szVersion);
+			m_log.AddLogInfo(GS_LOG_INFO,"New version detected",szVersion);
 		//	strcpy_s(TREEVIEW_VERSION,szVersion);
 		}
 		
@@ -473,12 +473,12 @@ int  CTreeViewManager::CheckForUpdateGlobalFilters(const char *szCurrentVersion)
 	ZeroMemory(szFilePath,sizeof(szFilePath));
 	strncpy(szFilePath,m_EXE_PATH,strlen(m_EXE_PATH));
 	strcat_s(szFilePath,"\\globalfilter.xml");
-	log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
+	m_log.AddLogInfo(GS_LOG_INFO,"Trying to load %s",szFilePath);
 	SetCurrentDirectory(m_EXE_PATH);
 
 	if (xml.load(szFilePath)== XMLFILE_ERROR_LOADING)//!doc.LoadFile(szFilePath)) 
 	{
-		log.AddLogInfo(GS_LOG_ERROR,"Error loading %s",szFilePath);
+		m_log.AddLogInfo(GS_LOG_ERROR,"Error loading %s",szFilePath);
 		return 1;
 	}
 
@@ -486,7 +486,7 @@ int  CTreeViewManager::CheckForUpdateGlobalFilters(const char *szCurrentVersion)
 	ZeroMemory(szVersion,sizeof(szVersion));
 	xml.GetCustomAttribute(xml.m_pRootElement,"version",szVersion,sizeof(szVersion)-1);
 
-	log.AddLogInfo(GS_LOG_INFO,"Detected globalfilter file version is %s ",szVersion);
+	m_log.AddLogInfo(GS_LOG_INFO,"Detected globalfilter file version is %s ",szVersion);
 	if(szVersion!=NULL)
 	{
 		if(szCurrentVersion!=NULL)
@@ -494,14 +494,14 @@ int  CTreeViewManager::CheckForUpdateGlobalFilters(const char *szCurrentVersion)
 			if(strcmp(szVersion,szCurrentVersion)>0)
 			{
 			
-				log.AddLogInfo(GS_LOG_INFO,"New global filter version detected %s != %s",szVersion,szCurrentVersion);
+				m_log.AddLogInfo(GS_LOG_INFO,"New global filter version detected %s != %s",szVersion,szCurrentVersion);
 		//		strcpy_s(TREEVIEW_GLOBAL_FILTER_VERSION,szVersion);
 			}
 			else
 				return 2;
 		}else
 		{
-			log.AddLogInfo(GS_LOG_INFO,"New global filter version detected",szVersion);
+			m_log.AddLogInfo(GS_LOG_INFO,"New global filter version detected",szVersion);
 		//	strcpy_s(TREEVIEW_GLOBAL_FILTER_VERSION,szVersion);
 		}
 		
@@ -751,7 +751,7 @@ int CTreeViewManager::OnSelection(LPARAM lParam)
 	/*= TreeView_GetSelection(hwndTreeCtrl);
 	if(hTreeItem==NULL)
 	{
-		log.AddLogInfo(GS_LOG_DEBUG,  "Inside TreeView_GetSelection2 hTreeItem=NULL");
+		m_log.AddLogInfo(GS_LOG_DEBUG,  "Inside TreeView_GetSelection2 hTreeItem=NULL");
 		return DO_NOTHING;
 	}*/
 	TVHITTESTINFO tvHTTI;
@@ -847,7 +847,7 @@ int CTreeViewManager::OnSelection(LPARAM lParam)
 	}
 
 
-	//log.AddLogInfo(GS_LOG_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwType);
+	//m_log.AddLogInfo(GS_LOG_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwType);
 
 	return DoAction(iSel, tvHTTI.flags,&tvitem,TRUE);
 }
@@ -968,7 +968,7 @@ void CTreeViewManager::Select_all_childs(HTREEITEM hRoot, bool selected)
 
 		TreeView_GetItem(hwndTreeCtrl, &tvitem);
 		int iSel = (int)tvitem.lParam;
-		//log.AddLogInfo(GS_LOG_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwType);
+		//m_log.AddLogInfo(GS_LOG_DEBUG,"%d %s Action %d",iSel,szBuffer,vTI.at(iSel).dwType);
 
 		if(selected==false)
 			tvitem.iSelectedImage =	tvitem.iImage = UNCHECKED_ICON;  //Unchecked image

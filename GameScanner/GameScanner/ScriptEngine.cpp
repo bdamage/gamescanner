@@ -126,33 +126,33 @@ int CScriptEngine::Get_Constant(const char *szVarIn)
 		return 1;
 	else if(stricmp(szVarIn,"game")==0)  //
 		return 2;
-	else if(stricmp(szVarIn,"ping")==0)  //
+	else if(stricmp(szVarIn,"ping")==0)  
 		return 3;
-	else if(stricmp(szVarIn,"country")==0)  //
+	else if(stricmp(szVarIn,"country")==0)  
 		return 4;
-	else if(stricmp(szVarIn,"ip")==0)  //
+	else if(stricmp(szVarIn,"ip")==0)  
 		return 5;
-	else if(stricmp(szVarIn,"port")==0)  //
+	else if(stricmp(szVarIn,"port")==0)  
 		return 6;
 	else if(stricmp(szVarIn,"address")==0)  //ip:port
 		return 7;
-	else if(stricmp(szVarIn,"map")==0)  //
+	else if(stricmp(szVarIn,"map")==0)  
 		return 8;
-	else if(stricmp(szVarIn,"players")==0)  //
+	else if(stricmp(szVarIn,"players")==0)  
 		return 9;
-	else if(stricmp(szVarIn,"maxplayers")==0)  //
+	else if(stricmp(szVarIn,"maxplayers")==0)  
 		return 10;
-	else if(stricmp(szVarIn,"modname")==0)  //
+	else if(stricmp(szVarIn,"modname")==0)  
 		return 11;
-	else if(stricmp(szVarIn,"favorite")==0)  //
+	else if(stricmp(szVarIn,"favorite")==0)  
 		return 12;
-	else if(stricmp(szVarIn,"version")==0)  //
+	else if(stricmp(szVarIn,"version")==0)  
 		return 13;
-	else if(stricmp(szVarIn,"private")==0)  //
+	else if(stricmp(szVarIn,"private")==0)  
 		return 14;
-	else if(stricmp(szVarIn,"anticheat")==0)  //
+	else if(stricmp(szVarIn,"anticheat")==0)  
 		return 15;
-	else if(stricmp(szVarIn,"bots")==0)  //
+	else if(stricmp(szVarIn,"bots")==0)  
 		return 16;
 	return 0;
 }
@@ -164,15 +164,15 @@ int Script_Get_Command(char *szVarIn)
 
 	if(stricmp(szVarIn,"if")==0) // if statement
 		return 1;
-	else if(stricmp(szVarIn,"goto")==0)  //
+	else if(stricmp(szVarIn,"goto")==0)  
 		return 2;
-	else if(stricmp(szVarIn,"remove")==0)  //
+	else if(stricmp(szVarIn,"remove")==0)  
 		return 3;
-	else if(stricmp(szVarIn,"keep")==0)  //
+	else if(stricmp(szVarIn,"keep")==0)  
 		return 4;
-	else if(stricmp(szVarIn,"run")==0)  //
+	else if(stricmp(szVarIn,"run")==0)  
 		return 5;
-	else if(stricmp(szVarIn,"norun")==0)  //
+	else if(stricmp(szVarIn,"norun")==0)  
 		return 6;
 	return 0;
 }

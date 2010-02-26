@@ -22,6 +22,7 @@ Upgrade code 1.0 - 1.0.9:
 */
 
 
+
 #include "stdafx.h"
 #include "GameScanner.h"
 
@@ -42,6 +43,8 @@ Upgrade code 1.0 - 1.0.9:
 #include "BuddyManager.h"
 #include "ScriptEngine.h"
 
+
+
 #pragma comment(lib, "ole32.lib")
 
 //#ifdef _DEBUG
@@ -59,6 +62,9 @@ Upgrade code 1.0 - 1.0.9:
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "Winmm.lib")  //Playsound
 #pragma comment(lib, "Iphlpapi.lib")  //ICMP
+#pragma comment(lib, "gloox 1.0.lib")  //XMPP lib
+
+
 
 #pragma warning( disable : 4244 ) 
 #pragma warning( disable : 4018 ) 
@@ -223,16 +229,17 @@ int g_currentGameIdx = ET_SERVERLIST;
 int g_currentScanGameIdx = -1;
 HTREEITEM hSelectedTreeItem = NULL;
 
-CLogger	log;
+
 CScriptEngine se;
-CGameManager	gm(log);
-CTreeViewManager tvmgr(log,gm,se);
+CLogger	g_log;
+CGameManager	gm(g_log);
+CTreeViewManager tvmgr(g_log,gm,se);
 CListViewHeader *g_LVHeaderSL = NULL;
 CIPtoCountry g_IPtoCountry;
 CDownload g_download;
-CLanguage g_lang(log);
+CLanguage g_lang(g_log);
 CXmlConfig g_xmlcfg;
-CBuddyManager bm(log,gm,g_lang);
+CBuddyManager bm(g_log,gm,g_lang);
 
 UINT_PTR hTimerMonitor=NULL;
 
@@ -1228,7 +1235,7 @@ void Do_ServerListSortThread(int iColumn)
 		hThread = CreateThread( NULL, 0, &Do_ServerListSort, (LPVOID)iColumn,0, &dwThreadIdBrowser);                
 		if (hThread == NULL) 
 		{
-			log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d) @ Do_ServerListSortThread\n", GetLastError() ); 
+			g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d) @ Do_ServerListSortThread\n", GetLastError() ); 
 		}
 		else 
 		{			
@@ -1819,7 +1826,7 @@ void Initialize_Monitor()
 	hThread = CreateThread( NULL, 0, &Monitor_ScanThread, (LPVOID)0,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed @ Initialize_Monitor (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed @ Initialize_Monitor (%d)\n", GetLastError() ); 
 	}
 	else 
 	{
@@ -1872,7 +1879,7 @@ void Initialize_ScanSelection()
 	hThread = CreateThread( NULL, 0, &Selection_ScanThread, (LPVOID)0,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed @ Initialize_ScanSelection (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed @ Initialize_ScanSelection (%d)\n", GetLastError() ); 
 	}
 	else 
 	{
@@ -1973,7 +1980,7 @@ void RegisterProtocol(char *path)
 void Default_Appsettings()
 {
 
-	//log.AddLogInfo(GS_LOG_INFO,"Settings set to defaults.");
+	//g_log.AddLogInfo(GS_LOG_INFO,"Settings set to defaults.");
 	
 	ZeroMemory(&AppCFG,sizeof(APP_SETTINGS_NEW));
                      
@@ -2007,6 +2014,11 @@ void Default_Appsettings()
 	strcpy(AppCFG.szEXT_EXE_WINDOWNAME,"TEAMSPEAK 2");
 	strcpy(AppCFG.szET_WindowName,"Enemy Territory|Wolfenstein|Quake4|F.E.A.R.|ETQW|Warsow|Call of Duty 4|WolfMP");
 
+	strcpy(AppCFG.szXMPP_SERVER,"talk.google.com");
+	strcpy(AppCFG.szXMPP_USERNAME,"");
+	strcpy(AppCFG.szXMPP_PASSWORD,"");
+	AppCFG.bXMPP_Active = false;
+	AppCFG.dwXMPP_PORT = 0;
 
 	//Legacy stuff - this should be cleared out from source code...
 
@@ -2166,6 +2178,179 @@ DWORD AddServer(GAME_INFO *pGI,char *szIP, unsigned short usPort,bool bFavorite)
 	return pSI->dwIndex;
 }
 */
+
+using namespace gloox;
+class RosterMngr: public RosterListener
+{
+      virtual void handleRosterPresence( const RosterItem& item, const std::string& resource,
+                                         Presence::PresenceType presence, const std::string& msg ) 
+	  {
+		  std::cout << item.jid() << " " << resource << " " << GetPresenceTypeString(presence) << " " << msg << std::endl;
+		  
+
+	  }
+
+	  std::string GetPresenceTypeString(Presence::PresenceType presence)
+	  {
+		  std::string ret;
+		 switch(presence)
+	     {
+		 case Presence::PresenceType::Available :  ret = "Online";break;
+		 case Presence::PresenceType::Chat:             ret = "'available for chat'"; break;
+		 case Presence::PresenceType::Away:			ret ="Away"; break;
+		 case Presence::PresenceType::DND:			ret = "Do Not Disturb"; break;
+		 case Presence::PresenceType::XA:			ret = "Extended Away"; break;
+		 case Presence::PresenceType::Unavailable:	ret = "Offline"; break;
+
+			 //    XA,                         /**< The entity is XA (eXtended Away). */
+     //   Unavailable,                /**< The entity is offline. */
+      //  Probe,                      /**< This is a presence probe. */
+      //  Error,                      /**< This is a presence error. */
+       // Invalid                     /**< The stanza is invalid. *
+      };
+		 return ret;
+	  }
+
+	  virtual void handleItemAdded( const JID& jid ) {}
+	  virtual void handleItemUpdated( const JID& jid ) {}
+
+	  virtual void handleItemSubscribed( const JID& jid ) {}
+	  virtual void handleItemRemoved( const JID& jid ) {}
+   
+	  virtual void handleItemUnsubscribed( const JID& jid ){}
+
+	  virtual void handleRoster( const Roster& roster ) {}
+
+
+      virtual void handleSelfPresence( const RosterItem& item, const std::string& resource,
+		  Presence::PresenceType presence, const std::string& msg ) {}
+
+	  virtual bool handleSubscriptionRequest( const JID& jid, const std::string& msg ) {return false;}
+	  virtual bool handleUnsubscriptionRequest( const JID& jid, const std::string& msg ) {return false;}
+	  virtual void handleNonrosterPresence( const Presence& presence ) {}
+	  virtual void handleRosterError( const IQ& iq ){}
+};
+
+class XMPPManager  : public gloox::MessageHandler , ConnectionListener , PresenceHandler
+{
+ private:
+	 gloox::Client* m_client;
+
+ public:
+   XMPPManager()
+   {
+	 // LogSink g_log.
+	   
+	   gloox::JID jid( AppCFG.szXMPP_USERNAME );
+
+	  m_client = new Client( jid, AppCFG.szXMPP_PASSWORD);
+     // j->logInstance().registerLogHandler(LogLevelDebug, LogAreaAll, new TestLogHandler());
+	  m_client->registerMessageHandler( this );
+	  m_client->setServer(AppCFG.szXMPP_SERVER);
+	  m_client->selectResource("GameScanner");
+	  m_client->registerConnectionListener(this);
+	  if(AppCFG.dwXMPP_PORT!=0)
+		m_client->setPort(AppCFG.dwXMPP_PORT);
+
+	  gloox::RosterManager *rm = m_client->rosterManager();
+	  rm->registerRosterListener(new RosterMngr());
+      m_client->connect();
+
+   }
+
+	~XMPPManager()
+	{
+		delete m_client;
+	}
+
+   virtual void handleMessage( const Message& stanza,
+                               MessageSession* session = 0 )
+   {
+	 
+
+	 std::cout << stanza.body() << std::endl;
+
+	 g_log.AddLogInfo(0,"XMPP: %s",stanza.body().c_str());
+
+	 Message msg(Message::MessageType::Chat, stanza.from(), "Bot message from Game Scanner.","GS bot","","" );
+     m_client->send( msg );
+	
+	 showBuddies();
+   }
+
+   virtual void onConnect() {
+       
+     g_log.AddLogInfo(0,"XMPP: onConnect");
+	 initBuddies();
+   }
+
+   virtual bool onTLSConnect( const CertInfo& info ) {
+    	 g_log.AddLogInfo(0,"XMPP: onTLSConnect");
+       return true;
+   }
+   virtual void onDisconnect(ConnectionError e) {
+      g_log.AddLogInfo(0,"XMPP: onDisconnect");
+   }
+   void handlePresence(const gloox::Presence &pres)
+   {
+	g_log.AddLogInfo(0,"XMPP: handlePresence %s", pres.status().c_str());
+   }
+
+   void initBuddies()
+   {
+        gloox::RosterManager *rm = m_client->rosterManager();
+        gloox::Roster *roster = rm->roster();
+
+        //map<string, bool> blist;
+        for (gloox::Roster::iterator iter = roster->begin(); iter != roster->end(); iter++) 
+		{            
+			g_log.AddLogInfo(0,"XMPP:  %s (%s) Online %d - %s",iter->second->name().c_str() ,iter->first.c_str(), iter->second->online(),iter->second->jid());
+
+			if(iter->second->name().empty())
+				bm.Add(iter->first.c_str(),NULL,true);
+			else
+				bm.Add(iter->second->name().c_str(),NULL,true);
+			
+		}
+		bm.UpdateList();
+
+   }
+
+   void showBuddies()
+   {
+        gloox::RosterManager *rm = m_client->rosterManager();
+        gloox::Roster *roster = rm->roster();
+
+        //map<string, bool> blist;
+        for (gloox::Roster::iterator iter = roster->begin(); iter != roster->end(); iter++) 
+		{
+			std::cout << iter->second->name() << " (" << iter->first << ") Online " << iter->second->online() << std::endl;
+            
+			g_log.AddLogInfo(0,"XMPP:  %s (%s) Online %d",iter->second->name().c_str() ,iter->first.c_str(), iter->second->online());
+			//blist.insert( make_pair( iter->first, iter->second->online() ) );
+        }
+   }
+};
+
+
+DWORD WINAPI XMPP_Thread(LPVOID lpVoid)
+{
+
+	XMPPManager mgr;
+
+	return 0;
+}
+
+void XMPP_CreateThread()
+{
+	DWORD dwThreadIdBrowser=0;	
+	HANDLE g_hXMPPThread=NULL; 
+	g_hXMPPThread = CreateThread( NULL, 0, &XMPP_Thread,(LPVOID)0 ,0, &dwThreadIdBrowser);                
+	if (g_hXMPPThread == NULL) 
+	{
+		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+	} 
+}
 
 #pragma pack(1) 
 typedef struct { 
@@ -2423,7 +2608,7 @@ void OnActivate_ServerList(DWORD options)
 		hThread = CreateThread( NULL, 0, &GetServerList, (LPVOID)options,0, &dwThreadIdBrowser);                
 		if (hThread == NULL) 
 		{
-			log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+			g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
 		}
 		else 
 		{
@@ -2919,7 +3104,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 								100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_EDIT_LOGGER, hInst, NULL);
 
-	log.hwndLogger = g_hwndLogger;
+	g_log.hwndLogger = g_hwndLogger;
 	WNDCONT[WIN_LOGGER].idx = WIN_LOGGER;
 	WNDCONT[WIN_LOGGER].hWnd = g_hwndLogger;
 
@@ -3107,6 +3292,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	bm.Load();
 	bm.UpdateList();
 	g_bOnCreate = FALSE;
+
+	XMPP_CreateThread();
 }
 
 
@@ -3585,7 +3772,7 @@ DWORD WINAPI LoadServerListV4(LPVOID lpVoid)
 			pSrv = (SERVER_INFO*) calloc(1,sizeof(SERVER_INFO));
 			if(pSrv==NULL)
 			{
-				log.AddLogInfo(0,"Out of memory.");
+				g_log.AddLogInfo(0,"Out of memory.");
 				return 0xdeadbabe;
 			}
 
@@ -3699,7 +3886,7 @@ void LoadAllServerList()
 	hThread = CreateThread( NULL, 0, &LoadAllServerListThread, (LPVOID)0,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed (%d)\n", GetLastError() ); 
 	}
 	else 
 	{
@@ -3986,7 +4173,7 @@ BOOL g_bSaving = FALSE;
 DWORD WINAPI CFG_Save(LPVOID lpVoid)
 {
 	SetCurrentDirectory(USER_SAVE_PATH);
-	log.AddLogInfo(GS_LOG_DEBUG,"Saving config");
+	g_log.AddLogInfo(GS_LOG_DEBUG,"Saving config");
 
 	if(g_bSaving)
 		return 0;
@@ -4155,6 +4342,15 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	xmlElmOREXE->SetAttribute("path", AppCFG.szOnReturn_EXE_PATH);
 	xmlElmOREXE->SetAttribute("cmd", AppCFG.szOnReturn_EXE_CMD);
 
+	TiXmlElement * xmlXMPP = new TiXmlElement( "XMPP" );  
+	root->LinkEndChild( xmlXMPP );  
+	xmlXMPP->SetAttribute("active", AppCFG.bXMPP_Active);
+	xmlXMPP->SetAttribute("username", AppCFG.szXMPP_USERNAME);
+	xmlXMPP->SetAttribute("password", AppCFG.szXMPP_PASSWORD);
+	xmlXMPP->SetAttribute("server", AppCFG.szXMPP_SERVER);
+
+	xmlXMPP->SetAttribute("port",AppCFG.dwXMPP_PORT );
+
 
 	TiXmlElement * xmlElm5 = new TiXmlElement( "SocketTimeout" );  
 	root->LinkEndChild( xmlElm5 );  
@@ -4168,7 +4364,7 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	doc.SaveFile( "config.xml" );
     g_bSaving = FALSE;
 
-	log.AddLogInfo(GS_LOG_DEBUG,"Saving config...DONE!");
+	g_log.AddLogInfo(GS_LOG_DEBUG,"Saving config...DONE!");
 	
 	return 0;
 }
@@ -4215,7 +4411,7 @@ void SaveAll(DWORD dwCloseReason)
 	g_hSaveThread = CreateThread( NULL, 0, &SavingFilesCleaningUpThread,(LPVOID)dwCloseReason ,0, &dwThreadIdBrowser);                
 	if (g_hSaveThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
 	} 
 }
 
@@ -4289,7 +4485,7 @@ void OnStopScanning()
 	hThread = CreateThread( NULL, 0, &StopScanningThread,(LPVOID)0 ,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
 	} else
 	{
 		SetThreadName( dwThreadIdBrowser, "StopScanningThread");
@@ -4308,7 +4504,7 @@ void OnMinimize(HWND hWnd)
 	hThread = CreateThread( NULL, 0, &SaveOnMinimizeThread,(LPVOID)0 ,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING, "CreateThread SaveOnMinimizeThread failed (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread SaveOnMinimizeThread failed (%d)\n", GetLastError() ); 
 	} else
 	{
 		CloseHandle( hThread );
@@ -4324,7 +4520,7 @@ int SetCurrentActiveGame(int GameIndex)
 		gm.ValidateGameIndex(GameIndex);
 	}catch(int a)
 	{
-		log.AddLogInfo(GS_LOG_WARNING, "Error GameIdx <SetCurrentActiveGame> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "Error GameIdx <SetCurrentActiveGame> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
 		MessageBox(g_hWnd,"Game idx out of bounds!","Error",MB_OK);
 		throw 2;
 	}
@@ -4571,7 +4767,7 @@ void Download_MapshotInit()
 	hThread = CreateThread( NULL, 0, &Download_MapshotThread, (LPVOID)0,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
 	}
 	else 
 	{
@@ -4598,7 +4794,7 @@ void OnPaint(HDC hDC)
 			__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 			{
 			// exception handling code
-				log.AddLogInfo(GS_LOG_DEBUG,"Access Violation!!! (OnPaint)\n");
+				g_log.AddLogInfo(GS_LOG_DEBUG,"Access Violation!!! (OnPaint)\n");
 			}
 
 		}
@@ -4778,7 +4974,7 @@ void ChangeViewStates(UINT uItem)
 void CalcSplitterGripArea()
 {
 	
-	//log.AddLogInfo(GS_LOG_INFO,"Called CalcSplitterGripArea.");
+	//g_log.AddLogInfo(GS_LOG_INFO,"Called CalcSplitterGripArea.");
 
 	DWORD wndStyle;
 	int cyVScroll = 0;
@@ -5335,14 +5531,14 @@ void Load_CountryFlags()
 			HBITMAP hBitmap = CreateDIBitmap(hDC, FreeImage_GetInfoHeader(dib),	CBM_INIT, FreeImage_GetBits(dib), FreeImage_GetInfo(dib), DIB_RGB_COLORS);
 			int idx = ImageList_Add(g_hILFlags,hBitmap,hBitmap);
 			if(idx==-1)
-				log.AddLogInfo(0,"Error adding %d (%d) flag %s - %s ",i,idx,szFilename,CountryCodes[i].szCountryName);
+				g_log.AddLogInfo(0,"Error adding %d (%d) flag %s - %s ",i,idx,szFilename,CountryCodes[i].szCountryName);
 		
 			DeleteObject(hBitmap);
 			FreeImage_Unload(dib);
 			
 		} else
 		{
-			log.AddLogInfo(0,"Error loading flag %s - %s ",szFilename,CountryCodes[i].szCountryName);
+			g_log.AddLogInfo(0,"Error loading flag %s - %s ",szFilename,CountryCodes[i].szCountryName);
 		}
 		
 	}
@@ -5438,7 +5634,7 @@ void LoadImageList()
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_LAN));			//13 58 Lan
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
-	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RULES));	//14 59 App logo
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_RULES));	//14 59 App g_log.
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_FILTER));		//15 60 Filter
@@ -5579,7 +5775,7 @@ DWORD WINAPI GetServerList(LPVOID lpParam )
 		hThread = CreateThread( NULL, 0, &Simulation, (LPVOID)0,0, &dwThreadIdBrowser);                
 		if (hThread == NULL) 
 		{
-			log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+			g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
 		}
 		else 
 		{
@@ -5639,7 +5835,7 @@ nextMasterServer:
 				gm.GamesInfo[currGameIdx].GetServersFromMasterServer(&gm.GamesInfo[currGameIdx],nMasterServer);
 			else
 			{
-				log.AddLogInfo(GS_LOG_ERROR,"%s didn't have a valid funtion to recieve servers.",gm.GamesInfo[currGameIdx].szGAME_NAME);
+				g_log.AddLogInfo(GS_LOG_ERROR,"%s didn't have a valid funtion to recieve servers.",gm.GamesInfo[currGameIdx].szGAME_NAME);
 				goto exitError;
 			}
 		}
@@ -5673,7 +5869,7 @@ nextMasterServer:
 			dbg_print("SetEvent failed!\n");
 	      
 		}
-		log.AddLogInfo(GS_LOG_DEBUG,  "GetServerList was breaked by user.");
+		g_log.AddLogInfo(GS_LOG_DEBUG,  "GetServerList was breaked by user.");
 		Show_StopScanningButton(FALSE);
 		g_currentScanGameIdx = -1;
 		g_bRunSimulation = FALSE;
@@ -5684,7 +5880,7 @@ nextMasterServer:
 
 	SetStatusText(ICO_INFO,g_lang.GetString("StatusReceivingServersDone"),gm.GamesInfo[currGameIdx].szGAME_NAME);
 	DWORD dwEndTick = GetTickCount();
-	log.AddLogInfo(ICO_INFO,"GetServerList took %d sec",(dwEndTick-dwStartTick)/1000);
+	g_log.AddLogInfo(ICO_INFO,"GetServerList took %d sec",(dwEndTick-dwStartTick)/1000);
 
 	//We don't want to overdraw wrong serverlist
 	if(currGameIdx==g_currentGameIdx)
@@ -5727,7 +5923,7 @@ NoError:
     }
    EnableButtons(TRUE);
    SendMessage(g_hwndProgressBar, PBM_SETPOS, (WPARAM) 0, 0); 
- //  log.AddLogInfo(GS_LOG_DEBUG,  "GetServerList DONE!");
+ //  g_log.AddLogInfo(GS_LOG_DEBUG,  "GetServerList DONE!");
   return returnCode;
  }
 
@@ -5896,7 +6092,7 @@ void Initialize_RedrawServerListThread()
 	hThread = CreateThread( NULL, 0, &RedrawServerListThread, (LPVOID)gameIdx,0, &dwThreadIdBrowser);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed @ Initialize_RedrawServerListThread (%d)\n", GetLastError() ); 
+		g_log.AddLogInfo(GS_LOG_WARNING,"CreateThread failed @ Initialize_RedrawServerListThread (%d)\n", GetLastError() ); 
 	}
 	else 
 	{
@@ -6456,7 +6652,8 @@ LRESULT Draw_UTF8Text(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 
 	COLORREF col = RGB(255,255,255) ;
 
-	UTF8toMB(pszText,pszText); //Counter strike source
+	int len = strlen(pszText);
+	UTF8toMB(pszText,pszText,len); //Counter strike source
 
 	SetTextColor(hDC,col);
 	ExtTextOut(hDC,rc.left,rc.top,ETO_CLIPPED, &rc,pszText, strlen(pszText),NULL); 
@@ -6933,9 +7130,9 @@ void OnSearchFieldChange()
 
 SERVER_INFO *FindServer(char *str)
 {	
-	char copy1[256];
-	char copy2[256];
-	char szTempBuffert[256];
+	char copy1[512];
+	//char copy2[512];
+	char szTempBuffert[512];
 
 	SendDlgItemMessage(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_SHOWDROPDOWN, FALSE, 0); 
 	SendDlgItemMessage (g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD, CB_RESETCONTENT, 0, 0); 
@@ -6981,13 +7178,13 @@ SERVER_INFO *FindServer(char *str)
 		for ( iLst = pGI->vSI.begin( ); iLst != pGI->vSI.end( ); iLst++ )
 		{		
 			SERVER_INFO *pSI = *iLst;
-			pGI->colorfilter(pSI->szServerName,szTempBuffert,sizeof(szTempBuffert));
-			strncpy(copy2,szTempBuffert,sizeof(copy2));
-			int l = strlen(copy2);
-			if(copy2!=NULL || l!=0)	
+			pGI->colorfilter(pSI->szServerName,szTempBuffert,sizeof(szTempBuffert)-1);
+			int l = strlen(szTempBuffert);
+						
+			if(l>0)	
 			{	
-				_strlwr_s( copy2,sizeof(copy2));
-				if(strstr(copy2,copy1)!=NULL)
+				_strlwr_s( szTempBuffert,sizeof(szTempBuffert)-1);
+				if(strstr(szTempBuffert,copy1)!=NULL)
 				{
 					REF_SERVER_INFO refSI;
 					refSI.pServerInfo = pSI;
@@ -7743,7 +7940,7 @@ SERVER_INFO *Get_ServerInfoByListViewIndex(GAME_INFO *pGI,int index)
 		}
 		__except(EXCEPTION_ACCESS_VIOLATION == GetExceptionCode())
 		{
-			log.AddLogInfo(GS_LOG_ERROR,"Access Violation @ GetServerInfoByListIndex %s!");
+			g_log.AddLogInfo(GS_LOG_ERROR,"Access Violation @ GetServerInfoByListIndex %s!");
 			return NULL;
 		}		
 	} else
@@ -8750,8 +8947,8 @@ BOOL ExecuteGame(GAME_INFO *pGI,char *szCmd,int GameInstallIdx)
 				pos[1]=0;
 			}
 			strcpy(LoadLocation,pGI->vGAME_INST.at(GameInstallIdx).szGAME_PATH.c_str());
-			log.AddLogInfo(GS_LOG_DEBUG,WETFolder);
-			log.AddLogInfo(GS_LOG_DEBUG,LoadLocation);
+			g_log.AddLogInfo(GS_LOG_DEBUG,WETFolder);
+			g_log.AddLogInfo(GS_LOG_DEBUG,LoadLocation);
 			hret = ShellExecute(NULL, "open", LoadLocation, szCmd,WETFolder, 1);
 
 			if((int)hret<=32)
@@ -9053,7 +9250,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 								tvmgr.SetAllChildItemExpand(i, false);
 							}
 							
-						//	log.AddLogInfo(GS_LOG_DEBUG,"Expanded %s Action %d",tvmgr.vTI.at(i).sName.c_str(),action);
+						//	g_log.AddLogInfo(GS_LOG_DEBUG,"Expanded %s Action %d",tvmgr.vTI.at(i).sName.c_str(),action);
 						}
 					}
 
@@ -9074,7 +9271,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			if((lpnmia->hdr.code == NM_SETFOCUS) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
 				{
 					if (!RegisterHotKey(g_hwndListViewServer, HOTKEY_ID_CTRL_C, MOD_CONTROL, 0x43))
-						log.AddLogInfo(GS_LOG_WARNING,"Couldn't register CTRL+V hotkey.");							
+						g_log.AddLogInfo(GS_LOG_WARNING,"Couldn't register CTRL+V hotkey.");							
 				}
 				else if((lpnmia->hdr.code == NM_KILLFOCUS) && (lpnmia->hdr.hwndFrom == g_hwndListViewServer))
 				{
@@ -9222,9 +9419,9 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	SHCreateDirectory(NULL,wcPath);
 
 	//ShGetKnownFolderPath 
-	//g_lang = new CLanguage(log);
+	//g_lang = new CLanguage(g_log.;
 
-	log.SetLogPath(USER_SAVE_PATH);
+	g_log.SetLogPath(USER_SAVE_PATH);
 	SetCurrentDirectory(USER_SAVE_PATH);
 
 	//LOGGER_Init();
@@ -9232,11 +9429,11 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	::GetVersionEx(&g_OSversion);
 
 
-	log.AddLogInfo(GS_LOG_INFO,"Initializing Game Scanner version "APP_VERSION);
-	log.AddLogInfo(GS_LOG_INFO,"Executable directory: %s",EXE_PATH);
-	log.AddLogInfo(GS_LOG_INFO,"User Data directory: %s",USER_SAVE_PATH);	
-	//log.AddLogInfo(GS_LOG_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
-	log.AddLogInfo(GS_LOG_INFO,"Cmd line input %s",lpCmdLine);
+	g_log.AddLogInfo(GS_LOG_INFO,"Game Scanner version: %s",APP_VERSION);
+	g_log.AddLogInfo(GS_LOG_INFO,"Executable directory: %s",EXE_PATH);
+	g_log.AddLogInfo(GS_LOG_INFO,"User Data directory: %s",USER_SAVE_PATH);	
+	//g_log.AddLogInfo(GS_LOG_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
+	g_log.AddLogInfo(GS_LOG_INFO,"Parameter passed: %s",lpCmdLine);
 
 	g_IPtoCountry.SetPath(EXE_PATH);	
 	char szPath[512];
@@ -9254,7 +9451,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	SetCurrentDirectory(EXE_PATH);
 	
 	if(g_IPtoCountry.ConvertDatabase()==0)
-		log.AddLogInfo(GS_LOG_INFO,"Updated IP to Country file.");
+		g_log.AddLogInfo(GS_LOG_INFO,"Updated IP to Country file.");
 	SetCurrentDirectory(USER_SAVE_PATH);
 //#endif
 	
@@ -9267,7 +9464,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	int iResult = WSAStartup(MAKEWORD(2,2), &wsaData);
 	if (iResult != NO_ERROR)
 	{
-	  log.AddLogInfo(GS_LOG_INFO,"Error at WSAStartup()");
+	  g_log.AddLogInfo(GS_LOG_INFO,"Error at WSAStartup()");
 	}
 
 	LoadImageList();
@@ -9363,7 +9560,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	// Perform application initialization:
 	if (!InitInstance (hInstance, nCmdShow)) 
 	{
-		log.AddLogInfo(GS_LOG_INFO,"Error InitInstance");
+		g_log.AddLogInfo(GS_LOG_INFO,"Error InitInstance");
 		return FALSE;
 	}
 
@@ -9398,7 +9595,7 @@ tryagain:
 		try_count++;
 		if(try_count>3)
 		{
-			log.AddLogInfo(GS_LOG_INFO,"Error adding task tray icon. Please report this back to the developer.");
+			g_log.AddLogInfo(GS_LOG_INFO,"Error adding task tray icon. Please report this back to the developer.");
 		}
 		goto tryagain;
 	}
@@ -9465,7 +9662,7 @@ tryagain:
 	WSACleanup();
 
 	DestroyAcceleratorTable(hAccelTable); 
-	log.AddLogInfo(GS_LOG_INFO,"Exit app..");
+	g_log.AddLogInfo(GS_LOG_INFO,"Exit app..");
 
 	
 #ifdef _DEBUG
@@ -9680,7 +9877,7 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 	if(szCustomCmd!=NULL) //This is used by the fast connect from the search field for custom command typical pasted from irc or similar
 		strcat(CommandParameters,szCustomCmd);
 
-	log.AddLogInfo(0,CommandParameters);
+	g_log.AddLogInfo(0,CommandParameters);
 
 	if(ExecuteGame(pGI,CommandParameters,GameInstallIdx))
 	{
@@ -9832,7 +10029,7 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 
 	if(IsServerAlive("www.cludden.se")==false)
 	{
-		log.AddLogInfo(0,"< Update Server is down! >");
+		g_log.AddLogInfo(0,"< Update Server is down! >");
 		return ret;
 	}
 	
@@ -9840,7 +10037,7 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 
 	OSversion.dwOSVersionInfoSize=sizeof(OSVERSIONINFO);
 	::GetVersionEx(&OSversion);
-	log.AddLogInfo(0,"OS Version: %d.%d",OSversion.dwMajorVersion,OSversion.dwMinorVersion);
+	g_log.AddLogInfo(0,"OS Version: %d.%d",OSversion.dwMajorVersion,OSversion.dwMinorVersion);
 
 	remove("update.xml");
 
@@ -9876,7 +10073,7 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 	pElement=hRoot.FirstChild("Version").ToElement();
 	if(pElement==NULL)
 	{
-		log.AddLogInfo(ICO_INFO,"Error checking for new version (XML corrupt)!",szVersion);
+		g_log.AddLogInfo(ICO_INFO,"Error checking for new version (XML corrupt)!",szVersion);
 		return 0;
 	}
 	pElement->FirstChild()->ToElement();
@@ -9925,12 +10122,12 @@ DWORD WINAPI CheckForUpdates(LPVOID lpParam)
 			Show_ToolbarButton(IDC_DOWNLOAD, true);
 			//EnableDownloadLink(TRUE);
 			SetStatusText(ICO_INFO,g_lang.GetString("StatusNewVersion"),szVersion);
-			log.AddLogInfo(ICO_INFO,"New version %s detected!",szVersion);
+			g_log.AddLogInfo(ICO_INFO,"New version %s detected!",szVersion);
 			bAnyUpdates=TRUE;
 			PostMessage(g_hWnd,WM_COMMAND,IDC_DOWNLOAD,0);
 		} else
 		{
-//			log.AddLogInfo(ICO_INFO,"No new version detected!");
+//			g_log.AddLogInfo(ICO_INFO,"No new version detected!");
 			if((int)lpParam!=1) //silent?
 				MessageBox(g_hWnd,g_lang.GetString("MessageNoNewVersion"),"Info",MB_OK);
 		}
@@ -9956,7 +10153,7 @@ DWORD WINAPI AutomaticDownloadUpdateSetUp(LPVOID lpParam)
 	hThread = CreateThread( NULL, 0, &ProgressGUI_Thread, g_hWnd,0, NULL);                
 	if (hThread == NULL) 
 	{
-		log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed  <AutomaticDownloadUpdateSetUp> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed  <AutomaticDownloadUpdateSetUp> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
 	}
 	else 
 	{
@@ -10030,17 +10227,17 @@ DWORD WINAPI AutomaticDownloadUpdateSetUp(LPVOID lpParam)
 
 
 					std::string hash2 = myWrapper->getHashFromFile(szFileName);
-					log.AddLogInfo(0,"Comparing hashing %s = %s", hash2.c_str(),szMD5);	
+					g_log.AddLogInfo(0,"Comparing hashing %s = %s", hash2.c_str(),szMD5);	
 					if(_stricmp(hash2.c_str(),szMD5)!=0)
 					{
-						log.AddLogInfo(0,"Mismatch hashing %s = %s", hash2.c_str(),szMD5);	
+						g_log.AddLogInfo(0,"Mismatch hashing %s = %s", hash2.c_str(),szMD5);	
 						goto failed;
 					}
 					else
 					{
 						if(iExec)
 						{
-							log.AddLogInfo(0,"Executing %s", szFileName);	
+							g_log.AddLogInfo(0,"Executing %s", szFileName);	
 							if(strcmp(szDestPath,"ExePath")==0)
 								ShellExecute(g_hWnd, "open",szFileName, NULL, EXE_PATH,SW_NORMAL);	
 							else
@@ -10053,7 +10250,7 @@ DWORD WINAPI AutomaticDownloadUpdateSetUp(LPVOID lpParam)
 				 }
 				 catch(hlException &e)
 				 {					 
-					 log.AddLogInfo(0,"Error hashing file: %d %s", e.error_number(), e.erro_message().c_str());									   
+					 g_log.AddLogInfo(0,"Error hashing file: %d %s", e.error_number(), e.erro_message().c_str());									   
 				 }
 
 				pElement = pElement->NextSiblingElement();
@@ -10610,7 +10807,7 @@ LRESULT CALLBACK FilterEditor_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 								gm.ValidateGameIndex(idx);
 							}catch(...)
 							{
-								log.AddLogInfo(GS_LOG_WARNING, "Error GameIdx <FilterEditor_Dlg> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 													
+								g_log.AddLogInfo(GS_LOG_WARNING, "Error GameIdx <FilterEditor_Dlg> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 													
 								MessageBox(g_hWnd,"Game idx out of bounds!","Error",MB_OK);								
 							}
 							tvmgr.Filter_update(&gm.GamesInfo[idx],tvmgr.vTI.at(nEditScriptIndex),sOldFiltername.c_str());
@@ -10863,7 +11060,7 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 	
 		if(hwndTB==NULL)
 		{
-				log.AddGetLastErrorIntoLog("TOOLBAR_CreateOptionsToolBar");
+				g_log.AddGetLastErrorIntoLog("TOOLBAR_CreateOptionsToolBar");
 			return NULL;
 		}
 			
@@ -11005,7 +11202,7 @@ HWND WINAPI TOOLBAR_CreateSearchComboBox(HWND hwndParent)
 
 	} else
 	{
-		log.AddGetLastErrorIntoLog("TOOLBAR_CreateSearchComboBox");
+		g_log.AddGetLastErrorIntoLog("TOOLBAR_CreateSearchComboBox");
 	}
    return hwndCB;
 }
@@ -11031,7 +11228,7 @@ HWND TOOLBAR_CreateSearchToolBar(HWND hWndParent)
 
 
 	if(hwndTB==NULL)
-		log.AddLogInfo(0,"TOOLBAR_CreateSearchToolBar create failed!!");
+		g_log.AddLogInfo(0,"TOOLBAR_CreateSearchToolBar create failed!!");
 
    
 
@@ -11138,7 +11335,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
    
 	if(!hwndRB)
 	{		
-		log.AddLogInfo(GS_LOG_WARNING, "Create Rebar failed  <TOOLBAR_CreateRebar>"); 
+		g_log.AddLogInfo(GS_LOG_WARNING, "Create Rebar failed  <TOOLBAR_CreateRebar>"); 
 		return NULL;
 	}
 
@@ -11150,7 +11347,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 	rbi.himl   = (HIMAGELIST)NULL;
 	if(!SendMessage(hwndRB, RB_SETBARINFO, 0, (LPARAM)&rbi))
 	{
-		log.AddGetLastErrorIntoLog("Failed: SendMessage(hwndRB, RB_SETBARINFO");
+		g_log.AddGetLastErrorIntoLog("Failed: SendMessage(hwndRB, RB_SETBARINFO");
 	  return NULL;
 	}
 
@@ -11165,7 +11362,7 @@ HWND WINAPI TOOLBAR_CreateRebar(HWND hwndOwner)
 
 	hwndTB = TOOLBAR_CreateOptionsToolBar(hwndRB);
 	if(hwndTB==NULL)
-		log.AddGetLastErrorIntoLog("Failed: TOOLBAR_CreateOptionsToolBar");
+		g_log.AddGetLastErrorIntoLog("Failed: TOOLBAR_CreateOptionsToolBar");
 
 	 // Get the height of the toolbar.
 	dwBtnSize = SendMessage(hwndTB, TB_GETBUTTONSIZE, 0,0);
@@ -11251,7 +11448,7 @@ int CFG_Load()
 	Default_Appsettings();
 	gm.Default_GameSettings();
 
-	//log.AddLogInfo(GS_LOG_INFO,"CFG_Load");
+	//g_log.AddLogInfo(GS_LOG_INFO,"CFG_Load");
 
 	g_lang.loadFile("lang_en.xml");
 
@@ -11503,6 +11700,24 @@ int CFG_Load()
 			strcpy(AppCFG.szET_WindowName,pElem->Attribute("WindowNames"));
 	} 	
 
+	pElem=hRoot.FirstChild("XMPP").Element();
+	if (pElem)
+	{
+		if(pElem->QueryIntAttribute("active",&intVal)!=TIXML_NO_ATTRIBUTE)
+			AppCFG.bXMPP_Active   = intVal;
+
+		if(pElem->QueryIntAttribute("port",&intVal)!=TIXML_NO_ATTRIBUTE)
+			AppCFG.dwXMPP_PORT = intVal;
+		 
+
+		if(pElem->Attribute("username")!=NULL)
+			strcpy(AppCFG.szXMPP_USERNAME,pElem->Attribute("username"));
+		if(pElem->Attribute("password")!=NULL)
+			strcpy(AppCFG.szXMPP_PASSWORD,pElem->Attribute("password"));
+		if(pElem->Attribute("server")!=NULL)
+			strcpy(AppCFG.szXMPP_SERVER,pElem->Attribute("server"));
+
+	} 	
 
 	pElem=hRoot.FirstChild("LastGameView").Element();
 	if (pElem)
@@ -12191,7 +12406,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							hThread = CreateThread( NULL, 0, &AutomaticDownloadUpdateSetUp, g_hWnd,0, NULL);                
 							if (hThread == NULL) 
 							{
-								log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed  <AutomaticDownloadUpdateSetUp> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
+								g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed  <AutomaticDownloadUpdateSetUp> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
 							}
 							else 
 							{
@@ -12226,7 +12441,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						hThread = CreateThread( NULL, 0, &CheckForUpdates, (LPVOID)lParam,0, NULL);      //lParam = 1 = silent = no messageboxes          
 						if (hThread == NULL) 
 						{
-							log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed  <CheckForUpdates> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
+							g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed  <CheckForUpdates> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
 						}
 						else 
 						{
@@ -12319,7 +12534,7 @@ const char * XML_GetTreeItemName(TiXmlElement* pNode,char *szOutput, DWORD maxBy
 		strcpy_s(szOutput,maxBytes,pName);
 		return szOutput;
 	}
-	log.AddLogInfo(0,"Error reading XML tag name (XML_GetTreeItemName)");
+	g_log.AddLogInfo(0,"Error reading XML tag name (XML_GetTreeItemName)");
 	return NULL;
 }
 
@@ -12347,7 +12562,7 @@ int XML_GetTreeItemInt(TiXmlElement* pNode, const char* attributeName)
 		if(ret!=TIXML_NO_ATTRIBUTE)
 			return value;
 	}
-	log.AddLogInfo(GS_LOG_WARNING,"Error finding XML attributename = %s",attributeName);
+	g_log.AddLogInfo(GS_LOG_WARNING,"Error finding XML attributename = %s",attributeName);
 
 	return 0;
 }
@@ -12378,7 +12593,7 @@ int ReadCfgInt(TiXmlElement* pNode, char *szParamName, int& intVal)
 			return XML_READ_OK;					
 		}
 	}
-	log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
+	g_log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
 	return XML_READ_ERROR;
 }
 
@@ -12403,7 +12618,7 @@ char * ReadCfgStr(TiXmlElement* pNode, char *szParamName,char *szOutputBuffer,in
 			return szOutputBuffer;					
 		}
 	}
-	log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
+	g_log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
 	return NULL;
 }
 

@@ -5,6 +5,11 @@
 	
 	Check out the forum for help and support.
 
+		version 2.0.18
+		---------------------------
+		* Fixed a game server search bug a crash could occur if a game server ahd longer than 256 chars length.
+
+
 		Version 2.0.17  (2010-01-20)
 		---------------------------
 		* Changed Warsow column g_gametype to gametype to reflect version 0.5x better.

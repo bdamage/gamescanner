@@ -18,7 +18,7 @@ extern _WINDOW_CONTAINER WNDCONT[15];
 extern char NexuizASCII[];
 extern char QuakeWorldASCII[];
 
-extern CLogger log;
+extern CLogger g_log;
 
 
 
@@ -113,13 +113,17 @@ void SetDlgTrans(HWND hwnd,int trans)
 	pSetLayeredWindowAttributes(hwnd, 0, (255 * (BYTE)trans) / 100, LWA_ALPHA);
 }
 
-char *UTF8toMB(const char* inUtf8, char* outStr)
+char *UTF8toMB(const char* inUtf8, char* outStr,int maxLen)
 {
 	if(inUtf8==NULL)
 		return NULL;
 	
 	int len = strlen((char*)inUtf8);
-	WCHAR* pwcbuff = (WCHAR*)calloc(len,sizeof(WCHAR));
+	
+	if(len>=maxLen)
+		len = maxLen-1;
+
+	WCHAR* pwcbuff = (WCHAR*)calloc(len+1,sizeof(WCHAR));
 
     MultiByteToWideChar(CP_UTF8,0, inUtf8, len,  pwcbuff,  len*2);
 	WideCharToMultiByte(CP_ACP,0, pwcbuff, len, outStr, len, NULL, NULL);
@@ -215,7 +219,7 @@ DEVMODE GetScreenResolution(VOID)
 {
 	DEVMODE mySettings;
   	EnumDisplaySettings(NULL, ENUM_CURRENT_SETTINGS, &mySettings);
-	log.AddLogInfo(GS_LOG_INFO,"Screen resolution detected: %d x %d @ %d",mySettings.dmPelsWidth,mySettings.dmPelsHeight,mySettings.dmBitsPerPel );
+	g_log.AddLogInfo(GS_LOG_INFO,"Screen resolution detected: %d x %d @ %d",mySettings.dmPelsWidth,mySettings.dmPelsHeight,mySettings.dmBitsPerPel );
 
   return mySettings;
 }
@@ -353,7 +357,7 @@ http://www.truecarnage.com/coloring-team-chat-and-name-tricks-in-q4-r2.htm
 ^ivcd: Voice Disabled
 ^ifdd: Player Muted
 ^ifde: Player Unmuted
-^ipbe: Punkbuster Logo
+^ipbe: Punkbuster g_log.
 ^idse: Armor Shard
 ^ipse: Padlock
 ^ifve: Star
@@ -418,12 +422,8 @@ char * colorfilterQW(const char *szInText,char *namefilter, int len)
 char * colorfilterUTF8(const char *szInText,char *namefilter, int len)
 {
 	int i=0;
-	memset(namefilter,0,len);
-
-
-		
-		UTF8toMB(szInText,namefilter);
-
+	memset(namefilter,0,len);	
+	UTF8toMB(szInText,namefilter,len);
 	return namefilter;
 }
 
@@ -468,7 +468,7 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 			// information about the host
 			if ((retVal = getaddrinfo(host_name, port, &aiHints, &aiList)) != 0) 
 			{
-				log.AddLogInfo(GS_LOG_WARNING,"getaddrinfo() failed. IP: %s\n",host_name);
+				g_log.AddLogInfo(GS_LOG_WARNING,"getaddrinfo() failed. IP: %s\n",host_name);
 				return 0;
 			}
 
@@ -485,7 +485,7 @@ DWORD NetworkNameToIP(char *host_name,char *port)
 		addr = inet_addr(host_name);
 		if(addr== INADDR_NONE)
 		{
-			log.AddLogInfo(GS_LOG_WARNING,"getaddrinfo() failed at %d.\n",__LINE__);
+			g_log.AddLogInfo(GS_LOG_WARNING,"getaddrinfo() failed at %d.\n",__LINE__);
 			return 0;
 		}
 		test2 = ntohl(addr);
@@ -814,7 +814,7 @@ void CleanUp_ServerRules(LPSERVER_RULES &pSR)
 		__except(GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION)
 		{
 			// exception handling code
-			log.AddLogInfo(GS_LOG_ERROR,"Access Violation!!! @ CleanUp_ServerList(...)\n");
+			g_log.AddLogInfo(GS_LOG_ERROR,"Access Violation!!! @ CleanUp_ServerList(...)\n");
 			DebugBreak();
 		}
 		
@@ -1024,7 +1024,7 @@ int ReadCfgInt2(TiXmlElement* pNode, char *szParamName, int& intVal)
 			return XML_READ_OK	;					
 		}
 	}
-	log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
+	g_log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
 	return XML_READ_ERROR;
 }
 
@@ -1056,7 +1056,7 @@ const char * ReadCfgStr2(TiXmlElement* pNode, char *szParamName,char *szOutputBu
 		}
 	
 	}
-	log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
+	g_log.AddLogInfo(0,"Error reading XML tag %s",szParamName);
 	return NULL;
 }
 

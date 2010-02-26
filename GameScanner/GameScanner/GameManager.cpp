@@ -18,7 +18,7 @@ extern SERVER_INFO *g_CurrentSRV;
 extern _WINDOW_CONTAINER WNDCONT[15];
 
 CGameManager::CGameManager(CLogger & logger) : 
-	log(logger),
+	m_log(logger),
 	m_iGameCounter (0)
 {
 }
@@ -31,7 +31,7 @@ CGameManager::~CGameManager(void)
 void CGameManager::Default_GameSettings()
 {
 	GAME_INSTALLATIONS gi;
-	//log.AddLogInfo(GS_LOG_INFO,"Enter Default_GameSettings");
+	//g_log.AddLogInfo(GS_LOG_INFO,"Enter Default_GameSettings");
 
 	for(UINT i=0; i<GamesInfo.size(); i++)
 	{
@@ -48,14 +48,14 @@ void CGameManager::Default_GameSettings()
 	xml.SetPath(EXE_PATH);	
 	if(xml.load("gamedefaults.xml")==XMLFILE_ERROR_LOADING)
 	{
-		log.AddLogInfo(GS_LOG_ERROR,"Error reading gamedefaults.xml.");
+		m_log.AddLogInfo(GS_LOG_ERROR,"Error reading gamedefaults.xml.");
 		return;
 	}
 	//TixmlElement *ptempElement = xml.GetElementSafe(xml.m_pRootElement,"Version");
 	char szVersion[10];
 	xml.GetText(xml.m_pRootElement,"Version",szVersion,sizeof(szVersion));
 	
-	log.AddLogInfo(GS_LOG_INFO,"Default game settings version %s",szVersion);
+	m_log.AddLogInfo(GS_LOG_INFO,"Default game settings version %s",szVersion);
 
 	TiXmlElement *pGame = xml.GetElementSafe(xml.m_pRootElement,"Game");
 

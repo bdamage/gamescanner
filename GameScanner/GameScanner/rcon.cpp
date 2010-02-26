@@ -23,7 +23,7 @@ extern SERVER_INFO *g_CurrentSRV;
 extern GamesMap GamesInfo;
 //extern GAME_INFO GamesInfo[GamesInfo.size()+1];
 extern CLanguage g_lang;
-extern CLogger log;
+extern CLogger g_log;
 
 list<string> RCONList;
 char szRCON_CMD_BACKLOG[MAX_BACKLOG][80];
@@ -372,7 +372,7 @@ DWORD RCON_Connect(SERVER_INFO *pServer)
 {
 	if(pServer==NULL)
 	{
-		log.AddLogInfo(0,"RCON_Connect @ pServer==NULL");
+		g_log.AddLogInfo(0,"RCON_Connect @ pServer==NULL");
 		return 1;
 	}
 
@@ -383,7 +383,7 @@ DWORD RCON_Connect(SERVER_INFO *pServer)
  
 	if(INVALID_SOCKET==RCON_ConnectSocket)
 	{
-		log.AddLogInfo(0,"RCON_Connect @ INVALID SOCKET");
+		g_log.AddLogInfo(0,"RCON_Connect @ INVALID SOCKET");
 		return 2;
 	}
 

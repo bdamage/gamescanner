@@ -227,6 +227,8 @@
 #define IDD_DLG_SET_VALUE               1080
 #define IDD_DLG_EDIT_FILTER             1081
 #define IDI_ICON_STATS                  1082
+#define IDD_CFG7                        1082
+#define IDD_CFG_XMPP                    1082
 #define IDI_ICON_PAINT                  1083
 #define IDI_ICON_LOGGER                 1084
 #define IDI_ICON_FONT                   1086
@@ -274,9 +276,14 @@
 #define IDI_ICON_ARROW_NET              1221
 #define IDC_CHECK_NO_MAP_RESIZE         1221
 #define IDI_GAMESCANNER                 1222
+#define IDC_EDIT_XMPP_USERNAME          1222
 #define IDB_TOOLBAR_N_16                1223
+#define IDC_EDIT_XMPP_PASSWORD          1223
+#define IDC_EDIT_XMPP_SERVER            1224
 #define IDB_TOOLBAR_H_16                1225
+#define IDC_EDIT_XMPP_PORT              1225
 #define IDB_TOOLBAR_D_16                1226
+#define IDC_CHECK_XMPP_ACTIVE           1226
 #define IDI_ICON2                       1227
 #define IDI_ICON_ALARM_CLOCK            1227
 #define IDM_OPEN                        32771
@@ -389,7 +396,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1228
 #define _APS_NEXT_COMMAND_VALUE         32922
-#define _APS_NEXT_CONTROL_VALUE         1222
+#define _APS_NEXT_CONTROL_VALUE         1227
 #define _APS_NEXT_SYMED_VALUE           111
 #endif
 #endif

@@ -19,11 +19,11 @@ extern HWND g_hWnd;
 string g_cfgScriptTmp;
 string g_cfgFilterNameTmp;
 //Config dialog vars
-#define GAME_CFG_INDEX 6   //This is the helper index in treeview where all games configuration starts from
+#define GAME_CFG_INDEX 7   //This is the helper index in treeview where all games configuration starts from
 bool g_bChanged=false;
 APP_SETTINGS_NEW AppCFGtemp;
 HWND g_hwndTree=NULL;
-extern CLogger log;
+extern CLogger g_log;
 DWORD g_tvIndexCFG=0;
 extern HIMAGELIST g_hImageListIcons;
 extern HIMAGELIST g_hImageListStates;
@@ -124,10 +124,31 @@ void CFG_Apply_Network(HWND hDlg)
 	AppCFGtemp.socktimeout.tv_sec = atoi(szTmp)/1000;
 	AppCFGtemp.socktimeout.tv_usec = atoi(szTmp) - (AppCFGtemp.socktimeout.tv_sec*1000);
 
+
+	if(AppCFGtemp.socktimeout.tv_usec < 100 && AppCFGtemp.socktimeout.tv_sec == 0)
+		AppCFGtemp.socktimeout.tv_usec = 100;
+
 	AppCFGtemp.dwThreads = (DWORD)SendMessage(GetDlgItem(hDlg,IDC_SLIDER_THREADS),TBM_GETPOS,0,(LPARAM)0) ; 
 
 	GetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szTmp,sizeof(szTmp));
 	AppCFGtemp.dwRetries = atoi(szTmp);
+
+}
+
+void CFG_Apply_XMPP(HWND hDlg)
+{
+	g_bChanged = false;
+
+	AppCFGtemp.bXMPP_Active = IsDlgButtonChecked(hDlg,IDC_CHECK_XMPP_ACTIVE);
+
+	GetDlgItemText(hDlg,IDC_EDIT_XMPP_USERNAME,AppCFGtemp.szXMPP_USERNAME,MAX_PATH);
+	GetDlgItemText(hDlg,IDC_EDIT_XMPP_PASSWORD,AppCFGtemp.szXMPP_PASSWORD,MAX_PATH);
+	GetDlgItemText(hDlg,IDC_EDIT_XMPP_SERVER,AppCFGtemp.szXMPP_SERVER,MAX_PATH);
+
+	TCHAR szTmp[10];
+	GetDlgItemText(hDlg,IDC_EDIT_XMPP_PORT,szTmp,sizeof(szTmp));
+	AppCFGtemp.dwXMPP_PORT = atoi(szTmp);
+
 }
 
 void CFG_Apply_Ext(HWND hDlg)
@@ -143,8 +164,6 @@ void CFG_Apply_Ext(HWND hDlg)
 	AppCFGtemp.bUse_EXT_APP2 = IsDlgButtonChecked(hDlg,IDC_CHECK_EXT_ACTIVE2);
 	GetDlgItemText(hDlg,IDC_EDIT_EXT_EXE2,AppCFGtemp.szOnReturn_EXE_PATH,MAX_PATH);
 	GetDlgItemText(hDlg,IDC_EDIT_EXT_CMD2,AppCFGtemp.szOnReturn_EXE_CMD,MAX_PATH);
-
-
 }
 
 void CFG_Apply_Minimizer(HWND hDlg)
@@ -230,9 +249,10 @@ void CFG_ApplySettings()
 		case 0: CFG_Apply_General(hwndConfDialog); break;
 		case 1: CFG_Apply_Minimizer(hwndConfDialog); break;
 		case 2: CFG_Apply_MIRC(hwndConfDialog); break;
-		case 3: CFG_Apply_Ext(hwndConfDialog); break;
-		case 4: CFG_Apply_Look(hwndConfDialog); break;
-		case 5: CFG_Apply_Network(hwndConfDialog); break;
+		case 3: CFG_Apply_XMPP(hwndConfDialog); break;
+		case 4: CFG_Apply_Ext(hwndConfDialog); break;
+		case 5: CFG_Apply_Look(hwndConfDialog); break;
+		case 6: CFG_Apply_Network(hwndConfDialog); break;
 
 		default:
 				gameID = CFG_GetGameID(g_currSelCfg);
@@ -259,6 +279,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 			hNewItem = TreeView_AddItem(27,g_lang.GetString("ConfigGeneral"));
 			hNewItem = TreeView_AddItem(15,g_lang.GetString("ConfigMinimizer"));
 			hNewItem = TreeView_AddItem(28,"mIRC");
+			hNewItem = TreeView_AddItem(3,"Account (XMPP)");
 			hNewItem = TreeView_AddItem(16,g_lang.GetString("ConfigExtExe"));
 
 			hNewItem = TreeView_AddItem(25,g_lang.GetString("ConfigGraphic"));
@@ -366,7 +387,7 @@ LRESULT CALLBACK CFG_MainProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lPa
 					hThread = CreateThread( NULL, 0, &CFG_Save,(LPVOID)0 ,0, &dwThreadIdBrowser);                
 					if (hThread == NULL) 
 					{
-						log.AddLogInfo(GS_LOG_WARNING, "CreateThread CFG_Save failed (%d)\n", GetLastError() ); 
+						g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread CFG_Save failed (%d)\n", GetLastError() ); 
 					} else
 					{
 						CloseHandle( hThread );
@@ -412,11 +433,12 @@ VOID WINAPI CFG_OnTabbedDialogInit(HWND hwndDlg)
     // Lock the resources for the three child dialog boxes. 
     g_pHdr->apRes[0] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG1)); 
     g_pHdr->apRes[1] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG2)); 
-	g_pHdr->apRes[2] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_MIRC)); 
-	g_pHdr->apRes[3] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG4)); 
-	g_pHdr->apRes[4] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG5)); 
-	g_pHdr->apRes[5] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_NET)); 
-	g_pHdr->apRes[6] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG3_NEW)); 
+	g_pHdr->apRes[2] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_MIRC));
+	g_pHdr->apRes[3] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_XMPP));
+	g_pHdr->apRes[4] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG4)); 
+	g_pHdr->apRes[5] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG5)); 
+	g_pHdr->apRes[6] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG_NET)); 
+	g_pHdr->apRes[7] = DoLockDlgRes(MAKEINTRESOURCE(IDD_CFG3_NEW)); 
 	
 	g_currSelCfg=-1;
     CFG_OnSelChanged(hwndDlg); 
@@ -870,7 +892,13 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			sprintf(szText,"%d",AppCFGtemp.dwRetries);
 			SetDlgItemText(hDlg,IDC_EDIT_CFG_RETRIES,szText);
 
+
+			CheckDlgButton(hDlg,IDC_CHECK_XMPP_ACTIVE,AppCFGtemp.bXMPP_Active);
+			SetDlgItemText(hDlg,IDC_EDIT_XMPP_USERNAME,AppCFGtemp.szXMPP_USERNAME);
+			SetDlgItemText(hDlg,IDC_EDIT_XMPP_PASSWORD,AppCFGtemp.szXMPP_PASSWORD);
+			SetDlgItemText(hDlg,IDC_EDIT_XMPP_SERVER,AppCFGtemp.szXMPP_SERVER);
 			
+
 			CheckDlgButton(hDlg,IDC_CHECK_BUDDY_NOTIFY,AppCFGtemp.bBuddyNotify);
 			CheckDlgButton(hDlg,IDC_CHECK_USE_WAV_FILE,AppCFGtemp.bUseBuddySndNotify);
 			SetDlgItemText(hDlg,IDC_EDIT_WAV_FILE,AppCFGtemp.szNotifySoundWAVfile);						

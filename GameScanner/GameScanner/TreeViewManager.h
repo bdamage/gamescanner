@@ -16,7 +16,7 @@ class CTreeViewManager
 	CXmlFile	xml;
 	TCHAR *m_EXE_PATH;			//Don't write anything to this path
 	TCHAR *m_USER_SAVE_PATH;    //Path to save settings and server lists
-	CLogger & log;
+	CLogger & m_log;
 	CGameManager &gm;
 	CScriptEngine &m_se;
 	HTREEITEM hRootCountryFiltersItem;

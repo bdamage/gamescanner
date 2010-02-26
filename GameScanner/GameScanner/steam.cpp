@@ -17,7 +17,7 @@ extern bool g_bCancel;
 extern HWND g_hWnd;
 extern APP_SETTINGS_NEW AppCFG;
 extern CLanguage g_lang;
-extern CLogger log;
+extern CLogger g_log;
 extern CIPtoCountry g_IPtoCountry;
 
 #pragma pack(1)
@@ -595,7 +595,7 @@ nextRegion2:
 			ZeroMemory(sendbuf,sizeof(sendbuf));
 			_itoa(dwLastPort,szPort,10);
 			sprintf_s(sendbuf,sizeof(sendbuf), "1%c%s:%d\x00\x00",REGIONS[cRegionCodeIndex].cCode,szLastIP,dwLastPort);
-			log.AddLogInfo(0,"Sending %s (1%c%s:%d) to master server %s.",sendbuf,48+REGIONS[cRegionCodeIndex].cCode,szLastIP,dwLastPort,&pGI->szMasterServerIP[iMasterIdx]);
+			g_log.AddLogInfo(0,"Sending %s (1%c%s:%d) to master server %s.",sendbuf,48+REGIONS[cRegionCodeIndex].cCode,szLastIP,dwLastPort,&pGI->szMasterServerIP[iMasterIdx]);
 
 			int len = 2;
 			len += strlen(szLastIP);
@@ -627,7 +627,7 @@ nextRegion2:
 		// Write event?
 		if (events.lNetworkEvents & FD_WRITE)
 		{
-			log.AddLogInfo(0,"\nFD_WRITE: %d",events.iErrorCode[FD_WRITE_BIT]);
+			g_log.AddLogInfo(0,"\nFD_WRITE: %d",events.iErrorCode[FD_WRITE_BIT]);
 		}
 		*/
 
@@ -660,7 +660,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 	char *p = leaddata->data;
 	endAddress = packet+length; 
 	
-	log.AddLogInfo(0,"First 4 bytes %X",leaddata->dwInit);
+	g_log.AddLogInfo(0,"First 4 bytes %X",leaddata->dwInit);
 
 	int i=1;
 	int hash=0;
@@ -715,7 +715,7 @@ DWORD STEAM_parseServers(char * packet, DWORD length, GAME_INFO *pGI,char *szLas
 
 	dwLastPort = ptempSI.usPort;
 
-	log.AddLogInfo(0,"Parsed %d servers Last IP seen is %s:%d",i,szLastIP,dwLastPort);
+	g_log.AddLogInfo(0,"Parsed %d servers Last IP seen is %s:%d",i,szLastIP,dwLastPort);
 
 	return dwNewTotalServers;
 }
@@ -897,12 +897,14 @@ retry:
 	else
 		pSI->cPurge++;
 
+	closesocket(pSocket);
+
 	if(UpdatePlayerListView!=NULL)
 		UpdatePlayerListView(pSI->pPlayerData);
 
 	if(UpdateRulesListView!=NULL)
 		UpdateRulesListView(pSI->pServerRules);
-	closesocket(pSocket);
+
 	return 0;
 }
 
