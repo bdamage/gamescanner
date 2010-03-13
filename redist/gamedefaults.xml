@@ -1,5 +1,5 @@
 <Games>
-	<Version>1.32</Version>
+	<Version>1.33</Version>
 	<Game>
 		<GameIndex>0</GameIndex>
 		<Name>Wolfenstein - Enemy Territory</Name>
@@ -1028,7 +1028,7 @@
 	<Game>
 		<GameIndex>23</GameIndex>
 		<Name>Wolfenstein</Name>
-		<ShortName>WOLF</ShortName>
+		<ShortName>Wolfenstein</ShortName>
 		<Filename>wolf.servers</Filename>
 		<WebProtocol>wolf</WebProtocol>
 		<NetEngine>Q4</NetEngine>
@@ -1088,6 +1088,46 @@
 			<RegKey>SOFTWARE\World of Padman</RegKey>
 			<RegItem>Path</RegItem>
 			<InstallSuffix>wop.exe</InstallSuffix>
+			</Registry>
+			<FileSearch>
+				<FileName></FileName>
+				<FilePath></FilePath>
+			</FileSearch>
+		</Detection>
+		<Columns>
+			<Column idx="0">sv_punkbuster</Column>
+			<Column idx="1">g_needpass</Column>
+			<Column idx="2">ranked</Column>
+			<Column idx="3">sv_hostname</Column>
+			<Column idx="4">version</Column>
+			<Column idx="5">g_gametype</Column> 
+			<Column idx="6">mapname</Column>
+			<Column idx="7">gamename</Column>
+			<Column idx="8">bots</Column> 
+		</Columns>
+	</Game>	
+	<Game>
+		<GameIndex>25</GameIndex>
+		<Name>Jedi Knight 3: Jedi Academy</Name>
+		<ShortName>Jedi Knight 3</ShortName>
+		<Filename>jk3.servers</Filename>
+		<WebProtocol>jkiii</WebProtocol>
+		<ColorEncoding>JEDIKNIGHT3</ColorEncoding>
+		<NetEngine>Q3</NetEngine>
+		<ServerDefaultPort>27960</ServerDefaultPort>
+		<ServerInfoQuery>\xFF\xFF\xFF\xFFgetstatus\n</ServerInfoQuery>
+		<MasterQueryString>\xFF\xFF\xFF\xFFgetservers %PROTOCOL% empty full</MasterQueryString>
+		<MapPreviewPath>jk3maps</MapPreviewPath>
+		<Icon>jk3.ico</Icon>
+		<MasterServers>
+			<MasterServer http="0" protocol="26">masterjk3.ravensoft.com:29060</MasterServer> 
+		</MasterServers>
+		<Detection>
+			<Registry>
+			<RegRoot></RegRoot>
+			<RegKey></RegKey>
+			<RegItem></RegItem>
+			<InstallSuffix>jk3mp.exe</InstallSuffix>
 			</Registry>
 			<FileSearch>
 				<FileName></FileName>

@@ -559,7 +559,6 @@ void CBuddyManager::NotifyBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInf
 			item.cchTextMax = (int)strlen(it->szServerName);
 		}
 
-
 		item.iSubItem = 1;
 		item.iImage = gm.Get_GameIcon(it->cGAMEINDEX);
 		ListView_SetItem(g_hwndListBuddy,&item);
@@ -569,6 +568,7 @@ void CBuddyManager::NotifyBuddyIsOnline(BUDDY_INFO *pBI, SERVER_INFO *pServerInf
 		ListView_SetItemText(g_hwndListBuddy,index ,2,szText);
 
 	}
+
 	if(gm.GamesInfo[it->cGAMEINDEX].colorfilter!=NULL)
 		gm.GamesInfo[it->cGAMEINDEX].colorfilter(it->szServerName,szText,249);
 	else

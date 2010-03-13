@@ -447,9 +447,8 @@ HWND g_hwndTabControl = NULL;
 HWND g_hwndLogger = NULL,g_hwndStatus = NULL;
 HWND g_hwndListViewPlayers=NULL,g_hwndListViewVars=NULL,g_hwndListViewServer=NULL,g_hwndListBuddy=NULL;
 HWND g_hwndListViewServerListHeader = NULL;
-HWND g_hwndMainTreeCtrl=NULL, g_hwndProgressBar=NULL, hwndPaneV=NULL;
-HWND hwndPaneH1=NULL,hwndButtonTest=NULL,hwndButtonOptions=NULL,hwndButtonSearch=NULL;
-HWND hwndButtonAddToFavorite=NULL;
+HWND g_hwndMainTreeCtrl=NULL, g_hwndProgressBar=NULL;
+
 
 
 
@@ -2185,8 +2184,10 @@ class RosterMngr: public RosterListener
       virtual void handleRosterPresence( const RosterItem& item, const std::string& resource,
                                          Presence::PresenceType presence, const std::string& msg ) 
 	  {
-		  std::cout << item.jid() << " " << resource << " " << GetPresenceTypeString(presence) << " " << msg << std::endl;
+		 // std::cout << item.jid() << " " << resource << " " << GetPresenceTypeString(presence) << " " << msg << std::endl;
 		  
+		  g_log.AddLogInfo(0,"XMPP: %s Resource: %s Mode: %s, Msg: %s", item.jid().c_str(),resource.c_str(),GetPresenceTypeString(presence).c_str(),msg.c_str());
+
 
 	  }
 
@@ -2196,17 +2197,15 @@ class RosterMngr: public RosterListener
 		 switch(presence)
 	     {
 		 case Presence::PresenceType::Available :  ret = "Online";break;
-		 case Presence::PresenceType::Chat:             ret = "'available for chat'"; break;
+		 case Presence::PresenceType::Chat:         ret = "'available for chat'"; break;
 		 case Presence::PresenceType::Away:			ret ="Away"; break;
 		 case Presence::PresenceType::DND:			ret = "Do Not Disturb"; break;
 		 case Presence::PresenceType::XA:			ret = "Extended Away"; break;
 		 case Presence::PresenceType::Unavailable:	ret = "Offline"; break;
+		 case Presence::PresenceType::Probe:	ret = "presence probe"; break;
+		 case Presence::PresenceType::Error:	ret = "presence error"; break;
+		 case Presence::PresenceType::Invalid:	ret = "stanza is invalid"; break;
 
-			 //    XA,                         /**< The entity is XA (eXtended Away). */
-     //   Unavailable,                /**< The entity is offline. */
-      //  Probe,                      /**< This is a presence probe. */
-      //  Error,                      /**< This is a presence error. */
-       // Invalid                     /**< The stanza is invalid. *
       };
 		 return ret;
 	  }
@@ -2253,14 +2252,19 @@ class XMPPManager  : public gloox::MessageHandler , ConnectionListener , Presenc
 		m_client->setPort(AppCFG.dwXMPP_PORT);
 
 	  gloox::RosterManager *rm = m_client->rosterManager();
-	  rm->registerRosterListener(new RosterMngr());
-      m_client->connect();
+	  RosterMngr *r = new RosterMngr();
+	  rm->registerRosterListener(r);
+	  m_client->setPresence(Presence::PresenceType::Available,100,"Game Scanner Browser mode");
+	  m_client->connect();
+
+	  delete r;
+	  delete m_client;
 
    }
 
 	~XMPPManager()
 	{
-		delete m_client;
+		
 	}
 
    virtual void handleMessage( const Message& stanza,
@@ -2336,7 +2340,8 @@ class XMPPManager  : public gloox::MessageHandler , ConnectionListener , Presenc
 DWORD WINAPI XMPP_Thread(LPVOID lpVoid)
 {
 
-	XMPPManager mgr;
+
+	//XMPPManager mgr;
 
 	return 0;
 }
@@ -2345,11 +2350,14 @@ void XMPP_CreateThread()
 {
 	DWORD dwThreadIdBrowser=0;	
 	HANDLE g_hXMPPThread=NULL; 
-	g_hXMPPThread = CreateThread( NULL, 0, &XMPP_Thread,(LPVOID)0 ,0, &dwThreadIdBrowser);                
-	if (g_hXMPPThread == NULL) 
+	if(AppCFG.bXMPP_Active)
 	{
-		g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
-	} 
+		g_hXMPPThread = CreateThread( NULL, 0, &XMPP_Thread,(LPVOID)0 ,0, &dwThreadIdBrowser);                
+		if (g_hXMPPThread == NULL) 
+		{
+			g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+		} 
+	}
 }
 
 #pragma pack(1) 
@@ -3041,8 +3049,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 
 	g_hwndMainTreeCtrl = CreateWindowEx(WS_EX_CLIENTEDGE  ,  WC_TREEVIEW , NULL,
-
-							WS_CLIPCHILDREN|WS_VISIBLE |WS_CHILDWINDOW|  WS_TABSTOP |  TVS_HASBUTTONS | TVS_EDITLABELS| TVS_LINESATROOT | TVS_HASLINES   , 
+							WS_CLIPCHILDREN | WS_VISIBLE | WS_CHILDWINDOW|  WS_TABSTOP |  
+							TVS_HASBUTTONS | TVS_EDITLABELS| TVS_LINESATROOT | TVS_HASLINES   , 
 							0,TOOLBAR_Y_OFFSET,50, 50, 
 							hwnd, (HMENU) IDC_MAINTREE, hInst, NULL);
 
@@ -3051,7 +3059,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_MAINTREEVIEW].hWnd = g_hwndMainTreeCtrl;
 
 	g_hwndListViewServer = CreateWindowEx(WS_EX_CLIENTEDGE, WC_LISTVIEW , NULL,
-							LVS_OWNERDATA | LVS_REPORT | WS_VISIBLE | WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
+							LVS_OWNERDATA | LVS_REPORT | WS_VISIBLE | WS_CHILD | WS_TABSTOP |
+							WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
 							100+BORDER_SIZE,TOOLBAR_Y_OFFSET,200, 100, 
 							hwnd, (HMENU) IDC_LIST_SERVER, hInst, NULL);
 
@@ -3065,7 +3074,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_SERVERLIST].hWnd = g_hwndListViewServer;
 	
 	g_hwndListBuddy	 = CreateWindowEx(WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
-							LVS_REPORT | WS_VISIBLE |WS_CHILD | WS_TABSTOP|WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
+							LVS_REPORT | WS_VISIBLE |WS_CHILD | WS_TABSTOP | 
+							WS_CLIPCHILDREN | WS_CLIPSIBLINGS ,
 							0,0+TOOLBAR_Y_OFFSET+BORDER_SIZE,50, 50, 
 							hwnd, (HMENU) IDC_LIST_BUDDY, hInst, NULL);		
 
@@ -3082,7 +3092,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	WNDCONT[WIN_TABCONTROL].hWnd = g_hwndTabControl;
 
 	g_hwndListViewPlayers = CreateWindowEx(WS_EX_CLIENTEDGE , WC_LISTVIEW , NULL,
-							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP |WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
+							LVS_OWNERDATA|LVS_REPORT|WS_VISIBLE |WS_CHILD | WS_TABSTOP | 
+							WS_CLIPCHILDREN | WS_CLIPSIBLINGS,
 							100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_LIST_PLAYERS, hInst, NULL);
 
@@ -3100,7 +3111,8 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	int cyVScroll = GetSystemMetrics(SM_CYVSCROLL); 		
 
 	g_hwndLogger = CreateWindowEx(0 , WC_EDIT , NULL, 
-							 WS_VSCROLL|WS_BORDER | WS_VISIBLE |  WS_CHILD | ES_LEFT | ES_MULTILINE  | ES_AUTOHSCROLL |  ES_AUTOVSCROLL  |WS_CLIPCHILDREN ,
+							 WS_VSCROLL|WS_BORDER | WS_VISIBLE |  WS_CHILD | ES_LEFT | ES_MULTILINE  | 
+							 ES_AUTOHSCROLL |  ES_AUTOVSCROLL  |WS_CLIPCHILDREN ,
 								100+BORDER_SIZE,200+TOOLBAR_Y_OFFSET+BORDER_SIZE,100, 200, 
 							hwnd, (HMENU) IDC_EDIT_LOGGER, hInst, NULL);
 
@@ -3110,7 +3122,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 
 	g_hwndStatus = CreateWindowEx(0 , WC_EDIT , NULL, 
-							WS_VISIBLE |  WS_CHILD | ES_AUTOHSCROLL | ES_READONLY | ES_NOHIDESEL |WS_CLIPCHILDREN,
+							WS_VISIBLE |  WS_CHILD | ES_AUTOHSCROLL | ES_READONLY | ES_NOHIDESEL | WS_CLIPCHILDREN,
 							0,rc.bottom-cyVScroll,rc.right/2, cyVScroll, 
 							hwnd, (HMENU) IDC_EDIT_STATUS, hInst, NULL);
 
@@ -3148,6 +3160,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 		Initialize_WindowSizes();
 		CenterWindow(g_hWnd);
 	}
+
 	SetImageList();
 
 	TCITEM tci;
@@ -3175,7 +3188,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 	
 
-	//For Vista and later
+	//For Vista and newer
 	DWORD _TVS_EX_DOUBLEBUFFER = 0x0004;
 
 	dwExStyle = TreeView_GetExtendedStyle(g_hwndMainTreeCtrl);
@@ -3191,7 +3204,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 
 
 	dwExStyle = ListView_GetExtendedListViewStyle(g_hwndListViewVars);
-	dwExStyle |= LVS_EX_FULLROWSELECT ;
+	dwExStyle |= LVS_EX_FULLROWSELECT;
 	dwExStyle |= LVS_EX_DOUBLEBUFFER;
 	ListView_SetExtendedListViewStyle(g_hwndListViewVars,dwExStyle);
 	
@@ -5311,13 +5324,21 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 void RepaintAllWindows()
 {
 	
-	InvalidateRect(g_hWnd,NULL,TRUE);
+//	InvalidateRect(g_hWnd,NULL,TRUE);
+
 	for(int i=0;i<WIN_MAX;i++)
 	{
-		//	MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,FALSE);
-		//	ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
-			InvalidateRect(WNDCONT[i].hWnd,&WNDCONT[i].rSize,TRUE);
+
+		if(WNDCONT[i].bShow)
+			RedrawWindow(WNDCONT[i].hWnd,&WNDCONT[i].rSize,NULL, RDW_ERASE |  RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+
 	}
+			
+	RedrawWindow(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,NULL, RDW_ERASE |  RDW_FRAME | RDW_INVALIDATE | RDW_ALLCHILDREN);
+
+	
+	InvalidateRect(ListView_GetHeader(g_hwndListViewServer),NULL,TRUE);
+	UpdateWindow(ListView_GetHeader(g_hwndListViewServer));
 	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
 	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
 }
@@ -5362,9 +5383,24 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 
 	Update_WindowSizes(wParam);
 
-	
 
+	if(WNDCONT[WIN_PING].bShow)
+		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 
+	//Fix XP repaint issue
+	if((g_OSversion.dwMajorVersion==5) && (g_OSversion.dwMinorVersion==1))
+	{
+	//	UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);
+	//	UpdateWindow(WNDCONT[WIN_MAINTREEVIEW].hWnd);
+		//InvalidateRect(g_hWnd,NULL,TRUE);
+	//	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
+	//	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
+	//	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
+	//	InvalidateRect(g_hwndMainTreeCtrl,NULL,TRUE);
+	//	InvalidateRect(WNDCONT[WIN_SERVERLIST].hWnd,NULL,TRUE);
+	//	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
+
+	}
 
 	for(int i=0;i<WIN_MAX;i++)
 	{
@@ -5380,25 +5416,7 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	
 	CalcSplitterGripArea();
 
-	if(WNDCONT[WIN_PING].bShow)
-		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 
-	//Fix XP repaint issue
-	if((g_OSversion.dwMajorVersion==5) && (g_OSversion.dwMinorVersion==1))
-	{
-		UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);
-		UpdateWindow(WNDCONT[WIN_MAINTREEVIEW].hWnd);
-		//InvalidateRect(g_hWnd,NULL,TRUE);
-	//	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
-		InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
-		InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
-		InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
-		InvalidateRect(g_hwndMainTreeCtrl,NULL,TRUE);
-		InvalidateRect(WNDCONT[WIN_SERVERLIST].hWnd,NULL,TRUE);
-
-
-		
-	}
 
 
 //	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
@@ -6359,6 +6377,70 @@ LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszTex
 	SelectObject(hDC,g_hf);	
 	return  (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
 }
+
+//Jedi Knight 3
+LRESULT Draw_ColorEncodedTextJK3(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
+{
+	HDC  hDC =  pListDraw->nmcd.hdc;
+	HBRUSH  hbrSel = CreateSolidBrush( RGB(0x28,0x2c,0x28)); 														
+	FillRect(hDC, &rc, (HBRUSH) hbrSel);
+	if(hbrSel!=NULL)
+		DeleteObject(hbrSel);
+	if( pListDraw->nmcd.uItemState & CDIS_SELECTED) // (CDIS_SELECTED | CDIS_FOCUS))
+	{
+		HBRUSH hbrSel2= NULL;
+		pListDraw->clrText   = GetSysColor(COLOR_HIGHLIGHTTEXT); //RGB(255, 255, 255);
+		hbrSel2 = CreateSolidBrush( GetSysColor(COLOR_HIGHLIGHT)); //RGB(51,153,250)); 																
+		FillRect(hDC, &rc, (HBRUSH) hbrSel2);
+		if(hbrSel2!=NULL)
+			DeleteObject(hbrSel2);
+	}
+	if(pszText==NULL)
+	{			
+		SelectObject(hDC,g_hf);	
+		return (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT );
+	}
+	BYTE ncharWidth;
+	SelectObject(hDC,g_hf2);		
+	ABC abc[256];
+	LPABC pAbc = abc;
+	GetCharABCWidths(hDC,(UINT)0, (UINT) 255,pAbc);
+
+	char *pText;
+
+	rc.left+=20;
+//	SetBkColor(hDC, RGB(0x28,0x2c,0x28));
+//	SetTextColor(hDC,pListDraw->clrText);
+	COLORREF col = RGB(255,255,255) ;
+	for(int i=0;i<strlen(pszText);i++)
+	{
+		if(pszText[i]==-128)
+		{
+			i++;
+			continue;
+		}
+		if(pszText[i]=='^')
+		{
+			col = GetColor(pszText[i+1]);
+			i++;
+			if(pszText[i]!='^') // this fixes these kind of names with double ^^
+				continue;
+		}
+		
+		SetTextColor(hDC,col);
+		pText = &pszText[i];		
+		ExtTextOut(hDC,rc.left,rc.top,ETO_CLIPPED , &rc,pText, 1,NULL); 
+	
+		ncharWidth = abc[(unsigned char)pszText[i]].abcA + abc[(unsigned char)pszText[i]].abcB + abc[(unsigned char)pszText[i]].abcC;
+		if(ncharWidth>FONT_MAX_WIDTH)
+			ncharWidth = FONT_MAX_WIDTH;
+		rc.left+=ncharWidth;
+
+	}
+	SelectObject(hDC,g_hf);	
+	return  (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT);
+}
+
 
 LRESULT Draw_ColorEncodedTextUNICODE(RECT rc, LPNMLVCUSTOMDRAW pListDraw , char *pszText)
 {
@@ -12075,7 +12157,7 @@ void OnLeftMouseButtonUp(HWND hWnd, WPARAM wParam,LPARAM lParam)
 
 	//InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 	OnSize(hWnd,0,TRUE);
-	RepaintAllWindows();
+	//RepaintAllWindows();
 }
 
 void OnLeftMouseButtonDown(HWND hWnd, WPARAM wParam,LPARAM lParam)
@@ -12230,6 +12312,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WM_CREATE:
 			OnCreate(hWnd,g_hInst);			
 		break;
+		case WM_REPAINT_ALL_WINDOWS:
+			RepaintAllWindows();
+			//InvalidateRect(hWnd,NULL,FALSE);
+			
+		break;
 		case WM_TIMER:
 		{
 			switch (wParam) 
@@ -12329,38 +12416,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						break;
 					}
 
-			/*	case CBN_SELENDOK:
-				{
-				
-					if (wmId==IDC_COMBOBOXEX_CMD)
-					{
-						char ip[300];
-						DWORD dwPort;
-					
-						int i = SendDlgItemMessage(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,CB_GETCURSEL ,0,0);
-						SendDlgItemMessage(g_hwndSearchToolbar,IDC_COMBOBOXEX_CMD,CB_GETLBTEXT ,i,(LPARAM)ip);
-						
-						//GetDlgItemText(g_hWnd,IDC_COMBOBOXEX_CMD,ip,99);
-													
-						if(SplitIPandPORT(ip,dwPort)!=NULL)
-						{
-							strcpy(gm.g_currServerIP,ip);
-							//dwCurrPort = dwPort;	
-							g_CurrentSRV = FindServerByIPandPort(ip,dwPort);
-					
-							ListView_DeleteAllItems(g_hwndListViewVars);
-							ListView_DeleteAllItems(g_hwndListViewPlayers);
-							gm.GetServerInfo(g_currentGameIdx,g_CurrentSRV);
-							UpdateServerItem(g_CurrentSRV->dwIndex);
-							UpdateCurrentServerUI();
-							
-							//PostMessage(g_hWnd,WM_USER_GETSERVERINFO,0,(LPARAM)NULL);
-						}
-						Show_ToolbarButton(IDC_BUTTON_FIND,true);
-					}n
-				
-				break;
-				}*/
 				
 			}//End wmEvent switch
 			// Parse the menu selections:
@@ -12380,7 +12435,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						return TRUE;					
 					}
 					g_bMinimized = false;
-					return 0;
+					PostMessage(hWnd,WM_REPAINT_ALL_WINDOWS,0,0);
+					return TRUE;
 				}
 				case IDM_SCAN_ALL_GAMES:
 					gm.GamesInfo[g_currentGameIdx].dwViewFlags = 0;

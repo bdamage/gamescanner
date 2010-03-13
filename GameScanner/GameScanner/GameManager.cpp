@@ -102,7 +102,7 @@ void CGameManager::Default_GameSettings()
 		xml.GetText(pGame,"Filename",gameinfo.szFilename,sizeof(gameinfo.szFilename)-1);
 		xml.GetText(pGame,"WebProtocol",gameinfo.szWebProtocolName,sizeof(gameinfo.szWebProtocolName)-1);
 		xml.GetInteger(pGame,"ServerDefaultPort",(long*)&gameinfo.dwDefaultPort);
-		char szColorEnc[10];
+		char szColorEnc[40];
 		xml.GetText(pGame,"ColorEncoding",szColorEnc,sizeof(szColorEnc)-1);
 
 		gameinfo.colorfilter = &colorfilter;
@@ -119,7 +119,12 @@ void CGameManager::Default_GameSettings()
 		{
 			gameinfo.colorfilter = &colorfilterNEXUIZ;
 			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextNexuiz;
+		}else if(strcmp(szColorEnc,"JEDIKNIGHT3")==0)
+		{
+			gameinfo.colorfilter = &colorfilterJK3;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextJK3;
 		}
+		
 
 
 		xml.GetText(pGame,"MapPreviewPath",gameinfo.szMAP_MAPPREVIEW_PATH,sizeof(gameinfo.szMAP_MAPPREVIEW_PATH)-1);

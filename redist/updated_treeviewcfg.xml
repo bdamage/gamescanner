@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.216">
+<TreeViewCFG version="5.217">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -20,6 +20,7 @@
 	2009-09-29  5.213   Updated CoD WaW filters to reflect v.1.6 (version + maps filter)
 	2010-01-24  5.215   WoP
 	2010-01-24  5.216   WoP Game types added.
+	2010-03-13  5.217   Jedi Knight 3 added.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -1016,6 +1017,24 @@
                     <GameType name="Capture the Lolly" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;6&quot; remove</GameType>
                     <GameType name="Spray your Color - Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;7&quot; remove</GameType>
                     <GameType name="Big Ballons" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;8&quot; remove</GameType>
+                </GameType>				
+            </Filter>
+        </Game>		
+        <Game name="Jedi Knight 3: Jedi Academy" icon="55" expand="0" state="0" game="25" type="1">
+            <Internet name="Internet servers" icon="12" expand="0" state="0" game="25" type="1"></Internet>
+            <Favorite name="Favorites" icon="2" expand="0" state="0" type="14">if favorite != &quot;1&quot; remove</Favorite>
+            <History name="History" icon="16" expand="0" state="0" type="7"></History>
+            <Monitor name="Monitor" icon="29" expand="0" state="0" type="12"></Monitor>
+            <Filter name="Filters" icon="18" expand="0" state="0" type="0">
+               <FilterItem name="Punkbuster" icon="9" expand="0" state="0" type="13">if anticheat != &quot;1&quot; remove</FilterItem>
+                <Private name="Show Private" icon="9" expand="0" state="0" type="15">if private != &quot;1&quot;remove</Private>
+                <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>                
+                <NoEmpty name="No Empty" icon="9" expand="0" state="0" type="13">if players == "0" remove</NoEmpty>
+                <NoFull name="No Full" icon="9" expand="0" state="0" type="13">if players >= maxplayers remove</NoFull>	
+                <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
+                <Map name="Maps" icon="18" expand="0" state="0" type="0">
+                </Map>
+			    <GameType name="Game types" icon="18" expand="0" state="0" type="0">
                 </GameType>				
             </Filter>
         </Game>		

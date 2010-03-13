@@ -7,7 +7,10 @@
 
 		version 2.0.18
 		---------------------------
-		* Fixed a game server search bug a crash could occur if a game server ahd longer than 256 chars length.
+		* Fixed a game server search bug a crash could occur if a game server had longer than 256 charecters length.
+		* Added support for Jedi Knight 3 : Jedi Academy.
+                          * Fixed XP black areas on restore from task tray.
+
 
 
 		Version 2.0.17  (2010-01-20)

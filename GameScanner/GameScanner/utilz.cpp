@@ -303,6 +303,37 @@ char *colorfilter(const char* name,char *namefilter,int len)
 	return namefilter;
 }
 
+//Jedi Knight 3 filter 
+char *colorfilterJK3(const char* name,char *namefilter,int len)
+{
+	int n=0;
+	memset(namefilter,0,len);
+	if(name!=NULL)
+	{
+		
+		for(int i=0;i<strlen(name);i++)
+		{
+			if(i>=len)
+				break;
+			if(name[i]==-128)
+			{
+				i++;
+				continue;
+			}
+			if(name[i]=='^')
+			{
+				i++;
+				if(name[i]!='^') // this fixes these kind of names with double ^^
+					continue;
+			}
+			
+			namefilter[n] = name[i];		
+			n++;
+		}
+	} 	
+	return namefilter;
+}
+
 char *colorfilterNEXUIZ(const char* name,char *namefilter,int len)
 {
 	int n=0;

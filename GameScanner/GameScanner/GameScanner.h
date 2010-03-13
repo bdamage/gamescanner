@@ -34,6 +34,7 @@ void Do_ServerListSortThread(int iColumn);
 DWORD WINAPI  RCONDlgThread(LPVOID lpParam);
 void ChangeFont(HWND hWnd,HFONT hf);
 LRESULT Draw_ColorEncodedText(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
+LRESULT Draw_ColorEncodedTextJK3(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
 LRESULT Draw_ColorEncodedTextQ4(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
 LRESULT Draw_ColorEncodedTextQW(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);
 LRESULT Draw_ColorEncodedTextNexuiz(RECT rc, LPNMLVCUSTOMDRAW pListDraw , TCHAR *pszText);

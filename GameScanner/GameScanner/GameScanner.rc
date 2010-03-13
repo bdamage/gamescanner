@@ -467,7 +467,7 @@ BEGIN
     RTEXT           "Port",IDC_STATIC,12,174,59,12
     EDITTEXT        IDC_EDIT_XMPP_SERVER,78,151,296,17,ES_AUTOHSCROLL
     EDITTEXT        IDC_EDIT_XMPP_PORT,78,173,104,14,ES_AUTOHSCROLL
-    LTEXT           "Beta test of supporting XMPP protocol for real time buddies presence.",IDC_STATIC,227,9,158,64
+    LTEXT           "Beta test of supporting Jabber/XMPP protocol.",IDC_STATIC,227,9,158,27
 END
 
 
