@@ -12,11 +12,12 @@
 #pragma warning(disable : 4996)
 
 
-
+extern char EXE_PATH[_MAX_PATH+_MAX_FNAME];	
 extern CGameManager gm;
 extern CIPtoCountry g_IPtoCountry;
 extern CLanguage g_lang;
 extern bool g_bCancel;
+
 //extern GamesMap gm.GamesInfo;
 extern APP_SETTINGS_NEW AppCFG;
 extern HWND g_hWnd;
@@ -64,6 +65,7 @@ unsigned char* Warsow_patch(SOCKET pSocket,SERVER_INFO *pSI, DWORD *dwStartTick,
 	}
 	return NULL;
 }
+
 
 DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
 {
@@ -283,6 +285,208 @@ retry:
 //	pSI->bLocked = FALSE;
 	return 0;
 }
+
+
+DWORD EA_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
+{
+
+
+	STARTUPINFO si;
+    PROCESS_INFORMATION pi;
+
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+
+   
+    // Start the child process. 
+ /*   if( !CreateProcess( NULL,   // No module name (use command line)
+         "ealist -o 1 -n bfbc2-pc -a kallekula2010 Ku**fu***l mohair-pc",        // Command line
+        NULL,           // Process handle not inheritable
+        NULL,           // Thread handle not inheritable
+        FALSE,          // Set handle inheritance to FALSE
+        0,              // No creation flags
+        NULL,           // Use parent's environment block
+        NULL,           // Use parent's starting directory 
+        &si,            // Pointer to STARTUPINFO structure
+        &pi )           // Pointer to PROCESS_INFORMATION structure
+    ) 
+    {
+       MessageBox(NULL,"ealist not found","Error!",MB_OK);
+        return 1;
+    }
+
+    // Wait until child process exits.
+    WaitForSingleObject( pi.hProcess, INFINITE );
+
+    // Close process and thread handles. 
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+*/
+	Parse_FileServerList(pGI,"bfbc2-pc.gsl",EXE_PATH);
+	return 0;
+}
+
+
+DWORD BFBC2_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
+{
+	SOCKET pSocket = NULL;
+	unsigned char *packet=NULL;
+	DWORD dwStartTick=0;
+
+	if(pSI==NULL)
+	{
+		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
+		return (DWORD)0xdead;
+	}
+	pSI->usQueryPort = 48888;
+
+	pSocket =  getsockudp(pSI->szIPaddress ,(unsigned short)pSI->usQueryPort);  
+	if(pSocket==INVALID_SOCKET)
+	{
+	  dbg_print("Error at getsockudp()\n");
+	  return 0x000002;
+	}
+
+	size_t packetlen = 0;
+
+	//Some default values
+	pSI->dwPing = 9999;
+
+	if( ((pSI->szShortCountryName[0]=='E') && (pSI->szShortCountryName[1]=='U')) || ((pSI->szShortCountryName[0]=='z') && (pSI->szShortCountryName[1]=='z')))
+	{	
+		char szShortName[4];			
+		g_IPtoCountry.IPtoCountry(pSI->dwIP,szShortName);//optimized since v1.31 
+		strncpy_s(pSI->szShortCountryName,sizeof(pSI->szShortCountryName),szShortName,_TRUNCATE);
+	}
+	DWORD dwRetries=0;
+	int len = 0; //(int)strlen(sendbuf);
+	char sendbuf[80];
+	ZeroMemory(sendbuf,sizeof(sendbuf));
+
+	//memcpy( buf, "\x00\x00\x00\x00\x1b\x00\x00\x00\x01\x00\x00\x00\x0a\x00\x00\x00serverInfo\x00", size );
+	//memcpy( buf, "\x01\x00\x00\x00\x15\x00\x00\x00\x01\x00\x00\x00\x04\x00\x00\x00quit\x00", size );
+
+	len = UTILZ_ConvertEscapeCodes(gm.GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo,sendbuf,sizeof(sendbuf));
+retry:
+
+
+	//if(gm.GamesInfo[pSI->cGAMEINDEX].szServerRequestInfo!=NULL)
+		packetlen = send(pSocket, "\x00\x00\x00\x00\x1b\x00\x00\x00\x01\x00\x00\x00\x0a\x00\x00\x00serverInfo\x00", 27, 0);
+//	else
+//		packetlen=SOCKET_ERROR;
+
+		
+	if(packetlen==SOCKET_ERROR) 
+	{
+		dbg_print("Error at send()\n");
+		closesocket(pSocket);		
+		pSI->cPurge++;
+		return -1;
+	}
+
+	dwStartTick = GetTickCount();
+	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+
+	if(packet==NULL)
+	{
+		if(dwRetries<AppCFG.dwRetries)
+		{
+			dwRetries++;
+			goto retry;
+		}
+	}
+
+	if(packet) 
+	{
+		pSI->dwPing = (GetTickCount() - dwStartTick);
+
+		GetServerLock(pSI);
+		if(pSI->pPlayerData!=NULL)
+			CleanUp_PlayerList(pSI->pPlayerData);
+		pSI->pPlayerData = NULL;
+
+		if(pSI->pServerRules!=NULL)
+			CleanUp_ServerRules(pSI->pServerRules);
+		pSI->pServerRules = NULL;
+
+
+		//dbg_dumpbuf("dump.bin", packet, packetlen);
+		SERVER_RULES *pServRules=NULL;
+		char *end = (char*)((packet)+packetlen);
+		
+		char *pCurrPointer=NULL; //will contain the start address for the player data
+
+		//pCurrPointer = Q3_ParseServerRules(pServRules,(char*)packet,packetlen);
+		pSI->pServerRules = pServRules;
+		if(pServRules!=NULL)
+		{		
+
+			char *szVarValue=NULL;
+			GAME_INFO *pGI = &gm.GamesInfo[pSI->cGAMEINDEX];
+//			pSI->szServerName = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_SERVERNAME).sRuleValue.c_str(),pSI->pServerRules);
+//			pSI->szMap = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules);
+//			pSI->szMod = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_MOD).sRuleValue.c_str(),pSI->pServerRules);
+//			pSI->szGameTypeName = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_GAMETYPE).sRuleValue.c_str(),pSI->pServerRules);
+//			pSI->szVersion = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_VERSION).sRuleValue.c_str(),pSI->pServerRules);
+
+			PLAYERDATA *pQ3Players=NULL;
+			DWORD nPlayers=0;
+			//---------------------------------
+			//Retrieve players if any exsist...
+			//---------------------------------
+//			pQ3Players = Q3_ParsePlayers2(pSI,pCurrPointer,end,&nPlayers,szP_ET);
+			
+			pSI->pPlayerData = pQ3Players;
+
+			//-----------------------------------
+			//Update server info from rule values
+			//-----------------------------------
+			pSI->bUpdated = 1;
+			pSI->cPurge = 0;
+			pSI->nPlayers = nPlayers;
+			
+
+
+			szVarValue= Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_PRIVATE).sRuleValue.c_str(),pSI->pServerRules);
+			if(szVarValue!=NULL)
+				pSI->bPrivate = (char)atoi(szVarValue);
+
+			szVarValue = Get_RuleValue((TCHAR*)pGI->vGAME_SPEC_COL.at(COL_PB).sRuleValue.c_str(),pServRules);		
+			if(szVarValue!=NULL)
+				pSI->bPunkbuster = (char)atoi(szVarValue);
+
+			szVarValue = Get_RuleValue("sv_privateClients",pServRules);
+			if(szVarValue!=NULL)
+				pSI->nPrivateClients = atoi(szVarValue);
+
+			time(&pSI->timeLastScan);
+
+	
+
+		} //end if(pServRules!=NULL)
+	
+		ReleaseServerLock(pSI);
+		if(Callback_CheckForBuddy!=NULL)
+			Callback_CheckForBuddy(pSI->pPlayerData,pSI);
+
+		free(packet);
+
+	} //end if(packet)
+	else
+		pSI->cPurge++;   //increase purge counter when the server is not responding
+
+	if(UpdatePlayerListView!=NULL) 
+		UpdatePlayerListView(pSI->pPlayerData);
+		
+	if(UpdateRulesListView!=NULL)
+		UpdateRulesListView(pSI->pServerRules);
+
+	closesocket(pSocket);
+//	pSI->bLocked = FALSE;
+	return 0;
+}
+
 
 
 DWORD COD4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules))
@@ -1060,7 +1264,7 @@ DWORD Q3_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	{
 
 		KillTimer(g_hWnd,IDT_1SECOND);
-		g_log.AddLogInfo(GS_LOG_ERROR,"Error connecting to socket!");
+		g_log.AddLogInfo(GS_LOG_ERROR,"Error connecting to server %s:%d!",szIP,pGI->dwMasterServerPORT);
 		return 1;
 	}
 

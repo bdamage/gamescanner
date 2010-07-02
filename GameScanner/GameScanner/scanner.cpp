@@ -226,8 +226,7 @@ DWORD WINAPI  Get_ServerStatusThread2(LPVOID lpParam)
 		//Do non-filtered scan of all servers
 		Get_ServerStatus(pSI,NULL,NULL);			
 
-		//if(SCANNER_UpdateServerListView!=NULL)
-			UpdateServerItem(pSI->dwLVIndex);
+		UpdateServerItem(size-pGI->dwScanIdx); 
 
 		if(g_hwndProgressBar!=NULL)
 				SendMessage(g_hwndProgressBar, PBM_STEPIT, (WPARAM) 0, 0);

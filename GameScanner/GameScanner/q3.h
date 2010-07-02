@@ -58,5 +58,6 @@ DWORD Q3_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDA
 PLAYERDATA *Q3_ParsePlayers2(SERVER_INFO *pSI,char *pointer,char *end, DWORD *numPlayers,char *szP=NULL);
 PLAYERDATA *QW_ParsePlayers(SERVER_INFO *pSI,TCHAR *pointer,TCHAR *end, DWORD *numPlayers);
 DWORD COD4_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
-
+DWORD EA_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx);
+DWORD BFBC2_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYERDATA *Q3players),long (*UpdateRulesListView)(SERVER_RULES *pServerRules));
 #endif

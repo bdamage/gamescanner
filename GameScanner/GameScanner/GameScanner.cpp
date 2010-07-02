@@ -2230,6 +2230,7 @@ class RosterMngr: public RosterListener
 	  virtual void handleRosterError( const IQ& iq ){}
 };
 
+
 class XMPPManager  : public gloox::MessageHandler , ConnectionListener , PresenceHandler
 {
  private:
@@ -3787,9 +3788,7 @@ DWORD WINAPI LoadServerListV4(LPVOID lpVoid)
 			{
 				g_log.AddLogInfo(0,"Out of memory.");
 				return 0xdeadbabe;
-			}
-
-			
+			}	
 			
 			f.ReadRecord((long*)&pSrv->cGAMEINDEX);
 			pSrv->cGAMEINDEX =  pGI->cGAMEINDEX; 
@@ -5835,7 +5834,7 @@ nextMasterServer:
 				int ret = g_download.HttpFileDownload(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer],"servers.txt",NULL,NULL);
 				if(ret!=0)
 					goto exitError;
-				Parse_FileServerList(&gm.GamesInfo[currGameIdx],"servers.txt");
+				Parse_FileServerList(&gm.GamesInfo[currGameIdx],"servers.txt",USER_SAVE_PATH);
 			} else
 			{
 
@@ -5843,7 +5842,7 @@ nextMasterServer:
 				inet.SetPath(USER_SAVE_PATH);
 				inet.CrackURL(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer]);
 				inet.URLPost(gm.GamesInfo[currGameIdx].szMasterServerIP[nMasterServer], "servers.csv");
-				Parse_FileServerListFromGSC(&gm.GamesInfo[currGameIdx],"servers.csv");
+				Parse_FileServerListFromGSC(&gm.GamesInfo[currGameIdx],"servers.csv",USER_SAVE_PATH);
 
 			}
 
@@ -6119,10 +6118,10 @@ void Initialize_RedrawServerListThread()
 }
 
 
-void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
+void Parse_FileServerList(GAME_INFO *pGI,char *szFilename, const char *path )
 {
 
-	SetCurrentDirectory(USER_SAVE_PATH);
+	SetCurrentDirectory(path);
 	FILE *fp=fopen(szFilename, "rb");
 	int i=0;
 	char buff[256];
@@ -6170,10 +6169,10 @@ void Parse_FileServerList(GAME_INFO *pGI,char *szFilename)
 
 
 
-void Parse_FileServerListFromGSC(GAME_INFO *pGI,char *szFilename)
+void Parse_FileServerListFromGSC(GAME_INFO *pGI,char *szFilename,const char *path)
 {
 
-	SetCurrentDirectory(USER_SAVE_PATH);
+	SetCurrentDirectory(path);
 	FILE *fp=fopen(szFilename, "rb");
 	int i=0;
 	char buff[256];
@@ -6220,7 +6219,7 @@ DWORD GSC_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 	inet.SetPath(USER_SAVE_PATH);
 	inet.CrackURL(pGI->szMasterServerIP[iMasterIdx]);
 	inet.URLPost(pGI->szMasterServerIP[iMasterIdx], "servers.csv");
-	Parse_FileServerListFromGSC(pGI,"servers.csv");
+	Parse_FileServerListFromGSC(pGI,"servers.csv",USER_SAVE_PATH);
 	return 0;
 }
 
@@ -6262,7 +6261,9 @@ long InsertServerItem(GAME_INFO *pGI,SERVER_INFO *pSI)
 
 long UpdateServerItem(DWORD index)
 {
-	ListView_Update(g_hwndListViewServer,index);
+	if(ListView_IsItemVisible(g_hwndListViewServer,index))
+		ListView_Update(g_hwndListViewServer,index);
+
 //	ListView_SetItemCount(g_hwndListViewServer,currCV->vSIFiltered.size());//,LVSICF_NOSCROLL);
 	return 0;
 }

@@ -5,6 +5,11 @@
 	
 	Check out the forum for help and support.
 
+		version 2.0.19 (2010-07-02)
+		---------------------------
+		* Fixed a performence during scanning under Win XP.
+		* Updated IP to country database.
+
 		version 2.0.18
 		---------------------------
 		* Fixed a game server search bug a crash could occur if a game server had longer than 256 charecters length.

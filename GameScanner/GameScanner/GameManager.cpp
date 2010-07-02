@@ -302,6 +302,13 @@ void CGameManager::Default_GameSettings()
 					gameinfo.GetServerStatus = &Q3_Get_ServerStatus;
 					break;
 				}
+			case BFBC2_ENGINE:
+				{
+					gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;				
+					gameinfo.GetServersFromMasterServer = &EA_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &BFBC2_Get_ServerStatus;
+					break;
+				}
 		}
 		GamesInfo[gameinfo.cGAMEINDEX] = gameinfo;
 		pGame = pGame->NextSiblingElement();
@@ -337,6 +344,8 @@ int CGameManager::GetNetEngine(char *szName)
 		return WOLF_ENGINE;
 	else if(strcmp("CODWW",szName)==0)
 		return CODWW_ENGINE;	
+	else if(strcmp("BFBC2",szName)==0)
+		return BFBC2_ENGINE;
 
 	return Q3_ENGINE;  //Q3 as default
 }
