@@ -783,18 +783,28 @@ retry:
 		pSI->dwPing = (GetTickCount() - dwStartTick);
 		pSI->bUpdated = 1;
 		pSI->cPurge=0;
-		
-		GetServerLock(pSI);
-		CleanUp_PlayerList(pSI->pPlayerData);
-		pSI->pPlayerData = NULL;			
+		char *end = (char*)((packet)+packetlen);
+		char *p = (char*)resp->type;
+		char *start  = (char*)packet;		
 
-		CleanUp_ServerRules(pSI->pServerRules);
-		pSI->pServerRules = NULL;			
+			if(*resp->type == 0x44)  //server busy?
+			{
+//				pSI->szServerName = ServerRule_Add(pSI->pServerRules,"hostname","Dead server?");		
+				free(packet);
+				closesocket(pSocket);
+				return 0;
+
+			}
+
+
+		GetServerLock(pSI);
+
+		CleanUp_ServerInfo(pSI);		
 
 		//dbg_dumpbuf("dump.bin", packet, packetlen);
 
-		char *end = (char*)((packet)+packetlen);
-		char *p = (char*)resp->type;
+
+
 		if(*resp->type ==  A2S_INFORESPONSE_HL1)
 		{
 			while(p<end)
@@ -809,7 +819,26 @@ retry:
 		//	pSI->dwVersion = (DWORD)p[0];  //network version, steam ver.
 			p++;
 			p++;
+		} else if((*resp->type == 0x44) || (*resp->type == 0x6c)) //dead server? or banned from server
+		{
+
+			if(*resp->type == 0x6c)
+			{
+				pSI->szServerName = ServerRule_Add(pSI->pServerRules,"hostname","You have been banned from this server");		
+			}
+			if(*resp->type == 0x44)
+			{
+				pSI->szServerName = ServerRule_Add(pSI->pServerRules,"hostname","Dead server?");		
+			}
+
+			time(&pSI->timeLastScan);
+			ReleaseServerLock(pSI);
+			free(packet);
+			closesocket(pSocket);
+			return 0;
 		}
+
+
 		pSI->szServerName = ServerRule_Add(pSI->pServerRules,"hostname",p);		
 		p+=strlen(p)+1;
 
@@ -851,6 +880,9 @@ retry:
 		p++; //OS
 		pSI->bPrivate = p[0];  
 		p++; 
+
+
+
 		if((*resp->type == A2S_INFORESPONSE_HL1))
 		{
 			if(p[0]==1)  //modinfo?
@@ -868,6 +900,10 @@ retry:
 			pSI->bPunkbuster = p[0]; //VAC
 			p++;
 	
+		
+			if(p>=end)
+				DebugBreak();
+
 			ServerRule_Add(pSI->pServerRules,"version",p);		
 
 		}

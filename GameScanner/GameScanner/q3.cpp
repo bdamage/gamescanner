@@ -140,13 +140,8 @@ retry:
 		pSI->dwPing = (GetTickCount() - dwStartTick);
 
 		GetServerLock(pSI);
-		if(pSI->pPlayerData!=NULL)
-			CleanUp_PlayerList(pSI->pPlayerData);
-		pSI->pPlayerData = NULL;
 
-		if(pSI->pServerRules!=NULL)
-			CleanUp_ServerRules(pSI->pServerRules);
-		pSI->pServerRules = NULL;
+		CleanUp_ServerInfo(pSI);
 
 
 		//dbg_dumpbuf("dump.bin", packet, packetlen);
@@ -560,13 +555,7 @@ retry:
 
 		GetServerLock(pSI);
 
-		if(pSI->pPlayerData!=NULL)
-			CleanUp_PlayerList(pSI->pPlayerData);
-		pSI->pPlayerData = NULL;
-
-		if(pSI->pServerRules!=NULL)
-			CleanUp_ServerRules(pSI->pServerRules);
-		pSI->pServerRules = NULL;
+		CleanUp_ServerInfo(pSI);
 
 		SERVER_RULES *pServRules=NULL;
 		char *end = (char*)((packet)+packetlen);

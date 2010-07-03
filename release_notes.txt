@@ -5,6 +5,11 @@
 	
 	Check out the forum for help and support.
 
+		version 2.0.20 (2010-07-03)
+		---------------------------
+		* Fixed sorting bug it could cause crashes.
+		* Fixed VALVE (counter strike etc) to handle server replies better.
+
 		version 2.0.19 (2010-07-02)
 		---------------------------
 		* Fixed a performence during scanning under Win XP.

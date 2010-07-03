@@ -213,15 +213,7 @@ port_Step:
 
 			GetServerLock(pSI);
 
-			if(pSI->pPlayerData!=NULL)
-				CleanUp_PlayerList(pSI->pPlayerData);
-			pSI->pPlayerData = NULL;
-
-			if(pSI->pServerRules!=NULL)
-				CleanUp_ServerRules(pSI->pServerRules);
-			pSI->pServerRules = NULL;
-
-
+			CleanUp_ServerInfo(pSI);
 
 			currentData = GS_ParseServerRules(pSI->pServerRules,(char*)&sir->data,packetlen);
 			pSI->pPlayerData = GS_ParsePlayers(pSI,currentData,endOfData, &numPlayers);
@@ -418,13 +410,8 @@ port_Step:
 
 			GetServerLock(pSI);
 
-			if(pSI->pPlayerData!=NULL)
-				CleanUp_PlayerList(pSI->pPlayerData);
-			pSI->pPlayerData = NULL;
 
-			if(pSI->pServerRules!=NULL)
-				CleanUp_ServerRules(pSI->pServerRules);
-			pSI->pServerRules = NULL;
+			CleanUp_ServerInfo(pSI);
 
 			currentData = GS_ParseServerRules(pSI->pServerRules,(char*)&sir->data,packetlen);
 			pSI->pPlayerData = GS_ParsePlayers(pSI,currentData,endOfData, &numPlayers);

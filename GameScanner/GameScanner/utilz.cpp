@@ -851,7 +851,20 @@ void CleanUp_ServerRules(LPSERVER_RULES &pSR)
 		
 	}
 }
+void CleanUp_ServerInfo(SERVER_INFO *pSI)
+{
+		pSI->szVersion = NULL;
+		pSI->szServerName = NULL;
+		pSI->szMap = NULL;
+		pSI->szMod = NULL;
+		pSI->szGameTypeName = NULL;
+		
+		CleanUp_PlayerList(pSI->pPlayerData);
+		pSI->pPlayerData = NULL;			
 
+		CleanUp_ServerRules(pSI->pServerRules);
+		pSI->pServerRules = NULL;	
+}
 
 char *getpacket(SOCKET s, size_t *len) {
 	fd_set set;

@@ -1200,10 +1200,11 @@ bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
 
 /*	if(pSIa->szVersion==NULL)
-		return false;
+		return true;
 	if(pSIb->szVersion==NULL)
 		return true;
 */
+
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_VERSION))
 		return (CustomStrCmp(pSIa->szVersion , pSIb->szVersion )>0);
 	else
@@ -7266,6 +7267,9 @@ SERVER_INFO *FindServer(char *str)
 						
 			if(l>0)	
 			{	
+				if(l>=sizeof(szTempBuffert))
+					DebugBreak();
+
 				_strlwr_s( szTempBuffert,sizeof(szTempBuffert)-1);
 				if(strstr(szTempBuffert,copy1)!=NULL)
 				{

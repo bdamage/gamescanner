@@ -318,13 +318,7 @@ retry:
 		
 		GetServerLock(pSI);
 
-		if(pSI->pPlayerData!=NULL)
-			CleanUp_PlayerList(pSI->pPlayerData);
-		pSI->pPlayerData = NULL;
-
-		if(pSI->pServerRules!=NULL)
-			CleanUp_ServerRules(pSI->pServerRules);
-		pSI->pServerRules = NULL;
+		CleanUp_ServerInfo(pSI);
 
 		char *pCurrPointer=NULL; //will contain the start address for the player data
 		pCurrPointer = Q4_ParseServerRules(pSI,pServRules,(char*)packet,packetlen);
