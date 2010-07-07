@@ -30,7 +30,7 @@ BOOL CListViewHeader::Save()
 	{
 	
 	   fwrite(&dwVersion,sizeof(DWORD),1,pf);
-	   for(int i=0; i<vCC.size();i++)
+	   for(UINT i=0; i<vCC.size();i++)
 	   {
 			fwrite(&m_iOrder[i],sizeof(int),1,pf);
 			fwrite(&vCC.at(i).lvColumn.cx,sizeof(int),1,pf);
@@ -198,7 +198,7 @@ void CListViewHeader::SwapSortAsc(int iSubItem)
 void CListViewHeader::ResetColumnOrder()
 {
 	int *order = new int[vCC.size()];
-	for(int i=0; i<vCC.size();i++)
+	for(UINT i=0; i<vCC.size();i++)
 	{
 		order[i]=i;
 		vCC.at(i).bActive = TRUE;
@@ -216,7 +216,7 @@ void CListViewHeader::UpdateColumnOrder()
 	if(ListView_SetColumnOrderArray(m_hwndListView, vCC.size(), m_iOrder)==FALSE)
 		DebugBreak();
 
-	for(int i=0; i<vCC.size();i++)
+	for(UINT i=0; i<vCC.size();i++)
 	{
 		if(vCC.at(i).bActive==FALSE)
 			ListView_SetColumnWidth(m_hwndListView,i,0);

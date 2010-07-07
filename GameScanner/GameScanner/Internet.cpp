@@ -9,7 +9,7 @@ CInternet::CInternet(void)
 	if (!m_hOpen)
 	{
 		TCHAR szErrMsg[512];
-		wsprintf (szErrMsg, TEXT("%s: %x\n"), TEXT("InternetOpen Error"),  GetLastError());
+		_stprintf_s(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetOpen Error"),  GetLastError());
 		OutputDebugString(szErrMsg);
 	}
 }
@@ -22,7 +22,7 @@ CInternet::~CInternet(void)
 		if (!InternetCloseHandle (m_hOpen))
 		{
 			TCHAR szErrMsg[512];
-			wsprintf (szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
+			_stprintf_s (szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
 			OutputDebugString(szErrMsg);
 		}
 	}
@@ -36,7 +36,7 @@ DWORD CInternet::GetFileLength(HINTERNET hInt)
 
    if(HttpQueryInfo (hInt, HTTP_QUERY_CONTENT_LENGTH, &szLength,&dwBuffLen, NULL)==FALSE)
    {
-		wsprintf (szErrMsg, TEXT("%s: %d\n"), TEXT("HttpQueryInfo Error"),GetLastError());
+		_stprintf_s(szErrMsg, TEXT("%s: %d\n"), TEXT("HttpQueryInfo Error"),GetLastError());
 		OutputDebugString(szErrMsg);
 		DisplayErrMsg();
 		return 0;
@@ -116,7 +116,7 @@ again:
 	
 		if (!InternetReadFile (hIS, (LPVOID)lpBufferA, dynamicByte, &dwSize))
 		{
-			wsprintf(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetReadFile Error"),GetLastError());
+			_stprintf_s(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetReadFile Error"),GetLastError());
 			OutputDebugString(szErrMsg);
 			delete[] lpBufferA;
 			goto exit;
@@ -153,7 +153,7 @@ exitWithNoErr:
 	{
 		if (!InternetCloseHandle (hIS))
 		{
-			wsprintf (szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
+			_stprintf_s(szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
 			OutputDebugString(szErrMsg);
 		}
 	}
@@ -161,11 +161,11 @@ exitWithNoErr:
 	{
 		if (!InternetCloseHandle (hCO))
 		{
-			wsprintf (szErrMsg, TEXT("%s: %x"), TEXT("ConnectOpen close Error"), GetLastError());
+			_stprintf_s(szErrMsg, TEXT("%s: %x"), TEXT("ConnectOpen close Error"), GetLastError());
 			OutputDebugString(szErrMsg);
 		}
 	}
-    wsprintf (szErrMsg, TEXT("Return %d"), bReturn);
+    _stprintf_s(szErrMsg, TEXT("Return %d"), bReturn);
 	OutputDebugString(szErrMsg);
 	return bReturn;
 }

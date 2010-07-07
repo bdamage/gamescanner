@@ -85,7 +85,7 @@ int  CDownload::HttpFileDownload(char* lpszServer, char* lpszDest, HWND hWndProg
 
   if (!hOpen)
   {
-    wsprintf (szErrMsg, TEXT("%s: %x\n"), TEXT("InternetOpen Error"),  GetLastError());
+    _stprintf_s(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetOpen Error"),  GetLastError());
 	OutputDebugString(szErrMsg);
     return 1;
   }
@@ -93,11 +93,11 @@ int  CDownload::HttpFileDownload(char* lpszServer, char* lpszDest, HWND hWndProg
 
 	if(strstr(lpszServer,"https://")!=NULL) //check if it is a HTTPS server
 		dwRequestFlag = INTERNET_FLAG_NO_AUTH | INTERNET_FLAG_NO_CACHE_WRITE | INTERNET_FLAG_SECURE | INTERNET_FLAG_IGNORE_CERT_DATE_INVALID | INTERNET_FLAG_IGNORE_CERT_CN_INVALID;
-again:
+
 	hRequest = InternetOpenUrl (hOpen, lpszServer, NULL, 0,dwRequestFlag, 0);
     if (hRequest==NULL)
     {
-		wsprintf (szErrMsg, TEXT("%s: %x\n"), TEXT("InternetOpenUrl Error"),GetLastError());
+		_stprintf_s(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetOpenUrl Error"),GetLastError());
 		OutputDebugString(szErrMsg);
 		bReturn = 2;
 		goto exit;
@@ -109,11 +109,11 @@ again:
 
    if(HttpQueryInfo (hRequest, HTTP_QUERY_CONTENT_LENGTH, &szLength,&dwBuffLen, NULL)==FALSE)
    {
-		wsprintf (szErrMsg, TEXT("%s: %x\n"), TEXT("HttpQueryInfo Error"),GetLastError());
+		_stprintf_s(szErrMsg, TEXT("%s: %x\n"), TEXT("HttpQueryInfo Error"),GetLastError());
 		OutputDebugString(szErrMsg);
    }
 	dwLength = (DWORD)atol(szLength) ;
-	wsprintf (szErrMsg, TEXT("Size to download %d\n"),dwLength);
+	_stprintf_s(szErrMsg, TEXT("Size to download %d\n"),dwLength);
 	OutputDebugString(szErrMsg);
 
    FILE *stream = NULL;
@@ -148,7 +148,7 @@ again:
 		
 		if (!InternetReadFile (hRequest, (LPVOID)lpBufferA, dynamicByte, &dwSize))
 		{
-			wsprintf(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetReadFile Error"),GetLastError());
+			_stprintf_s(szErrMsg, TEXT("%s: %x\n"), TEXT("InternetReadFile Error"),GetLastError());
 			OutputDebugString(szErrMsg);
 		  delete[] lpBufferA;
 		  goto exit;
@@ -192,7 +192,7 @@ exitWithNoErr:
   {
     if (!InternetCloseHandle (hRequest))
 	{
-		wsprintf (szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
+		_stprintf_s(szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
 		OutputDebugString(szErrMsg);
 
 	}
@@ -203,13 +203,13 @@ exitWithNoErr:
   {
     if (!InternetCloseHandle (hOpen))
 	{
-		wsprintf (szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
+		_stprintf_s(szErrMsg, TEXT("%s: %x"), TEXT("CloseHandle Error"), GetLastError());
 		OutputDebugString(szErrMsg);
 
 	}
   }
   
-  wsprintf (szErrMsg, TEXT("Return %d"), bReturn);
+  _stprintf_s(szErrMsg, TEXT("Return %d"), bReturn);
   OutputDebugString(szErrMsg);
   return bReturn;
 }

@@ -62,7 +62,7 @@ Upgrade code 1.0 - 1.0.9:
 #pragma comment(lib, "comctl32.lib")
 #pragma comment(lib, "Winmm.lib")  //Playsound
 #pragma comment(lib, "Iphlpapi.lib")  //ICMP
-#pragma comment(lib, "gloox 1.0.lib")  //XMPP lib
+//#pragma comment(lib, "gloox 1.0.lib")  //XMPP lib
 
 
 
@@ -2116,69 +2116,8 @@ SERVER_INFO *FindServerByIPandPort(char *szIP, DWORD dwPort)
 }
 
 
+
 /*
-  returns 0xFFFFFFFF (-1), if IP is not satisfied 
-  if adding a IP and Favorite=false then if exsistent return 0xFFFFFFFF otherwise the new index
-  if adding a IP and favorite=true and it exisist set server as favorite and return the current index
-
- */
-/*
-DWORD AddServer(GAME_INFO *pGI,char *szIP, unsigned short usPort,bool bFavorite)
-{
-	SERVER_INFO *pSI;
-	pSI = (SERVER_INFO*)calloc(1,sizeof(SERVER_INFO));
-	//ZeroMemory(&pSI,sizeof(SERVER_INFO));
-	char destPort[10];
-	if(szIP==NULL)
-		return 0xFFFFFFFF;
-
-	if(strlen(szIP)<7)
-	{
-		free(pSI);
-		return 0xFFFFFFFF;
-	}
-	
-
-	pSI->cGAMEINDEX = pGI->cGAMEINDEX;
-	strcpy(pSI->szIPaddress,szIP);
-	pSI->dwIP = NetworkNameToIP(szIP,_itoa(usPort,destPort,10));
-	pSI->usPort = usPort;
-	pSI->usQueryPort = usPort;
-
-	int iResult = CheckForDuplicateServer(pGI,pSI);
-	if(iResult!=-1) //did we get an exsisting server?
-	{
-		 //If yes then set that server to a favorite
-		if(bFavorite)
-			pGI->vSI[iResult]->cFavorite = 1;
-		else
-		{
-			free(pSI);
-			return 0xFFFFFFFF;
-		}
-		free(pSI);
-		return pGI->vSI[iResult]->dwIndex;
-	}
-		
-	//Add a new server into current list!
-	InitializeCriticalSection(&pSI->csLock);
-	pSI->dwPing = 9999;
-	strcpy(pSI->szShortCountryName,"zz");
-	pSI->bUpdated = 0;
-	
-	pSI->dwIndex = pGI->vSI.size();
-	if(bFavorite)
-		pSI->cFavorite = 1;
-	
-	int hash = pSI->dwIP + pSI->usPort;
-	pGI->shash.insert(Int_Pair(hash,pSI->dwIndex));
-	pGI->vSI.push_back(pSI);
-	InsertServerItem(pGI,pSI);
-		
-	return pSI->dwIndex;
-}
-*/
-
 using namespace gloox;
 class RosterMngr: public RosterListener
 {
@@ -2337,6 +2276,7 @@ class XMPPManager  : public gloox::MessageHandler , ConnectionListener , Presenc
         }
    }
 };
+*/
 
 
 DWORD WINAPI XMPP_Thread(LPVOID lpVoid)
@@ -5285,11 +5225,15 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 	SetRect(&WNDCONT[WIN_PING].rSize,offSetX,offSetY+TABSIZE_Y,offSetTabX,(rc.bottom-offSetY2)-TABSIZE_Y);
 
 	
-	SetRect(&WNDCONT[WIN_STATUS].rSize,25,WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom+4,(rc.right*0.6)-25,STATUSBAR_Y_OFFSET);
+	SetRect(&WNDCONT[WIN_STATUS].rSize,
+		25,
+		WNDCONT[WIN_BUDDYLIST].rSize.top+WNDCONT[WIN_BUDDYLIST].rSize.bottom+4,
+		(rc.right*0.8)-25,STATUSBAR_Y_OFFSET);
+
 	SetRect(&WNDCONT[WIN_PROGRESSBAR].rSize,
 		WNDCONT[WIN_STATUS].rSize.right+25,
 		(TOOLBAR_Y_OFFSET+rc.bottom)+5,
-		rc.right*0.4,
+		rc.right*0.2,
 		STATUSBAR_Y_OFFSET-5);
 
 	

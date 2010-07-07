@@ -278,14 +278,14 @@ BOOL isNumeric(char c)
 	return FALSE;
 }
 
-char *colorfilter(const char* name,char *namefilter,int len)
+char *colorfilter(const char* name,char *namefilter,unsigned int len)
 {
 	int n=0;
 	memset(namefilter,0,len);
 	if(name!=NULL)
 	{
 		
-		for(int i=0;i<strlen(name);i++)
+		for(unsigned int i=0;i<strlen(name);i++)
 		{
 			if(i>=len)
 				break;
@@ -304,14 +304,14 @@ char *colorfilter(const char* name,char *namefilter,int len)
 }
 
 //Jedi Knight 3 filter 
-char *colorfilterJK3(const char* name,char *namefilter,int len)
+char *colorfilterJK3(const char* name,char *namefilter,unsigned int len)
 {
 	int n=0;
 	memset(namefilter,0,len);
 	if(name!=NULL)
 	{
 		
-		for(int i=0;i<strlen(name);i++)
+		for(unsigned int i=0;i<strlen(name);i++)
 		{
 			if(i>=len)
 				break;
@@ -334,14 +334,14 @@ char *colorfilterJK3(const char* name,char *namefilter,int len)
 	return namefilter;
 }
 
-char *colorfilterNEXUIZ(const char* name,char *namefilter,int len)
+char *colorfilterNEXUIZ(const char* name,char *namefilter,unsigned int len)
 {
 	int n=0;
 	memset(namefilter,0,len);
 	if(name!=NULL)
 	{
 	
-		for(int i=0;i<strlen(name);i++)
+		for(unsigned int i=0;i<strlen(name);i++)
 		{		
 			if(i>=len)
 				break;
@@ -397,7 +397,7 @@ http://www.truecarnage.com/coloring-team-chat-and-name-tricks-in-q4-r2.htm
 ^iarr: Right Arrow
 
 */
-char *colorfilterQ4(const char* name,char *namefilter, int len)
+char *colorfilterQ4(const char* name,char *namefilter, unsigned int len)
 {
 	size_t i=0,ii=0;
 	memset(namefilter,0,len);
@@ -433,9 +433,9 @@ char *colorfilterQ4(const char* name,char *namefilter, int len)
 	return namefilter;
 }
 
-char * colorfilterQW(const char *szInText,char *namefilter, int len)
+char * colorfilterQW(const char *szInText,char *namefilter, unsigned int len)
 {
-	int i=0;
+	UINT i=0;
 	memset(namefilter,0,len);
 	if(szInText==NULL)
 		return NULL;
@@ -450,7 +450,7 @@ char * colorfilterQW(const char *szInText,char *namefilter, int len)
 }
 
 //This does only convert UTF-8 to ANSI
-char * colorfilterUTF8(const char *szInText,char *namefilter, int len)
+char * colorfilterUTF8(const char *szInText,char *namefilter, unsigned int len)
 {
 	int i=0;
 	memset(namefilter,0,len);	

@@ -3,7 +3,7 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION "2.0.19"
+#define  APP_VERSION "2.0.20"
 
 #pragma once
 #define _SECURE_SCL 0
@@ -79,18 +79,15 @@
 #include <sys\stat.h>  /* for _S_IWRITE */
 #include <share.h>     /* for _SH_DENYNO */
 
-
+/*
 #include <Message.h>
 #include <client.h>
 #include <messagehandler.h>
-
 #include <ConnectionListener.h>
-
-
 #include <PresenceHandler.h>
-
 //#include <RosterListener.h>
 #include <RosterManager.h>
+*/
 
 
 #include "structs_defines.h"

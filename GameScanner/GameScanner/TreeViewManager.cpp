@@ -61,7 +61,7 @@ HTREEITEM CTreeViewManager::GetTIByType(DWORD dwType)
 void CTreeViewManager::CleanUp()
 {
 	dbg_print("TreeView_cleanup");
-	for(int i=0;i<vTI.size();i++)
+	for(unsigned int i=0;i<vTI.size();i++)
 	{
 		vTI.at(i).sElementName.clear();
 		vTI.at(i).sName.clear();
@@ -85,7 +85,7 @@ int CTreeViewManager::GetIndex(HTREEITEM hItemtree)
 
 void CTreeViewManager::ReIndex()
 {
-	for(int i=0; i<vTI.size();i++) //reindex
+	for(unsigned int i=0; i<vTI.size();i++) //reindex
 	{					
 			vTI.at(i).dwIndex = i;
 			TVITEM  tvitem;
@@ -397,7 +397,7 @@ int  CTreeViewManager::Load(char *ExePath,char *UserPath)
 	char szBuffer[200];
 
 	//Let's do some resync values, this will help to ensure after an upgrade of the treeview structure to display correct values and states.
-	for(int i=0; i<gm.GamesInfo.size();i++)
+	for(unsigned int i=0; i<gm.GamesInfo.size();i++)
 	{
 	
 		gm.SetHTREEITEM(i, GetHTIByItemGame(i));
@@ -812,7 +812,7 @@ int CTreeViewManager::OnSelection(LPARAM lParam)
 
 			int ret;
 			m_iSecondClickIdx = iSel;
-			int lowestIdx,high;
+			UINT lowestIdx,high;
 
 			if(m_iFirstClickIdx<m_iSecondClickIdx)
 				lowestIdx = m_iFirstClickIdx;
@@ -857,7 +857,7 @@ int CTreeViewManager::OnSelection(LPARAM lParam)
 void CTreeViewManager::Filter_Remove(vFILTER_SETS & vFS,const char *szFiltername)
 {
 	
-	for(int i=0; i<vFS.size();i++)
+	for(UINT i=0; i<vFS.size();i++)
 	{
 		if(strcmp(vFS.at(i).sFilterName.c_str(),szFiltername)==0)
 			vFS.erase(vFS.begin()+i);
@@ -866,7 +866,7 @@ void CTreeViewManager::Filter_Remove(vFILTER_SETS & vFS,const char *szFiltername
 }
 void CTreeViewManager::Filter_Remove_Group(vFILTER_SETS &vFS,_MYTREEITEM ti)
 {
-	for(int i=0; i<vFS.size();i++)
+	for(UINT i=0; i<vFS.size();i++)
 	{		
 		if((strcmp(vFS.at(i).sGroupName.c_str(),ti.sElementName.c_str())==0))
 			Filter_Remove(vFS,vFS.at(i).sFilterName.c_str());
@@ -1115,7 +1115,7 @@ int CTreeViewManager::ReBuildListChild(HTREEITEM hTreeItemParent,int idx,int Par
 		_MYTREEITEM ti;
 		ti = vTI.at(i);
 		
-		bool active=true;
+		BOOL active=TRUE;
 		if(ti.cGAMEINDEX!=-1)
 		{
 			if(ti.cGAMEINDEX<gm.GamesInfo.size())
@@ -1181,7 +1181,7 @@ void CTreeViewManager::ReBuildList()
 	for(int i=0; i<gm.GamesInfo.size();i++)
 	{
 		gm.GamesInfo[i].hTI = GetHTIByItemGame(i);
-		sprintf(szBuffer,"%s (%d)",gm.GamesInfo[i].szGAME_NAME,gm.GamesInfo[i].dwTotalServers);
+		sprintf_s(szBuffer,"%s (%d)",gm.GamesInfo[i].szGAME_NAME,gm.GamesInfo[i].dwTotalServers);
 		if(gm.GamesInfo[i].hTI!=NULL)
 		{
 			SetItemText(gm.GamesInfo[i].hTI,szBuffer);
@@ -1200,7 +1200,7 @@ HTREEITEM CTreeViewManager::AddItem(_MYTREEITEM *ti,HTREEITEM hCurrent,bool acti
 	 bool expand = ti->bExpanded;
 	
 	 char text[256];
-	 sprintf(text,"%s",ti->sName.c_str());
+	 sprintf_s(text,"%s",ti->sName.c_str());
 
 	if(active==false)
 	{
