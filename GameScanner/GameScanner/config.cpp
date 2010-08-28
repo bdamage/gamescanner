@@ -426,7 +426,7 @@ VOID WINAPI CFG_OnTabbedDialogInit(HWND hwndDlg)
    
 	g_currSelCfg = -2;
     // Save a pointer to the DLGHDR structure. 
-    SetWindowLong(hwndDlg, GWLP_USERDATA, (LONG) g_pHdr); 
+    SetWindowLongPtr(hwndDlg, GWLP_USERDATA, (LONG) g_pHdr); 
  
 	g_pHdr->hwndTab = GetDlgItem(hwndDlg,IDC_TREE_CONF); 
  

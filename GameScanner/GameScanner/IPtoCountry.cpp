@@ -134,7 +134,7 @@ int CIPtoCountry::ConvertDatabase(void)
 	fopen_s(&fp,"IpToCountry.csv", "rb");  //"new-ip-to-country.csv"
 	if(fp==NULL)
 	{
-		TCHAR szBuf[200]; 
+		wchar_t szBuf[200]; 
 		LPVOID lpMsgBuf;
 		DWORD dw = GetLastError(); 
 
@@ -147,7 +147,7 @@ int CIPtoCountry::ConvertDatabase(void)
 			(LPTSTR) &lpMsgBuf,
 			0, NULL );
 
-		wsprintf(szBuf,TEXT(" failed with error %d: %s"), dw, lpMsgBuf); 
+	//	swprintf_s(szBuf,sizeof(szBuf)/sizeof(wchar_t),_T(" failed with error %d: %s"), dw, lpMsgBuf); 
 	 
 		LocalFree(lpMsgBuf);
 	//	MessageBox(NULL,TEXT("Error open new country CSV file! \nThis file may be placed in debug/release folder!"),NULL,MB_OK);

@@ -258,7 +258,7 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 
 	case WM_CLOSE:
 		RCON_Disconnect();
-		SetWindowLong(g_hwndRCONCmd, GWLP_WNDPROC, (LONG) wpOrigEditProc); 
+		SetWindowLongPtr(g_hwndRCONCmd, GWLP_WNDPROC, (LONG) wpOrigEditProc); 
 		break;
 
 	case WM_COMMAND:

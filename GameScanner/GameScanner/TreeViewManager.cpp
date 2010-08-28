@@ -652,6 +652,21 @@ int CTreeViewManager::DoAction(int iSel, UINT  flags,TVITEM  *tvitem, BOOL bRedr
 					Initialize_RedrawServerListThread();
 			}
 			return DO_NOTHING;
+		case DO_CUSTOM_GROUP_FILTER_WITH_SUB:
+			if(flags & TVHT_ONITEMICON)
+			{
+				if(vTI.at(iSel).cGAMEINDEX!=GLOBAL_FILTER)
+				{
+					vTI.at(iSel).dwState = Filter_change_group(&gm.GamesInfo[vTI.at(iSel).cGAMEINDEX],vTI.at(iSel), tvitem);
+					SetCurrentActiveGame(vTI.at(iSel).cGAMEINDEX);
+				} else
+				{
+					vTI.at(iSel).dwState = Filter_change_group(NULL,vTI.at(iSel), tvitem);
+				}
+				if(bRedraw)
+					Initialize_RedrawServerListThread();
+			}
+			return DO_NOTHING;
 		case DO_COUNTRY_FILTER:
 			{
 				if(flags & TVHT_ONITEMICON)

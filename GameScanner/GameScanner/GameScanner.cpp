@@ -10854,7 +10854,7 @@ LRESULT CALLBACK FilterEditor_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM
 
 			}
 			
-			SetWindowLong(GetDlgItem(hDlg,IDC_EDIT_FILTER), GWLP_WNDPROC, (LONG) g_wpOrigFilterEditorProc); 
+			SetWindowLongPtr(GetDlgItem(hDlg,IDC_EDIT_FILTER), GWLP_WNDPROC, (LONG) g_wpOrigFilterEditorProc); 
 			g_wpOrigFilterEditorProc = NULL;
 
 			EndDialog(hDlg, LOWORD(wParam));
