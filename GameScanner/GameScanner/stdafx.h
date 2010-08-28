@@ -3,7 +3,7 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION "2.0.20"
+#define  APP_VERSION "2.0.21"
 
 #pragma once
 #define _SECURE_SCL 0
@@ -88,7 +88,6 @@
 //#include <RosterListener.h>
 #include <RosterManager.h>
 */
-
 
 #include "structs_defines.h"
 #include "utilz.h"

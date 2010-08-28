@@ -2742,10 +2742,20 @@ void FastConnect()
 	strcpy(g_FastConnectSrv.szIPaddress,SplitIPandPORT(&ip[n],dwPort));
 
 	g_FastConnectSrv.usPort = dwPort;
+	g_FastConnectSrv.usQueryPort = dwPort;
 	//strcpy(g_FastConnectSrv.szPRIVATEPASS,password);
 	g_FastConnectSrv.cGAMEINDEX = -1;
 	g_FastConnectSrv.dwIndex = 999999;
 	g_FastConnectSrv.dwIP = NetworkNameToIP(g_FastConnectSrv.szIPaddress,_itoa(dwPort,destPort,10));
+	
+
+	if(g_FastConnectSrv.dwIP==0)
+	{
+		SetStatusText(ICO_WARNING,"Bad IP address!");
+		return;
+	}
+
+	InitializeCriticalSection(&g_FastConnectSrv.csLock);
 
 	int iResult = gm.CheckForDuplicateServer(g_currentGameIdx,&g_FastConnectSrv);
 
@@ -2760,6 +2770,7 @@ void FastConnect()
 		//Let's do quick launch 
 		LaunchGame(&g_FastConnectSrv,&gm.GamesInfo[g_currentGameIdx],0,szCustomCmd);
 	}
+	DeleteCriticalSection(&g_FastConnectSrv.csLock);
 }
 
 GAME_INFO * Get_CurrentViewByServer(SERVER_INFO* pSrv)

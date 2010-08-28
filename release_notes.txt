@@ -5,21 +5,30 @@
 	
 	Check out the forum for help and support.
 
+
+		version 2.0.21 (2010-08-28)
+		---------------------------
+		* Broken fast connect from the search field is now fixed.
+
+		
 		version 2.0.20 (2010-07-03)
 		---------------------------
 		* Fixed sorting bug it could cause crashes.
 		* Fixed VALVE (counter strike etc) to handle server replies better.
 
+		
 		version 2.0.19 (2010-07-02)
 		---------------------------
 		* Fixed a performence during scanning under Win XP.
 		* Updated IP to country database.
 
+		
+
 		version 2.0.18
 		---------------------------
 		* Fixed a game server search bug a crash could occur if a game server had longer than 256 charecters length.
 		* Added support for Jedi Knight 3 : Jedi Academy.
-                          * Fixed XP black areas on restore from task tray.
+                * Fixed XP black areas on restore from task tray.
 
 
 

@@ -1479,6 +1479,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_D21D63FA8335378675178EA6EA8B2550"
+        "OwnerKey" = "8:_D3DFB8740D954D3583456D71C4F351AD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_D3DFB8740D954D3583456D71C4F351AD"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -6826,6 +6832,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D21D63FA8335378675178EA6EA8B2550"
+            {
+            "SourcePath" = "8:FreeImage.dll"
+            "TargetName" = "8:FreeImage.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_D4B515205409437AA523065D1A11952D"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\tm.gif"
@@ -8146,14 +8172,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{5533F5C4-6825-42A8-8FBC-40E044DBD042}"
-        "PackageCode" = "8:{100B4442-E08B-4E7E-A195-8F15F86AB632}"
+        "ProductCode" = "8:{6DEE3DB1-D06F-454A-9502-7D4BAFE13654}"
+        "PackageCode" = "8:{325906CE-77E5-4B19-84B7-8BF2C70D8891}"
         "UpgradeCode" = "8:{C4D8A4B8-9F37-4265-935A-B7D9ABAA9F3C}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.0.20"
+        "ProductVersion" = "8:2.0.21"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"
@@ -8723,7 +8749,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D3DFB8740D954D3583456D71C4F351AD"
             {
-            "SourcePath" = "8:..\\Release\\GameScanner.exe"
+            "SourcePath" = "8:..\\Debug\\GameScanner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"

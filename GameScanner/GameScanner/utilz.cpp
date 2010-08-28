@@ -83,7 +83,8 @@ DLGTEMPLATE * WINAPI DoLockDlgRes(LPCSTR lpszResName)
 void GetServerLock(SERVER_INFO *pSrv)
 {
 
-	while(pSrv!=NULL)
+	int c = 0;
+	while(pSrv!=NULL && c<10)
 	{
 		if(TryEnterCriticalSection(&pSrv->csLock)==FALSE)
 		{
@@ -92,6 +93,7 @@ void GetServerLock(SERVER_INFO *pSrv)
 			
 		}else
 			break;
+	//	c++;
 	}
 }
 void ReleaseServerLock(SERVER_INFO *pSrv)
