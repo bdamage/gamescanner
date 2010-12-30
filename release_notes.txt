@@ -6,9 +6,10 @@
 	Check out the forum for help and support.
 
 
-		version 2.0.21 (2010-08-28)
-		---------------------------
-		* Broken fast connect from the search field is now fixed.
+	Version 2.0.21 
+	---------------------------
+	2010-08-28 Broken fast connect from the search field is now fixed.
+	2010-12-30 Fixed Counter Strike source player request and additional server rules is available.
 
 		
 		version 2.0.20 (2010-07-03)
