@@ -29,11 +29,19 @@ struct A2S_PLAYER_RESPONSE_DATA
 	char playerData;
 } ;
 
+struct A2S_RULES_RESPONSE_DATA
+{
+	char leadData[4]; //FF FF FF FF 
+	char response;		//E
+	short numRules;
+	char rulesStart[1];
+};
+
 struct A2S_CHALLANGE_RESPONSE_DATA
 {
 	char leadData[5]; //FF FF FF FF 41
 	DWORD dwChallenge;
-} ;
+};
 
 
 struct STEAM_MASTER_LEADDATA
@@ -208,7 +216,7 @@ DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
 
 
 
-char *STEAM_GetString(char *pointer, DWORD &dwLen)
+inline char *STEAM_GetString(char *pointer, DWORD &dwLen)
 {
 	char *l = pointer;
 	DWORD i=0;
@@ -279,6 +287,7 @@ DWORD STEAM_ParsePlayers(SERVER_INFO *pSI, char *packet,DWORD dwLength)
 	return 0;
 }
 
+
 DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 {
 	SOCKET pSocket = NULL;
@@ -320,69 +329,104 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 		STEAM_ParsePlayers(pSI, (char*) packet,packetlen);
 		free(packet);
 	}
-/*	char *pEndAddress = ( char*)packet + packetlen;
-	if(packet) 
-	{
-		A2S_PLAYER_RESPONSE_DATA	*data = (A2S_PLAYER_RESPONSE_DATA*)packet;
-		char *p = (char*)&data->playerData;
 
-		int i=0;
-		if(data->response != A2S_PLAYERRESPONSE)
-		{	
-			free(packet);
-			return 1;
-		}
-
-		while(p<pEndAddress)
-		{
-		//	if(pSI->nPlayers!=data->numPlayers)
-		//		DebugBreak();
-
-			PLAYERDATA *player = (PLAYERDATA *)calloc(1,sizeof(PLAYERDATA));
-			if(player==NULL) //Out of memory
-				break;
-			player->pNext = NULL;
-			player->szClanTag = NULL;
-			player->cGAMEINDEX = pSI->cGAMEINDEX;
-			player->dwServerIndex = pSI->dwIndex;
-
-			p++; //player index
-
-			
-			DWORD dwLen =0;
-			
- 			player->szPlayerName = STEAM_GetString(p, dwLen); //_strdup(p);
-			p+=dwLen; //strlen(p)+1;
-			//dbg_print(player->szPlayerName);
-			//dbg_print("\n");
-
-			DWORD *dwP;
-			dwP = (DWORD*)p;
-			player->rate = (DWORD)*dwP;  //kills
-			p+=4;
-			p+=4; //time
-
-
-			if(pPlayers==NULL)
-				pPlayers = pCurrentPlayer = player;
-			else 
-				pCurrentPlayer = pCurrentPlayer->pNext = player;
-			i++;
-			if((p[0]==0x00) || (p[1]==0xFD))
-				break;
-			if(p>pEndAddress)
-				DebugBreak();
-				
-		}
-		pSI->pPlayerData = pPlayers;	
-		free(packet);
-	}
-*/
 	closesocket(pSocket);
 	
 	return 0;
 }
 
+DWORD STEAM_ParseRules(SERVER_INFO *pSI, char *packet,DWORD dwLength)
+{
+	SERVER_RULES *pRules=NULL;
+	SERVER_RULES *pCurrentRule=NULL;
+	char *pEndAddress = ( char*)packet + dwLength;
+	if(packet) 
+	{
+		A2S_RULES_RESPONSE_DATA	*data = (A2S_RULES_RESPONSE_DATA*)packet;
+		char *p = (char*)&data->rulesStart;
+
+		int i=0;
+		if(data->response != A2S_RULESRESPONSE)
+			return (DWORD)data->response;
+
+
+
+		while(p<pEndAddress)
+		{
+
+			SERVER_RULES *pRule = (SERVER_RULES *)calloc(1,sizeof(SERVER_RULES));			
+
+			if(pRule==NULL)
+				break;
+			
+			pRule->name = _strdup(p);
+			p+=strlen(p)+1;
+			pRule->value = strdup(p);
+			p+=strlen(p)+1;
+
+			if(pRules==NULL)
+				pRules = pCurrentRule = pRule;
+			else
+				pCurrentRule = pCurrentRule->pNext	= pRule;
+
+			
+		}
+		SERVER_RULES *pSR = pSI->pServerRules;
+		if(pSR!=NULL)
+			while(pSR->pNext!=NULL)
+				pSR = pSR->pNext;
+		pSR->pNext = pRules;
+	}
+
+	
+	return 0;
+}
+DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
+{
+	SOCKET pSocket = NULL;
+	unsigned char *packet=NULL;
+	char sendbuf[80];
+	size_t packetlen = 0;
+
+	
+	if(pSI==NULL)
+	{
+		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
+		return 1;
+	}
+
+	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
+ 
+	if(pSocket==INVALID_SOCKET)
+	{
+	  dbg_print("Error at getsockudp()\n");
+	  return 1;
+	}
+
+	ZeroMemory(sendbuf,sizeof(sendbuf));
+	strcpy_s(sendbuf,sizeof(sendbuf),A2S_RULES);
+
+	memcpy(&sendbuf[5],(DWORD*)&dwChallenge,sizeof(DWORD));
+
+
+	packetlen = send(pSocket, sendbuf, 9, 0);
+	if(packetlen==SOCKET_ERROR) 
+	{
+		dbg_print("Error at send()\n");
+		closesocket(pSocket);		
+		return 1;
+	}
+	packet=(unsigned char*)getpacket(pSocket, &packetlen);
+	if(packet)
+	{
+		STEAM_ParseRules(pSI, (char*) packet,packetlen);
+		free(packet);
+	}
+
+	closesocket(pSocket);
+	
+	return 0;
+}
 DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 {
 	size_t packetlen=0;
@@ -397,7 +441,7 @@ DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)
 		if(pGI->filter.dwRegion & val)
 			REGIONS[i].bActive = TRUE;
 
-		val = val *2;
+		val = val * 2;
 	}
 
 	char appid[]={"\\napp\\500"};
@@ -882,7 +926,6 @@ retry:
 		p++; 
 
 
-
 		if((*resp->type == A2S_INFORESPONSE_HL1))
 		{
 			if(p[0]==1)  //modinfo?
@@ -900,7 +943,6 @@ retry:
 			pSI->bPunkbuster = p[0]; //VAC
 			p++;
 	
-		
 			if(p>=end)
 				DebugBreak();
 
@@ -914,12 +956,14 @@ retry:
 		if((*resp->type == A2S_INFORESPONSE_HL1) || (pSI->STEAM_AppId<200)) //Added to handle the Gold Source games reporting HL2 protocol
 			dwRet = STEAM_GetChallengeGoldSrc(pSI,dwChallenge);
 		else
-			dwRet = STEAM_GetChallenge(pSI,dwChallenge);
+			dwRet = STEAM_GetChallengeGoldSrc(pSI,dwChallenge);
+			//dwRet = STEAM_GetChallenge(pSI,dwChallenge);
 		
 		if(dwRet==0)
 		{
 			pSI->pPlayerData = NULL;
 			STEAM_GetPlayers(pSI,dwChallenge);
+			STEAM_GetRules(pSI, dwChallenge);
 		} 	
 
 		time(&pSI->timeLastScan);

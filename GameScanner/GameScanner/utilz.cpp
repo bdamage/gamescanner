@@ -37,10 +37,16 @@ void dbg_print(char *szMsg, ...)
 	len = _vscprintf( szMsg, argList ) + 1; 
 	szBuffer = (char*)malloc( len * sizeof(char));
 
-	vsprintf_s(szBuffer,len,szMsg, argList);
+	if(szBuffer!=NULL)
+	{
+		vsprintf_s(szBuffer,len,szMsg, argList);
 
-	OutputDebugString(szBuffer);
-	OutputDebugString("\n");
+		OutputDebugString(szBuffer);
+		OutputDebugString("\n");
+	} else
+	{
+		OutputDebugString("dbg_print out of mem!");
+	}
 
 	va_end(argList);
 	free(szBuffer);	
@@ -106,13 +112,16 @@ void ReleaseServerLock(SERVER_INFO *pSrv)
 //trans range 0-100
 void SetDlgTrans(HWND hwnd,int trans)
 {
-	if(trans<MIN_TRANSPARANCY)
-		trans = AppCFG.g_cTransparancy = MIN_TRANSPARANCY;
-	SLWA pSetLayeredWindowAttributes = NULL;  
-	HINSTANCE hmodUSER32 = LoadLibrary("USER32.DLL"); 
-	pSetLayeredWindowAttributes = (SLWA)GetProcAddress(hmodUSER32,"SetLayeredWindowAttributes");
-	SetWindowLong(hwnd, GWL_EXSTYLE,GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
-	pSetLayeredWindowAttributes(hwnd, 0, (255 * (BYTE)trans) / 100, LWA_ALPHA);
+	if(IsWindow(hwnd))
+	{
+		if(trans<MIN_TRANSPARANCY)
+			trans = AppCFG.g_cTransparancy = MIN_TRANSPARANCY;
+		SLWA pSetLayeredWindowAttributes = NULL;  
+		HINSTANCE hmodUSER32 = LoadLibrary("USER32.DLL"); 
+		pSetLayeredWindowAttributes = (SLWA)GetProcAddress(hmodUSER32,"SetLayeredWindowAttributes");
+		SetWindowLong(hwnd, GWL_EXSTYLE,GetWindowLong(hwnd, GWL_EXSTYLE) | WS_EX_LAYERED);
+		pSetLayeredWindowAttributes(hwnd, 0, (255 * (BYTE)trans) / 100, LWA_ALPHA);
+	}
 }
 
 char *UTF8toMB(const char* inUtf8, char* outStr,int maxLen)

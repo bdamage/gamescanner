@@ -9491,13 +9491,14 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	//Do the conversion of the IP to country database 
 //#ifdef CONVERTIPDATABASE
 	SetCurrentDirectory(EXE_PATH);
-	
+	g_log.AddLogInfo(GS_LOG_INFO,"Checking for new IP country database file.");
 	if(g_IPtoCountry.ConvertDatabase()==0)
 		g_log.AddLogInfo(GS_LOG_INFO,"Updated IP to Country file.");
 	SetCurrentDirectory(USER_SAVE_PATH);
 //#endif
 	
 	//fnIPtoCountryInit();
+	g_log.AddLogInfo(GS_LOG_INFO,"Loading IP country database file.");
 	g_IPtoCountry.LoadTable();
 
 	memset((void*)&etMode,0,sizeof(DEVMODE));
