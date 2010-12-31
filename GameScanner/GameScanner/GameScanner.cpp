@@ -1988,6 +1988,9 @@ void Default_Appsettings()
 	
 	AppCFG.bShowMinimizePopUp = TRUE;
 	AppCFG.bRegisterWebProtocols = FALSE;
+	AppCFG.bAutoRefreshServerlist = FALSE;
+
+
 	AppCFG.bAutostart = FALSE;
 	AppCFG.bCloseOnConnect = FALSE;
 	AppCFG.bUse_minimize = TRUE;
@@ -3888,8 +3891,16 @@ DWORD WINAPI LoadAllServerListThread(LPVOID lpVoid)
 		else
 			SetCurrentActiveGame(FindFirstActiveGame());
 
-		if((gm.GamesInfo[g_currentGameIdx].vSI.size()>0) && (g_bMinimized == false))
-			OnActivate_ServerList(SCAN_FILTERED);
+		
+		if(AppCFG.bAutoRefreshServerlist)
+		{
+			if((gm.GamesInfo[g_currentGameIdx].vSI.size()>0) && (g_bMinimized == false))
+				OnActivate_ServerList(SCAN_FILTERED);
+		} else
+		{
+			Initialize_RedrawServerListThread();
+		}
+
 	}
 //	if(hTimerMonitor==NULL)
 //		hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);
@@ -4253,6 +4264,9 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	XML_WriteCfgInt(root,"MapPreviewResize","disable",AppCFG.bNoMapResize);
 	XML_WriteCfgInt(root,"CloseOnConnect","enable",AppCFG.bCloseOnConnect);
 	XML_WriteCfgInt(root,"RegisterWebProtocols","enable",AppCFG.bRegisterWebProtocols);
+	XML_WriteCfgInt(root,"RefreshAtStartup","enable",AppCFG.bAutoRefreshServerlist);
+
+
 	XML_WriteCfgInt(root,"ShortCountryName","enable",AppCFG.bUseShortCountry);
 	XML_WriteCfgInt(root,"MapPreview","show",AppCFG.bShowMapPreview);
 	XML_WriteCfgInt(root,"AutoStart","enable",AppCFG.bAutostart);
@@ -9129,6 +9143,7 @@ BOOL OnTreeViewSelectionChanged(LPARAM lParam)
 					double seconds = difftime(currTime,gm.GamesInfo[g_currentGameIdx].lastScanTimeStamp);
 					dbg_print("Seconds since last scan %f",seconds);
 				//	if((seconds>(60*5)) || (seconds==0))
+					if(AppCFG.bAutoRefreshServerlist)
 					{					
 						gm.GamesInfo[g_currentGameIdx].dwViewFlags |= FORCE_SCAN_FILTERED;
 						OnActivate_ServerList(SCAN_FILTERED);
@@ -9354,7 +9369,7 @@ LRESULT OnNotify(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					return TreeView_CustomDraw(lParam);					
 				else  if(lpnmia->hdr.code == LVN_COLUMNCLICK && lpnmia->hdr.hwndFrom == g_hwndListViewServer)
 				{		
-				NMLISTVIEW* lstvw;
+					NMLISTVIEW* lstvw;
 					lstvw = (NMLISTVIEW*) lParam; 
 /*					for(int i=0;i<MAX_COLUMNS;i++)
 					{
@@ -11672,6 +11687,14 @@ int CFG_Load()
 		AppCFG.bRegisterWebProtocols = (BOOL) intVal;
 	} else //set defualt value
 		AppCFG.bRegisterWebProtocols = FALSE;
+
+	pElem=hRoot.FirstChild("RefreshAtStartup").Element();
+	if (pElem)
+	{
+		pElem->QueryIntAttribute("enable",&intVal);
+		AppCFG.bAutoRefreshServerlist = (BOOL) intVal;
+	} else //set defualt value
+		AppCFG.bAutoRefreshServerlist = FALSE;
 
 
 	pElem=hRoot.FirstChild("ShortCountryName").Element();

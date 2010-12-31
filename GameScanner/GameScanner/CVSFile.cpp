@@ -6,7 +6,7 @@ CCVSFile::CCVSFile(void) :
 	m_pBuffer(NULL),
 	m_pPointer(NULL)
 {
-	m_uiBufferSize = 3000;
+	m_uiBufferSize = 4600;
 	AllocateBuffer(m_uiBufferSize);
 }
 

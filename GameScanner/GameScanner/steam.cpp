@@ -326,6 +326,8 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
 	if(packet)
 	{
+
+
 		STEAM_ParsePlayers(pSI, (char*) packet,packetlen);
 		free(packet);
 	}
@@ -347,7 +349,35 @@ DWORD STEAM_ParseRules(SERVER_INFO *pSI, char *packet,DWORD dwLength)
 
 		int i=0;
 		if(data->response != A2S_RULESRESPONSE)
-			return (DWORD)data->response;
+		{
+/*			
+
+0x10421DA0  fe ff ff ff 6e 00 00 00 02 00 e0 04 ff ff ff ff 45 55 00 62 6f 74 5f 71 75 6f 74 61 00 30 00 63 6f 6f 70 00 30 00 64 65 61 74  þÿÿÿn.....à.ÿÿÿÿEU.bot_quota.0.coop.0.dea
+0x0FA1F5A8  fe ff ff ff 2d 00 00 00 02 00 e0 04 ff ff ff ff 45 59 00 62 6f 74 5f 71 75 6f 74 61 00 30 00 63 6f 6f 70 00 30 00 64 65 61 74  þÿÿÿ-.....à.ÿÿÿÿEY.bot_qu
+0x10468C50  fe ff ff ff 94 00 00 00 02 00 e0 04 ff ff ff ff 45 59 00 62 6f 74 5f 71 75 6f 74 61 00 30 00 64 65 63 61 6c 66 72 65 71 75 65  þÿÿÿ”.....à.ÿÿÿÿEY.bot_q
+0x032AE5B8  fe ff ff ff 75 00 00 00 02 00 e0 04 ff ff ff ff 45 55 00 62 6f 74 5f 71 75 6f 74 61 00 30 00 63 6f 6f 70 00 30 00 64 65 61 74  þÿÿÿu.....à.ÿÿÿÿEU.bot_quot
+
+continued packet?
+ fe ff ff ff 90 00 00 00 02 01 e0 04  þÿÿÿ......à.
+0x097D8234  35 00 73 76 5f 73 70 65 63 6e 6f 63 6c 69 70 00 31 00 73 76 5f 73 70 65 63 73 70 65 65 64 00 33 00 73 76 5f 73 74 65 70 73 69  5.sv_specnoclip.1.sv_specspeed.3.sv_stepsi
+
+*/
+		
+			if( (data->leadData[0] =='\xfe' ) && (data->leadData[1] == '\xff') && (data->leadData[2] == '\xff'))
+			{
+				packet+=12;
+				data = (A2S_RULES_RESPONSE_DATA*)packet;
+			   p = (char*)&data->rulesStart;
+			   	if(data->response != A2S_RULESRESPONSE)
+					return (DWORD)data->response;
+
+			} else
+			{
+				return (DWORD)data->response;
+			}
+
+	
+		}
 
 
 
@@ -387,6 +417,7 @@ DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
 	unsigned char *packet=NULL;
 	char sendbuf[80];
 	size_t packetlen = 0;
+	size_t packetlen2 = 0;
 
 	
 	if(pSI==NULL)
@@ -419,8 +450,23 @@ DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
 	if(packet)
 	{
-		STEAM_ParseRules(pSI, (char*) packet,packetlen);
-		free(packet);
+		if((char) packet[0] == '\xfe')
+		{
+			unsigned char *packet2 = (unsigned char*)getpacket(pSocket, &packetlen2);
+			unsigned char *p = (unsigned char*) malloc(packetlen + packetlen2);
+			memcpy((void*)p,&packet[12],packetlen-12);
+			memcpy((void*)&p[packetlen-12],&packet2[12],packetlen2-12);
+			STEAM_ParseRules(pSI, (char*)p,packetlen+packetlen2 - 24);
+			free(packet);
+			free(packet2);
+			free(p);
+			
+		}
+		else
+		{
+			STEAM_ParseRules(pSI, (char*) packet,packetlen);
+			free(packet);
+		}
 	}
 
 	closesocket(pSocket);

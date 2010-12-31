@@ -203,6 +203,8 @@ BEGIN
     CONTROL         "Notify when a buddy is online.",IDC_CHECK_BUDDY_NOTIFY,
                     "Button",BS_AUTOCHECKBOX | WS_TABSTOP,17,122,377,12
     CONTROL         "No preview map resize",IDC_CHECK_NO_MAP_RESIZE,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,80,401,10
+    CONTROL         "Auto refresh serverlist at start up and on selection.",IDC_CHECK_REFRESH_AT_START_UP,
+                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,93,234,12
 END
 
 IDD_CFG2 DIALOGEX 0, 0, 360, 186
@@ -739,7 +741,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,17,0
+ FILEVERSION 2,0,22,0
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
@@ -755,8 +757,9 @@ BEGIN
     BEGIN
         BLOCK "000004b0"
         BEGIN
+            VALUE "CompanyName", "www.bdamage.se"
             VALUE "FileDescription", "Game Scanner Application"
-            VALUE "FileVersion", "2, 0, 17, 0"
+            VALUE "FileVersion", "2, 0, 22, 0"
             VALUE "InternalName", "Game Scaner"
             VALUE "LegalCopyright", "Copyright (C) 2009"
             VALUE "OriginalFilename", "GameScanner.exe"

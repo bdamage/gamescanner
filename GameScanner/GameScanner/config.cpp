@@ -66,6 +66,11 @@ void CFG_Apply_General(HWND hDlg)
 
 	AppCFGtemp.bRegisterWebProtocols = IsDlgButtonChecked(hDlg,IDC_CHECK_REG_WEB_PROTOCOLS);
 
+	AppCFGtemp.bAutoRefreshServerlist = IsDlgButtonChecked(hDlg,IDC_CHECK_REFRESH_AT_START_UP);
+
+
+
+
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK1)==BST_CHECKED)
 		AppCFGtemp.bAutostart=true;
 	else
@@ -854,7 +859,8 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 				CheckDlgButton(hDlg,IDC_CHECK_SHORTNAME,AppCFGtemp.bUseShortCountry);
 				CheckDlgButton(hDlg,IDC_CHECK_REG_WEB_PROTOCOLS,AppCFGtemp.bRegisterWebProtocols);
 				CheckDlgButton(hDlg,IDC_CHECK_NO_MAP_RESIZE,AppCFGtemp.bNoMapResize);
-		
+				CheckDlgButton(hDlg,IDC_CHECK_REFRESH_AT_START_UP,AppCFGtemp.bAutoRefreshServerlist);
+
 
 				LVCOLUMN lvColumn;
 				//initialize the columns

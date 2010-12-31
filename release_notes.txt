@@ -6,11 +6,23 @@
 	Check out the forum for help and support.
 
 
+
+	Version 2.0.23
+	--------------------------
+	2010-12-31 Added support for multi package respone for Country Strike Source (=more rules).
+	2010-12-31 New option to disable auto refresh at start up and on game selection.
+
+	Version 2.0.22
+	--------------------------
+	2010-12-30 Fixed Counter Strike source player request and additional server rules is available.
+	2010-12-30 IP to Country database updated.
+
+
+
 	Version 2.0.21 
 	---------------------------
 	2010-08-28 Broken fast connect from the search field is now fixed.
-	2010-12-30 Fixed Counter Strike source player request and additional server rules is available.
-	2010-12-30 IP to Country database updated.
+
 
 		
 		version 2.0.20 (2010-07-03)

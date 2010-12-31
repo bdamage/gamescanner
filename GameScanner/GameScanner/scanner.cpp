@@ -21,7 +21,6 @@ DWORD				SCANNER_dwThreadCounter=0;
 HANDLE SCAN_hContinueEvent;  //This here to help to close all events in a gracefull way
 
 BOOL SCANNER_bCloseApp=FALSE;
-BOOL SCANNER_bScanningInProgress=FALSE;
 
 
 

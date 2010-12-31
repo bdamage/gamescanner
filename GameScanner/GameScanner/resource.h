@@ -286,6 +286,7 @@
 #define IDC_CHECK_XMPP_ACTIVE           1226
 #define IDI_ICON2                       1227
 #define IDI_ICON_ALARM_CLOCK            1227
+#define IDC_CHECK_REFRESH_AT_START_UP   1227
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -396,7 +397,7 @@
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1228
 #define _APS_NEXT_COMMAND_VALUE         32922
-#define _APS_NEXT_CONTROL_VALUE         1227
+#define _APS_NEXT_CONTROL_VALUE         1228
 #define _APS_NEXT_SYMED_VALUE           111
 #endif
 #endif
