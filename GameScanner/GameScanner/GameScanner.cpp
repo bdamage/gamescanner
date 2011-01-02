@@ -450,7 +450,7 @@ HWND g_hwndListViewServerListHeader = NULL;
 HWND g_hwndMainTreeCtrl=NULL, g_hwndProgressBar=NULL;
 
 
-
+UINT_PTR g_hTimerAutoRefresh = NULL;
 
 
 //GamesMap gm.GamesInfo;
@@ -2002,6 +2002,8 @@ void Default_Appsettings()
 	AppCFG.bUseShortCountry = FALSE;	
 	AppCFG.nWindowState = SW_SHOWNORMAL;
 
+	AppCFG.bAutoRefreshActive = FALSE;
+    AppCFG.iAutoRefreshEveryMinuteInterval = 5;
 
 	memset(AppCFG.szEXT_EXE_CMD,0,MAX_PATH);	
 	memset(AppCFG.szEXT_EXE_PATH,0,MAX_PATH);
@@ -3272,6 +3274,9 @@ void OnClose()
 	if(hTimerMonitor!=NULL)
 		KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);
 	hTimerMonitor = NULL;
+
+	if(g_hTimerAutoRefresh!=NULL)
+		KillTimer(g_hWnd,IDT_AUTO_REFRESH_TIMER);
 	dbg_print("--- Closing down and cleaning up!\n");
 
 	Shell_NotifyIcon(NIM_DELETE,&structNID);
@@ -4244,6 +4249,8 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	WriteCfgInt(options,"General","MaxScanThreads",AppCFG.dwThreads);
 	WriteCfgInt(options,"General","NetworkRetries",AppCFG.dwRetries);
 	WriteCfgInt(options,"General","SleepPerScan",AppCFG.dwSleep);
+	WriteCfgInt(options,"General","AutoRefreshInterval",AppCFG.iAutoRefreshEveryMinuteInterval);
+
 	//---------------------------
 	//Filter options
 	//---------------------------
@@ -7482,6 +7489,76 @@ void EnableButtons(bool active)
 
 	::SendMessage(g_hwndToolbarOptions,	TB_ENABLEBUTTON, (WPARAM)IDM_SCAN_FILTERED, (LPARAM)MAKELONG(active,0)); 
 	::SendMessage(g_hwndToolbarOptions,	TB_ENABLEBUTTON, (WPARAM)IDM_REFRESH, (LPARAM)MAKELONG(active,0)); 
+
+}
+void DoAutoRefresh()
+{
+
+	g_log.AddLogInfo(GS_LOG_INFO, "Entering DoAutoRefresh()"); 
+
+	if(TryEnterCriticalSection(&LOAD_SAVE_CS)==FALSE)
+		return;
+	LeaveCriticalSection(&LOAD_SAVE_CS);
+
+
+	if(g_bMinimized)  //assume a game is being played...
+		return;
+
+	DWORD options=SCAN_ALL;
+
+	//if(g_bRunningQueryServerList==false)
+	{
+		HANDLE hThread=NULL; 
+		DWORD dwThreadIdBrowser;
+		hThread = NULL;					
+		hThread = CreateThread( NULL, 0, &GetServerList, (LPVOID)options,0, &dwThreadIdBrowser);                
+		if (hThread == NULL) 
+		{
+			g_log.AddLogInfo(GS_LOG_WARNING, "CreateThread failed (%d)\n", GetLastError() ); 
+		}
+		else 
+		{
+			SetThreadName( dwThreadIdBrowser, "GetServerList");
+			CloseHandle( hThread );
+		}
+	}
+}
+
+void Show_PauseScanningButton(BOOL show)
+{
+	TBBUTTONINFO tbbi;
+	ZeroMemory(&tbbi, sizeof(TBBUTTONINFO));
+	tbbi.cbSize = sizeof(TBBUTTONINFO);
+	tbbi.dwMask = TBIF_IMAGE;
+	::SendMessage(g_hwndToolbarOptions, TB_GETBUTTONINFO, IDM_AUTO_REFRESH, (LPARAM)&tbbi);
+
+	if(show)
+		tbbi.iImage = 10;
+	else
+		tbbi.iImage = 6;
+	::SendMessage(g_hwndToolbarOptions, TB_SETBUTTONINFO, IDM_AUTO_REFRESH, (LPARAM)&tbbi);
+
+	//::SendMessage(g_hwndToolbarOptions,	TB_ENABLEBUTTON, (WPARAM)IDM_SCAN_FILTERED, (LPARAM)MAKELONG(!show,0)); 
+}
+
+
+void ToggleAutoRefreshMode()
+{
+
+	if(AppCFG.bAutoRefreshActive==FALSE)
+	{
+		Show_PauseScanningButton(TRUE);
+		g_hTimerAutoRefresh = SetTimer(g_hWnd,IDT_AUTO_REFRESH_TIMER,AppCFG.iAutoRefreshEveryMinuteInterval*1000*60,0);	
+		SetStatusText(ICO_WARNING,"Auto refresh interval set to every %d minute%c",AppCFG.iAutoRefreshEveryMinuteInterval,AppCFG.iAutoRefreshEveryMinuteInterval>1?'s':' ');
+	} else
+	{
+		if(g_hTimerAutoRefresh!=NULL)
+			KillTimer(g_hWnd,IDT_AUTO_REFRESH_TIMER);
+		g_hTimerAutoRefresh = NULL;
+		Show_PauseScanningButton(FALSE);
+	}
+
+	AppCFG.bAutoRefreshActive=!AppCFG.bAutoRefreshActive;
 
 }
 
@@ -11183,6 +11260,13 @@ HWND TOOLBAR_CreateOptionsToolBar(HWND hWndParent)
 
 	   	ZeroMemory(&tbb, sizeof(TBBUTTON));
 
+		tbb.iBitmap = 6;
+		tbb.idCommand = IDM_AUTO_REFRESH;
+		tbb.fsState = TBSTATE_ENABLED;
+		tbb.fsStyle = TBSTYLE_BUTTON ; //;
+		//		tbb.fsStyle = TBSTYLE_SEP;
+		::SendMessage(hwndTB, TB_ADDBUTTONS, 1, (LPARAM)&tbb);
+
 		tbb.iBitmap = 0;
 		tbb.idCommand = IDM_REFRESH;
 		tbb.fsState = TBSTATE_ENABLED;
@@ -11802,6 +11886,7 @@ int CFG_Load()
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"MaxScanThreads",(int&)AppCFG.dwThreads);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"NetworkRetries",(int&)AppCFG.dwRetries);
 	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"SleepPerScan",(int&)AppCFG.dwSleep);
+	ReadCfgInt(hRoot.FirstChild("Options").FirstChild().ToElement(),"AutoRefreshInterval",(int&)AppCFG.iAutoRefreshEveryMinuteInterval);
 
 	pElem=hRoot.FirstChild("SocketTimeout").Element();
 	if (pElem)
@@ -12301,6 +12386,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			//InvalidateRect(hWnd,NULL,FALSE);
 			
 		break;
+	
+
 		case WM_TIMER:
 		{
 			switch (wParam) 
@@ -12313,6 +12400,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					break;
 				case IDT_MONITOR_QUERY_SERVERS:
 					Initialize_Monitor();
+					break;
+				case IDT_AUTO_REFRESH_TIMER:
+					DoAutoRefresh();
 					break;
 				
 			}
@@ -12405,6 +12495,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			// Parse the menu selections:
 			switch (wmId)
 			{
+				case IDM_AUTO_REFRESH:
+					{
+						ToggleAutoRefreshMode();
+						return TRUE;
+					}
 				case IDM_OPEN:
 				{		
 							 

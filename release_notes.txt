@@ -11,6 +11,8 @@
 	--------------------------
 	2010-12-31 Added support for multi package respone for Country Strike Source (=more rules).
 	2010-12-31 New option to disable auto refresh at start up and on game selection.
+	2011-01-02 Added auto refresh play button next to refresh, default set auto refresh current 
+                   serverlist on every 5 minutes (can be changed in settings).
 
 	Version 2.0.22
 	--------------------------

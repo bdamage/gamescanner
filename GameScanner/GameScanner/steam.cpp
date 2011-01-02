@@ -391,8 +391,18 @@ continued packet?
 			
 			pRule->name = _strdup(p);
 			p+=strlen(p)+1;
-			pRule->value = strdup(p);
-			p+=strlen(p)+1;
+			if(p[0]!=0)
+			{
+				
+				pRule->value = strdup(p);
+				p+=strlen(p)+1;
+			}
+			else
+			{
+				p++;
+			}
+		
+			
 
 			if(pRules==NULL)
 				pRules = pCurrentRule = pRule;
@@ -453,12 +463,24 @@ DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
 		if((char) packet[0] == '\xfe')
 		{
 			unsigned char *packet2 = (unsigned char*)getpacket(pSocket, &packetlen2);
-			unsigned char *p = (unsigned char*) malloc(packetlen + packetlen2);
-			memcpy((void*)p,&packet[12],packetlen-12);
-			memcpy((void*)&p[packetlen-12],&packet2[12],packetlen2-12);
-			STEAM_ParseRules(pSI, (char*)p,packetlen+packetlen2 - 24);
+			if(packetlen2>0)
+				packetlen2-=12;	
+			packetlen-=12; //reduce overhead
+			int totlen = packetlen + packetlen2;
+			unsigned char *p = (unsigned char*) calloc(1,totlen+10);
+			memcpy((void*)p,&packet[12],packetlen);
+			if(packet2)
+			{
+				
+				memcpy((void*)&p[packetlen],&packet2[12],packetlen2);
+				free(packet2);
+			}
+		
+			
+			
+			STEAM_ParseRules(pSI, (char*)p,totlen);
 			free(packet);
-			free(packet2);
+			
 			free(p);
 			
 		}

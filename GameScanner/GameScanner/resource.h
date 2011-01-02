@@ -287,6 +287,8 @@
 #define IDI_ICON2                       1227
 #define IDI_ICON_ALARM_CLOCK            1227
 #define IDC_CHECK_REFRESH_AT_START_UP   1227
+#define IDC_EDIT2                       1228
+#define IDC_EDIT_AUTO_REFRESH_INTERVAL  1228
 #define IDM_OPEN                        32771
 #define ID_BUDDY_ADDFROMPLAYERLIST32771 32771
 #define IDM_HOMEPAGE                    32772
@@ -387,6 +389,7 @@
 #define IDM_FILTER_PASTE                32920
 #define ID_FOO_RCON                     32920
 #define ID_FILE_RESETTREEVIEWTODEFAULT  32921
+#define IDM_AUTO_REFRESH                32922
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 
@@ -396,8 +399,8 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1228
-#define _APS_NEXT_COMMAND_VALUE         32922
-#define _APS_NEXT_CONTROL_VALUE         1228
+#define _APS_NEXT_COMMAND_VALUE         32923
+#define _APS_NEXT_CONTROL_VALUE         1229
 #define _APS_NEXT_SYMED_VALUE           111
 #endif
 #endif

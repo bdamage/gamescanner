@@ -67,8 +67,12 @@ void CFG_Apply_General(HWND hDlg)
 	AppCFGtemp.bRegisterWebProtocols = IsDlgButtonChecked(hDlg,IDC_CHECK_REG_WEB_PROTOCOLS);
 
 	AppCFGtemp.bAutoRefreshServerlist = IsDlgButtonChecked(hDlg,IDC_CHECK_REFRESH_AT_START_UP);
+	
+	TCHAR szTmp[20];
+	GetDlgItemText(hDlg,IDC_EDIT_AUTO_REFRESH_INTERVAL,szTmp,sizeof(szTmp));
 
-
+	if(strlen(szTmp)>0)
+		AppCFGtemp.iAutoRefreshEveryMinuteInterval = atoi(szTmp);
 
 
 	if(IsDlgButtonChecked(hDlg,IDC_CHECK1)==BST_CHECKED)
@@ -892,6 +896,10 @@ LRESULT CALLBACK CFG_OnSelChangedProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARA
 			CheckDlgButton(hDlg,IDC_CHECK_SCR_RESTORE,AppCFGtemp.bUSE_SCREEN_RESTORE );				
 
 			
+			sprintf(szText,"%d",AppCFGtemp.iAutoRefreshEveryMinuteInterval);
+			SetDlgItemText(hDlg,IDC_EDIT_AUTO_REFRESH_INTERVAL,szText);
+
+
 			sprintf(szText,"%d",(AppCFGtemp.socktimeout.tv_sec*1000)+AppCFGtemp.socktimeout.tv_usec);
 			SetDlgItemText(hDlg,IDC_EDIT_SOCK_TIMEOUT_S,szText);
 			
