@@ -43,7 +43,7 @@ Upgrade code 1.0 - 1.0.9:
 #include "BuddyManager.h"
 #include "ScriptEngine.h"
 
-
+#include <Shobjidl.h>
 
 #pragma comment(lib, "ole32.lib")
 
@@ -477,9 +477,23 @@ deque<_TRACERT_STRUCT> _TraceRT;
 typedef deque<_TRACERT_STRUCT> TraceRT;
 //   if ((toupper(*wild) != toupper(*string)) && (*wild != '?')) {
 
-
-
-
+/*
+void win7specifics()
+{
+	// Create the interface
+	ITaskbarList3* tb = 0;
+	CoCreateInstance(CLSID_TaskbarList,0,CLSCTX_INPROC_SERVER,
+					 __uuidof(ITaskbarList3),(void**)&tb);
+	 
+	// Set the state
+	tb->SetProgressState(g_hWnd,TBPF_NORMAL);
+	 
+	// To display progress
+	tb->SetProgressValue(g_hWnd,35,100); // 35% progress
+	 
+	tb->Release();
+}
+*/
 
 void MyDrawFont(HDC hdc, int x, int y, const char *szMessage, int angle)
 {
@@ -1501,6 +1515,22 @@ BOOL ListView_SL_OnGetDispInfoList(int ctrlid, NMHDR *pNMHDR)
 					}					
 				case COL_RANKED:
 					{
+						if(pSrvInf->cGAMEINDEX == WARSOW_SERVERLIST)
+						{
+							char *szVarValue = Get_RuleValue((TCHAR*)"tv",pSrvInf->pServerRules);
+								if(szVarValue!=NULL)
+									pLVItem->iImage = 30;
+						
+						} else if(pSrvInf->cGAMEINDEX == ET_SERVERLIST)
+						{
+													
+							char *szVarValue = Get_RuleValue((TCHAR*)"version",pSrvInf->pServerRules);
+								if(szVarValue!=NULL)
+									if(strstr(szVarValue,"ETTV")>0)
+										pLVItem->iImage = 30;
+						}
+
+
 						if (pSrvInf->cRanked) //Ranked only used for ETQW for now
 							pLVItem->iImage = 19;
 						i = MAX_COLUMNS;
@@ -1779,6 +1809,7 @@ DWORD WINAPI Monitor_ScanThread(LPVOID lpVoid)
 		SERVER_INFO *pSI = g_vMonitorSI.at(i);
 		if(pSI!=NULL)
 		{
+			pSI->szMapPrevious = Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules);
 			gm.GamesInfo[pSI->cGAMEINDEX].GetServerStatus(pSI,NULL,NULL);
 			if(bWaitingToSave)
 				return 0;
@@ -1799,6 +1830,17 @@ DWORD WINAPI Monitor_ScanThread(LPVOID lpVoid)
 				case MONITOR_NOTIFY_ACTIVITY:
 					if(pSI->nPlayers>0)
 						ShowBalloonTip("Server has player(s)!",gm.GamesInfo[pSI->cGAMEINDEX].colorfilter(pSI->szServerName,sztmpBuffer,256));  
+					break;
+				case MONITOR_NOTIFY_MAP_CHANGE:
+					if(strcmp(pSI->szMapPrevious.c_str(),pSI->szMap)!=0)
+					{
+						string msg;
+
+						msg = gm.GamesInfo[pSI->cGAMEINDEX].colorfilter(pSI->szServerName,sztmpBuffer,256);
+						msg.append("\n\r");
+						msg.append(Get_RuleValue((TCHAR*)gm.GamesInfo[pSI->cGAMEINDEX].vGAME_SPEC_COL.at(COL_MAP).sRuleValue.c_str(),pSI->pServerRules));
+						ShowBalloonTip("Map changed!",(TCHAR*)msg.c_str());  
+					}
 					break;
 			}
 		}
@@ -4503,7 +4545,7 @@ int SetCurrentActiveGame(int GameIndex)
 	try
 	{
 		gm.ValidateGameIndex(GameIndex);
-	}catch(int a)
+	}catch(...)
 	{
 		g_log.AddLogInfo(GS_LOG_WARNING, "Error GameIdx <SetCurrentActiveGame> (%d) File:(%s) Line:(%d)\n", GetLastError(),__FILE__,__LINE__ ); 
 		MessageBox(g_hWnd,"Game idx out of bounds!","Error",MB_OK);
@@ -5674,6 +5716,9 @@ void LoadImageList()
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
 	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_ALARM_CLOCK)); //29
+	ImageList_AddIcon(g_hImageListIcons, hIcon);
+	DestroyIcon(hIcon);
+	hIcon = LoadIcon(g_hInst, MAKEINTRESOURCE(IDI_ICON_TV)); //30
 	ImageList_AddIcon(g_hImageListIcons, hIcon);
 	DestroyIcon(hIcon);
 }
@@ -8558,14 +8603,21 @@ DWORD WINAPI  Menu_SL_Thread(LPVOID hWnd , WPARAM wParam, LPARAM lParam)
 			dwFlag = MF_CHECKED|MF_BYPOSITION|MF_STRING;
 		else
 			dwFlag = MF_BYPOSITION|MF_STRING;
-
 		AppendMenu(hSubMonitorPopMenu,dwFlag,IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE,g_lang.GetString("MenuMonitorNotifyFreeSlots"));
+
 		if((pSI->wMonitor & MONITOR_NOTIFY_ACTIVITY))
 			dwFlag = MF_CHECKED|MF_BYPOSITION|MF_STRING;
 		else
 			dwFlag = MF_BYPOSITION|MF_STRING;
 		AppendMenu(hSubMonitorPopMenu,dwFlag,IDM_MONITOR_NOTIFY_WHEN_ACTIVITY,g_lang.GetString("MenuMonitorNotifyActivity"));
 
+		if((pSI->wMonitor & MONITOR_NOTIFY_MAP_CHANGE))
+			dwFlag = MF_CHECKED|MF_BYPOSITION|MF_STRING;
+		else
+			dwFlag = MF_BYPOSITION|MF_STRING;
+		AppendMenu(hSubMonitorPopMenu,dwFlag,IDM_MONITOR_NOTIFY_MAP_CHANGE,g_lang.GetString("MenuMonitorNotifyMapChange"));
+
+		
 		
 		//ImageMenu_SetStyle(OFFICE2007);
 	}										
@@ -8685,6 +8737,33 @@ void OnMonitorNotifyFreeSlots()
 			else
 			{
 				pSI->wMonitor |= MONITOR_NOTIFY_FREE_SLOTS;
+				g_vMonitorSI.push_back(pSI);
+				if(hTimerMonitor==NULL)
+					hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);	
+			}
+			ListView_Update(g_hwndListViewServer,n);
+		}
+	}
+}
+
+void OnMonitorNotifyMapChange()
+{
+	int n=-1;
+	SERVER_INFO *pSI = NULL; 
+	
+	while ((n =  ListView_GetNextItem(g_hwndListViewServer,n,LVNI_SELECTED))!=-1)
+	{		
+		pSI = Get_ServerInfoByListViewIndex(currCV,n);	
+		if(pSI!=NULL)
+		{
+			if(pSI->wMonitor & MONITOR_NOTIFY_MAP_CHANGE)
+			{
+				pSI->wMonitor ^= MONITOR_NOTIFY_MAP_CHANGE;
+				g_vMonitorSI.erase(find(g_vMonitorSI.begin(),g_vMonitorSI.end(),pSI));
+			}
+			else
+			{
+				pSI->wMonitor |= MONITOR_NOTIFY_MAP_CHANGE;
 				g_vMonitorSI.push_back(pSI);
 				if(hTimerMonitor==NULL)
 					hTimerMonitor = SetTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS,MONITOR_INTERVAL,0);	
@@ -8963,6 +9042,7 @@ LRESULT APIENTRY ListView_SL_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, L
 				case IDM_MONITOR_AUTO_JOIN:	OnMonitorNotifyAutoJoin();				break;
 				case IDM_MONITOR_NOTIFY_WHEN_ACTIVITY:	OnMonitorNotifyActivity();	break;
 				case IDM_MONITOR_NOTIFY_WHEN_SLOT_FREE:	OnMonitorNotifyFreeSlots();	break;
+				case IDM_MONITOR_NOTIFY_MAP_CHANGE: OnMonitorNotifyMapChange(); break;
 				case IDM_COPY_VERSION:
 					{
 						int n = ListView_GetSelectionMark(g_hwndListViewServer);
@@ -12453,10 +12533,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		{
 			switch(LOWORD(lParam)) 
 			{ 
+					
 					case WM_LBUTTONDBLCLK: // to open the GUI of the Application 
 						//DialogBox(hInst, MAKEINTRESOURCE(IDD_FORMVIEW), NULL,(DLGPROC) MainProc);
 						PostMessage(hWnd,WM_COMMAND,IDM_OPEN,0);				
 						break; 
+					case WM_LBUTTONUP:
 					case WM_RBUTTONDOWN: 
 						//get mouse cursor position x and y as lParam has the message itself 
 						GetCursorPos(&lpClickPoint);

@@ -6,6 +6,14 @@
 	Check out the forum for help and support.
 
 
+	Version 2.0.24
+	--------------------------
+	2011-04-11 Added support for Warsow 0.61.
+	2011-04-11 Added TV icon in ranked column for ET and Warsow.
+	2011-04-11 Added new simple Monitor/Event option for detecting map changes.
+	2011-04-11 IP to Country database updated.
+	2011-04-11 Mousclick on Notification icon now opens up a menu to better 
+
 
 	Version 2.0.23
 	--------------------------

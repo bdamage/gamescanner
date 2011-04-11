@@ -502,6 +502,7 @@
 		<MasterServers>
 			<MasterServer http="0" protocol="10">dpmaster.deathmask.net:27950</MasterServer> <!-- version 0.42-->
 			<MasterServer http="0" protocol="11">dpmaster.deathmask.net:27950</MasterServer> <!-- version 0.50-->
+			<MasterServer http="0" protocol="12">dpmaster.deathmask.net:27950</MasterServer> <!-- version 0.61-->
 		</MasterServers>
 		<ServerDefaultPort>28960</ServerDefaultPort>
 		<!-- <ServerInfoQuery>\xFF\xFF\xFF\xFFgetinfo</ServerInfoQuery> Warsow version 0.42 -->
@@ -518,7 +519,7 @@
 		<Columns>
 			<Column idx="0">sv_battleye</Column>
 			<Column idx="1">g_needpass</Column>
-			<Column idx="2">ranked</Column>
+			<Column idx="2">tv</Column>
 			<Column idx="3">sv_hostname</Column>
 			<Column idx="4">version</Column>
 			<Column idx="5">gametype</Column>	

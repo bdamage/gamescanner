@@ -699,6 +699,7 @@ IDI_ICON_TASKTRAY       ICON                    "res\\gs.ico"
 IDI_ICON_MIRC           ICON                    "res\\mirc.ico"
 IDI_ICON_ARROW_NET      ICON                    "res\\arrownet.ico"
 IDI_ICON_ALARM_CLOCK    ICON                    "res\\alarmclock.ico"
+IDI_ICON_TV             ICON                    "res\\tv.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //

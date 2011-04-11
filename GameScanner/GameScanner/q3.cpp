@@ -179,6 +179,25 @@ retry:
 			//---------------------------------
 			switch(pSI->cGAMEINDEX)
 			{
+				case WARSOW_SERVERLIST:
+					{
+						const char *szTVvalue = Get_RuleValue((TCHAR*)"tv",pSI->pServerRules);
+						if(szTVvalue!=NULL)
+						{
+							if(strcmp("1",szTVvalue)==0)
+								pSI->szServerName = Get_RuleValue((TCHAR*)"tv_name",pSI->pServerRules);
+							
+							const char* szClients = Get_RuleValue((TCHAR*)"clients",pSI->pServerRules);
+							if(szClients!=NULL)
+								nPlayers =  atoi(szClients);
+
+						} else
+						{
+							pQ3Players = Q3_ParsePlayers2(pSI,pCurrPointer,end,&nPlayers);
+						}
+
+					}
+					break;
 				case QW_SERVERLIST:
 				case Q2_SERVERLIST:
 					pQ3Players = QW_ParsePlayers(pSI,pCurrPointer,end,&nPlayers);
