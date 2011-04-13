@@ -569,6 +569,7 @@ void Draw_GraphBackground(HWND hWnd,HDC hDC,UCHAR nGridX,UCHAR nGridY,const char
 
 #define DRAW_GRAPH_X_RIGHT_TO_LEFT 0
 #define DRAW_GRAPH_X_LEFT_TO_RIGHT 1
+BOOL g_bPinging=FALSE;
 
 void Draw_GraphBackground(HWND hWnd,HDC hDC,UCHAR nGridX,UCHAR nGridY,const char *szTitle,const char* szXLegend, const char* szYLegend,DWORD dwMaxValue,DWORD dwDrawOptions)
 {
@@ -896,7 +897,7 @@ DWORD WINAPI TraceRoute_Thread(LPVOID lpParam)
 }
 
 
-BOOL g_bPinging=FALSE;
+
 
 LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
@@ -1097,11 +1098,6 @@ bool Sort_Map(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	SERVER_INFO *pSIa =  rSIa.pServerInfo;
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
 	
-/*	if(pSIa->szMap==NULL)
-		return false;
-	if(pSIb->szMap==NULL)
-		return true;
-*/
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_MAP))	
 		return (CustomStrCmp(pSIa->szMap , pSIb->szMap )>0);
 	else
@@ -1112,11 +1108,7 @@ bool Sort_Mod(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
 	SERVER_INFO *pSIa =  rSIa.pServerInfo;
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
-/*	if(pSIa->szMod==NULL)
-		return false;
-	if(pSIb->szMod==NULL)
-		return true;
-*/
+
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_MOD))	
 		return (CustomStrCmp(pSIa->szMod , pSIb->szMod )>0);
 	else
@@ -1128,11 +1120,6 @@ bool Sort_IP(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	SERVER_INFO *pSIa =  rSIa.pServerInfo;
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
 	
-/*if(pSIa->szIPaddress==NULL)
-		return false;
-	if(pSIb->szIPaddress==NULL)
-		return true;
-*/
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_IP))
 		return (CustomStrCmp(pSIa->szIPaddress , pSIb->szIPaddress )>0);
 	else
@@ -1196,11 +1183,6 @@ bool Sort_Status(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	SERVER_INFO *pSIa =  rSIa.pServerInfo;
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
 
-/*	if(pSIa->szSTATUS==NULL)
-		return false;
-	if(pSIb->szSTATUS==NULL)
-		return true;
-*/
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_STATUS))
 		return (CustomStrCmp(pSIa->szSTATUS , pSIb->szSTATUS )>0);
 	 else
@@ -1212,12 +1194,6 @@ bool Sort_Version(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 {
 	SERVER_INFO *pSIa =  rSIa.pServerInfo;
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
-
-/*	if(pSIa->szVersion==NULL)
-		return true;
-	if(pSIb->szVersion==NULL)
-		return true;
-*/
 
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_VERSION))
 		return (CustomStrCmp(pSIa->szVersion , pSIb->szVersion )>0);
@@ -1231,11 +1207,6 @@ bool Sort_GameType(REF_SERVER_INFO rSIa, REF_SERVER_INFO rSIb)
 	SERVER_INFO *pSIa =  rSIa.pServerInfo;
 	SERVER_INFO *pSIb =  rSIb.pServerInfo;
 
-/*	if(pSIa->szGameTypeName==NULL)
-		return false;
-	if(pSIb->szGameTypeName==NULL)
-		return true;
-*/
 	if(g_LVHeaderSL->GetColumnSortOrder(COL_GAMETYPE))
 		return (CustomStrCmp(pSIa->szGameTypeName , pSIb->szGameTypeName )>0);
 	else
@@ -2516,7 +2487,7 @@ DWORD MyPing(char *ipaddress, DWORD & dwPing)
 
 
 
-// Message handler for about box.
+// Message handler for Add server dialog.
 LRESULT CALLBACK AddServerProc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -3306,7 +3277,7 @@ void OnCreate(HWND hwnd, HINSTANCE hInst)
 	bm.UpdateList();
 	g_bOnCreate = FALSE;
 
-	XMPP_CreateThread();
+	//XMPP_CreateThread();
 }
 
 
@@ -3329,7 +3300,6 @@ void OnClose()
 	SCANNER_bCloseApp = TRUE;
 	SaveAll(0xdeadface);
 
-	
 	ImageList_Destroy(g_hImageListStates);
 	g_hImageListStates= NULL;
 
@@ -4238,14 +4208,8 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 	{
 		TiXmlElement * abc = new TiXmlElement( "Game" );  
 		WriteCfgStr(abc, "GameData", "GameName",gm.GamesInfo[i].szGAME_NAME) ;
-
-		
-	//	WriteCfgStr(abc, "GameData", "MasterServer",gm.GamesInfo[i].szMasterServerIP[0]);
-	//	WriteCfgStr(abc, "GameData", "MapPreview",gm.GamesInfo[i].szMAP_MAPPREVIEW_PATH);
-	//	WriteCfgStr(abc, "GameData", "ProtcolName",gm.GamesInfo[i].szWebProtocolName);
 		WriteCfgInt(abc, "GameData", "Active",gm.GamesInfo[i].bActive);
 		WriteCfgInt(abc, "GameData", "gametype",gm.GamesInfo[i].cGAMEINDEX);
-	//	WriteCfgInt(abc, "GameData", "MasterServerPort",gm.GamesInfo[i].dwMasterServerPORT);
 		WriteCfgInt(abc, "GameData", "IconIndex",gm.GamesInfo[i].iIconIndex);
 	
 		
@@ -4255,8 +4219,6 @@ DWORD WINAPI CFG_Save(LPVOID lpVoid)
 			WriteCfgStr(installs, "Install", "Name",gm.GamesInfo[i].vGAME_INST.at(n).sName.c_str());
 			WriteCfgStr(installs, "Install", "Path",gm.GamesInfo[i].vGAME_INST.at(n).szGAME_PATH.c_str());
 			WriteCfgStr(installs, "Install", "Cmd",gm.GamesInfo[i].vGAME_INST.at(n).szGAME_CMD.c_str());
-		//	WriteCfgStr(installs, "Install", "LaunchByMod",gm.GamesInfo[i].vGAME_INST.at(n).sMod.c_str());
-		//	WriteCfgStr(installs, "Install", "LaunchByVer",gm.GamesInfo[i].vGAME_INST.at(n).sVersion.c_str());
 			WriteCfgInt(installs, "Install", "ScriptActive",gm.GamesInfo[i].vGAME_INST.at(n).bActiveScript);
 			WriteCfgStr(installs, "Install", "ScriptName",gm.GamesInfo[i].vGAME_INST.at(n).sFilterName.c_str());
 			WriteCfgStr(installs, "Install", "Script",gm.GamesInfo[i].vGAME_INST.at(n).sScript.c_str());
@@ -5396,29 +5358,10 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 				40,	
 				FALSE);
 */
-
-
-
 	Update_WindowSizes(wParam);
-
 
 	if(WNDCONT[WIN_PING].bShow)
 		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
-
-	//Fix XP repaint issue
-	if((g_OSversion.dwMajorVersion==5) && (g_OSversion.dwMinorVersion==1))
-	{
-	//	UpdateWindow(WNDCONT[WIN_BUDDYLIST].hWnd);
-	//	UpdateWindow(WNDCONT[WIN_MAINTREEVIEW].hWnd);
-		//InvalidateRect(g_hWnd,NULL,TRUE);
-	//	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
-	//	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
-	//	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
-	//	InvalidateRect(g_hwndMainTreeCtrl,NULL,TRUE);
-	//	InvalidateRect(WNDCONT[WIN_SERVERLIST].hWnd,NULL,TRUE);
-	//	InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,NULL,TRUE);
-
-	}
 
 	for(int i=0;i<WIN_MAX;i++)
 	{
@@ -5434,25 +5377,6 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	
 	CalcSplitterGripArea();
 
-
-
-
-//	ListView_SetColumnWidth(g_hwndListBuddy,2,LVSCW_AUTOSIZE_USEHEADER);
-
-//	InvalidateRect(g_hwndSearchToolbar,NULL,TRUE);
-	
-//	InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
-
-//	InvalidateRect(g_hwndRibbonBar,NULL,TRUE);
-//	InvalidateRect(g_hwndToolbarOptions,NULL,TRUE);
-	//InvalidateRect(g_hwndSearchCombo,NULL,TRUE);
-//	InvalidateRect(g_hwndListViewServerListHeader,NULL,TRUE);
-//	InvalidateRect(g_hwndComboEdit,NULL,TRUE);	
-	//InvalidateRect(WNDCONT[WIN_BUDDYLIST].hWnd,&WNDCONT[WIN_BUDDYLIST].rSize,TRUE);
-
-	//UpdateWindow(g_hwndSearchCombo);
-	//UpdateWindow(g_hwndComboEdit);
-	
 }
 
 void UpdateCurrentServerUI()
@@ -5549,15 +5473,12 @@ void Load_CountryFlags()
 	
 	int iSize = sizeof(CountryCodes)/(sizeof(CountryCodes->szCountryCode)+sizeof(CountryCodes->szCountryName));
 
-//	g_hILFlags = ImageList_Create(18, 12, ILC_COLOR24,iSize, 1);
 	g_hILFlags = ImageList_Create(16, 11, ILC_COLOR24,iSize, 1);
 
 	char szFilename[MAX_PATH+20];
 
 	for(int i=0; i<iSize;i++)
-	{
-	//	sprintf(szFilename,"%s\\flags\\flag_%s.gif",EXE_PATH,CountryCodes[i].szCountryCode);
-		
+	{	
 		sprintf(szFilename,"%s\\flags\\%s.gif",EXE_PATH,CountryCodes[i].szCountryCode);
 		_strlwr_s( szFilename ,sizeof(szFilename));
 
@@ -6054,9 +5975,7 @@ bool FilterServerItemV2(SERVER_INFO *srv,GAME_INFO *pGI, vFILTER_SETS *vFilterSe
 		if(pGI->filter.bRanked && (srv->cGAMEINDEX == ETQW_SERVERLIST))
 			if(srv->cRanked==0)
 				return false;
-
 	}
-
 	return returnVal;
 }
 
@@ -8150,12 +8069,9 @@ void Favorite_Add(bool manually,char *szIP)
 	}
 }
 
-
-
+//Remote Console for Quake 3 engine based games
 void OnRCON()
 {
-	
-
 	int i = ListView_GetSelectionMark(g_hwndListViewServer);
 	if(i!=-1)
 	{
@@ -8181,7 +8097,6 @@ void OnBeginDrag(NMHDR* pNMHDR)
 	
 	m_hitemDrag = pNMTreeView->itemNew.hItem;
 	m_hitemDrop = NULL;
-
 	
 	m_pDragImage = TreeView_CreateDragImage(g_hwndMainTreeCtrl,m_hitemDrag);  // get the image list for dragging
 	// CreateDragImage() returns NULL if no image list
@@ -8207,9 +8122,8 @@ LRESULT APIENTRY TreeView_SubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 	{
 		if(g_bRunningQuery)
 			SetCursor(LoadCursor(NULL, IDC_APPSTARTING));
+		
 		HTREEITEM	hitem;
-	
-
 		if (m_bLDragging)
 		{
 			POINT pt;
@@ -8539,8 +8453,8 @@ char *Get_SelectedServerIP()
 	}
 	return NULL;
 }
-HBITMAP hBmp;
 
+HBITMAP hBmp;
 
 DWORD WINAPI  Menu_SL_Thread(LPVOID hWnd , WPARAM wParam, LPARAM lParam)
 {
@@ -8616,17 +8530,11 @@ DWORD WINAPI  Menu_SL_Thread(LPVOID hWnd , WPARAM wParam, LPARAM lParam)
 		else
 			dwFlag = MF_BYPOSITION|MF_STRING;
 		AppendMenu(hSubMonitorPopMenu,dwFlag,IDM_MONITOR_NOTIFY_MAP_CHANGE,g_lang.GetString("MenuMonitorNotifyMapChange"));
-
-		
 		
 		//ImageMenu_SetStyle(OFFICE2007);
 	}										
 
-
-
 	AppendMenu(hPopMenu,MF_BYPOSITION|MF_STRING,IDM_OPTIONS_RCON,g_lang.GetString("MenuRCON"));
-
-
 
 	if(g_bRunningQueryServerList==false)
 		AppendMenu(hPopMenu,MF_BYPOSITION|MF_STRING,IDM_REFRESH,g_lang.GetString("MenuRefresh"));
@@ -9113,8 +9021,7 @@ BOOL WINAPI EditCopy(char *pText)
             CloseClipboard();                   // selection 
             return FALSE; 
         } 
- 
- 
+  
         // Allocate a global memory object for the text. 
  
         hglbCopy = GlobalAlloc(GMEM_MOVEABLE, 
@@ -9124,21 +9031,17 @@ BOOL WINAPI EditCopy(char *pText)
             CloseClipboard(); 
             return FALSE; 
         } 
- 
-        // Lock the handle and copy the text to the buffer. 
- 
+         // Lock the handle and copy the text to the buffer. 
         lptstrCopy = (LPTSTR)GlobalLock(hglbCopy); 
         memcpy(lptstrCopy,(LPTSTR)pText,cch); 
         lptstrCopy[cch] = (char) 0;    // null character 
         GlobalUnlock(hglbCopy); 
  
         // Place the handle on the clipboard. 
- 
         SetClipboardData(CF_TEXT, hglbCopy); 
     } 
  
     // Close the clipboard. 
- 
     CloseClipboard(); 
  
     return TRUE; 
@@ -10519,66 +10422,7 @@ void ErrorExit(LPTSTR lpszFunction)
   
 }
 
-/*
-DWORD *dwMaxMin;
-BOOL bSettingMax=FALSE;
-LRESULT CALLBACK MINMAX_Dlg(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam)
-{
-	HWND hwndEdit;
-	char szTemp[50];
-	switch (message)
-	{
-		case WM_INITDIALOG:
-		{
-			CenterWindow(hDlg);
-			hwndEdit = GetDlgItem(hDlg,IDC_EDIT_MINMAX);
 
-			if(lParam==0)
-			{
-				_itoa(AppCFG.filter.dwShowServerWithMinPlayers,szTemp,10);	
-				dwMaxMin = &AppCFG.filter.dwShowServerWithMinPlayers;
-				SetWindowText(hDlg,g_lang.GetString("TitleSetMinValue"));				
-				bSettingMax=FALSE;
-			}
-			else
-			{
-				dwMaxMin = &AppCFG.filter.dwShowServerWithMaxPlayers;
-				_itoa(AppCFG.filter.dwShowServerWithMaxPlayers,szTemp,10);	
-				SetWindowText(hDlg,g_lang.GetString("TitleSetMaxValue"));
-				bSettingMax=TRUE;
-			}
-			SetDlgItemText(hDlg,IDC_EDIT_MINMAX,szTemp);	
-			SetFocus(GetDlgItem(hDlg,IDC_EDIT_MINMAX));	
-			PostMessage(GetDlgItem(hDlg,IDC_EDIT_MINMAX),EM_SETSEL,0,strlen(szTemp));
-			PostMessage(GetDlgItem(hDlg,IDC_EDIT_MINMAX),EM_SETSEL,(WPARAM)-1,-1);
-		
-		//return TRUE;
-		}
-		break;
-	case WM_COMMAND:
-
-		if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) 
-		{
-			if(LOWORD(wParam) == IDOK)
-			{
-							
-				GetDlgItemText(hDlg,IDC_EDIT_MINMAX,szTemp,sizeof(szTemp)-1);
-				*dwMaxMin= atoi(szTemp);
-				if(bSettingMax)
-					TreeView_SetDWValueByItemType(FILTER_MAX_PLY,*dwMaxMin,TreeView_GetItemStateByType(-1,FILTER_MAX_PLY));
-				else
-					TreeView_SetDWValueByItemType(FILTER_MIN_PLY,*dwMaxMin,TreeView_GetItemStateByType(-1,FILTER_MIN_PLY));
-
-			}
-
-			EndDialog(hDlg, LOWORD(wParam));
-			return TRUE;
-		}
-		break;
-	}
-	return FALSE;
-}
-*/
 int nEditScriptIndex;
 BOOL g_bAddNewFilter=FALSE;
 
@@ -10595,10 +10439,6 @@ TVI_SORT
 Inserts the item into the list in alphabetical order.
 
 ************************************************************/
-
-
-
-
 HTREEITEM TreeView_InsertNewItem(HTREEITEM hParent, HTREEITEM hInsertAfter,_MYTREEITEM *ti)
 {
 	TVINSERTSTRUCT tvs;
@@ -10629,14 +10469,6 @@ HTREEITEM TreeView_InsertNewItem(HTREEITEM hParent, HTREEITEM hInsertAfter,_MYTR
 			tvitem.mask = TVIF_PARAM ;
 			tvitem.lParam = tvmgr.vTI.at(i).dwIndex;
 			TreeView_SetItem(g_hwndMainTreeCtrl,&tvitem);
-		
-	/*		char text[256];
-		 if(ti->dwType==DO_GLOBAL_EDIT_FILTER)
-			 sprintf(text,"%s %d",tvmgr.vTI.at(i).sName.c_str(),ti->dwValue);
-		 else
-			 sprintf(text,"%s %d",tvmgr.vTI.at(i).sName.c_str(),tvmgr.vTI.at(i).dwIndex);
-
-		 TreeView_SetItemText(tvmgr.vTI.at(i).hTreeItem,text);*/
 		}
 	}
 	TreeView_Expand(g_hwndMainTreeCtrl, hParent, TVE_EXPAND);
@@ -10696,11 +10528,6 @@ HTREEITEM TreeView_MoveItem(HTREEITEM hitemDrag,HTREEITEM hitemDrop)
 	return hNewItem;
 
 }
-
-
-
-
-
 
 int countOfChar(const char*szText,char c)
 {
