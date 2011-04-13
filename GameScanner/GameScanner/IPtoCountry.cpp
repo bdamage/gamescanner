@@ -67,11 +67,11 @@ void CIPtoCountry::LoadTable()
 
 	//Create a look up table for optimiziation
 	DWORD dwSize = vIPC.size();
-	DWORD dwPartition = dwSize/50;
+	DWORD dwPartition = dwSize/100;
 
 	CIPCountry tmpIPC;
 	DWORD dwIdx = dwSize;
-	for(int i=0;i<50; i++)
+	for(int i=0;i<100; i++)
 	{
 		dwIdx-=dwPartition;  //dwHalfQuarter
 		tmpIPC  = vIPC.at(dwIdx);
@@ -80,6 +80,8 @@ void CIPtoCountry::LoadTable()
 		LUT[i].ipc.startIP = tmpIPC.dwStartIP;
 	}
 }
+
+
 
 
 

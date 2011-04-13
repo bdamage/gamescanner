@@ -10098,14 +10098,14 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 	{
 		if(hTimerMonitor!=NULL)
 		{
-			KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);
-			for(int iMon=0; iMon<g_vMonitorSI.size();iMon++)
+			KillTimer(g_hWnd,IDT_MONITOR_QUERY_SERVERS);    //Kill montior timer to stop polling any further server info
+			for(int iMon=0; iMon<g_vMonitorSI.size();iMon++)  //enumerate all servers that is being polled
 			{
 				SERVER_INFO *pSI = g_vMonitorSI.at(iMon);
 				if(pSI!=NULL)
-					pSI->wMonitor = 0;
+					pSI->wMonitor = 0;                           //clears the monitor flag from the server itself
 			}
-			g_vMonitorSI.clear();
+			g_vMonitorSI.clear();           //clear the list
 			hTimerMonitor=NULL;
 		}
 		//A Successfull launch
