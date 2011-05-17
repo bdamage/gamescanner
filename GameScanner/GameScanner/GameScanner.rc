@@ -746,7 +746,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,22,0
+ FILEVERSION 2,0,24,0
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
@@ -764,7 +764,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "www.bdamage.se"
             VALUE "FileDescription", "Game Scanner Application"
-            VALUE "FileVersion", "2, 0, 22, 0"
+            VALUE "FileVersion", "2, 0, 24, 0"
             VALUE "InternalName", "Game Scaner"
             VALUE "LegalCopyright", "Copyright (C) 2009"
             VALUE "OriginalFilename", "GameScanner.exe"

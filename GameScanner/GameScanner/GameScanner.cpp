@@ -473,6 +473,7 @@ struct _TRACERT_STRUCT
 
 };
 
+deque<_TRACERT_STRUCT> _TraceRTCopy;
 deque<_TRACERT_STRUCT> _TraceRT;
 typedef deque<_TRACERT_STRUCT> TraceRT;
 //   if ((toupper(*wild) != toupper(*string)) && (*wild != '?')) {
@@ -832,7 +833,7 @@ void Draw_TraceRouteStats(HWND hWnd, HDC hDC,char nGridX,char nGridY,DWORD dwMax
     SetTextColor(hDC,0x00FFFFFF);
 	TraceRT::iterator iLst;
 	int i=1;
-	for ( iLst = _TraceRT.begin(); iLst != _TraceRT.end(); iLst++ )
+	for ( iLst = _TraceRTCopy.begin(); iLst != _TraceRTCopy.end(); iLst++ )
 	{
 		_TRACERT_STRUCT ts = *iLst;
 		DWORD dwPingi = ts.RTT;
@@ -999,8 +1000,21 @@ LRESULT CALLBACK STATS_Proc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lPara
 			}
 			else
 			{
-				Draw_GraphBackground(hWnd,hDC, _TraceRT.size(), 10, "Trace route to","hops" ,"milliseconds",350,DRAW_GRAPH_X_LEFT_TO_RIGHT);
-				Draw_TraceRouteStats( hWnd, hDC,  _TraceRT.size(), 10,350);
+				TraceRT::iterator iLst;
+				
+				_TraceRTCopy = _TraceRT;
+				DWORD maxRTT = 1;
+				
+
+				for ( iLst = _TraceRTCopy.begin(); iLst != _TraceRTCopy.end(); iLst++ )
+				{
+						_TRACERT_STRUCT ts = *iLst;
+						if(maxRTT<ts.RTT);
+							maxRTT = ts.RTT;
+				}
+
+				Draw_GraphBackground(hWnd,hDC, _TraceRTCopy.size(), 10, "Trace route to","hops" ,"milliseconds",maxRTT*1.5,DRAW_GRAPH_X_LEFT_TO_RIGHT);
+				Draw_TraceRouteStats( hWnd, hDC,  _TraceRTCopy.size(), 10,maxRTT*1.5);
 			}
 			EndPaint(hWnd, &ps);
 			return TRUE;

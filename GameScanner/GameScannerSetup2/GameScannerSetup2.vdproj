@@ -801,6 +801,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_74085982FF86A751705A61FCA500696A"
+        "OwnerKey" = "8:_D3DFB8740D954D3583456D71C4F351AD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_74C26F59ECB145EF842CB697A3B08C7A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1697,12 +1703,6 @@
         {
         "MsmKey" = "8:_EFD31260FBA2491CB2E0E84DA70D039B"
         "OwnerKey" = "8:_UNDEFINED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EFFDC32F55009291C3390C4F7DCA1C39"
-        "OwnerKey" = "8:_D3DFB8740D954D3583456D71C4F351AD"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -4564,6 +4564,26 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74085982FF86A751705A61FCA500696A"
+            {
+            "SourcePath" = "8:FreeImage.dll"
+            "TargetName" = "8:FreeImage.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74C26F59ECB145EF842CB697A3B08C7A"
@@ -7546,26 +7566,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EFFDC32F55009291C3390C4F7DCA1C39"
-            {
-            "SourcePath" = "8:FreeImage.dll"
-            "TargetName" = "8:FreeImage.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1B0F6E387754378A879A9D4A73AA723"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\iq.gif"
@@ -8146,14 +8146,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{AC3B894A-A49C-437F-BA56-F7D3B9BC674E}"
-        "PackageCode" = "8:{191F6301-798A-4124-916F-CE3C9F7F9960}"
+        "ProductCode" = "8:{424C9129-9823-4321-A683-9D556EC8D1D4}"
+        "PackageCode" = "8:{E7C5B89A-8A70-4246-8CEB-6DFDA57ABD49}"
         "UpgradeCode" = "8:{D274213F-07C1-49F5-97FD-290E86C2EE55}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.0.025"
+        "ProductVersion" = "8:2.0.24"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"
@@ -8169,7 +8169,7 @@
         "UseSystemSearchPath" = "11:TRUE"
         "TargetPlatform" = "3:0"
         "PreBuildEvent" = "8:"
-        "PostBuildEvent" = "8:\"$(ProjectDir)EnableLaunchApplication.js\" \"$(BuiltOutputPath)\""
+        "PostBuildEvent" = "8:\"$(ProjectDir)modify_msi.cmd\" \"$(BuiltOutputPath)\""
         "RunPostBuildEvent" = "3:0"
         }
         "Registry"
