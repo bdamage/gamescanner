@@ -1707,6 +1707,12 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_EFFDC32F55009291C3390C4F7DCA1C39"
+        "OwnerKey" = "8:_D3DFB8740D954D3583456D71C4F351AD"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_F1B0F6E387754378A879A9D4A73AA723"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -7566,6 +7572,26 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_EFFDC32F55009291C3390C4F7DCA1C39"
+            {
+            "SourcePath" = "8:FreeImage.dll"
+            "TargetName" = "8:FreeImage.dll"
+            "Tag" = "8:"
+            "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_F1B0F6E387754378A879A9D4A73AA723"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\iq.gif"
@@ -8146,14 +8172,14 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Game Scanner"
-        "ProductCode" = "8:{424C9129-9823-4321-A683-9D556EC8D1D4}"
-        "PackageCode" = "8:{E7C5B89A-8A70-4246-8CEB-6DFDA57ABD49}"
+        "ProductCode" = "8:{4F7EFB62-B862-410A-9E53-918FD0A8B2D6}"
+        "PackageCode" = "8:{16F616E6-0A71-4506-8691-5D6ED5DD75B8}"
         "UpgradeCode" = "8:{D274213F-07C1-49F5-97FD-290E86C2EE55}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:FALSE"
-        "ProductVersion" = "8:2.0.24"
+        "ProductVersion" = "8:2.0.25"
         "Manufacturer" = "8:GameScanner"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:http://www.bdamage.se"
