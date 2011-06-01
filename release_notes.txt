@@ -5,6 +5,9 @@
 	
 	Check out the forum for help and support.
 
+	Version 2.0.25
+	--------------------------
+	2011-06-01  Added Brink
 
 	Version 2.0.24
 	--------------------------
