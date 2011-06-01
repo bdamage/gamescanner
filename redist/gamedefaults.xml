@@ -1,5 +1,5 @@
 <Games>
-	<Version>1.33</Version>
+	<Version>1.34</Version>
 	<Game>
 		<GameIndex>0</GameIndex>
 		<Name>Wolfenstein - Enemy Territory</Name>
@@ -1146,5 +1146,52 @@
 			<Column idx="7">gamename</Column>
 			<Column idx="8">bots</Column> 
 		</Columns>
+	</Game>	
+	<Game>
+		<GameIndex>26</GameIndex>
+		<Name>BRINK</Name>
+		<ShortName>BRINK</ShortName>
+		<Filename>Brink.servers</Filename>
+		<NetEngine>VALVE</NetEngine>
+		<ColorEncoding>Q4</ColorEncoding>
+		<WebProtocol>brink</WebProtocol>
+		<MapPreviewPath>brinkmaps</MapPreviewPath>
+		<Icon>brink.ico</Icon>
+		<MasterServers>
+			<MasterServer http="0">hl2master.steampowered.com:27011</MasterServer>
+			<MasterServer http="0">69.28.140.246:27011</MasterServer>	
+			<MasterServer http="0">72.165.61.189:27011</MasterServer>
+			<MasterServer http="0">69.28.140.247:27011</MasterServer>
+			<MasterServer http="0">68.142.72.250:27011</MasterServer>						
+		</MasterServers>
+		<ServerDefaultPort>27015</ServerDefaultPort>
+		<ServerInfoQuery></ServerInfoQuery>
+		<MasterQueryString>\gamedir\brink</MasterQueryString>
+		<Detection>
+			<Registry>
+				<RegRoot>HKEY_CURRENT_USER</RegRoot>
+				<RegKey>Software\Valve\Steam</RegKey>
+				<RegItem>SteamExe</RegItem>
+				<InstallSuffix></InstallSuffix>
+			</Registry>
+		</Detection>
+		<Columns>
+			<Column idx="0">vac</Column>
+			<Column idx="1">needpass</Column>
+			<Column idx="2">ranked</Column>
+			<Column idx="3">hostname</Column>
+			<Column idx="4">version</Column>
+			<Column idx="5">gametype</Column>	
+			<Column idx="6">map</Column>
+			<Column idx="7">gamename</Column>
+			<Column idx="8">bots</Column>			
+		</Columns>			
+            <Installs>
+                <Install name="Name" value="Brink" />
+                <Install name="Path" value="" />
+                <Install name="Cmd" value="-applaunch 22350" />
+                <Install name="LaunchByMod" value="Brink" />
+                <Install name="LaunchByVer" value="" />
+            </Installs>
 	</Game>	
 </Games>

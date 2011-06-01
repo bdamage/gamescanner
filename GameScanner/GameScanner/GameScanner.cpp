@@ -6784,7 +6784,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 		case CDDS_ITEMPREPAINT:
 			{				
 				if(nItem%2 == 0)
-					pListDraw->clrTextBk = RGB(202, 221,250);
+					pListDraw->clrTextBk = RGB(245, 245,245); //pListDraw->clrTextBk = RGB(202, 221,250);
 				else
 					pListDraw->clrTextBk = RGB(255, 255,255);
 	
@@ -6867,7 +6867,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 								DeleteObject(hbrBkgnd);
 
 							if(iRow%2 == 0)
-								pListDraw->clrTextBk = RGB(202, 221,250);
+								pListDraw->clrTextBk = RGB(245, 245,245); //pListDraw->clrTextBk = RGB(202, 221,250);
 							else
 								pListDraw->clrTextBk = RGB(255, 255,255);
 
@@ -6885,7 +6885,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 
 							COLORREF colRef;
 							if(iRow%2 == 0)
-								colRef = RGB(202, 221,250);
+								colRef =  RGB(245, 245,245); //RGB(202, 221,250);
 							else
 								colRef = RGB(255, 255,255);
 							
@@ -6917,7 +6917,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 								DeleteObject(hbrSel);
 
 							if(iRow%2 == 0)
-								colRef = RGB(202, 221,250);
+								colRef = RGB(245, 245,245); //RGB(202, 221,250); RGB(245, 245,245);
 							else
 								colRef = RGB(255, 255,255);
 
@@ -6951,7 +6951,7 @@ LRESULT ListView_SL_CustomDraw (LPARAM lParam)
 
 								COLORREF colRef;
 								if(iRow%2 == 0)
-									colRef = RGB(202, 221,250);
+									colRef = RGB(245, 245,245); //RGB(202, 221,250);
 								else
 									colRef = RGB(255, 255,255);
 
@@ -7003,7 +7003,7 @@ LRESULT ListView_PL_CustomDraw(LPARAM lParam)
 			{			
 				iRow = (int)pListDraw->nmcd.dwItemSpec;
 				if(iRow%2 == 0)
-					pListDraw->clrTextBk = RGB(202, 221,250);	
+					pListDraw->clrTextBk =  RGB(245, 245,245); //RGB(202, 221,250);	
 			}
 			return (CDRF_NOTIFYSUBITEMDRAW );
 			break;

@@ -801,12 +801,6 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_74085982FF86A751705A61FCA500696A"
-        "OwnerKey" = "8:_D3DFB8740D954D3583456D71C4F351AD"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
         "MsmKey" = "8:_74C26F59ECB145EF842CB697A3B08C7A"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
@@ -1288,6 +1282,12 @@
         "Entry"
         {
         "MsmKey" = "8:_B346C73769B34E77BB9808A3E67964BB"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B3933B38638A49F49517FAF0040ECC8B"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
@@ -4566,26 +4566,6 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
-            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74085982FF86A751705A61FCA500696A"
-            {
-            "SourcePath" = "8:FreeImage.dll"
-            "TargetName" = "8:FreeImage.dll"
-            "Tag" = "8:"
-            "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_74C26F59ECB145EF842CB697A3B08C7A"
             {
             "SourcePath" = "8:..\\..\\redist\\flags\\gh.gif"
@@ -6192,6 +6172,26 @@
             "TargetName" = "8:release_notes.txt"
             "Tag" = "8:"
             "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B3933B38638A49F49517FAF0040ECC8B"
+            {
+            "SourcePath" = "8:..\\..\\redist\\GameIcons\\Brink.ico"
+            "TargetName" = "8:Brink.ico"
+            "Tag" = "8:"
+            "Folder" = "8:_434BE3A6A2BF4F8181A738F1C6427E81"
             "Condition" = "8:"
             "Transitive" = "11:FALSE"
             "Vital" = "11:TRUE"
@@ -8723,7 +8723,7 @@
             }
             "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_D3DFB8740D954D3583456D71C4F351AD"
             {
-            "SourcePath" = "8:..\\Release\\GameScanner.exe"
+            "SourcePath" = "8:..\\Debug\\GameScanner.exe"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_F99F2F282CC34A259EEC54F4FB20BB2E"

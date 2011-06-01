@@ -107,23 +107,7 @@ void CGameManager::Default_GameSettings()
 
 		gameinfo.colorfilter = &colorfilter;
 		gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedText;
-		if(strcmp(szColorEnc,"QW")==0)
-		{
-			gameinfo.colorfilter = &colorfilterQW;
-			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
-		} else if(strcmp(szColorEnc,"Q4")==0)
-		{
-			gameinfo.colorfilter = &colorfilterQ4;
-			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
-		} else if(strcmp(szColorEnc,"NEXUIZ")==0)
-		{
-			gameinfo.colorfilter = &colorfilterNEXUIZ;
-			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextNexuiz;
-		}else if(strcmp(szColorEnc,"JEDIKNIGHT3")==0)
-		{
-			gameinfo.colorfilter = &colorfilterJK3;
-			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextJK3;
-		}
+
 		
 
 
@@ -309,7 +293,34 @@ void CGameManager::Default_GameSettings()
 					gameinfo.GetServerStatus = &BFBC2_Get_ServerStatus;
 					break;
 				}
+			case BRINK_ENGINE:
+				{
+					gameinfo.colorfilter = colorfilterUTF8;
+					gameinfo.Draw_ColorEncodedText = &Draw_UTF8Text;
+					gameinfo.GetServersFromMasterServer = &STEAM_ConnectToMasterServer;
+					gameinfo.GetServerStatus = &STEAM_Get_ServerStatus;
+					break;
+				}
 		}
+
+		if(strcmp(szColorEnc,"QW")==0)
+		{
+			gameinfo.colorfilter = &colorfilterQW;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQW;
+		} else if(strcmp(szColorEnc,"Q4")==0)
+		{
+			gameinfo.colorfilter = &colorfilterQ4;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextQ4;
+		} else if(strcmp(szColorEnc,"NEXUIZ")==0)
+		{
+			gameinfo.colorfilter = &colorfilterNEXUIZ;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextNexuiz;
+		}else if(strcmp(szColorEnc,"JEDIKNIGHT3")==0)
+		{
+			gameinfo.colorfilter = &colorfilterJK3;
+			gameinfo.Draw_ColorEncodedText = &Draw_ColorEncodedTextJK3;
+		}
+
 		GamesInfo[gameinfo.cGAMEINDEX] = gameinfo;
 		pGame = pGame->NextSiblingElement();
 		if(pGame==NULL)
