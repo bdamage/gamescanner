@@ -12,6 +12,9 @@
 	2011-06-02  New Filters for Warsow added.
 	2011-06-02  Improved Gold Source protocol parser.
 
+	Version independet changes:
+	2011-06-02  New Warsow mapshots uploaded.
+
 
 	Version 2.0.25
 	--------------------------
