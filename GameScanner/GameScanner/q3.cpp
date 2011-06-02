@@ -59,7 +59,7 @@ unsigned char* Warsow_patch(SOCKET pSocket,SERVER_INFO *pSI, DWORD *dwStartTick,
 	if(*packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
-		closesocket(pSocket);		
+	//	closesocket(pSocket);		
 		pSI->cPurge++;
 
 	}
@@ -110,8 +110,7 @@ retry:
 		packetlen=SOCKET_ERROR;
 
 		
-	if(packetlen==SOCKET_ERROR) 
-	{
+	if(packetlen==SOCKET_ERROR) {
 		dbg_print("Error at send()\n");
 		closesocket(pSocket);		
 		pSI->cPurge++;
@@ -123,20 +122,14 @@ retry:
 	if(pSI->cGAMEINDEX==WARSOW_SERVERLIST && packet==NULL)
 		packet = Warsow_patch(pSocket,pSI,&dwStartTick,&packetlen);
 
-	if(packet==NULL)
-	{
-		
-		if(dwRetries<AppCFG.dwRetries)
-		{
-			
-
+	if(packet==NULL) {	
+		if(dwRetries<AppCFG.dwRetries) {
 			dwRetries++;
 			goto retry;
 		}
 	}
 
-	if(packet) 
-	{
+	if(packet) {
 		pSI->dwPing = (GetTickCount() - dwStartTick);
 
 		GetServerLock(pSI);

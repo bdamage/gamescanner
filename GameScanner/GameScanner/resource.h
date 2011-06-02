@@ -393,6 +393,7 @@
 #define ID_FILE_RESETTREEVIEWTODEFAULT  32921
 #define IDM_AUTO_REFRESH                32922
 #define IDM_MONITOR_NOTIFY_MAP_CHANGE	32923
+#define ID_BAN_PLAYER                   32924
 #define IDC_STATIC                      -1
 #define ID_THREAD                       65535
 
@@ -402,7 +403,7 @@
 #ifndef APSTUDIO_READONLY_SYMBOLS
 #define _APS_NO_MFC                     1
 #define _APS_NEXT_RESOURCE_VALUE        1229
-#define _APS_NEXT_COMMAND_VALUE         32923
+#define _APS_NEXT_COMMAND_VALUE         32924
 #define _APS_NEXT_CONTROL_VALUE         1229
 #define _APS_NEXT_SYMED_VALUE           111
 #endif

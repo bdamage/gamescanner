@@ -328,7 +328,7 @@ BEGIN
     PUSHBUTTON      "Connect",ID_RCON_CONNECT,329,344,50,21
     EDITTEXT        IDC_EDIT_CMD,7,319,299,18,ES_AUTOHSCROLL
     LISTBOX         IDC_LIST_RCON,7,7,449,308,LBS_HASSTRINGS | LBS_NOINTEGRALHEIGHT | LBS_NOSEL | WS_VSCROLL | WS_TABSTOP
-    LTEXT           "cls - Clear Screen, UP/DOWN Key - previous cmd, TAB - Next command",IDC_STATIC_RCON_INFO,8,341,316,17
+    LTEXT           "cls - Clear Screen, UP/DOWN Key - previous cmd, TAB - Next command\nF1 - sends the command with a TAB suffix.",IDC_STATIC_RCON_INFO,8,341,316,23
     CONTROL         "Color filter",IDC_CHECK_COLFILTER,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,384,322,64,34
 END
 
@@ -746,7 +746,7 @@ END
 //
 
 VS_VERSION_INFO VERSIONINFO
- FILEVERSION 2,0,25,0
+ FILEVERSION 2,0,26,0
  PRODUCTVERSION 2,0,0,0
  FILEFLAGSMASK 0x17L
 #ifdef _DEBUG
@@ -764,7 +764,7 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "www.bdamage.se"
             VALUE "FileDescription", "Game Scanner Application"
-            VALUE "FileVersion", "2, 0, 25, 0"
+            VALUE "FileVersion", "2, 0, 26, 0"
             VALUE "InternalName", "Game Scaner"
             VALUE "LegalCopyright", "Copyright (C) 2009"
             VALUE "OriginalFilename", "GameScanner.exe"

@@ -153,16 +153,16 @@ DWORD STEAM_GetChallenge(SERVER_INFO *pSI, DWORD &dwChallenge)
 	return 1;
 }
 
-DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
+DWORD STEAM_GetChallengeGoldSrc(SOCKET pSocket,SERVER_INFO *pSI, DWORD &dwChallenge)
 {
-	SOCKET pSocket = NULL;
+	//SOCKET pSocket = NULL;
 	unsigned char *packet=NULL;
 	char sendbuf[20];
 	size_t packetlen = 0;
 
 	dwChallenge = 0;
 	
-	if(pSI==NULL)
+/*	if(pSI==NULL)
 	{
 		dbg_print("Invalid pointer argument @STEAM_GetChallengeGoldSrc!\n");
 		return 1;
@@ -175,7 +175,7 @@ DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
 	  dbg_print("Error at getsockudp()\n");
 	  return 1;
 	}
-
+*/
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	strcpy_s(sendbuf,sizeof(sendbuf),A2S_PLAYER);
 	DWORD dwDefaultChallenge = 0xFFFFFFFF;
@@ -185,7 +185,7 @@ DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
-		closesocket(pSocket);		
+//		closesocket(pSocket);		
 		return 1;
 	}
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
@@ -206,10 +206,10 @@ DWORD STEAM_GetChallengeGoldSrc(SERVER_INFO *pSI, DWORD &dwChallenge)
 		}
 
 		free(packet);
-		closesocket(pSocket);
+//		closesocket(pSocket);
 		return dwReturn;
 	}
-	closesocket(pSocket);
+//	closesocket(pSocket);
 	
 	return 1;
 }
@@ -288,27 +288,28 @@ DWORD STEAM_ParsePlayers(SERVER_INFO *pSI, char *packet,DWORD dwLength)
 }
 
 
-DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
+DWORD STEAM_GetPlayers(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 {
-	SOCKET pSocket = NULL;
+//	SOCKET pSocket = NULL;
 	unsigned char *packet=NULL;
 	char sendbuf[80];
 	size_t packetlen = 0;
 
 	
-	if(pSI==NULL)
+/*	if(pSI==NULL)
 	{
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
 		return 1;
 	}
-
-	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
+*/
+/*	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
 	  return 1;
 	}
+	*/
 
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	strcpy_s(sendbuf,sizeof(sendbuf),A2S_PLAYER);
@@ -320,7 +321,7 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
-		closesocket(pSocket);		
+		//closesocket(pSocket);		
 		return 1;
 	}
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
@@ -332,7 +333,7 @@ DWORD STEAM_GetPlayers(SERVER_INFO *pSI, DWORD dwChallenge)
 		free(packet);
 	}
 
-	closesocket(pSocket);
+//	closesocket(pSocket);
 	
 	return 0;
 }
@@ -421,29 +422,29 @@ continued packet?
 	
 	return 0;
 }
-DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
+DWORD STEAM_GetRules(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 {
-	SOCKET pSocket = NULL;
+//	SOCKET pSocket = NULL;
 	unsigned char *packet=NULL;
 	char sendbuf[80];
 	size_t packetlen = 0;
 	size_t packetlen2 = 0;
 
-	
+/*	
 	if(pSI==NULL)
 	{
 		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
 		return 1;
 	}
-
-	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
+*/
+/*	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
 	  dbg_print("Error at getsockudp()\n");
 	  return 1;
 	}
-
+*/
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	strcpy_s(sendbuf,sizeof(sendbuf),A2S_RULES);
 
@@ -454,7 +455,7 @@ DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
 	if(packetlen==SOCKET_ERROR) 
 	{
 		dbg_print("Error at send()\n");
-		closesocket(pSocket);		
+//		closesocket(pSocket);		
 		return 1;
 	}
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
@@ -476,11 +477,8 @@ DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
 				free(packet2);
 			}
 		
-			
-			
 			STEAM_ParseRules(pSI, (char*)p,totlen);
-			free(packet);
-			
+			free(packet);		
 			free(p);
 			
 		}
@@ -491,7 +489,7 @@ DWORD STEAM_GetRules(SERVER_INFO *pSI, DWORD dwChallenge)
 		}
 	}
 
-	closesocket(pSocket);
+//	closesocket(pSocket);
 	
 	return 0;
 }
@@ -848,7 +846,7 @@ DWORD STEAM_Get_ServerStatus(SERVER_INFO *pSI,long (*UpdatePlayerListView)(PLAYE
 	//Some default values
 	pSI->dwPing = 9999;
 
-	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
+	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usQueryPort); 
  
 	if(pSocket==INVALID_SOCKET)
 	{
@@ -930,6 +928,11 @@ retry:
 		{
 		//	pSI->dwVersion = (DWORD)p[0];  //network version, steam ver.
 			p++;
+			char szVer[10];
+			char v = p[0];
+			itoa(v,szVer,10);
+			ServerRule_Add(pSI->pServerRules,"protocol",szVer);
+			
 			p++;
 		} else if((*resp->type == 0x44) || (*resp->type == 0x6c)) //dead server? or banned from server
 		{
@@ -966,6 +969,9 @@ retry:
 		if(*resp->type == A2S_INFORESPONSE_HL2)  
 		{
 			pSI->STEAM_AppId = *(short*)p;
+			char szID[10];
+			itoa(	pSI->STEAM_AppId,szID,10);
+			ServerRule_Add(pSI->pServerRules,"AppID",szID);
 			p+=2;  // AppID
 		}
 
@@ -1015,23 +1021,73 @@ retry:
 				DebugBreak();
 
 			ServerRule_Add(pSI->pServerRules,"version",p);		
+			p+=strlen(p)+1;
+			unsigned char EDF = p[0];
+			p++;
+			
+			if ( EDF & 0x80 )	//short	 The server's game port # is included
+			{
+				short gameport = (short)(*(short*)p);
+				pSI->usPort = gameport; //BRINK RCON and probably gameport
+				char szID[10];
+				itoa(	pSI->usPort,szID,10);
+				ServerRule_Add(pSI->pServerRules,"gameport",szID);
+				itoa(	pSI->usQueryPort,szID,10);
+				ServerRule_Add(pSI->pServerRules,"queryport",szID);
+				p+=2;
+			}
+				                          
+			if ( EDF & 0x10 )	// The server's SteamID is included
+			{
+				long long SteamID = (long long)(*(long long*)p);			
+				p+= sizeof(long long);
+			}
 
+			if ( EDF & 0x40 )	// The spectator port # and then the spectator server name are included
+			{
+				short spectator_port = (short)(*(short*)p);
+				p+=2;
+				char *spec_name = p;
+				p+=strlen(p)+1;
+			}
+			if ( EDF & 0x20 ) //	The game tag data string for the server is included [future use]
+			{
+				char *game_tag = p;
+				ServerRule_Add(pSI->pServerRules,"gameTag",p);
+				p+=strlen(p)+1;
+			}
+			if ( EDF & 0x01 ) //	 The Steam Application ID again + several 0x00 bytes
+			{
+				short appID = (short)(*(short*)p);		
+
+
+			}
+
+/*
+Game Version	string	 The version of the game, eg: "1.0.0.22"
+Extra Data Flag (EDF)	byte	 if present this specifies which additional data fields will be included
+if ( EDF & 0x80 )	short	 The server's game port # is included
+if ( EDF & 0x10 )	long long	 The server's SteamID is included
+if ( EDF & 0x40 )	short string	 The spectator port # and then the spectator server name are included
+if ( EDF & 0x20 )	string	 The game tag data string for the server is included [future use]
+if ( EDF & 0x01 )	short ??	 The Steam Application ID again + several 0x00 bytes
+*/
 		}
 			
 		DWORD dwChallenge=0;
 		DWORD dwRet=1;
 		
-		if((*resp->type == A2S_INFORESPONSE_HL1) || (pSI->STEAM_AppId<200)) //Added to handle the Gold Source games reporting HL2 protocol
-			dwRet = STEAM_GetChallengeGoldSrc(pSI,dwChallenge);
-		else
-			dwRet = STEAM_GetChallengeGoldSrc(pSI,dwChallenge);
-			//dwRet = STEAM_GetChallenge(pSI,dwChallenge);
+	//	if((*resp->type == A2S_INFORESPONSE_HL1) || (pSI->STEAM_AppId<200)) //Added to handle the Gold Source games reporting HL2 protocol
+	//		dwRet = STEAM_GetChallengeGoldSrc(pSI,dwChallenge);
+	//	else
+		dwRet = STEAM_GetChallengeGoldSrc(pSocket,pSI,dwChallenge);
+		//dwRet = STEAM_GetChallenge(pSI,dwChallenge);
 		
 		if(dwRet==0)
 		{
 			pSI->pPlayerData = NULL;
-			STEAM_GetPlayers(pSI,dwChallenge);
-			STEAM_GetRules(pSI, dwChallenge);
+			STEAM_GetPlayers(pSocket,pSI,dwChallenge);
+			STEAM_GetRules(pSocket,pSI, dwChallenge);
 		} 	
 
 		time(&pSI->timeLastScan);

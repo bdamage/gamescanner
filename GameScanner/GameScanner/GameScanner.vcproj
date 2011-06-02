@@ -509,6 +509,10 @@
 				>
 			</File>
 			<File
+				RelativePath=".\structs_defines.h"
+				>
+			</File>
+			<File
 				RelativePath=".\targetver.h"
 				>
 			</File>
@@ -555,11 +559,11 @@
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\kjelle\Desktop\alarmclock.ico"
+				RelativePath=".\res\alarmclock.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\alarmclock.ico"
+				RelativePath="C:\Users\kjelle\Desktop\alarmclock.ico"
 				>
 			</File>
 			<File
@@ -687,11 +691,11 @@
 				>
 			</File>
 			<File
-				RelativePath="C:\Users\Kjell\Pictures\GSPlusOrg16.ico"
+				RelativePath=".\res\GSPlusOrg16.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\res\GSPlusOrg16.ico"
+				RelativePath="C:\Users\Kjell\Pictures\GSPlusOrg16.ico"
 				>
 			</File>
 			<File
@@ -835,11 +839,11 @@
 				>
 			</File>
 			<File
-				RelativePath=".\res\small.ico"
+				RelativePath=".\small.ico"
 				>
 			</File>
 			<File
-				RelativePath=".\small.ico"
+				RelativePath=".\res\small.ico"
 				>
 			</File>
 			<File

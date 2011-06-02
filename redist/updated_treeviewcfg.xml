@@ -1,5 +1,5 @@
 <?xml version="1.0" ?>
-<TreeViewCFG version="5.219">
+<TreeViewCFG version="5.220">
     <!--
 	Settings for Game Scanner treeview structure.
 	
@@ -23,6 +23,7 @@
 	2010-03-13  5.217   Jedi Knight 3 added.
 	2011-06-01  5.218   Brink added.
 	2011-06-01  5.219   Added some new Brink filters.
+	2011-06-02  5.220   New Warsow filters added.
 	-->
     <TreeItems>
         <Game name="Wolfenstein - Enemy Territory" icon="30" expand="0" state="0" game="0" type="1">
@@ -322,19 +323,27 @@
                 <Private name="Hide Private" icon="9" expand="0" state="0" type="15">if private != &quot;0&quot;remove</Private>
                 <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>
 			   <GameType name="Game types" icon="18" expand="0" state="0" type="0">
-                    <GameType name="CA" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;ca&quot; remove</GameType>
-                    <GameType name="CTF" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;ctf&quot; remove</GameType>
-                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;dm&quot; remove</GameType>
-                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;tdm&quot; remove</GameType>
-                    <GameType name="Duel" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;duel&quot; remove</GameType>
-                    <GameType name="Race" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;race&quot; remove</GameType>
-                    <GameType name="DA" icon="9" expand="0" state="0" type="13">if g_gametype != &quot;da&quot; remove</GameType>
-                </GameType>
+                    <GameType name="CA" icon="9" expand="0" state="0" type="13">if gametype != &quot;ca&quot; remove</GameType>
+                    <GameType name="CTF" icon="9" expand="0" state="0" type="13">if gametype != &quot;ctf&quot; remove</GameType>
+                    <GameType name="Deathmatch" icon="9" expand="0" state="0" type="13">if gametype != &quot;dm&quot; remove</GameType>
+                    <GameType name="Team Deathmatch" icon="9" expand="0" state="0" type="13">if gametype != &quot;tdm&quot; remove</GameType>
+                    <GameType name="Duel" icon="9" expand="0" state="0" type="13">if gametype != &quot;duel&quot; remove</GameType>
+                    <GameType name="Race" icon="9" expand="0" state="0" type="13">if gametype != &quot;race&quot; remove</GameType>
+                    <GameType name="DA" icon="9" expand="0" state="0" type="13">if gametype != &quot;da&quot; remove</GameType>
+					<GameType name="Bomb" icon="9" expand="0" state="0" type="13">if gametype != &quot;bomb&quot; remove</GameType>
+					<GameType name="No Instagib" icon="9" expand="0" state="0" type="13">if g_instagib != &quot;0*&quot; remove</GameType>
+                 </GameType>
+                <Mod name="Mods" icon="18" expand="0" state="0" type="0">
+                    <Mod name="basewsw" icon="9" expand="0" state="0" type="13">if fs_game != &quot;basewsw&quot; remove</Mod>
+                    <Mod name="promod" icon="9" expand="0" state="0" type="13">if fs_game != &quot;promod&quot; remove</Mod>
+                    <Mod name="racesow" icon="9" expand="0" state="0" type="13">if fs_game != &quot;racesow&quot; remove</Mod>
+                </Mod>				
                 <Version name="Versions" icon="18" expand="0" state="0" type="0">
                     <Version name="0.40" icon="9" expand="0" state="0" type="13">if version != &quot;0.40*&quot; remove</Version>
                     <Version name="0.41" icon="9" expand="0" state="0" type="13">if version != &quot;0.41*&quot; remove</Version>
                     <Version name="0.42" icon="9" expand="0" state="0" type="13">if version != &quot;0.42*&quot; remove</Version>
 					<Version name="0.50" icon="9" expand="0" state="0" type="13">if version != &quot;0.50*&quot; remove</Version>
+					<Version name="0.6x" icon="9" expand="0" state="0" type="13">if version != &quot;0.6*&quot; remove</Version>
                 </Version>
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
                     <Map name="wdm1" icon="9" expand="0" state="0" type="13">if map != &quot;wdm1&quot;remove</Map>
@@ -1054,12 +1063,12 @@
                 <NoBots name="No Bots" icon="9" expand="0" state="0" type="13">if bots >= &quot;1&quot; remove</NoBots>	
                 <Map name="Maps" icon="18" expand="0" state="0" type="0">
                     <Map name="Aquarium" icon="9" expand="0" state="0" type="13">if map != &quot;mp/aquarium&quot; remove</Map>
-                    <Map name="City" icon="9" expand="0" state="0" type="13">if map != &quot;mp/ccity&quot; remove</Map>
+                    <Map name="Container City" icon="9" expand="0" state="0" type="13">if map != &quot;mp/ccity&quot; remove</Map>
                     <Map name="Reactor" icon="9" expand="0" state="0" type="13">if map != &quot;mp/reactor&quot; remove</Map>
 					<Map name="Refuel" icon="9" expand="0" state="0" type="13">if map != &quot;mp/refuel&quot; remove</Map>
                     <Map name="Resort" icon="9" expand="0" state="0" type="13">if map != &quot;mp/resort&quot; remove</Map>
-					<Map name="Sectow" icon="9" expand="0" state="0" type="13">if map != &quot;mp/sectow&quot; remove</Map>
-					<Map name="Shipyard" icon="9" expand="0" state="0" type="13">if map != &quot;mp/shipyard&quot; remove</Map>
+					<Map name="Security Tower" icon="9" expand="0" state="0" type="13">if map != &quot;mp/sectow&quot; remove</Map>
+					<Map name="Ship yard" icon="9" expand="0" state="0" type="13">if map != &quot;mp/shipyard&quot; remove</Map>
 					<Map name="Terminal" icon="9" expand="0" state="0" type="13">if map != &quot;mp/terminal&quot; remove</Map>
                 </Map>
                 <RegionFilter name="Region to query master server" icon="18" expand="0" state="0" type="60">

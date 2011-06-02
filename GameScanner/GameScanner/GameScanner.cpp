@@ -5163,8 +5163,8 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 	if(wParam == SIZE_MINIMIZED)
 		return ;
 
-	WINDOWPLACEMENT wp;
-	GetWindowPlacement(g_hWnd, &wp);
+//	WINDOWPLACEMENT wp;
+//	GetWindowPlacement(g_hWnd, &wp);
 
 	int xMax = GetSystemMetrics(SM_CXMAXIMIZED);
 	int yMax = GetSystemMetrics(SM_CYMAXIMIZED);
@@ -5188,8 +5188,8 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 	}
 	CopyRect(&WNDCONT[WIN_MAIN].rSize,&wrc);
 	dbg_print("xMax = %d, yMax = %d",xMax,yMax);
-	dbg_print("GetWindowPlacement    %d, %d - %d, %d",wp.rcNormalPosition.left,wp.rcNormalPosition.top,wp.rcNormalPosition.right,wp.rcNormalPosition.bottom);
-	dbg_print("GetWindowPlacement %d   Min(%d, %d)  Max(%d, %d)",wp.showCmd,wp.ptMinPosition.x,wp.ptMinPosition.y,wp.ptMaxPosition.x,wp.ptMaxPosition.y);
+	//dbg_print("GetWindowPlacement    %d, %d - %d, %d",wp.rcNormalPosition.left,wp.rcNormalPosition.top,wp.rcNormalPosition.right,wp.rcNormalPosition.bottom);
+//	dbg_print("GetWindowPlacement %d   Min(%d, %d)  Max(%d, %d)",wp.showCmd,wp.ptMinPosition.x,wp.ptMinPosition.y,wp.ptMaxPosition.x,wp.ptMaxPosition.y);
 	dbg_print("Update_WindowSizes CR %d, %d - %d, %d",rc.left,rc.top,rc.right,rc.bottom);
 	dbg_print("Update_WindowSizes WR %d, %d - %d, %d",wrc.left,wrc.top,wrc.right-wrc.left,wrc.bottom-wrc.top);
 
@@ -5295,24 +5295,24 @@ void Update_WindowSizes(WPARAM wParam,RECT *pRC)
 
 
 	g_INFOIconRect.top = WNDCONT[WIN_STATUS].rSize.top;
-/*
+
 	dbg_print("WIN_MAINTREEVIEW %d, %d - %d, %d",WNDCONT[WIN_MAINTREEVIEW].rSize.left,WNDCONT[WIN_MAINTREEVIEW].rSize.top,WNDCONT[WIN_MAINTREEVIEW].rSize.right,WNDCONT[WIN_MAINTREEVIEW].rSize.bottom);
 	dbg_print("WIN_BUDDYLIST %d, %d - %d, %d",WNDCONT[WIN_BUDDYLIST].rSize.left,WNDCONT[WIN_BUDDYLIST].rSize.top,WNDCONT[WIN_BUDDYLIST].rSize.right,WNDCONT[WIN_BUDDYLIST].rSize.bottom);
 	dbg_print("WIN_STATUS %d, %d - %d, %d",WNDCONT[WIN_STATUS].rSize.left,WNDCONT[WIN_STATUS].rSize.top,WNDCONT[WIN_STATUS].rSize.right,WNDCONT[WIN_STATUS].rSize.bottom);
-
+/*
 	dbg_print("WIN_SERVERLIST %d, %d - %d, %d",WNDCONT[WIN_SERVERLIST].rSize.left,WNDCONT[WIN_SERVERLIST].rSize.top,WNDCONT[WIN_SERVERLIST].rSize.right,WNDCONT[WIN_SERVERLIST].rSize.bottom);
 	dbg_print("WIN_PING %d, %d - %d, %d",WNDCONT[WIN_PING].rSize.left,WNDCONT[WIN_PING].rSize.top,WNDCONT[WIN_PING].rSize.right,WNDCONT[WIN_PING].rSize.bottom);
 	dbg_print("WIN_PLAYERS %d, %d - %d, %d",WNDCONT[WIN_PLAYERS].rSize.left,WNDCONT[WIN_PLAYERS].rSize.top,WNDCONT[WIN_PLAYERS].rSize.right,WNDCONT[WIN_PLAYERS].rSize.bottom);
 	dbg_print("WIN_LOGGER %d, %d - %d, %d",WNDCONT[WIN_LOGGER].rSize.left,WNDCONT[WIN_LOGGER].rSize.top,WNDCONT[WIN_LOGGER].rSize.right,WNDCONT[WIN_LOGGER].rSize.bottom);
 	dbg_print("WIN_TABCONTROL %d, %d - %d, %d",WNDCONT[WIN_TABCONTROL].rSize.left,WNDCONT[WIN_TABCONTROL].rSize.top,WNDCONT[WIN_TABCONTROL].rSize.right,WNDCONT[WIN_TABCONTROL].rSize.bottom);
 	dbg_print("WIN_RULES %d, %d - %d, %d",WNDCONT[WIN_RULES].rSize.left,WNDCONT[WIN_RULES].rSize.top,WNDCONT[WIN_RULES].rSize.right,WNDCONT[WIN_RULES].rSize.bottom);
-	dbg_print("WIN_RCON %d, %d - %d, %d",WNDCONT[WIN_RCON].rSize.left,WNDCONT[WIN_RCON].rSize.top,WNDCONT[WIN_RCON].rSize.right,WNDCONT[WIN_RCON].rSize.bottom);
+*/	dbg_print("WIN_RCON %d, %d - %d, %d",WNDCONT[WIN_RCON].rSize.left,WNDCONT[WIN_RCON].rSize.top,WNDCONT[WIN_RCON].rSize.right,WNDCONT[WIN_RCON].rSize.bottom);
 
 	dbg_print("\nWIN_PROGRESSBAR %d, %d - %d, %d",WNDCONT[WIN_PROGRESSBAR].rSize.left,WNDCONT[WIN_PROGRESSBAR].rSize.top,WNDCONT[WIN_PROGRESSBAR].rSize.right,WNDCONT[WIN_PROGRESSBAR].rSize.bottom);
 	dbg_print("\nWIN_MAPPREVIEW %d, %d - %d, %d",WNDCONT[WIN_MAPPREVIEW].rSize.left,WNDCONT[WIN_MAPPREVIEW].rSize.top,WNDCONT[WIN_MAPPREVIEW].rSize.right,WNDCONT[WIN_MAPPREVIEW].rSize.bottom);
 
 	dbg_print("WIN_MAIN %d, %d - %d, %d",WNDCONT[WIN_MAIN].rSize.left,WNDCONT[WIN_MAIN].rSize.top,WNDCONT[WIN_MAIN].rSize.right,WNDCONT[WIN_MAIN].rSize.bottom);
-*/
+
 }
 
 void RepaintAllWindows()
@@ -5377,11 +5377,14 @@ void OnSize(HWND hwndParent,WPARAM wParam, BOOL bRepaint)
 	if(WNDCONT[WIN_PING].bShow)
 		InvalidateRect(WNDCONT[WIN_PING].hWnd,&WNDCONT[WIN_PING].rSize,TRUE);
 
+	if(WNDCONT[WIN_RCON].bShow)
+		InvalidateRect(WNDCONT[WIN_RCON].hWnd,&WNDCONT[WIN_RCON].rSize,TRUE);
+
 	for(int i=0;i<WIN_MAX;i++)
 	{
 		if(WNDCONT[i].idx!=WIN_MAIN)
 		{
-			MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,FALSE);
+			MoveWindow(WNDCONT[i].hWnd,WNDCONT[i].rSize.left,WNDCONT[i].rSize.top,WNDCONT[i].rSize.right,WNDCONT[i].rSize.bottom,TRUE);
 			ShowWindow(WNDCONT[i].hWnd,WNDCONT[i].bShow);
 		}
 
@@ -7672,7 +7675,44 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 						int ret = MessageBox(NULL,g_lang.GetString("AskRconKickPlayer"),ply->szPlayerName,MB_YESNO);
 						if(ret==IDYES)
 						{
-							sprintf_s(szCMD,sizeof(szCMD),"kick %s",ply->szPlayerName);
+			
+							switch(ply->cGAMEINDEX)
+							{
+								case BRINK_SERVERLIST:
+									sprintf_s(szCMD,sizeof(szCMD),"admin kick %s",ply->szPlayerName);
+									break;
+								default:
+									sprintf_s(szCMD,sizeof(szCMD),"kick %s",ply->szPlayerName);
+								break;
+							}
+
+							RCON_Connect(ply->pServerInfo);
+							RCON_SendCmd(ply->pServerInfo,ply->pServerInfo->szRCONPASS,szCMD); 
+							RCON_Read(ply->pServerInfo);
+							RCON_Disconnect();
+						}
+					}
+				}
+				break;
+				case ID_BAN_PLAYER:
+				{
+					PLAYERDATA* ply = Get_PlayerBySelection();		
+					if(ply!=NULL)
+					{	
+						int ret = MessageBox(NULL,"Do you want to ban player:",ply->szPlayerName,MB_YESNO);
+						if(ret==IDYES)
+						{
+			
+							switch(ply->cGAMEINDEX)
+							{
+								case BRINK_SERVERLIST:
+									sprintf_s(szCMD,sizeof(szCMD),"admin ban %s",ply->szPlayerName);
+									break;
+								default:
+									sprintf_s(szCMD,sizeof(szCMD),"ban %s",ply->szPlayerName);
+								break;
+							}
+
 							RCON_Connect(ply->pServerInfo);
 							RCON_SendCmd(ply->pServerInfo,ply->pServerInfo->szRCONPASS,szCMD); 
 							RCON_Read(ply->pServerInfo);
@@ -7761,6 +7801,7 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 				}
 
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_KICK_PLAYER,g_lang.GetString("MenuKick"));			
+				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_BAN_PLAYER,"Ban");			
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_WARN_PLAYER,g_lang.GetString("MenuWarn"));			
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_MUTE_PLAYER,g_lang.GetString("MenuMute"));			
 				InsertMenu(hPopMenu,0xFFFFFFFF,MF_BYPOSITION|MF_STRING,ID_UNMUTE_PLAYER,g_lang.GetString("MenuUnMute"));			
@@ -9990,19 +10031,22 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 		ReplaceStrInStr(cmd,"%GAMEPATH%",szTempPath);
 	}
 
+	//Below code snippet added to support the BRINK game
+	unsigned short port = pSI->usPort;
+
 	if(strstr(cmd.c_str(),"applaunch")!=NULL)  //quick steam fix cmd has to be pre-concated
 	{
 		if(strlen(pSI->szPRIVATEPASS)>0)
-			sprintf(CommandParameters,"%s +connect %s:%d +password %s ",cmd.c_str(),pSI->szIPaddress,pSI->usPort,pSI->szPRIVATEPASS);					
+			sprintf(CommandParameters,"%s +connect %s:%d +password %s ",cmd.c_str(),pSI->szIPaddress,port,pSI->szPRIVATEPASS);					
 		else
-			sprintf(CommandParameters,"%s +connect %s:%d ",cmd.c_str(),pSI->szIPaddress,pSI->usPort);
+			sprintf(CommandParameters,"%s +connect %s:%d ",cmd.c_str(),pSI->szIPaddress,port);
 	}
 	else
 	{
 		if(strlen(pSI->szPRIVATEPASS)>0)
-			sprintf(CommandParameters,"+connect %s:%d +password %s %s ",pSI->szIPaddress,pSI->usPort,pSI->szPRIVATEPASS,cmd.c_str());					
+			sprintf(CommandParameters,"+connect %s:%d +password %s %s ",pSI->szIPaddress,port,pSI->szPRIVATEPASS,cmd.c_str());					
 		else
-			sprintf(CommandParameters,"+connect %s:%d %s ",pSI->szIPaddress,pSI->usPort,cmd.c_str());					
+			sprintf(CommandParameters,"+connect %s:%d %s ",pSI->szIPaddress,port,cmd.c_str());					
 	}
 
 
@@ -10057,7 +10101,7 @@ void LaunchGame(SERVER_INFO *pSI,GAME_INFO *pGI,int GameInstallIdx, char *szCust
 			colorfilter(pSI->szServerName,colfilter,119);
 			ReplaceStrInStr(mircoutput,"%SERVERNAME%",colfilter);
 			
-			wsprintf(szMsg,"%s:%d",pSI->szIPaddress,pSI->usPort);	
+			wsprintf(szMsg,"%s:%d",pSI->szIPaddress,port);	
 			ReplaceStrInStr(mircoutput,"%IP%",szMsg);		
 			ReplaceStrInStr(mircoutput,"%GAMENAME%",gm.GamesInfo[pSI->cGAMEINDEX].szGAME_NAME);
 			
@@ -12032,7 +12076,7 @@ void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 							CopyRect(&WNDCONT[WIN_RULES].rSize,&WNDCONT[WIN_PLAYERS].rSize);
 							CopyRect(&WNDCONT[WIN_LOGGER].rSize,&WNDCONT[WIN_PLAYERS].rSize);
 							CopyRect(&WNDCONT[WIN_PING].rSize,&WNDCONT[WIN_PLAYERS].rSize);
-							CopyRect(&WNDCONT[WIN_RCON].rSize,&WNDCONT[WIN_RCON].rSize);
+							CopyRect(&WNDCONT[WIN_RCON].rSize,&WNDCONT[WIN_PLAYERS].rSize);
 							MoveAllWindows();
 						} else
 						{
@@ -12078,7 +12122,7 @@ void  OnMouseMove(HWND hWnd, WPARAM wParam,LPARAM lParam)
 						CopyRect(&WNDCONT[WIN_RULES].rSize,&WNDCONT[WIN_PLAYERS].rSize);
 						CopyRect(&WNDCONT[WIN_LOGGER].rSize,&WNDCONT[WIN_PLAYERS].rSize);
 						CopyRect(&WNDCONT[WIN_PING].rSize,&WNDCONT[WIN_PLAYERS].rSize);
-						CopyRect(&WNDCONT[WIN_RCON].rSize,&WNDCONT[WIN_RCON].rSize);
+						CopyRect(&WNDCONT[WIN_RCON].rSize,&WNDCONT[WIN_PLAYERS].rSize);
 						MoveAllWindows();
 
 						SplitterGripArea[i].hit.left = pt.x;

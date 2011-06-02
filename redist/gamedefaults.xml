@@ -524,7 +524,7 @@
 			<Column idx="4">version</Column>
 			<Column idx="5">gametype</Column>	
 			<Column idx="6">mapname</Column>
-			<Column idx="7">gamename</Column>
+			<Column idx="7">fs_game</Column>
 			<Column idx="8">bots</Column>			
 		</Columns>			
 		<Installs>
@@ -673,11 +673,7 @@
 		<MapPreviewPath>cssmaps</MapPreviewPath>
 		<Icon>css.ico</Icon>
 		<MasterServers>
-			<MasterServer http="0">hl2master.steampowered.com:27011</MasterServer>
-			<MasterServer http="0">69.28.140.246:27011</MasterServer>	
-			<MasterServer http="0">72.165.61.189:27011</MasterServer>
-			<MasterServer http="0">69.28.140.247:27011</MasterServer>
-			<MasterServer http="0">68.142.72.250:27011</MasterServer>						
+			<MasterServer http="0">hl2master.steampowered.com:27011</MasterServer>		
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>
@@ -720,10 +716,6 @@
 		<Icon>hf2.ico</Icon>
 		<MasterServers>
 			<MasterServer http="0">hl2master.steampowered.com:27011</MasterServer>
-			<MasterServer http="0">69.28.140.246:27011</MasterServer>	
-			<MasterServer http="0">72.165.61.189:27011</MasterServer>
-			<MasterServer http="0">69.28.140.247:27011</MasterServer>
-			<MasterServer http="0">68.142.72.250:27011</MasterServer>
 		</MasterServers>
 		<ServerDefaultPort>27015</ServerDefaultPort>
 		<ServerInfoQuery></ServerInfoQuery>

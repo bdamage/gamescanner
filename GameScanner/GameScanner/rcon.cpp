@@ -72,13 +72,44 @@ void LoadRCONCommandList()
 	RCONList.push_back("toggle");
 	RCONList.push_back("wait");
 	RCONList.push_back("echo");
+	RCONList.push_back("admin");
+	RCONList.push_back("admin kick");
+	RCONList.push_back("admin ban");
+	RCONList.push_back("admin restartMap");
+	RCONList.push_back("admin unban");
+/*Brink commands
+admin kick
+admin login (NOT USED)
+admin ban
+admin setTeam
+admin kickAllBots
+admin changeMap
+admin globalMute
+admin globalVOIPMute
+admin playerMute
+admin playerVOIPMute
+admin restartMap
+admin nextStopWatchRound
+admin changeUserGroup
+admin startMatch
+admin execConfig
+admin shuffleTeams
+admin addbot
+admin adjustBots
+admin disableProficiency
+admin setTimeLimit
+admin setTeamDamage
+admin setTeamBalance
+admin listBans
+admin unBan
+*/
 }
 
 LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
 {
 	
 	static list <string>::iterator sIter;
-	static char szCmdAuto[256];
+	static char szCmdAuto[256] = {0};
 
 	if(uMsg == WM_KEYDOWN)
 	 {
@@ -338,7 +369,7 @@ LRESULT CALLBACK RCON_AskPasswordProc(HWND hDlg, UINT message, WPARAM wParam, LP
 	case WM_INITDIALOG:
 		{
 		CenterWindow(hDlg);
-		g_hwndRCONCmd = GetDlgItem(hDlg,IDC_EDIT_PASSWORD);
+		//g_hwndRCONCmd = GetDlgItem(hDlg,IDC_EDIT_PASSWORD);
 		SetDlgItemText(hDlg,IDC_EDIT_PASSWORD,g_RCONServer->szRCONPASS);
 		
 		SetFocus(GetDlgItem(hDlg,IDC_EDIT_PASSWORD));
@@ -379,7 +410,10 @@ DWORD RCON_Connect(SERVER_INFO *pServer)
 	if(RCON_ConnectSocket!=NULL)
 		RCON_Disconnect();
 
-	RCON_ConnectSocket = getsockudp(pServer->szIPaddress ,(unsigned short)pServer->usPort); 
+	//Below code snippet added to support the BRINK game
+	unsigned short port = pServer->usPort;
+
+	RCON_ConnectSocket = getsockudp(pServer->szIPaddress ,(unsigned short)port); 
  
 	if(INVALID_SOCKET==RCON_ConnectSocket)
 	{
@@ -439,7 +473,7 @@ DWORD RCON_Parse(SERVER_INFO *pServer,unsigned char *Buff, size_t dwPacketLen)
 		{
 			switch(pServer->cGAMEINDEX)
 			{
-				
+				case BRINK_SERVERLIST:
 				case Q4_SERVERLIST :
 				case ETQW_SERVERLIST:
 					pBuf2 =&pBuf2[10];  
@@ -499,8 +533,7 @@ DWORD RCON_SendCmd(SERVER_INFO* pSI,char *szPassword,char *szCmd)
 	size_t packetlen=0;
 	char sendbuf[512];
 
-	if(strcmp(szCmd,"cls")==0)
-	{
+	if(strcmp(szCmd,"cls")==0) {
 		SendMessage(g_hwndRCONOut, LB_RESETCONTENT, (WPARAM) NULL, (LPARAM) NULL);
 		return 0;
 	}
@@ -510,17 +543,23 @@ DWORD RCON_SendCmd(SERVER_INFO* pSI,char *szPassword,char *szCmd)
 	if(pSI==NULL)
 		return 2;
 
-	if(pSI->cGAMEINDEX==1)
+	switch(pSI->cGAMEINDEX)	{
+
+	case ETQW_SERVERLIST:
+	case WOLF_SERVERLIST:
+	case BRINK_SERVERLIST:
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFFrcon\xFF%s\xFF%s\xFF",szPassword,szCmd); //ETQW (might work for Doom 3)
-	else
+		break;
+	default:
 		sprintf_s(sendbuf,sizeof(sendbuf), "\xFF\xFF\xFF\xFFrcon %c%s%c %s",'"',szPassword,'"',szCmd); //Tested on ET and Cod4 but should work any Quake 3 servers
+	}
+
 	
 	RCON_WriteToConsole(0, szCmd);
 	//AddLogInfo("Sending :%s",sendbuf);
 	int len = strlen(sendbuf)+1;
 
-	if(send(RCON_ConnectSocket, sendbuf, (int)len, 0)==SOCKET_ERROR) 
-	{
+	if(send(RCON_ConnectSocket, sendbuf, (int)len, 0)==SOCKET_ERROR) {
 		RCON_Disconnect();
 		return 2;
 	}
@@ -534,6 +573,7 @@ void RCON_Disconnect()
 	//AddLogInfo(0,"RCON_Disconnect()");
 	if(RCON_ConnectSocket!=NULL)
 		closesocket(RCON_ConnectSocket);
+
 	RCON_ConnectSocket=NULL;
 }
 

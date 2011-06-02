@@ -5,6 +5,14 @@
 	
 	Check out the forum for help and support.
 
+	Version 2.0.26
+	--------------------------
+	2011-06-02  Fixed a few bugs with RCON.
+	2011-06-02  Added BRINK RCON support and connection port should be corrected.
+	2011-06-02  New Filters for Warsow added.
+	2011-06-02  Improved Gold Source protocol parser.
+
+
 	Version 2.0.25
 	--------------------------
 	2011-06-01  Added Brink
