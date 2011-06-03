@@ -257,6 +257,7 @@ DWORD STEAM_ParsePlayers(SERVER_INFO *pSI, char *packet,DWORD dwLength)
 			player->pServerInfo = pSI;
 			player->dwServerIndex = pSI->dwIndex;
 
+			player->iPlayer = i;
 			p++; //player index
 
 			

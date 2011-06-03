@@ -219,9 +219,9 @@ char QuakeWorldASCII[]=
 
 #pragma comment( user, "Compiled on " __DATE__ " at " __TIME__ ) 
 #ifndef _DEBUG
-char szDialogTitle[]="Game Scanner v" APP_VERSION " ";
+char szDialogTitle[]="Game Scanner v" APP_VERSION APP_VERSION_SUFFIX;
 #else
-char szDialogTitle[]="Game Scanner v" APP_VERSION " Compiled on " __DATE__ " at "__TIME__;
+char szDialogTitle[]="Game Scanner v" APP_VERSION APP_VERSION_SUFFIX " Compiled on " __DATE__ " at "__TIME__;
 #endif
 
 
@@ -7679,7 +7679,7 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 							switch(ply->cGAMEINDEX)
 							{
 								case BRINK_SERVERLIST:
-									sprintf_s(szCMD,sizeof(szCMD),"admin kick %s",ply->szPlayerName);
+									sprintf_s(szCMD,sizeof(szCMD),"admin kick %d",ply->iPlayer);
 									break;
 								default:
 									sprintf_s(szCMD,sizeof(szCMD),"kick %s",ply->szPlayerName);
@@ -9601,7 +9601,7 @@ int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,LPTSTR    lp
 	::GetVersionEx(&g_OSversion);
 
 
-	g_log.AddLogInfo(GS_LOG_INFO,"Game Scanner version: %s",APP_VERSION);
+	g_log.AddLogInfo(GS_LOG_INFO,"Game Scanner version: %s%s",APP_VERSION,APP_VERSION_SUFFIX);
 	g_log.AddLogInfo(GS_LOG_INFO,"Executable directory: %s",EXE_PATH);
 	g_log.AddLogInfo(GS_LOG_INFO,"User Data directory: %s",USER_SAVE_PATH);	
 	//g_log.AddLogInfo(GS_LOG_INFO,"Common Data directory: %s",COMMON_SAVE_PATH);	
