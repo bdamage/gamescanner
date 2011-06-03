@@ -3,8 +3,8 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION         "2.0.26"
-#define  APP_VERSION_SUFFIX  "a"
+#define  APP_VERSION         "2.0.27"
+#define  APP_VERSION_SUFFIX  ""
 
 #pragma once
 #define _SECURE_SCL 0

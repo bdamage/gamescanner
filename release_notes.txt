@@ -5,6 +5,12 @@
 	
 	Check out the forum for help and support.
 
+
+	Version 2.0.27
+	--------------------------
+	2011-06-04  Changed RCON ban for BRINK to ban player by index.
+	2011-06-04  IP to Country database updated.
+
 	Version 2.0.26a
 	--------------------------
 	2011-06-02  Changed RCON kick for BRINK to kick player by index.

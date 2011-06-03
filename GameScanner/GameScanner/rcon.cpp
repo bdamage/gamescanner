@@ -77,6 +77,10 @@ void LoadRCONCommandList()
 	RCONList.push_back("admin ban");
 	RCONList.push_back("admin restartMap");
 	RCONList.push_back("admin unban");
+	RCONList.push_back("admin listBans");
+	RCONList.push_back("admin shuffleTeams");
+	RCONList.push_back("admin execConfig");
+	RCONList.push_back("admin setTeam");
 /*Brink commands
 admin kick
 admin login (NOT USED)
@@ -165,7 +169,7 @@ LRESULT APIENTRY RCON_EditSubclassProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPAR
 
 				char szCmd[128],sztempCmd[128];
 				GetDlgItemText(g_hRCONDlg,IDC_EDIT_CMD,szCmd,sizeof(szCmd)-1);
-				sprintf_s(sztempCmd,sizeof(sztempCmd),"%s\t",szCmd);
+				sprintf_s(sztempCmd,sizeof(sztempCmd),"%s\t\t",szCmd);
 				RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,sztempCmd);
 				return TRUE;
 			}
@@ -306,20 +310,28 @@ LRESULT CALLBACK RCON_Proc(HWND hDlg, UINT message, WPARAM wParam, LPARAM lParam
 //						if(strcmp(szWinName,"Connect")==0)
 //						{
 
-							if(g_CurrentSRV == NULL)
-							{
+							if(g_CurrentSRV == NULL) {
 								MessageBox(hDlg,g_lang.GetString("SelectServerAtConnectionRCON"),"Error",MB_OK);
 								return TRUE;
 							}
 							g_RCONServer = g_CurrentSRV;
 							int ret =(int) DialogBox(g_hInst, (LPCTSTR)IDD_DLG_RCON_PASS, hDlg, (DLGPROC)RCON_AskPasswordProc);					
 
-							if(ret == IDOK)
-							{
+							if(ret == IDOK)	{
 							//	GamesInfo[g_RCONServer->cGAMEINDEX].vSI.at(g_RCONServer->dwIndex) = g_CurrentSelServer;
 								RCON_Connect(g_RCONServer);
 								SetFocus(GetDlgItem(hDlg,IDC_EDIT_CMD));
-								RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,"status"); 
+
+								switch(g_RCONServer->cGAMEINDEX) {
+									case ETQW_SERVERLIST:
+									case WOLF_SERVERLIST:
+									case BRINK_SERVERLIST:
+										RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,"serverinfo");
+										break;
+									default:
+										RCON_SendCmd(g_RCONServer,g_RCONServer->szRCONPASS,"status");
+								}
+								 
 								EnableWindow( GetDlgItem(hDlg, IDOK),TRUE);  //Join button
 								SetWindowText(GetDlgItem(hDlg, ID_RCON_CONNECT),"Disconnect");
 							}

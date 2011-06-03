@@ -7706,7 +7706,7 @@ LRESULT APIENTRY ListViewPlayerSubclassProc( HWND hwnd, UINT uMsg, WPARAM wParam
 							switch(ply->cGAMEINDEX)
 							{
 								case BRINK_SERVERLIST:
-									sprintf_s(szCMD,sizeof(szCMD),"admin ban %s",ply->szPlayerName);
+									sprintf_s(szCMD,sizeof(szCMD),"admin ban %d",ply->iPlayer);
 									break;
 								default:
 									sprintf_s(szCMD,sizeof(szCMD),"ban %s",ply->szPlayerName);
