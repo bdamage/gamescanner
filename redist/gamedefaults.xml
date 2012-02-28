@@ -1,5 +1,5 @@
 <Games>
-	<Version>1.34</Version>
+	<Version>1.35</Version>
 	<Game>
 		<GameIndex>0</GameIndex>
 		<Name>Wolfenstein - Enemy Territory</Name>
@@ -13,7 +13,8 @@
 		<MapPreviewPath>etmaps</MapPreviewPath>
 		<Icon>et.ico</Icon>
 		<MasterServers>
-			<MasterServer http="0" protocol="84">etmaster.idsoftware.com:27950</MasterServer>		
+			<MasterServer http="0" protocol="84">etmaster.idsoftware.com:27950</MasterServer>
+			<MasterServer http="0" protocol="84">master0.etmaster.net:27950</MasterServer>				
 		</MasterServers>
 		<Detection>
 			<Registry>

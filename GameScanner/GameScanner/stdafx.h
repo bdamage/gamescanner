@@ -3,7 +3,7 @@
 // are changed infrequently
 //
 
-#define  APP_VERSION         "2.0.27"
+#define  APP_VERSION         "2.0.28"
 #define  APP_VERSION_SUFFIX  ""
 
 #pragma once

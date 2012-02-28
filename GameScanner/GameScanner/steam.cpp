@@ -296,22 +296,6 @@ DWORD STEAM_GetPlayers(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 	char sendbuf[80];
 	size_t packetlen = 0;
 
-	
-/*	if(pSI==NULL)
-	{
-		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
-		return 1;
-	}
-*/
-/*	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
- 
-	if(pSocket==INVALID_SOCKET)
-	{
-	  dbg_print("Error at getsockudp()\n");
-	  return 1;
-	}
-	*/
-
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	strcpy_s(sendbuf,sizeof(sendbuf),A2S_PLAYER);
 
@@ -328,8 +312,6 @@ DWORD STEAM_GetPlayers(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
 	if(packet)
 	{
-
-
 		STEAM_ParsePlayers(pSI, (char*) packet,packetlen);
 		free(packet);
 	}
@@ -425,45 +407,23 @@ continued packet?
 }
 DWORD STEAM_GetRules(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 {
-//	SOCKET pSocket = NULL;
 	unsigned char *packet=NULL;
 	char sendbuf[80];
 	size_t packetlen = 0;
 	size_t packetlen2 = 0;
 
-/*	
-	if(pSI==NULL)
-	{
-		dbg_print("Invalid pointer argument @Get_ServerStatus!\n");
-		return 1;
-	}
-*/
-/*	pSocket =  getsockudp(pSI->szIPaddress , (unsigned short)pSI->usPort); 
- 
-	if(pSocket==INVALID_SOCKET)
-	{
-	  dbg_print("Error at getsockudp()\n");
-	  return 1;
-	}
-*/
 	ZeroMemory(sendbuf,sizeof(sendbuf));
 	strcpy_s(sendbuf,sizeof(sendbuf),A2S_RULES);
 
 	memcpy(&sendbuf[5],(DWORD*)&dwChallenge,sizeof(DWORD));
-
-
 	packetlen = send(pSocket, sendbuf, 9, 0);
-	if(packetlen==SOCKET_ERROR) 
-	{
+	if(packetlen==SOCKET_ERROR) {
 		dbg_print("Error at send()\n");
-//		closesocket(pSocket);		
 		return 1;
 	}
 	packet=(unsigned char*)getpacket(pSocket, &packetlen);
-	if(packet)
-	{
-		if((char) packet[0] == '\xfe')
-		{
+	if(packet) {
+		if((char) packet[0] == '\xfe') {
 			unsigned char *packet2 = (unsigned char*)getpacket(pSocket, &packetlen2);
 			if(packetlen2>0)
 				packetlen2-=12;	
@@ -471,9 +431,7 @@ DWORD STEAM_GetRules(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 			int totlen = packetlen + packetlen2;
 			unsigned char *p = (unsigned char*) calloc(1,totlen+10);
 			memcpy((void*)p,&packet[12],packetlen);
-			if(packet2)
-			{
-				
+			if(packet2) {				
 				memcpy((void*)&p[packetlen],&packet2[12],packetlen2);
 				free(packet2);
 			}
@@ -482,16 +440,11 @@ DWORD STEAM_GetRules(SOCKET pSocket,SERVER_INFO *pSI, DWORD dwChallenge)
 			free(packet);		
 			free(p);
 			
-		}
-		else
-		{
+		}else{
 			STEAM_ParseRules(pSI, (char*) packet,packetlen);
 			free(packet);
 		}
 	}
-
-//	closesocket(pSocket);
-	
 	return 0;
 }
 DWORD STEAM_ConnectToMasterServer(GAME_INFO *pGI, int iMasterIdx)

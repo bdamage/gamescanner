@@ -6,6 +6,11 @@
 	Check out the forum for help and support.
 
 
+	Version 2.0.28
+	--------------------------
+	2012-02-28 Added new ET master server (see gamedefaults.xml).
+
+
 	Version 2.0.27
 	--------------------------
 	2011-06-04  Changed RCON ban for BRINK to ban player by index.

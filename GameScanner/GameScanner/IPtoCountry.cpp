@@ -136,7 +136,7 @@ int CIPtoCountry::ConvertDatabase(void)
 	fopen_s(&fp,"IpToCountry.csv", "rb");  //"new-ip-to-country.csv"
 	if(fp==NULL)
 	{
-		wchar_t szBuf[200]; 
+
 		LPVOID lpMsgBuf;
 		DWORD dw = GetLastError(); 
 
@@ -158,10 +158,12 @@ int CIPtoCountry::ConvertDatabase(void)
 		
 	
 	FILE *fpNew=NULL;
+	FILE *fpNew2=NULL;
 	fopen_s(&fpNew,"ipcountry.dat", "wb");
-
+	fopen_s(&fpNew2,"ipcountry.newdat", "wb");
 	if(fp!=NULL)
-	{
+	{						
+		char out[200];
 		while( !feof( fp ) )
 		{
 			//memset(&buffer,0,sizeof(buffer));
@@ -191,6 +193,9 @@ int CIPtoCountry::ConvertDatabase(void)
 						token3a = strtok_s( NULL, seps, &next_token1);  //short name 1
 						
 						strcpy_s(structIP.COUNTRYNAME_SHORT,sizeof(structIP.COUNTRYNAME_SHORT),token3a);
+
+						sprintf_s(out,"%d %d %s\n",structIP.startIP,structIP.endIP,token3a);
+						fwrite( &out, strlen(out), 1, fpNew2 );
 						fwrite( &structIP, sizeof( IPCOUNTRY ), 1, fpNew );
 						lines++;
 						break;  //break the for loop
@@ -203,6 +208,7 @@ int CIPtoCountry::ConvertDatabase(void)
 		}
 		fclose(fp);
 		fclose(fpNew);
+		fclose(fpNew2);
 		OutputDebugString(TEXT("Converting Country database DONE!\n"));
 	}
 	return 0;
